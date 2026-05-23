@@ -1,0 +1,57 @@
+/* ============================================================
+   AUREUM · footer.css
+   ============================================================ */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+  margin-top: 1rem;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+.footer-brand { max-width: 300px; }
+
+.footer-brand .logo { display: inline-flex; margin-bottom: 0.875rem; }
+
+.footer-brand p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+
+.footer-links { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+
+.footer-col { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.footer-col-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  margin-bottom: 0.25rem;
+}
+
+.footer-col a { font-size: 0.85rem; color: var(--muted); transition: color 0.2s; }
+.footer-col a:hover { color: var(--text); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-bottom p { font-size: 0.78rem; color: var(--muted-2); }
+
+.risk-warning {
+  font-size: 0.72rem;
+  color: var(--muted-2);
+  line-height: 1.6;
+  max-width: 70ch;
+}

@@ -1,0 +1,93 @@
+{
+  "stats": [
+    { "num": "+2.400", "label": "Traders activos" },
+    { "num": "87%",    "label": "Señales ganadoras" },
+    { "num": "3",      "label": "Activos clave" }
+  ],
+
+  "markets": [
+    {
+      "id": "gold",
+      "name": "Oro",
+      "pair": "XAU/USD",
+      "icon": "Au",
+      "iconClass": "gold-icon",
+      "bias": "Lateral",
+      "biasClass": "badge-lateral",
+      "desc": "Tendencia lateral con presión alcista sobre zona 2.320. Vigilar reacción en resistencia 2.380.",
+      "support": "2.310",
+      "resistance": "2.380"
+    },
+    {
+      "id": "sp",
+      "name": "S&P 500",
+      "pair": "SPX · CFD",
+      "icon": "S&P",
+      "iconClass": "sp-icon",
+      "bias": "Alcista",
+      "biasClass": "badge-bull",
+      "desc": "Continuación bullish intradía. Momentum positivo tras rotura de máximos de sesión europea.",
+      "support": "5.260",
+      "resistance": "5.340"
+    },
+    {
+      "id": "btc",
+      "name": "Bitcoin",
+      "pair": "BTC/USD",
+      "icon": "₿",
+      "iconClass": "btc-icon",
+      "bias": "Breakout",
+      "biasClass": "badge-bull",
+      "desc": "Volatilidad alta y breakout sobre 68.000. Confirmación con volumen. Objetivo siguiente zona 72.000.",
+      "support": "65.400",
+      "resistance": "72.000"
+    }
+  ],
+
+  "signals": [
+    {
+      "id": "gold-long-1",
+      "asset": "Oro · XAU/USD",
+      "icon": "Au",
+      "iconClass": "gold-icon",
+      "time": "Hoy · 09:45 CET",
+      "direction": "LONG",
+      "dirClass": "long",
+      "entry": "2.318 – 2.324",
+      "stop": "2.299",
+      "target": "2.368",
+      "rr": "RR 1:2.6",
+      "status": "Activa",
+      "statusClass": "active",
+      "premium": false
+    },
+    {
+      "id": "btc-long-1",
+      "asset": "Bitcoin · BTC/USD",
+      "icon": "₿",
+      "iconClass": "btc-icon",
+      "time": "Ayer · 15:20 CET",
+      "direction": "LONG",
+      "dirClass": "long",
+      "premium": true
+    },
+    {
+      "id": "sp-short-1",
+      "asset": "S&P 500 · SPX",
+      "icon": "S&P",
+      "iconClass": "sp-icon",
+      "time": "Hace 2 días",
+      "direction": "SHORT",
+      "dirClass": "short",
+      "premium": true
+    }
+  ],
+
+  "premiumFeatures": [
+    "Señales ilimitadas en Oro, SP500 y BTC",
+    "Análisis técnico diario con niveles clave",
+    "Calendario económico con impacto en tus activos",
+    "Alertas instantáneas por Telegram",
+    "Acceso a la comunidad privada de traders"
+  ]
+}

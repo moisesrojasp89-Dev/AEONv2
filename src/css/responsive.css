@@ -1,0 +1,34 @@
+/* ============================================================
+   AUREUM · responsive.css — Todos los @media en un lugar
+   ============================================================ */
+
+/* Tablet ≥ 640px */
+@media (min-width: 640px) {
+  .hero-buttons { flex-direction: row; }
+  .market-grid  { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Desktop ≥ 900px */
+@media (min-width: 900px) {
+  :root { --header-h: 65px; }
+
+  .nav-links { display: flex; }
+  .nav-btn   { display: inline-flex; }
+  .menu-toggle { display: none; }
+  .mobile-menu { display: none !important; }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 5rem 0 3.5rem;
+  }
+
+  .chart-embed { height: 240px; }
+
+  .market-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .footer-inner  { flex-direction: row; justify-content: space-between; }
+  .footer-bottom { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+}

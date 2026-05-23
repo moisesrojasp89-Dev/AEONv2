@@ -1,0 +1,100 @@
+/* ============================================================
+   AUREUM · market.css — Market cards & badges
+   ============================================================ */
+
+.market-section {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem 0;
+}
+
+.market-grid { display: grid; gap: 0.875rem; }
+
+.market-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  backdrop-filter: blur(18px);
+  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.market-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+
+.market-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.875rem;
+}
+
+.market-asset { display: flex; align-items: center; gap: 0.75rem; }
+
+.market-asset h3 {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+}
+
+.asset-pair { font-size: 0.72rem; color: var(--muted-2); }
+
+.mcard-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mcard-price {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.mcard-change { font-size: 0.8rem; font-weight: 600; }
+.mcard-change.up   { color: var(--green); }
+.mcard-change.down { color: var(--red); }
+
+.market-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.market-levels {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--border);
+}
+
+.level { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+
+.level-label {
+  font-size: 0.72rem;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.level-val { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; }
+
+/* Badges */
+.market-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.badge-bull    { background: rgba(61,214,140,0.12);  color: var(--green); border: 1px solid rgba(61,214,140,0.22); }
+.badge-bear    { background: rgba(255,92,106,0.12);  color: var(--red);   border: 1px solid rgba(255,92,106,0.22); }
+.badge-lateral { background: rgba(245,184,65,0.12);  color: var(--gold);  border: 1px solid rgba(245,184,65,0.22); }

@@ -1,0 +1,105 @@
+/* ============================================================
+   AUREUM · ticker.css — Hero dashboard & ticker cards
+   ============================================================ */
+
+.hero-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.live-label { font-weight: 600; color: var(--green); font-size: 0.78rem; }
+.update-time { margin-left: auto; font-size: 0.72rem; }
+
+/* Ticker cards */
+.ticker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(16px);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ticker-card:hover { border-color: var(--border-2); background: var(--surface-2); }
+
+.ticker-left { display: flex; align-items: center; gap: 0.75rem; }
+
+.ticker-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.1rem; }
+.ticker-pair { font-size: 0.72rem; color: var(--muted-2); }
+.ticker-right { text-align: right; flex-shrink: 0; }
+
+.ticker-price {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.1rem;
+}
+
+.ticker-change { font-size: 0.78rem; font-weight: 600; }
+
+/* Asset icons — shared between ticker and market cards */
+.asset-icon,
+.ticker-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-head);
+  font-weight: 800;
+  border-radius: 10px;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.ticker-icon          { width: 40px; height: 40px; font-size: 0.75rem; }
+.asset-icon           { width: 44px; height: 44px; font-size: 0.8rem; }
+.asset-icon.sm,
+.ticker-icon.sm       { width: 36px; height: 36px; font-size: 0.7rem; }
+
+.gold-icon {
+  background: rgba(245,184,65,0.14);
+  border: 1px solid rgba(245,184,65,0.24);
+  color: var(--gold);
+}
+
+.btc-icon {
+  background: rgba(247,147,26,0.12);
+  border: 1px solid rgba(247,147,26,0.22);
+  color: #F7931A;
+  font-size: 1rem;
+}
+
+.sp-icon {
+  background: rgba(61,214,140,0.1);
+  border: 1px solid rgba(61,214,140,0.2);
+  color: var(--green);
+  font-size: 0.62rem;
+}
+
+.up   { color: var(--green); }
+.down { color: var(--red); }
+
+/* Chart embed */
+.chart-embed {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  height: 200px;
+  margin-top: 0.25rem;
+}
+
+.chart-embed iframe { width: 100%; height: 100%; border: 0; }

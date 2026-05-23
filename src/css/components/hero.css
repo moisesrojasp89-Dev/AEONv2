@@ -1,0 +1,79 @@
+/* ============================================================
+   AUREUM · hero.css
+   ============================================================ */
+
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 3.5rem 0 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.hero-content h1 {
+  font-family: var(--font-head);
+  font-size: clamp(2.4rem, 9vw, 5rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.hero-accent { color: var(--gold); display: block; }
+
+.hero-desc {
+  color: var(--muted);
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  max-width: 48ch;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Stats strip */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.stat { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.stat-num {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.stat-label { font-size: 0.78rem; color: var(--muted); }
+
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-2);
+  flex-shrink: 0;
+}

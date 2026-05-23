@@ -1,0 +1,55 @@
+/* ============================================================
+   AUREUM · animations.css — Keyframes & utility animations
+   ============================================================ */
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+@keyframes flash-up   { 0%,100%{ color: inherit; } 50%{ color: var(--green); } }
+@keyframes flash-down { 0%,100%{ color: inherit; } 50%{ color: var(--red); } }
+
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+  min-height: 1em;
+}
+
+.flash-up   { animation: flash-up   0.5s ease; }
+.flash-down { animation: flash-down 0.5s ease; }
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse-dot 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,49 @@
+/* ============================================================
+   AUREUM · layout.css — Container & background
+   ============================================================ */
+
+.container {
+  width: min(1120px, 92%);
+  margin-inline: auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.section-header p { font-size: 0.88rem; color: var(--muted); }
+
+/* Background decorations */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 700px 500px at 80% -10%, rgba(245,184,65,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 400px at -5%  80%, rgba(61,214,140,0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}

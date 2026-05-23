@@ -1,0 +1,36 @@
+/* ============================================================
+   AUREUM · variables.css — Design tokens
+   ============================================================ */
+
+:root {
+  /* Colors */
+  --gold:        #F5B841;
+  --gold-dim:    rgba(245,184,65,0.12);
+  --gold-border: rgba(245,184,65,0.22);
+  --green:       #3DD68C;
+  --red:         #FF5C6A;
+  --bg:          #080C14;
+  --surface:     rgba(255,255,255,0.042);
+  --surface-2:   rgba(255,255,255,0.07);
+  --border:      rgba(255,255,255,0.09);
+  --border-2:    rgba(255,255,255,0.14);
+  --text:        #F0EEE8;
+  --muted:       rgba(240,238,232,0.5);
+  --muted-2:     rgba(240,238,232,0.3);
+
+  /* Radii */
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+
+  /* Typography */
+  --font-head:   'Syne', sans-serif;
+  --font-body:   'DM Sans', sans-serif;
+
+  /* Easing */
+  --ease:        cubic-bezier(.25,.46,.45,.94);
+
+  /* Layout */
+  --header-h:    57px;
+}
