@@ -21,16 +21,10 @@
   height: 100%;
 }
 
-.logo {
-  font-family: var(--font-head);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-shrink: 0;
+.logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
 }
 
 .nav-links {

@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Aureum — Análisis profesional y señales claras para traders de Oro, Índices y Bitcoin." />
-  <meta property="og:title" content="Aureum | Oro, Índices & Bitcoin" />
-  <meta property="og:description" content="Opera con ventaja. Señales profesionales para traders de Oro, SP500 y BTC." />
+  <meta name="description" content="AEON — Análisis profesional y señales claras para traders de XAUUSD · EURUSD · GBPUSD." />
+  <meta property="og:title" content="AEON Trading Group � Se�ales profesionales de XAUUSD, EURUSD y GBPUSD" />
+  <meta property="og:description" content="Opera No con adivinanzas. Señales profesionales para traders de Oro, SP500 y BTC." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <title>Aureum | Oro, Índices & Bitcoin</title>
+  <title>AEON | Trading Signals</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>✦</text></svg>" />
 
@@ -39,15 +39,21 @@
   <!-- NAVBAR -->
   <header class="header" role="banner">
     <nav class="navbar container" aria-label="Navegación principal">
-      <a href="/" class="logo" aria-label="Aureum inicio">
-        <span class="logo-star" aria-hidden="true">✦</span> AUREUM
-      </a>
+      <a href="/" class="logo" aria-label="AEON inicio">
+  <img src="/AEON.png" alt="AEON" class="logo-img" />
+</a>
       <ul class="nav-links" role="list">
-        <li><a href="#mercados">Mercados</a></li>
-        <li><a href="#senales">Señales</a></li>
-        <li><a href="#premium">Premium</a></li>
-      </ul>
-      <a href="#premium" class="nav-btn">Acceder</a>
+  <li><a href="#">Inicio</a></li>
+  <li><a href="#mercados">Mercados</a></li>
+  <li><a href="#senales">Señales</a></li>
+  <li><a href="#">Análisis</a></li>
+  <li><a href="#">Videos</a></li>
+  <li><a href="#">Noticias</a></li>
+  <li><a href="#">Brokers</a></li>
+  <li><a href="#">Sobre AEON</a></li>
+</ul>
+<a href="https://t.me/AEONTRADINGROUP" target="_blank" class="nav-btn">Unirse a Telegram ✈</a>
+      <a href="https://t.me/AEONTRADINGROUP" target="_blank" class="nav-btn">Acceder</a>
       <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
@@ -62,58 +68,76 @@
     <a href="#premium" class="mobile-cta">Acceder →</a>
   </div>
 
+<!-- TICKER -->
+<div class="ticker-bar" aria-label="Precios en tiempo real">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
   <main>
 
     <!-- HERO -->
     <section class="hero container" aria-labelledby="hero-heading">
       <div class="hero-content">
         <span class="hero-badge" role="note">
-          <span class="badge-dot" aria-hidden="true"></span>
-          Plataforma premium para traders
-        </span>
+  ANÁLISIS PROFESIONAL
+</span>
         <h1 id="hero-heading">
-          Opera Oro, Índices<br />y Bitcoin
-          <span class="hero-accent">con ventaja.</span>
+          Trading con estructura
+          <span class="hero-accent">No con adivinanzas.</span>
         </h1>
         <p class="hero-desc">
-          Análisis profesional y señales claras para traders que buscan
-          precisión, estructura y oportunidades reales en los mercados.
-        </p>
-        <div class="hero-buttons">
-          <a href="#senales" class="btn-primary">
-            Ver señales
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-          <a href="#premium" class="btn-secondary">Acceso Premium</a>
-        </div>
-        <div class="hero-stats" aria-label="Estadísticas" id="hero-stats">
-          <!-- Renderizado por JS desde data/markets.json -->
-        </div>
+  Señales educativas, análisis técnico avanzado y gestión de riesgo
+  para traders que buscan consistencia en el mercado.
+</p>
+       <div class="hero-features">
+  <div class="hero-feature">
+    <span class="feature-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </span>
+    <div>
+      <p class="feature-title">Análisis diario</p>
+    </div>
+  </div>
+  <div class="hero-feature">
+    <span class="feature-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    </span>
+    <div>
+      <p class="feature-title">Señales educativas</p>
+    </div>
+  </div>
+  <div class="hero-feature">
+    <span class="feature-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </span>
+    <div>
+      <p class="feature-title">Gestión de riesgo</p>
+    </div>
+  </div>
+</div>
+<div class="hero-buttons">
+  <a href="#senales" class="btn-primary">Ver señales activas →</a>
+  <a href="#mercados" class="btn-secondary">Explorar análisis</a>
+</div>
       </div>
 
       <!-- HERO DASHBOARD -->
-      <div class="hero-dashboard" aria-label="Precios en vivo">
-        <div class="dashboard-header">
-          <span class="live-dot" aria-hidden="true"></span>
-          <span class="live-label">Mercados en vivo</span>
-          <span class="update-time" id="update-time">—</span>
-        </div>
-        <div id="hero-tickers">
-          <!-- Renderizado por JS -->
-        </div>
-        <div class="chart-embed">
-          <iframe
-            src="https://s.tradingview.com/widgetembed/?frametools=0&symbol=OANDA%3AXAUUSD&interval=60&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=0&saveimage=0&toolbarbg=000000&studies=[]&theme=dark&style=1&timezone=Europe%2FMadrid&locale=es"
-            title="Gráfico XAU/USD en tiempo real"
-            loading="lazy"
-            allowtransparency="true"
-            scrolling="no"
-            aria-label="Gráfico de precio del Oro"
-          ></iframe>
-        </div>
-      </div>
+     <!-- HERO DASHBOARD -->
+<div class="chart-embed">
+  <iframe
+    src="https://s.tradingview.com/widgetembed/?frametools=0&symbol=OANDA%3AXAUUSD&interval=60&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=0&saveimage=0&toolbarbg=000000&studies=[]&theme=dark&style=1&timezone=Europe%2FMadrid&locale=es"
+    title="Gráfico XAU/USD en tiempo real"
+    loading="lazy"
+    allowtransparency="true"
+    scrolling="no"
+    aria-label="Gráfico de precio del Oro"
+  ></iframe>
+</div>
     </section>
 
     <!-- MERCADOS -->
@@ -168,8 +192,8 @@
   <footer class="footer" role="contentinfo">
     <div class="footer-inner container">
       <div class="footer-brand">
-        <span class="logo">✦ AUREUM</span>
-        <p>Plataforma de análisis técnico para traders profesionales de Oro, Índices y Bitcoin.</p>
+        <span class="logo">✦ AEON</span>
+        <p>Plataforma de análisis técnico para traders profesionales de XAUUSD · EURUSD · GBPUSD.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -187,7 +211,7 @@
       </div>
     </div>
     <div class="footer-bottom container">
-      <p>© 2026 Aureum. Todos los derechos reservados.</p>
+      <p>© 2026 AEON. Todos los derechos reservados.</p>
       <p class="risk-warning">⚠ El trading implica riesgo significativo de pérdida. El rendimiento pasado no garantiza resultados futuros. Este sitio no proporciona asesoramiento financiero regulado.</p>
     </div>
   </footer>

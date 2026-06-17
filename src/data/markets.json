@@ -1,10 +1,17 @@
-{
+﻿{
   "stats": [
     { "num": "+2.400", "label": "Traders activos" },
     { "num": "87%",    "label": "Señales ganadoras" },
     { "num": "3",      "label": "Activos clave" }
   ],
-
+  "ticker": [
+  { "id": "xau",  "label": "XAU/USD",   "price": "4.334,52", "change": "+0.46%", "up": true },
+  { "id": "eur",  "label": "EUR/USD",   "price": "1.0842",   "change": "-0.12%", "up": false },
+  { "id": "btc",  "label": "BTC/USDT",  "price": "64.820",   "change": "+1.23%", "up": true },
+  { "id": "sp",   "label": "S&P 500",   "price": "5.308",    "change": "+0.34%", "up": true },
+  { "id": "nas",  "label": "NAS100",    "price": "18.642",   "change": "+0.51%", "up": true },
+  { "id": "dow",  "label": "DOW JONES", "price": "39.411",   "change": "-0.08%", "up": false }
+],
   "markets": [
     {
       "id": "gold",
@@ -12,82 +19,86 @@
       "pair": "XAU/USD",
       "icon": "Au",
       "iconClass": "gold-icon",
-      "bias": "Lateral",
-      "biasClass": "badge-lateral",
-      "desc": "Tendencia lateral con presión alcista sobre zona 2.320. Vigilar reacción en resistencia 2.380.",
-      "support": "2.310",
-      "resistance": "2.380"
-    },
-    {
-      "id": "sp",
-      "name": "S&P 500",
-      "pair": "SPX · CFD",
-      "icon": "S&P",
-      "iconClass": "sp-icon",
       "bias": "Alcista",
       "biasClass": "badge-bull",
-      "desc": "Continuación bullish intradía. Momentum positivo tras rotura de máximos de sesión europea.",
-      "support": "5.260",
-      "resistance": "5.340"
+      "desc": "Presión compradora sobre zona 4.320. Scalping en M15 con confluencia en OB.",
+      "support": "4.300",
+      "resistance": "4.380"
     },
     {
-      "id": "btc",
-      "name": "Bitcoin",
-      "pair": "BTC/USD",
-      "icon": "₿",
-      "iconClass": "btc-icon",
-      "bias": "Breakout",
-      "biasClass": "badge-bull",
-      "desc": "Volatilidad alta y breakout sobre 68.000. Confirmación con volumen. Objetivo siguiente zona 72.000.",
-      "support": "65.400",
-      "resistance": "72.000"
+      "id": "euro",
+      "name": "Euro",
+      "pair": "EUR/USD",
+      "icon": "€",
+      "iconClass": "euro-icon",
+      "bias": "Lateral",
+      "biasClass": "badge-lateral",
+      "desc": "Rango definido entre 1.0820 y 1.0890. Esperar rotura con volumen.",
+      "support": "1.0820",
+      "resistance": "1.0890"
+    },
+    {
+      "id": "gbp",
+      "name": "Libra",
+      "pair": "GBP/USD",
+      "icon": "£",
+      "iconClass": "gbp-icon",
+      "bias": "Bajista",
+      "biasClass": "badge-bear",
+      "desc": "Estructura bajista en H1. FVG activo sobre 1.2740. Vigilar sesión Londres.",
+      "support": "1.2680",
+      "resistance": "1.2750"
     }
   ],
-
   "signals": [
     {
-      "id": "gold-long-1",
+      "id": "xau-long-1",
       "asset": "Oro · XAU/USD",
       "icon": "Au",
       "iconClass": "gold-icon",
-      "time": "Hoy · 09:45 CET",
+      "time": "Hoy · 11:47 CET",
       "direction": "LONG",
       "dirClass": "long",
-      "entry": "2.318 – 2.324",
-      "stop": "2.299",
-      "target": "2.368",
-      "rr": "RR 1:2.6",
+      "entry": "4.356",
+      "stop": "4.286",
+      "target": "4.476",
+      "rr": "RR 1:1.7",
       "status": "Activa",
       "statusClass": "active",
       "premium": false
     },
     {
-      "id": "btc-long-1",
-      "asset": "Bitcoin · BTC/USD",
-      "icon": "₿",
-      "iconClass": "btc-icon",
-      "time": "Ayer · 15:20 CET",
+      "id": "eur-short-1",
+      "asset": "Euro · EUR/USD",
+      "icon": "€",
+      "iconClass": "euro-icon",
+      "time": "Ayer · 14:30 CET",
+      "direction": "SHORT",
+      "dirClass": "short",
+      "entry": "1.0885",
+      "stop": "1.0910",
+      "target": "1.0820",
+      "rr": "RR 1:2.6",
+      "status": "Cerrada",
+      "statusClass": "closed",
+      "premium": false
+    },
+    {
+      "id": "gbp-long-1",
+      "asset": "Libra · GBP/USD",
+      "icon": "£",
+      "iconClass": "gbp-icon",
+      "time": "Hace 2 días",
       "direction": "LONG",
       "dirClass": "long",
       "premium": true
-    },
-    {
-      "id": "sp-short-1",
-      "asset": "S&P 500 · SPX",
-      "icon": "S&P",
-      "iconClass": "sp-icon",
-      "time": "Hace 2 días",
-      "direction": "SHORT",
-      "dirClass": "short",
-      "premium": true
     }
   ],
-
   "premiumFeatures": [
-    "Señales ilimitadas en Oro, SP500 y BTC",
-    "Análisis técnico diario con niveles clave",
-    "Calendario económico con impacto en tus activos",
-    "Alertas instantáneas por Telegram",
-    "Acceso a la comunidad privada de traders"
+    "Señales en tiempo real por Telegram",
+    "Análisis scalping M15/H1 en XAUUSD, EURUSD y GBPUSD",
+    "Niveles clave diarios con OB, FVG y liquidez",
+    "Canal educativo con grabaciones y guías",
+    "Alertas instantáneas antes de apertura de sesiones"
   ]
 }

@@ -19,13 +19,13 @@
 
   .hero {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
     padding: 5rem 0 3.5rem;
   }
 
-  .chart-embed { height: 240px; }
+  .chart-embed { height: 520px; }
 
   .market-grid { grid-template-columns: repeat(3, 1fr); }
 
