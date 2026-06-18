@@ -134,6 +134,7 @@ export function renderPremiumFeatures(features) {
 export function renderTickerBar(items) {
   const el = document.getElementById('ticker-track');
   if (!el) return;
+
   const html = items.map(t => `
     <span class="ticker-item">
       <span class="ticker-label">${t.label}</span>
@@ -142,5 +143,19 @@ export function renderTickerBar(items) {
     </span>
     <span class="ticker-sep" aria-hidden="true">·</span>
   `).join('');
+
   el.innerHTML = html + html;
+
+  // Espera a que el DOM pinte, mide el ancho real del primer bloque
+  requestAnimationFrame(() => {
+    const halfWidth = el.scrollWidth / 2;
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ticker-scroll {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-${halfWidth}px); }
+      }
+    `;
+    document.head.appendChild(style);
+  });
 }
