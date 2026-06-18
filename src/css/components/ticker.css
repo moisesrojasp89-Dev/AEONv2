@@ -13,11 +13,15 @@
   align-items: center;
   white-space: nowrap;
   will-change: transform;
-  animation: ticker-scroll 1s linear infinite;
+  animation: ticker-scroll 70s linear infinite;
 }
 
 .ticker-track:hover { animation-play-state: paused; }
 
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-1585px); }
+}
 
 .ticker-item {
   display: inline-flex;
