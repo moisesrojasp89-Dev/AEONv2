@@ -146,9 +146,9 @@ export function renderTickerBar(items) {
 
   el.innerHTML = html + html;
 
-  // Espera a que el DOM pinte, mide el ancho real del primer bloque
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     const halfWidth = el.scrollWidth / 2;
+    if (halfWidth === 0) return;
     const style = document.createElement('style');
     style.textContent = `
       @keyframes ticker-scroll {
@@ -157,5 +157,5 @@ export function renderTickerBar(items) {
       }
     `;
     document.head.appendChild(style);
-  });
+  }, 100);
 }
