@@ -146,13 +146,13 @@ export function renderTickerBar(items) {
 
   el.innerHTML = html + html;
 
-  setTimeout(() => {
+ setTimeout(() => {
   const halfWidth = el.scrollWidth / 2;
+  console.log('halfWidth:', halfWidth);
+  console.log('duration:', Math.round(halfWidth / 80));
   if (halfWidth === 0) return;
-  
-  const speed = 80; // px por segundo — ajusta este valor a gusto
+  const speed = 80;
   const duration = Math.round(halfWidth / speed);
-
   const style = document.createElement('style');
   style.textContent = `
     @keyframes ticker-scroll {
@@ -164,5 +164,5 @@ export function renderTickerBar(items) {
     }
   `;
   document.head.appendChild(style);
- }, 500);
- } 
+}, 500);
+}
