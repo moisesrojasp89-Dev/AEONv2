@@ -13,7 +13,7 @@
   align-items: center;
   white-space: nowrap;
   will-change: transform;
-  animation: ticker-scroll 60s linear infinite;
+  animation: ticker-scroll 1s linear infinite;
 }
 
 .ticker-track:hover { animation-play-state: paused; }

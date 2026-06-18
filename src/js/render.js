@@ -147,15 +147,22 @@ export function renderTickerBar(items) {
   el.innerHTML = html + html;
 
   setTimeout(() => {
-    const halfWidth = el.scrollWidth / 2;
-    if (halfWidth === 0) return;
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes ticker-scroll {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-${halfWidth}px); }
-      }
-    `;
-    document.head.appendChild(style);
-  }, 100);
-}
+  const halfWidth = el.scrollWidth / 2;
+  if (halfWidth === 0) return;
+  
+  const speed = 80; // px por segundo — ajusta este valor a gusto
+  const duration = Math.round(halfWidth / speed);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-${halfWidth}px); }
+    }
+    .ticker-track {
+      animation-duration: ${duration}s;
+    }
+  `;
+  document.head.appendChild(style);
+ }, 100);
+ } 
