@@ -155,14 +155,11 @@ export function renderTickerBar(items) {
   const duration = Math.round(halfWidth / speed);
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes ticker-scroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-${halfWidth}px); }
-    }
-    .ticker-track {
-      animation-duration: ${duration}s;
-    }
-  `;
-  document.head.appendChild(style);
-}, 500);
+      @keyframes ticker-scroll {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-${halfWidth}px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }, 500);
 }
