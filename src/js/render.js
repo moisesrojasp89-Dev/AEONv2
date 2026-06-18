@@ -164,5 +164,5 @@ export function renderTickerBar(items) {
     }
   `;
   document.head.appendChild(style);
- }, 100);
+ }, 500);
  } 
