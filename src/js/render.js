@@ -145,20 +145,4 @@ export function renderTickerBar(items) {
   `).join('');
 
   el.innerHTML = html + html;
-
-  const observer = new ResizeObserver(() => {
-    const halfWidth = el.scrollWidth / 2;
-    if (halfWidth === 0) return;
-    observer.disconnect();
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes ticker-scroll {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-${halfWidth}px); }
-      }
-    `;
-    document.head.appendChild(style);
-  });
-
-  observer.observe(el);
 }
