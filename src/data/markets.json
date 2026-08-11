@@ -5,13 +5,47 @@
     { "num": "3",      "label": "Activos clave" }
   ],
   "ticker": [
-  { "id": "xau",  "label": "XAU/USD",   "price": "4.334,52", "change": "+0.46%", "up": true },
-  { "id": "eur",  "label": "EUR/USD",   "price": "1.0842",   "change": "-0.12%", "up": false },
-  { "id": "btc",  "label": "BTC/USDT",  "price": "64.820",   "change": "+1.23%", "up": true },
-  { "id": "sp",   "label": "S&P 500",   "price": "5.308",    "change": "+0.34%", "up": true },
-  { "id": "nas",  "label": "NAS100",    "price": "18.642",   "change": "+0.51%", "up": true },
-  { "id": "dow",  "label": "DOW JONES", "price": "39.411",   "change": "-0.08%", "up": false }
-],
+    { "id": "xau",  "label": "XAU/USD",   "price": "4.334,52", "change": "+0.46%", "up": true },
+    { "id": "eur",  "label": "EUR/USD",   "price": "1.0842",   "change": "-0.12%", "up": false },
+    { "id": "btc",  "label": "BTC/USDT",  "price": "64.820",   "change": "+1.23%", "up": true },
+    { "id": "sp",   "label": "S&P 500",   "price": "5.308",    "change": "+0.34%", "up": true },
+    { "id": "nas",  "label": "NAS100",    "price": "18.642",   "change": "+0.51%", "up": true },
+    { "id": "dow",  "label": "DOW JONES", "price": "39.411",   "change": "-0.08%", "up": false }
+  ],
+  "news": [
+    {
+      "id": "fed-minutes",
+      "tag": "Fed",
+      "tagClass": "tag-policy",
+      "time": "Hoy · 09:15 CET",
+      "title": "Actas de la Fed refuerzan un recorte gradual en 2026",
+      "summary": "El mercado lee un tono menos restrictivo. Dólar suave y soporte renovado en metales."
+    },
+    {
+      "id": "cpi-us",
+      "tag": "Inflación",
+      "tagClass": "tag-macro",
+      "time": "Ayer · 14:30 CET",
+      "title": "CPI EE.UU. se modera y alivia presión sobre yields",
+      "summary": "Treasuries rebotan y el sesgo de riesgo mejora en índices. Vigilar reacción en EURUSD."
+    },
+    {
+      "id": "oil-opec",
+      "tag": "Energía",
+      "tagClass": "tag-energy",
+      "time": "Ayer · 11:00 CET",
+      "title": "OPEP+ mantiene cuotas: petróleo estable, impacto limitado en riesgo",
+      "summary": "Sin sorpresa de oferta. El foco vuelve a datos de empleo y PMI manufacturero."
+    },
+    {
+      "id": "spx-levels",
+      "tag": "Índices",
+      "tagClass": "tag-markets",
+      "time": "Hace 2 días",
+      "title": "S&P 500 consolida bajo resistencia: liquidez y sesgo de sesión",
+      "summary": "Rango definido. Breakout con volumen abriría extensión; rechazo favorece pullback técnico."
+    }
+  ],
   "markets": [
     {
       "id": "gold",
@@ -94,11 +128,37 @@
       "premium": true
     }
   ],
+  "education": [
+    {
+      "id": "macro-basics",
+      "level": "Base",
+      "title": "Macro en 15 minutos",
+      "summary": "Cómo leer CPI, NFP y decisiones de la Fed sin ruido, y qué implica para tu sesgo diario."
+    },
+    {
+      "id": "sessions",
+      "level": "Intermedio",
+      "title": "Sesiones y liquidez",
+      "summary": "Londres, NY y solapes: dónde se mueve el precio de verdad y cómo evitar operar en vacío."
+    },
+    {
+      "id": "risk",
+      "level": "Esencial",
+      "title": "Gestión de riesgo",
+      "summary": "Tamaño de posición, R:R y reglas simples para sobrevivir drawdowns y operar con estructura."
+    }
+  ],
+  "partners": [
+    { "id": "alpha", "name": "Alpha Broker", "initials": "AB", "url": "#" },
+    { "id": "north", "name": "North Markets", "initials": "NM", "url": "#" },
+    { "id": "prime", "name": "Prime Desk", "initials": "PD", "url": "#" },
+    { "id": "vertex", "name": "Vertex Cap", "initials": "VC", "url": "#" }
+  ],
   "premiumFeatures": [
-    "Señales en tiempo real por Telegram",
-    "Análisis scalping M15/H1 en XAUUSD, EURUSD y GBPUSD",
-    "Niveles clave diarios con OB, FVG y liquidez",
+    "Señales educativas en tiempo real por Telegram",
+    "Briefing macro diario y contexto de sesión",
+    "Niveles clave con OB, FVG y liquidez",
     "Canal educativo con grabaciones y guías",
-    "Alertas instantáneas antes de apertura de sesiones"
+    "Alertas antes de apertura de sesiones clave"
   ]
 }

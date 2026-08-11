@@ -1,3 +1,7 @@
+/* ============================================================
+   AEON · ticker.css
+   ============================================================ */
+
 .ticker-bar {
   width: 100%;
   background: rgba(255,255,255,0.03);
@@ -12,13 +16,16 @@
   display: flex;
   align-items: center;
   white-space: nowrap;
+  width: max-content;
   will-change: transform;
-  animation: ticker-scroll 70s linear infinite;
+  animation: ticker-scroll var(--ticker-duration, 80s) linear infinite;
 }
+
+.ticker-track:hover { animation-play-state: paused; }
 
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
-  to   { transform: translateX(-1585px); }
+  to   { transform: translateX(-50%); }
 }
 
 .ticker-item {
@@ -28,9 +35,23 @@
   padding: 0 2rem;
 }
 
-.ticker-label { font-family: var(--font-head); font-size: 0.75rem; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+.ticker-label {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+
 .ticker-price { font-size: 0.78rem; color: var(--muted); }
 .ticker-change { font-size: 0.74rem; font-weight: 600; }
 .ticker-change.up   { color: var(--green); }
 .ticker-change.down { color: var(--red); }
 .ticker-sep { color: var(--border-2); padding: 0 0.5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+    transform: none;
+  }
+}

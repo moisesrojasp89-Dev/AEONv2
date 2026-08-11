@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AEON — Análisis profesional y señales claras para traders de XAUUSD · EURUSD · GBPUSD." />
-  <meta property="og:title" content="AEON Trading Group � Se�ales profesionales de XAUUSD, EURUSD y GBPUSD" />
-  <meta property="og:description" content="Opera No con adivinanzas. Señales profesionales para traders de Oro, SP500 y BTC." />
+  <meta name="description" content="AEON — Noticias macro, educación y señales claras para traders de XAUUSD, EURUSD y GBPUSD." />
+  <meta property="og:title" content="AEON — Macro, educación y señales profesionales" />
+  <meta property="og:description" content="Contexto macro, señales educativas y gestión de riesgo. Opera con estructura, no con adivinanzas." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <title>AEON | Trading Signals</title>
+  <title>AEON | Macro &amp; Trading</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>✦</text></svg>" />
 
@@ -24,123 +24,126 @@
   <link rel="stylesheet" href="/src/css/components/navbar.css" />
   <link rel="stylesheet" href="/src/css/components/hero.css" />
   <link rel="stylesheet" href="/src/css/components/ticker.css" />
+  <link rel="stylesheet" href="/src/css/components/news.css" />
   <link rel="stylesheet" href="/src/css/components/market.css" />
   <link rel="stylesheet" href="/src/css/components/signals.css" />
+  <link rel="stylesheet" href="/src/css/components/education.css" />
+  <link rel="stylesheet" href="/src/css/components/partners.css" />
   <link rel="stylesheet" href="/src/css/components/premium.css" />
   <link rel="stylesheet" href="/src/css/components/footer.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
 </head>
 <body>
 
-  <!-- BACKGROUND -->
   <div class="bg-mesh" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
 
-  <!-- NAVBAR -->
   <header class="header" role="banner">
     <nav class="navbar container" aria-label="Navegación principal">
       <a href="/" class="logo" aria-label="AEON inicio">
-  <img src="/AEON.png" alt="AEON" class="logo-img" />
-</a>
+        <span class="logo-text">✦ AEON</span>
+      </a>
       <ul class="nav-links" role="list">
-  <li><a href="#">Inicio</a></li>
-  <li><a href="#mercados">Mercados</a></li>
-  <li><a href="#senales">Señales</a></li>
-  <li><a href="#">Análisis</a></li>
-  <li><a href="#">Videos</a></li>
-  <li><a href="#">Noticias</a></li>
-  <li><a href="#">Brokers</a></li>
-  <li><a href="#">Sobre AEON</a></li>
-</ul>
-<a href="https://t.me/AEONTRADINGROUP" target="_blank" class="nav-btn">Unirse a Telegram ✈</a>
-      <a href="https://t.me/AEONTRADINGROUP" target="_blank" class="nav-btn">Acceder</a>
+        <li><a href="#noticias">Noticias</a></li>
+        <li><a href="#mercados">Mercados</a></li>
+        <li><a href="#senales">Señales</a></li>
+        <li><a href="#educacion">Educación</a></li>
+        <li><a href="#partners">Partners</a></li>
+      </ul>
+      <a href="https://t.me/AEONTRADINGROUP" target="_blank" rel="noopener" class="nav-btn">Telegram</a>
       <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
     </nav>
   </header>
 
-  <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menú móvil" aria-hidden="true">
+    <a href="#noticias" class="mobile-link">Noticias</a>
     <a href="#mercados" class="mobile-link">Mercados</a>
     <a href="#senales" class="mobile-link">Señales</a>
+    <a href="#educacion" class="mobile-link">Educación</a>
+    <a href="#partners" class="mobile-link">Partners</a>
     <a href="#premium" class="mobile-link">Premium</a>
-    <a href="#premium" class="mobile-cta">Acceder →</a>
+    <a href="https://t.me/AEONTRADINGROUP" target="_blank" rel="noopener" class="mobile-cta">Unirse a Telegram →</a>
   </div>
 
-<!-- TICKER -->
-<div class="ticker-bar" aria-label="Precios en tiempo real">
-  <div class="ticker-track" id="ticker-track"></div>
-</div>
+  <div class="ticker-bar" aria-label="Precios en tiempo real">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
   <main>
 
-    <!-- HERO -->
     <section class="hero container" aria-labelledby="hero-heading">
       <div class="hero-content">
-        <span class="hero-badge" role="note">
-  ANÁLISIS PROFESIONAL
-</span>
+        <span class="hero-badge" role="note">MACRO · EDUCACIÓN · SEÑALES</span>
         <h1 id="hero-heading">
-          Trading con estructura
-          <span class="hero-accent">No con adivinanzas.</span>
+          Contexto de mercado
+          <span class="hero-accent">No ruido. Estructura.</span>
         </h1>
         <p class="hero-desc">
-  Señales educativas, análisis técnico avanzado y gestión de riesgo
-  para traders que buscan consistencia en el mercado.
-</p>
-       <div class="hero-features">
-  <div class="hero-feature">
-    <span class="feature-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>
-    </span>
-    <div>
-      <p class="feature-title">Análisis diario</p>
-    </div>
-  </div>
-  <div class="hero-feature">
-    <span class="feature-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-      </svg>
-    </span>
-    <div>
-      <p class="feature-title">Señales educativas</p>
-    </div>
-  </div>
-  <div class="hero-feature">
-    <span class="feature-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-    </span>
-    <div>
-      <p class="feature-title">Gestión de riesgo</p>
-    </div>
-  </div>
-</div>
-<div class="hero-buttons">
-  <a href="#senales" class="btn-primary">Ver señales activas →</a>
-  <a href="#mercados" class="btn-secondary">Explorar análisis</a>
-</div>
+          Noticias macro, paneles educativos y señales con gestión de riesgo
+          para traders que operan con criterio.
+        </p>
+        <div class="hero-features">
+          <div class="hero-feature">
+            <span class="feature-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16"/><path d="M16 4H8a2 2 0 0 0-2 2v14"/><path d="M18 4v16"/><path d="M10 8h2"/><path d="M10 12h2"/><path d="M10 16h2"/>
+              </svg>
+            </span>
+            <div>
+              <p class="feature-title">Noticias macro</p>
+            </div>
+          </div>
+          <div class="hero-feature">
+            <span class="feature-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </span>
+            <div>
+              <p class="feature-title">Educación</p>
+            </div>
+          </div>
+          <div class="hero-feature">
+            <span class="feature-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </span>
+            <div>
+              <p class="feature-title">Señales claras</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-buttons">
+          <a href="#noticias" class="btn-primary">Ver noticias →</a>
+          <a href="#senales" class="btn-secondary">Señales activas</a>
+        </div>
       </div>
 
-      <!-- HERO DASHBOARD -->
-     <!-- HERO DASHBOARD -->
-<div class="chart-embed">
-  <iframe
-    src="https://s.tradingview.com/widgetembed/?frametools=0&symbol=OANDA%3AXAUUSD&interval=60&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=0&saveimage=0&toolbarbg=000000&studies=[]&theme=dark&style=1&timezone=Europe%2FMadrid&locale=es"
-    title="Gráfico XAU/USD en tiempo real"
-    loading="lazy"
-    allowtransparency="true"
-    scrolling="no"
-    aria-label="Gráfico de precio del Oro"
-  ></iframe>
-</div>
+      <div class="chart-embed">
+        <iframe
+          src="https://s.tradingview.com/widgetembed/?frametools=0&symbol=OANDA%3AXAUUSD&interval=60&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=0&saveimage=0&toolbarbg=000000&studies=[]&theme=dark&style=1&timezone=Europe%2FMadrid&locale=es"
+          title="Gráfico XAU/USD en tiempo real"
+          loading="lazy"
+          allowtransparency="true"
+          scrolling="no"
+          aria-label="Gráfico de precio del Oro"
+        ></iframe>
+      </div>
     </section>
 
-    <!-- MERCADOS -->
+    <section class="news-section container" id="noticias" aria-labelledby="news-heading">
+      <div class="section-header">
+        <div>
+          <h2 id="news-heading">Noticias macro</h2>
+          <p>Fed, inflación, energía e índices — lo que mueve el sesgo del día.</p>
+        </div>
+      </div>
+      <div class="news-list" id="news-list"></div>
+    </section>
+
     <section class="market-section container" id="mercados" aria-labelledby="market-heading">
       <div class="section-header">
         <div>
@@ -148,59 +151,75 @@
           <p>Monitoreo rápido de activos clave con sesgo direccional.</p>
         </div>
       </div>
-      <div class="market-grid" id="market-grid">
-        <!-- Renderizado por JS desde data/markets.json -->
-      </div>
+      <div class="market-grid" id="market-grid"></div>
     </section>
 
-    <!-- SEÑALES -->
     <section class="signals-section container" id="senales" aria-labelledby="signals-heading">
       <div class="section-header">
         <div>
-          <h2 id="signals-heading">Señales recientes</h2>
-          <p>Última semana · Actualizadas por nuestros analistas.</p>
+          <h2 id="signals-heading">Señales educativas</h2>
+          <p>Última semana · Niveles, R:R y contexto de sesión.</p>
         </div>
         <a href="#premium" class="btn-ghost">Ver todas →</a>
       </div>
-      <div class="signals-list" id="signals-list" role="list">
-        <!-- Renderizado por JS desde data/markets.json -->
+      <div class="signals-list" id="signals-list" role="list"></div>
+    </section>
+
+    <section class="education-section container" id="educacion" aria-labelledby="education-heading">
+      <div class="section-header">
+        <div>
+          <h2 id="education-heading">Educación</h2>
+          <p>Módulos cortos para leer el mercado con criterio.</p>
+        </div>
+      </div>
+      <div class="education-grid" id="education-grid"></div>
+    </section>
+
+    <section class="partners-section container" id="partners" aria-labelledby="partners-heading">
+      <div class="section-header">
+        <div>
+          <h2 id="partners-heading">Partners</h2>
+          <p>Aliados y brokers con los que trabajamos.</p>
+        </div>
+      </div>
+      <div class="partners-grid" id="partners-grid"></div>
+      <div class="partners-cta">
+        <a href="mailto:partners@aeon.trading" class="btn-secondary">Ser partner →</a>
       </div>
     </section>
 
-    <!-- PREMIUM -->
     <section class="premium-section container" id="premium" aria-labelledby="premium-heading">
       <div class="premium-inner">
         <span class="hero-badge">
           <span class="badge-dot" aria-hidden="true"></span>
           Acceso completo
         </span>
-        <h2 id="premium-heading">Todo lo que necesita un trader serio.</h2>
-        <p>Señales diarias, análisis profundo, niveles clave y acceso a nuestra comunidad.</p>
-        <ul class="premium-features" role="list" id="premium-features">
-          <!-- Renderizado por JS desde data/markets.json -->
-        </ul>
+        <h2 id="premium-heading">Macro, educación y señales en un solo lugar.</h2>
+        <p>Briefings diarios, niveles clave y comunidad para operar con estructura.</p>
+        <ul class="premium-features" role="list" id="premium-features"></ul>
         <div class="premium-cta-group">
-          <a href="#" class="btn-primary btn-large">Empezar ahora →</a>
-          <p class="premium-note">Sin compromiso · Cancela cuando quieras</p>
+          <a href="https://t.me/AEONTRADINGROUP" target="_blank" rel="noopener" class="btn-primary btn-large">Empezar en Telegram →</a>
+          <p class="premium-note">Contenido educativo · Sin asesoría financiera regulada</p>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
   <footer class="footer" role="contentinfo">
     <div class="footer-inner container">
       <div class="footer-brand">
         <span class="logo">✦ AEON</span>
-        <p>Plataforma de análisis técnico para traders profesionales de XAUUSD · EURUSD · GBPUSD.</p>
+        <p>Noticias macro, educación y señales para traders de XAUUSD · EURUSD · GBPUSD.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
           <p class="footer-col-title">Plataforma</p>
+          <a href="#noticias">Noticias</a>
           <a href="#mercados">Mercados</a>
           <a href="#senales">Señales</a>
-          <a href="#premium">Premium</a>
+          <a href="#educacion">Educación</a>
+          <a href="#partners">Partners</a>
         </div>
         <div class="footer-col">
           <p class="footer-col-title">Legal</p>
@@ -212,7 +231,7 @@
     </div>
     <div class="footer-bottom container">
       <p>© 2026 AEON. Todos los derechos reservados.</p>
-      <p class="risk-warning">⚠ El trading implica riesgo significativo de pérdida. El rendimiento pasado no garantiza resultados futuros. Este sitio no proporciona asesoramiento financiero regulado.</p>
+      <p class="risk-warning">⚠ El trading implica riesgo significativo de pérdida. El contenido es educativo y no constituye asesoramiento financiero regulado. El rendimiento pasado no garantiza resultados futuros.</p>
     </div>
   </footer>
 

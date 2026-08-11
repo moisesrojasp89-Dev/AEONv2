@@ -1,6 +1,18 @@
 /* ============================================================
-   AUREUM · render.js — Renderiza contenido desde markets.json
+   AEON · render.js — Renderiza contenido desde markets.json
    ============================================================ */
+
+const TICKER_PX_PER_SEC = 28;
+
+function syncTickerDuration(track) {
+  if (!track || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const distance = track.scrollWidth / 2;
+  if (!distance) return;
+
+  const duration = Math.max(distance / TICKER_PX_PER_SEC, 40);
+  track.style.setProperty('--ticker-duration', `${duration}s`);
+}
 
 export function renderStats(stats) {
   const el = document.getElementById('hero-stats');
@@ -31,6 +43,21 @@ export function renderTickers(markets) {
         <p class="ticker-change" id="change-${m.id}">—</p>
       </div>
     </div>
+  `).join('');
+}
+
+export function renderNews(news) {
+  const el = document.getElementById('news-list');
+  if (!el) return;
+  el.innerHTML = news.map(n => `
+    <article class="news-card" aria-label="${n.title}">
+      <div class="news-meta">
+        <span class="news-tag ${n.tagClass}">${n.tag}</span>
+        <time class="news-time">${n.time}</time>
+      </div>
+      <h3 class="news-title">${n.title}</h3>
+      <p class="news-summary">${n.summary}</p>
+    </article>
   `).join('');
 }
 
@@ -121,6 +148,29 @@ export function renderSignals(signals) {
   `).join('');
 }
 
+export function renderEducation(items) {
+  const el = document.getElementById('education-grid');
+  if (!el) return;
+  el.innerHTML = items.map(item => `
+    <article class="edu-card" aria-label="${item.title}">
+      <span class="edu-level">${item.level}</span>
+      <h3 class="edu-title">${item.title}</h3>
+      <p class="edu-summary">${item.summary}</p>
+    </article>
+  `).join('');
+}
+
+export function renderPartners(partners) {
+  const el = document.getElementById('partners-grid');
+  if (!el) return;
+  el.innerHTML = partners.map(p => `
+    <a class="partner-card" href="${p.url}" aria-label="${p.name}">
+      <span class="partner-mark" aria-hidden="true">${p.initials}</span>
+      <span class="partner-name">${p.name}</span>
+    </a>
+  `).join('');
+}
+
 export function renderPremiumFeatures(features) {
   const el = document.getElementById('premium-features');
   if (!el) return;
@@ -131,6 +181,7 @@ export function renderPremiumFeatures(features) {
     </li>
   `).join('');
 }
+
 export function renderTickerBar(items) {
   const el = document.getElementById('ticker-track');
   if (!el) return;
@@ -145,4 +196,15 @@ export function renderTickerBar(items) {
   `).join('');
 
   el.innerHTML = html + html;
+
+  requestAnimationFrame(() => syncTickerDuration(el));
+
+  if (!el.dataset.tickerBound) {
+    el.dataset.tickerBound = '1';
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => syncTickerDuration(el), 150);
+    });
+  }
 }

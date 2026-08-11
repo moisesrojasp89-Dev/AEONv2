@@ -27,10 +27,18 @@
   display: block;
 }
 
+.logo-text {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
 .nav-links {
   display: none;
   align-items: center;
-  gap: 2rem;
+  gap: 1.35rem;
 }
 
 .nav-links a {
@@ -99,7 +107,7 @@
 .menu-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .menu-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* Mobile menu */
+/* Mobile menu — fixed overlay so closed state doesn't reserve layout space */
 .mobile-menu {
   display: flex;
   flex-direction: column;
@@ -108,10 +116,12 @@
   background: rgba(8,12,20,0.97);
   backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   top: var(--header-h);
   z-index: 800;
-  transform: translateY(-12px);
+  transform: translateY(-8px);
   opacity: 0;
   pointer-events: none;
   visibility: hidden;

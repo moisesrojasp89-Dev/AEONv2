@@ -1,0 +1,62 @@
+/* ============================================================
+   AEON · news.css
+   ============================================================ */
+
+.news-section {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem 0;
+}
+
+.news-list {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.news-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  backdrop-filter: blur(18px);
+  transition: border-color 0.25s var(--ease);
+}
+
+.news-card:hover { border-color: var(--border-2); }
+
+.news-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.news-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+}
+
+.tag-policy  { background: rgba(245,184,65,0.12); color: var(--gold); border: 1px solid rgba(245,184,65,0.22); }
+.tag-macro   { background: rgba(61,214,140,0.12); color: var(--green); border: 1px solid rgba(61,214,140,0.22); }
+.tag-energy  { background: rgba(255,92,106,0.12); color: var(--red); border: 1px solid rgba(255,92,106,0.22); }
+.tag-markets { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+
+.news-time { font-size: 0.72rem; color: var(--muted-2); }
+
+.news-title {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+
+.news-summary {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.65;
+}

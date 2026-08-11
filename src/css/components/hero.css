@@ -80,9 +80,10 @@
 }
 
 .chart-embed {
-  height: 480px;
+  height: 260px;
   border-radius: var(--radius-md);
   overflow: hidden;
+  border: 1px solid var(--border);
 }
 
 .chart-embed iframe {

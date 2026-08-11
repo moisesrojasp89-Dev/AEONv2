@@ -1,11 +1,43 @@
 /* ============================================================
-   AUREUM · responsive.css — Todos los @media en un lugar
+   AEON · responsive.css
    ============================================================ */
+
+/* Mobile refinements */
+.chart-embed { height: 260px; }
+
+.hero-features {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-feature { min-width: 96px; }
+
+.section-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.signal-levels {
+  grid-template-columns: 1fr;
+}
 
 /* Tablet ≥ 640px */
 @media (min-width: 640px) {
-  .hero-buttons { flex-direction: row; }
-  .market-grid  { grid-template-columns: repeat(2, 1fr); }
+  .hero-buttons { flex-direction: row; flex-wrap: wrap; }
+  .chart-embed { height: 360px; }
+
+  .market-grid,
+  .news-list,
+  .education-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .partners-grid { grid-template-columns: repeat(4, 1fr); }
+
+  .signal-levels { grid-template-columns: repeat(3, 1fr); }
+
+  .section-header {
+    flex-direction: row;
+    align-items: flex-end;
+  }
 }
 
 /* Desktop ≥ 900px */
@@ -27,8 +59,18 @@
 
   .chart-embed { height: 520px; }
 
+  .hero-features { flex-wrap: nowrap; }
+
   .market-grid { grid-template-columns: repeat(3, 1fr); }
+  .news-list { grid-template-columns: repeat(2, 1fr); }
+  .education-grid { grid-template-columns: repeat(3, 1fr); }
 
   .footer-inner  { flex-direction: row; justify-content: space-between; }
   .footer-bottom { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+}
+
+/* Narrow desktop nav */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .nav-links { gap: 1rem; }
+  .nav-links a { font-size: 0.82rem; }
 }

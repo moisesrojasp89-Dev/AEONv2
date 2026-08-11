@@ -1,0 +1,59 @@
+/* ============================================================
+   AEON · partners.css
+   ============================================================ */
+
+.partners-section {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem 0;
+}
+
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.partner-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.15rem;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.partner-card:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+
+.partner-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.partner-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.partners-cta {
+  display: flex;
+  justify-content: center;
+}

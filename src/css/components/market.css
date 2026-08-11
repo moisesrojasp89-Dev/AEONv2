@@ -39,6 +39,27 @@
 
 .asset-pair { font-size: 0.72rem; color: var(--muted-2); }
 
+.asset-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.asset-icon.sm { width: 32px; height: 32px; font-size: 0.72rem; }
+.asset-icon.gold-icon { background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold); }
+.asset-icon.euro-icon { background: rgba(61,214,140,0.1); border-color: rgba(61,214,140,0.22); color: var(--green); }
+.asset-icon.gbp-icon  { background: rgba(255,92,106,0.1); border-color: rgba(255,92,106,0.22); color: var(--red); }
+
 .mcard-price-row {
   display: flex;
   align-items: baseline;
