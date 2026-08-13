@@ -1,5 +1,5 @@
 /* ============================================================
-   AUREUM · prices.js — Precios en vivo
+   AEON · prices.js — Precios en vivo
    ============================================================ */
 
 const REFRESH_MS = 30_000;
@@ -84,7 +84,7 @@ async function refresh() {
     setTimestamp(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
 
   } catch (err) {
-    console.warn('[Aureum] Error precios:', err.message);
+    console.warn('[AEON] Error precios:', err.message);
     setTimestamp('Sin conexión');
   }
 }

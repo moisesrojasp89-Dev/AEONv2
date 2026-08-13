@@ -1,5 +1,5 @@
 /* ============================================================
-   AUREUM · navbar.js — Mobile menu
+   AEON · navbar.js — Mobile menu
    ============================================================ */
 
 export function initNavbar() {

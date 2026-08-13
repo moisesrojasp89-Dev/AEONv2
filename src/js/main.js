@@ -2,13 +2,9 @@
    AEON · main.js — Entry point
    ============================================================ */
 
-'use strict';
-
 import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
 import {
-  renderStats,
-  renderTickers,
   renderNews,
   renderMarketCards,
   renderSignals,
@@ -19,8 +15,6 @@ import {
 } from './render.js';
 import data from '../data/markets.json';
 
-renderStats(data.stats);
-renderTickers(data.markets);
 renderNews(data.news);
 renderMarketCards(data.markets);
 renderSignals(data.signals);

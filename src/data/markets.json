@@ -1,4 +1,4 @@
-﻿{
+{
   "stats": [
     { "num": "+2.400", "label": "Traders activos" },
     { "num": "87%",    "label": "Señales ganadoras" },
@@ -54,7 +54,6 @@
       "icon": "Au",
       "iconClass": "gold-icon",
       "bias": "Alcista",
-      "biasClass": "badge-bull",
       "desc": "Presión compradora sobre zona 4.320. Scalping en M15 con confluencia en OB.",
       "support": "4.300",
       "resistance": "4.380"
@@ -66,7 +65,6 @@
       "icon": "€",
       "iconClass": "euro-icon",
       "bias": "Lateral",
-      "biasClass": "badge-lateral",
       "desc": "Rango definido entre 1.0820 y 1.0890. Esperar rotura con volumen.",
       "support": "1.0820",
       "resistance": "1.0890"
@@ -78,7 +76,6 @@
       "icon": "£",
       "iconClass": "gbp-icon",
       "bias": "Bajista",
-      "biasClass": "badge-bear",
       "desc": "Estructura bajista en H1. FVG activo sobre 1.2740. Vigilar sesión Londres.",
       "support": "1.2680",
       "resistance": "1.2750"
@@ -92,13 +89,11 @@
       "iconClass": "gold-icon",
       "time": "Hoy · 11:47 CET",
       "direction": "LONG",
-      "dirClass": "long",
       "entry": "4.356",
       "stop": "4.286",
       "target": "4.476",
       "rr": "RR 1:1.7",
       "status": "Activa",
-      "statusClass": "active",
       "premium": false
     },
     {
@@ -108,13 +103,11 @@
       "iconClass": "euro-icon",
       "time": "Ayer · 14:30 CET",
       "direction": "SHORT",
-      "dirClass": "short",
       "entry": "1.0885",
       "stop": "1.0910",
       "target": "1.0820",
       "rr": "RR 1:2.6",
       "status": "Cerrada",
-      "statusClass": "closed",
       "premium": false
     },
     {
