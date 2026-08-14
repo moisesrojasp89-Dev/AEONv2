@@ -1,10 +1,10 @@
 /* ============================================================
-   AEON · chart.js — Lightweight Charts for hero
+   AEON · chart.js — Lightweight Charts v5 for hero
    ============================================================ */
 
-import { createChart, ColorType } from 'lightweight-charts';
+import { createChart, AreaSeries } from 'lightweight-charts';
 
-// Sample XAU/USD area data (realistic shape)
+// Sample XAU/USD area data
 const SAMPLE_DATA = [
   { time: '2026-07-01', value: 3920 }, { time: '2026-07-03', value: 3945 },
   { time: '2026-07-07', value: 3910 }, { time: '2026-07-08', value: 3935 },
@@ -28,21 +28,22 @@ export function initChart() {
   if (!container) return;
 
   const chart = createChart(container, {
+    autoSize: true,
     layout: {
-      background: { type: ColorType.Solid, color: 'transparent' },
-      textColor: 'rgba(228,228,231,0.5)',
+      background: { color: 'transparent' },
+      textColor: 'rgba(228,228,231,0.45)',
       fontFamily: "'Inter', system-ui, sans-serif",
       fontSize: 11,
     },
     grid: {
-      vertLines: { color: 'rgba(255,255,255,0.04)' },
-      horzLines: { color: 'rgba(255,255,255,0.04)' },
+      vertLines: { color: 'rgba(255,255,255,0.03)' },
+      horzLines: { color: 'rgba(255,255,255,0.03)' },
     },
     rightPriceScale: {
-      borderColor: 'rgba(255,255,255,0.07)',
+      borderColor: 'rgba(255,255,255,0.06)',
     },
     timeScale: {
-      borderColor: 'rgba(255,255,255,0.07)',
+      borderColor: 'rgba(255,255,255,0.06)',
       timeVisible: false,
     },
     crosshair: {
@@ -53,9 +54,9 @@ export function initChart() {
     handleScale: false,
   });
 
-  const series = chart.addAreaSeries({
-    topColor: 'rgba(14,165,233,0.25)',
-    bottomColor: 'rgba(14,165,233,0.02)',
+  const series = chart.addSeries(AreaSeries, {
+    topColor: 'rgba(14,165,233,0.28)',
+    bottomColor: 'rgba(14,165,233,0.01)',
     lineColor: '#0EA5E9',
     lineWidth: 2,
     priceFormat: { type: 'custom', formatter: (p) => p.toFixed(0) },
@@ -63,13 +64,4 @@ export function initChart() {
 
   series.setData(SAMPLE_DATA);
   chart.timeScale().fitContent();
-
-  // Responsive resize
-  const ro = new ResizeObserver(() => {
-    chart.applyOptions({
-      width: container.clientWidth,
-      height: container.clientHeight,
-    });
-  });
-  ro.observe(container);
 }
