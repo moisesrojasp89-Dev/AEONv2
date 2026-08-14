@@ -56,7 +56,7 @@
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--gold);
+  background: var(--accent);
   transition: width 0.25s var(--ease);
 }
 
@@ -65,8 +65,8 @@
 
 .nav-btn {
   display: none;
-  background: var(--gold);
-  color: #0A0800;
+  background: var(--accent);
+  color: #fff;
   font-weight: 700;
   font-size: 0.875rem;
   padding: 0.55rem 1.1rem;
@@ -155,8 +155,8 @@
 
 .mobile-cta {
   margin-top: 0.5rem;
-  background: var(--gold);
-  color: #0A0800;
+  background: var(--accent);
+  color: #fff;
   font-weight: 700;
   font-size: 1rem;
   text-align: center;

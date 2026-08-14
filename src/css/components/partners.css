@@ -38,9 +38,9 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: var(--gold-dim);
-  border: 1px solid var(--gold-border);
-  color: var(--gold);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
   font-family: var(--font-head);
   font-size: 0.78rem;
   font-weight: 800;

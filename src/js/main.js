@@ -4,6 +4,7 @@
 
 import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
+import { initChart }  from './chart.js';
 import {
   renderNews,
   renderMarketCards,
@@ -25,3 +26,4 @@ renderTickerBar(data.ticker);
 
 initNavbar();
 initPrices();
+initChart();

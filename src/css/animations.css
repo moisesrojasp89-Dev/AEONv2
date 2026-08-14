@@ -33,7 +33,7 @@
 .badge-dot {
   width: 7px;
   height: 7px;
-  background: var(--gold);
+  background: var(--accent);
   border-radius: 50%;
   animation: pulse-dot 2.4s ease-in-out infinite;
   flex-shrink: 0;

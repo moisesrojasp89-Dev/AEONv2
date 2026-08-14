@@ -10,7 +10,7 @@
 
 .premium-inner {
   background: var(--surface);
-  border: 1px solid var(--gold-border);
+  border: 1px solid var(--accent-border);
   border-radius: var(--radius-xl);
   padding: clamp(1.75rem, 6vw, 3.5rem);
   max-width: 640px;

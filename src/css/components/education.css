@@ -23,7 +23,7 @@
 }
 
 .edu-card:hover {
-  border-color: var(--gold-border);
+  border-color: var(--accent-border);
   transform: translateY(-2px);
 }
 
@@ -33,7 +33,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--accent);
   margin-bottom: 0.75rem;
 }
 

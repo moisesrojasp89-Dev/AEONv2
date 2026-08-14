@@ -2,16 +2,7 @@
    AEON · responsive.css
    ============================================================ */
 
-/* Mobile refinements */
-.chart-embed { height: 260px; }
-
-.hero-features {
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.hero-feature { min-width: 96px; }
-
+/* Mobile defaults */
 .section-header {
   flex-direction: column;
   align-items: flex-start;
@@ -24,7 +15,6 @@
 /* Tablet ≥ 640px */
 @media (min-width: 640px) {
   .hero-buttons { flex-direction: row; flex-wrap: wrap; }
-  .chart-embed { height: 360px; }
 
   .market-grid,
   .news-list,
@@ -50,16 +40,11 @@
   .mobile-menu { display: none !important; }
 
   .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
     padding: 5rem 0 3.5rem;
+    gap: 4rem;
   }
 
-  .chart-embed { height: 520px; }
-
-  .hero-features { flex-wrap: nowrap; }
+  .hero-chart { height: 420px; }
 
   .market-grid { grid-template-columns: repeat(3, 1fr); }
   .news-list { grid-template-columns: repeat(2, 1fr); }

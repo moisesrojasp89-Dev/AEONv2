@@ -3,33 +3,47 @@
    ============================================================ */
 
 :root {
-  /* Colors */
-  --gold:        #F5B841;
-  --gold-dim:    rgba(245,184,65,0.12);
-  --gold-border: rgba(245,184,65,0.22);
-  --green:       #3DD68C;
-  --red:         #FF5C6A;
-  --bg:          #080C14;
-  --surface:     rgba(255,255,255,0.042);
+  /* Brand */
+  --accent:        #0EA5E9;
+  --accent-dim:    rgba(14,165,233,0.10);
+  --accent-border: rgba(14,165,233,0.20);
+  --accent-glow:   rgba(14,165,233,0.25);
+
+  /* Semantic */
+  --green:       #22C55E;
+  --green-dim:   rgba(34,197,94,0.12);
+  --red:         #EF4444;
+  --red-dim:     rgba(239,68,68,0.12);
+
+  /* Surfaces */
+  --bg:          #0B0D11;
+  --surface:     rgba(255,255,255,0.04);
   --surface-2:   rgba(255,255,255,0.07);
-  --border:      rgba(255,255,255,0.09);
-  --border-2:    rgba(255,255,255,0.14);
-  --text:        #F0EEE8;
-  --muted:       rgba(240,238,232,0.5);
-  --muted-2:     rgba(240,238,232,0.3);
+  --border:      rgba(255,255,255,0.07);
+  --border-2:    rgba(255,255,255,0.12);
+
+  /* Text */
+  --text:        #E4E4E7;
+  --muted:       rgba(228,228,231,0.55);
+  --muted-2:     rgba(228,228,231,0.32);
 
   /* Radii */
-  --radius-sm:   10px;
-  --radius-md:   16px;
-  --radius-lg:   24px;
-  --radius-xl:   32px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
 
   /* Typography */
-  --font-head:   'Syne', sans-serif;
-  --font-body:   'DM Sans', sans-serif;
+  --font-head:   'Space Grotesk', system-ui, sans-serif;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
 
   /* Easing */
   --ease:        cubic-bezier(.25,.46,.45,.94);
+
+  /* Durations */
+  --dur-fast:    150ms;
+  --dur-base:    250ms;
 
   /* Layout */
   --header-h:    57px;
