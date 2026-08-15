@@ -9,16 +9,16 @@ import { eduCard }       from './templates/education.js';
 import { partnerCard }   from './templates/partners.js';
 import { tickerBarItem } from './templates/ticker.js';
 
-const TICKER_PX_PER_SEC = 40;
+const TICKER_PX_PER_SEC = 22;
 
 function syncTickerDuration(track) {
-  if (!track || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!track) return;
   // Double rAF ensures layout is fully painted before measuring
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       const distance = track.scrollWidth / 2;
       if (!distance) return;
-      track.style.setProperty('--ticker-duration', `${Math.max(distance / TICKER_PX_PER_SEC, 20)}s`);
+      track.style.setProperty('--ticker-duration', `${Math.max(distance / TICKER_PX_PER_SEC, 35)}s`);
     });
   });
 }

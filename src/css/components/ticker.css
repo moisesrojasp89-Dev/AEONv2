@@ -18,7 +18,7 @@
   white-space: nowrap;
   width: max-content;
   will-change: transform;
-  animation: ticker-scroll var(--ticker-duration, 80s) linear infinite;
+  animation: ticker-scroll var(--ticker-duration, 50s) linear infinite;
 }
 
 .ticker-track:hover { animation-play-state: paused; }
@@ -43,15 +43,13 @@
   letter-spacing: 0.05em;
 }
 
-.ticker-price { font-size: 0.78rem; color: var(--muted); }
-.ticker-change { font-size: 0.74rem; font-weight: 600; }
+.ticker-price {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.ticker-change { font-size: 0.74rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .ticker-change.up   { color: var(--green); }
 .ticker-change.down { color: var(--red); }
 .ticker-sep { color: var(--border-2); padding: 0 0.5rem; }
-
-@media (prefers-reduced-motion: reduce) {
-  .ticker-track {
-    animation: none;
-    transform: none;
-  }
-}

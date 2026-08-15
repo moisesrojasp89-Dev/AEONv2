@@ -12,6 +12,14 @@
   gap: 3rem;
 }
 
+/* ---- Logo ---- */
+.hero-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
 /* ---- Content ---- */
 .hero-tags {
   font-family: var(--font-mono);
