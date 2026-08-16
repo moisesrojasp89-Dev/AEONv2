@@ -17,12 +17,36 @@ import {
 } from './render.js';
 import data from '../data/markets.json';
 
-renderMarketCards(data.markets);
-renderSignals(data.signals);
-renderEducation(data.education);
-renderPartners(data.partners);
-renderPremiumFeatures(data.premiumFeatures);
-renderTickerBar(data.ticker);
+let currentUser = null;
+
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const guestView = document.getElementById('nav-guest-view');
+  const userView = document.getElementById('nav-user-view');
+  const userEmail = document.getElementById('nav-user-email');
+  const btnLogout = document.getElementById('btn-logout');
+
+  if (session) {
+    currentUser = session.user;
+    if (guestView) guestView.style.display = 'none';
+    if (userView) userView.style.display = 'flex';
+    if (userEmail) userEmail.textContent = currentUser.email;
+    
+    if (btnLogout) {
+      btnLogout.onclick = async () => {
+        await supabase.auth.signOut();
+        window.location.reload();
+      };
+    }
+  } else {
+    currentUser = null;
+    if (guestView) guestView.style.display = 'flex';
+    if (userView) userView.style.display = 'none';
+  }
+}
+
+
 
 async function loadDynamicNews() {
   try {
@@ -44,8 +68,18 @@ async function loadDynamicNews() {
   }
 }
 
-loadDynamicNews();
+document.addEventListener('DOMContentLoaded', async () => {
+  await checkSession();
+  
+  renderMarketCards(data.markets);
+  renderSignals(data.signals, currentUser);
+  renderEducation(data.education);
+  renderPartners(data.partners);
+  renderPremiumFeatures(data.premiumFeatures);
+  renderTickerBar(data.ticker);
 
-initNavbar();
-initPrices();
-initChart();
+  loadDynamicNews();
+  initNavbar();
+  initPrices();
+  initChart();
+});

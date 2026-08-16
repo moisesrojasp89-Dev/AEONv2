@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEON | Iniciar Sesión</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/src/css/variables.css">
+  <link rel="stylesheet" href="/src/css/reset.css">
+  <link rel="stylesheet" href="/src/css/layout.css">
+  <link rel="stylesheet" href="/src/css/components/buttons.css">
+  <link rel="stylesheet" href="/src/css/auth.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <header class="auth-header">
+      <a href="/" class="logo" aria-label="Volver a Inicio">AEON</a>
+      <h1>Iniciar Sesión</h1>
+      <p>Accede a tu panel y señales premium.</p>
+    </header>
+
+    <form id="login-form" class="auth-form">
+      <div id="auth-error" class="auth-error" hidden></div>
+      
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" placeholder="tu@correo.com" required autocomplete="email">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      
+      <button type="submit" id="btn-login" class="btn btn-primary btn-block">Entrar al Sistema</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿No tienes cuenta? <a href="/registro.html">Crear una cuenta</a></p>
+    </div>
+  </div>
+
+  <script type="module" src="/src/js/auth.js"></script>
+</body>
+</html>

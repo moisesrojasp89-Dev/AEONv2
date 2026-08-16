@@ -4,14 +4,14 @@
 
 const STATUS_CLASS = { 'Activa': 'active', 'Cerrada': 'closed' };
 
-const lockedCard = (s) => `
+const lockedCard = (s, currentUser) => `
   <article class="signal-card blur-card" role="listitem" aria-label="Señal premium">
     <div class="blur-overlay">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4zm6 6H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1zm-6 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" fill="currentColor"/>
       </svg>
       <span>Contenido Premium</span>
-      <a href="#premium" class="blur-cta">Desbloquear →</a>
+      ${currentUser ? '<a href="#planes" class="btn btn-primary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.9rem;">Mejorar Rango a PRO</a>' : '<a href="/registro.html" class="blur-cta">Desbloquear →</a>'}
     </div>
     <div class="signal-header" aria-hidden="true">
       <div class="signal-asset">
@@ -55,4 +55,9 @@ const publicCard = (s) => `
   </article>
 `;
 
-export const signalCard = (s) => s.premium ? lockedCard(s) : publicCard(s);
+export const signalCard = (s, currentUser) => {
+  // Aquí asumo que si s.premium == true, validaremos si el usuario es PRO en el futuro.
+  // Por ahora, todos ven el muro de pago en las señales premium.
+  if (s.premium) return lockedCard(s, currentUser);
+  return publicCard(s);
+};

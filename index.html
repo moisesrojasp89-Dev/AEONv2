@@ -49,8 +49,19 @@
         <li><a href="#educacion">Educación</a></li>
         <li><a href="#partners">Partners</a></li>
       </ul>
-      <a href="#login" class="nav-btn btn-ghost">Iniciar Sesión</a>
-      <a href="#pro" class="nav-btn">Acceso Pro</a>
+      <div class="nav-actions">
+        <!-- Vistas para visitantes (no logueados) -->
+        <div id="nav-guest-view" style="display: flex; gap: 1rem;">
+          <a href="/login.html" class="btn btn-ghost">Iniciar Sesión</a>
+          <a href="/registro.html" class="btn btn-primary">Acceso Pro</a>
+        </div>
+        
+        <!-- Vistas para usuarios logueados -->
+        <div id="nav-user-view" style="display: none; align-items: center; gap: 1rem;">
+          <span id="nav-user-email" style="color: var(--text-200); font-size: 0.9rem; font-weight: 500;"></span>
+          <button id="btn-logout" class="btn btn-ghost" style="padding: 0.5rem 0.75rem; color: var(--text-300);">Salir</button>
+        </div>
+      </div>
       <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
