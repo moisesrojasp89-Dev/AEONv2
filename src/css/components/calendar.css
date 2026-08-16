@@ -33,7 +33,7 @@
   flex-direction: column;
 }
 
-.radar-header {
+.eco-head-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,17 +42,17 @@
   border-bottom: 1px solid var(--border);
 }
 
-.radar-title-group {
+.eco-head-title-group {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.radar-icon {
+.eco-head-icon {
   color: var(--accent);
 }
 
-.radar-text h2 {
+.eco-head-text h2 {
   font-family: var(--font-body);
   font-size: 1.1rem;
   font-weight: 600;
@@ -61,7 +61,7 @@
   margin: 0;
 }
 
-.radar-text p {
+.eco-head-text p {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   color: var(--muted);

@@ -5,11 +5,19 @@
 .hero {
   position: relative;
   z-index: 1;
-  padding: 3rem 0 2rem;
+  padding: 5rem 0 3.5rem;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 2.5rem;
+  gap: 4rem;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 3rem 0 2rem;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
 }
 
 /* ---- Content ---- */
