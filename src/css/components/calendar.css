@@ -12,7 +12,7 @@
 @media (min-width: 1100px) {
   .calendar-layout {
     display: grid;
-    grid-template-columns: minmax(0, 7.5fr) minmax(0, 2.5fr);
+    grid-template-columns: 3fr 1fr;
     align-items: start;
     gap: 1.5rem;
   }
@@ -186,8 +186,8 @@
     gap: 0.5rem;
   }
   .eco-cell.impact { grid-column: 1; grid-row: 2; }
-  .eco-cell.asset { display: none; }
-  .eco-cell.event { grid-column: 2 / -1; font-size: 0.95rem; font-weight: 600; }
+  .eco-cell.eco-asset { display: none; }
+  .eco-cell.eco-event { grid-column: 2 / -1; font-size: 0.95rem; font-weight: 600; }
   .eco-cell.actual, .eco-cell.forecast, .eco-cell.previous { display: none; }
   .eco-details { padding: 1rem; }
 }

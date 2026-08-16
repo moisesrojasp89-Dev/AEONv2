@@ -38,12 +38,12 @@
 
   .nav-links { display: flex; }
   .nav-btn   { display: inline-flex; }
-  .desktop-only { display: flex !important; }
   .menu-toggle { display: none; }
   .mobile-menu { display: none !important; }
 
   .hero {
     padding: 5rem 0 3.5rem;
+    grid-template-columns: 1fr 1fr;
     gap: 4rem;
   }
 
