@@ -96,7 +96,7 @@ function initNewsFilters() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initApp() {
   await checkSession();
   
   renderMarketCards(data.markets);
@@ -111,4 +111,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initPrices();
   initChart();
-});
+}
+
+initApp();

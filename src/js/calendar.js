@@ -51,8 +51,7 @@ function initTradingViewWidget() {
   container.appendChild(script);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initNavbar();
-  renderCalendar();
-  initTradingViewWidget();
-});
+// Inicialización directa (los type="module" ya esperan al DOM)
+initNavbar();
+renderCalendar();
+initTradingViewWidget();
