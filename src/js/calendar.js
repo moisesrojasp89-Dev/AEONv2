@@ -6,6 +6,7 @@
 import { initNavbar } from './navbar.js';
 import data from '../data/markets.json';
 import { calendarRow } from './templates/calendarItem.js';
+import { supabase } from './supabaseClient.js';
 
 function renderCalendar() {
   const container = document.getElementById('calendar-feed');
@@ -51,7 +52,38 @@ function initTradingViewWidget() {
   container.appendChild(script);
 }
 
-// Inicialización directa (los type="module" ya esperan al DOM)
-initNavbar();
-renderCalendar();
-initTradingViewWidget();
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const guestView = document.getElementById('nav-guest-view');
+  const userView = document.getElementById('nav-user-view');
+  const btnLogout = document.getElementById('btn-logout');
+
+  if (session) {
+    if (guestView) guestView.style.display = 'none';
+    if (userView) userView.style.display = 'flex';
+    
+    if (btnLogout) {
+      btnLogout.onclick = async () => {
+        await supabase.auth.signOut();
+        window.location.reload();
+      };
+    }
+  } else {
+    if (guestView) guestView.style.display = 'flex';
+    if (userView) userView.style.display = 'none';
+  }
+}
+
+async function initApp() {
+  await checkSession();
+  initNavbar();
+  renderCalendar();
+  initTradingViewWidget();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
