@@ -30,21 +30,28 @@ function flash(el, dir) {
 }
 
 function updateTicker(key, price, pct) {
-  const priceEl  = document.getElementById(`price-${key}`);
-  const changeEl = document.getElementById(`change-${key}`);
-  if (!priceEl || !changeEl) return;
+  const priceEls = document.querySelectorAll(`[id="price-${key}"]`);
+  const changeEls = document.querySelectorAll(`[id="change-${key}"]`);
+  if (!priceEls.length || !changeEls.length) return;
 
   const dir = prev[key] !== null
     ? (price > prev[key] ? 'up' : price < prev[key] ? 'down' : null)
     : null;
 
   prev[key] = price;
-  if (dir) flash(priceEl, dir);
-
-  priceEl.textContent = formatPrice(key, price);
+  
+  const formattedPrice = formatPrice(key, price);
   const { text, cls } = formatChange(pct);
-  changeEl.textContent = text;
-  changeEl.className   = `ticker-change ${cls}`;
+
+  priceEls.forEach(el => {
+    if (dir) flash(el, dir);
+    el.textContent = formattedPrice;
+  });
+
+  changeEls.forEach(el => {
+    el.textContent = text;
+    el.className = `ticker-change ${cls}`;
+  });
 }
 
 function updateMarketCard(key, price, pct) {

@@ -5,12 +5,9 @@
     { "num": "3",      "label": "Activos clave" }
   ],
   "ticker": [
-    { "id": "xau",  "label": "XAU/USD",   "price": "4.334,52", "change": "+0.46%", "up": true },
-    { "id": "eur",  "label": "EUR/USD",   "price": "1.0842",   "change": "-0.12%", "up": false },
-    { "id": "btc",  "label": "BTC/USDT",  "price": "64.820",   "change": "+1.23%", "up": true },
-    { "id": "sp",   "label": "S&P 500",   "price": "5.308",    "change": "+0.34%", "up": true },
-    { "id": "nas",  "label": "NAS100",    "price": "18.642",   "change": "+0.51%", "up": true },
-    { "id": "dow",  "label": "DOW JONES", "price": "39.411",   "change": "-0.08%", "up": false }
+    { "id": "xau",  "label": "XAU/USD",   "price": "...", "change": "...", "up": true },
+    { "id": "eur",  "label": "EUR/USD",   "price": "...", "change": "...", "up": false },
+    { "id": "btc",  "label": "BTC/USDT",  "price": "...", "change": "...", "up": true }
   ],
   "news": [
     {
@@ -49,36 +46,42 @@
   "markets": [
     {
       "id": "gold",
-      "name": "Oro",
+      "icon": "A",
+      "iconClass": "i-gold",
+      "name": "Oro Spot",
       "pair": "XAU/USD",
-      "icon": "Au",
-      "iconClass": "gold-icon",
       "bias": "Alcista",
-      "desc": "Presión compradora sobre zona 4.320. Scalping en M15 con confluencia en OB.",
-      "support": "4.300",
-      "resistance": "4.380"
+      "price": "...",
+      "change": "...",
+      "desc": "El oro reacciona positivamente a los comentarios dovish de la Fed. Riesgos geopolíticos limitan las caídas.",
+      "support": "2.320",
+      "resistance": "2.400"
     },
     {
-      "id": "euro",
-      "name": "Euro",
-      "pair": "EUR/USD",
+      "id": "eur",
       "icon": "€",
-      "iconClass": "euro-icon",
+      "iconClass": "i-eur",
+      "name": "Euro Dólar",
+      "pair": "EUR/USD",
       "bias": "Lateral",
-      "desc": "Rango definido entre 1.0820 y 1.0890. Esperar rotura con volumen.",
-      "support": "1.0820",
-      "resistance": "1.0890"
+      "price": "...",
+      "change": "...",
+      "desc": "Lateralización a la espera del BCE. Liquidez neutral y barreras de opciones definiendo el rango.",
+      "support": "1.0800",
+      "resistance": "1.0920"
     },
     {
-      "id": "gbp",
-      "name": "Libra",
-      "pair": "GBP/USD",
-      "icon": "£",
-      "iconClass": "gbp-icon",
-      "bias": "Bajista",
-      "desc": "Estructura bajista en H1. FVG activo sobre 1.2740. Vigilar sesión Londres.",
-      "support": "1.2680",
-      "resistance": "1.2750"
+      "id": "btc",
+      "icon": "₿",
+      "iconClass": "i-btc",
+      "name": "Bitcoin",
+      "pair": "BTC/USDT",
+      "bias": "Alcista",
+      "price": "...",
+      "change": "...",
+      "desc": "Entradas institucionales sólidas. La zona de $62K actúa como pivote macro para continuación alcista.",
+      "support": "62.000",
+      "resistance": "68.500"
     }
   ],
   "signals": [
