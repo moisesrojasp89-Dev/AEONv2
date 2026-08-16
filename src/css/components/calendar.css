@@ -19,7 +19,7 @@
 }
 
 /* --- Terminal Panel --- */
-.terminal-widget {
+.data-panel {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
