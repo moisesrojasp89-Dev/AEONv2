@@ -82,7 +82,7 @@ async function checkSession() {
 }
 
 async function initApp() {
-  await checkSession();
+  checkSession(); // No bloquear el renderizado
   initNavbar();
   renderCalendar();
   initTradingViewWidget();

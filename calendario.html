@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="/src/css/components/navbar.css" />
   <link rel="stylesheet" href="/src/css/components/news.css" />
   <link rel="stylesheet" href="/src/css/components/calendar.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
   <style>
     /* Critical CSS to prevent FOUC */
     body {
@@ -88,7 +89,7 @@
 
   <main class="container calendar-layout" style="padding-top: 6rem; padding-bottom: 4rem;">
     <!-- Columna Izquierda: Calendario -->
-    <div class="eco-grid-container">
+    <div class="calendar-panel">
       <!-- Radar Terminal Header -->
       <div class="radar-header">
         <div class="radar-title-group">
@@ -125,18 +126,6 @@
         </div>
         <div id="calendar-feed">
           <!-- JS Render -->
-          <div class="eco-row-group">
-            <div class="eco-row">
-              <div class="eco-cell eco-time">14:00</div>
-              <div class="eco-cell eco-asset">TEST</div>
-              <div class="eco-cell impact"><span class="impact-dot high"></span></div>
-              <div class="eco-cell eco-event">FILA DE PRUEBA CSS</div>
-              <div class="eco-cell eco-data actual pending">Pendiente</div>
-              <div class="eco-cell eco-data forecast">0.00%</div>
-              <div class="eco-cell eco-data previous">0.00%</div>
-              <div class="eco-cell eco-expand"></div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

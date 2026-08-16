@@ -97,7 +97,7 @@ function initNewsFilters() {
 }
 
 async function initApp() {
-  await checkSession();
+  checkSession();
   
   renderMarketCards(data.markets);
   renderSignals(data.signals, currentUser);
