@@ -19,7 +19,13 @@ function renderCalendar() {
     return;
   }
 
-  container.innerHTML = events.map((evt, index) => calendarRow(evt, index)).join('');
+  try {
+    const html = events.map((evt, index) => calendarRow(evt, index)).join('');
+    container.innerHTML = html;
+  } catch (err) {
+    console.error('[AEON] Error al renderizar filas del calendario:', err);
+    container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de renderizado: ${err.message}</div>`;
+  }
 }
 
 // Global function for the onclick attribute
