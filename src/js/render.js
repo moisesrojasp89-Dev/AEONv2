@@ -9,18 +9,11 @@ import { eduCard }       from './templates/education.js';
 import { partnerCard }   from './templates/partners.js';
 import { tickerBarItem } from './templates/ticker.js';
 
-const TICKER_PX_PER_SEC = 22;
+const TICKER_PX_PER_SEC = 8;
 
 function syncTickerDuration(track) {
-  if (!track) return;
-  // Double rAF ensures layout is fully painted before measuring
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const distance = track.scrollWidth / 2;
-      if (!distance) return;
-      track.style.setProperty('--ticker-duration', `${Math.max(distance / TICKER_PX_PER_SEC, 35)}s`);
-    });
-  });
+  // Calculo dinámico removido para garantizar velocidad estable con CSS puro
+  return;
 }
 
 function fill(id, html) {
@@ -46,6 +39,7 @@ export function renderTickerBar(items) {
 
   const html = items.map(tickerBarItem).join('');
   el.innerHTML = html + html;
+  el.style.animationDuration = '180s';
 
   requestAnimationFrame(() => syncTickerDuration(el));
 

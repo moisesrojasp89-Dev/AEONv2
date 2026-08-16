@@ -18,7 +18,7 @@
   white-space: nowrap;
   width: max-content;
   will-change: transform;
-  animation: ticker-scroll var(--ticker-duration, 50s) linear infinite;
+  animation: ticker-scroll 180s linear infinite;
 }
 
 .ticker-track:hover { animation-play-state: paused; }
