@@ -77,6 +77,16 @@
 
 .nav-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  background: var(--surface);
+  border-color: var(--border-2);
+}
+
 /* Hamburger */
 .menu-toggle {
   display: flex;
