@@ -12,6 +12,7 @@
     "vite": "^8.0.12"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "lightweight-charts": "^5.2.1"
   }
 }
