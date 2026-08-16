@@ -29,11 +29,32 @@
   <link rel="stylesheet" href="/src/css/components/signals.css" />
   <link rel="stylesheet" href="/src/css/components/education.css" />
   <link rel="stylesheet" href="/src/css/components/partners.css" />
-  <link rel="stylesheet" href="/src/css/components/premium.css" />
   <link rel="stylesheet" href="/src/css/components/footer.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
+  <style>
+    /* Critical CSS to prevent FOUC */
+    body {
+      background-color: #070b12;
+      color: #E4E4E7;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      animation: fadeIn 0.3s ease-in forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 25%),
+                  radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+      z-index: -1;
+    }
+  </style>
 </head>
-<body style="opacity: 0; background-color: #070b12; color: #E4E4E7;" onload="document.body.style.transition='opacity 0.4s ease-out'; document.body.style.opacity='1';">
+<body>
 
   <div class="bg-mesh" aria-hidden="true"></div>
 
