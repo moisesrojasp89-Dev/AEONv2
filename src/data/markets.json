@@ -5,9 +5,12 @@
     { "num": "3",      "label": "Activos clave" }
   ],
   "ticker": [
-    { "id": "xau",  "label": "XAU/USD",   "price": "...", "change": "...", "up": true },
-    { "id": "eur",  "label": "EUR/USD",   "price": "...", "change": "...", "up": false },
-    { "id": "btc",  "label": "BTC/USDT",  "price": "...", "change": "...", "up": true }
+    { "id": "xau", "pair": "XAU/USD", "price": "Cargando", "change": "0.00", "positive": true },
+    { "id": "eur", "pair": "EUR/USD", "price": "Cargando", "change": "0.00", "positive": false },
+    { "id": "btc", "pair": "BTC/USD", "price": "Cargando", "change": "0.00", "positive": true },
+    { "id": "sp", "pair": "S&P 500", "price": "Cargando", "change": "0.00", "positive": true },
+    { "id": "nas", "pair": "NASDAQ", "price": "Cargando", "change": "0.00", "positive": true },
+    { "id": "dow", "pair": "DOW 30", "price": "Cargando", "change": "0.00", "positive": true }
   ],
   "news": [
     {
@@ -46,39 +49,36 @@
   "markets": [
     {
       "id": "gold",
-      "icon": "A",
-      "iconClass": "i-gold",
-      "name": "Oro Spot",
       "pair": "XAU/USD",
-      "bias": "Alcista",
-      "price": "...",
-      "change": "...",
+      "name": "Oro Al Contado",
+      "price": "Cargando...",
+      "change": "0.00%",
+      "positive": true,
+      "icon": "gold",
       "desc": "El oro reacciona positivamente a los comentarios dovish de la Fed. Riesgos geopolíticos limitan las caídas.",
       "support": "2.320",
       "resistance": "2.400"
     },
     {
       "id": "eur",
-      "icon": "€",
-      "iconClass": "i-eur",
-      "name": "Euro Dólar",
       "pair": "EUR/USD",
-      "bias": "Lateral",
-      "price": "...",
-      "change": "...",
+      "name": "Euro / Dólar",
+      "price": "Cargando...",
+      "change": "0.00%",
+      "positive": false,
+      "icon": "euro",
       "desc": "Lateralización a la espera del BCE. Liquidez neutral y barreras de opciones definiendo el rango.",
       "support": "1.0800",
       "resistance": "1.0920"
     },
     {
       "id": "btc",
-      "icon": "₿",
-      "iconClass": "i-btc",
+      "pair": "BTC/USD",
       "name": "Bitcoin",
-      "pair": "BTC/USDT",
-      "bias": "Alcista",
-      "price": "...",
-      "change": "...",
+      "price": "Cargando...",
+      "change": "0.00%",
+      "positive": true,
+      "icon": "bitcoin",
       "desc": "Entradas institucionales sólidas. La zona de $62K actúa como pivote macro para continuación alcista.",
       "support": "62.000",
       "resistance": "68.500"

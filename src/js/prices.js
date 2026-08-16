@@ -2,7 +2,9 @@
    AEON · prices.js — Precios en vivo
    ============================================================ */
 
-const REFRESH_MS = 60_000; // 1 minuto (para ahorrar cuota de TwelveData)
+import { supabase } from './supabaseClient.js';
+
+const REFRESH_MS = 60_000;
 const GECKO_IDS  = { btc: 'bitcoin' }; 
 const prev       = { xau: null, eur: null, btc: null, sp: null, nas: null, dow: null };
 
@@ -78,20 +80,17 @@ async function fetchCrypto() {
   return res.json();
 }
 
-async function fetchForex() {
-  const apiKey = import.meta.env.VITE_TWELVEDATA_API_KEY;
-  if (!apiKey) throw new Error("Missing TwelveData API Key");
-  const url = `https://api.twelvedata.com/quote?symbol=XAU/USD,EUR/USD,SPX,NDX,DJI&apikey=${apiKey}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-  if (!res.ok) throw new Error(`TwelveData ${res.status}`);
-  return res.json();
+async function fetchOanda() {
+  const { data, error } = await supabase.functions.invoke('oanda');
+  if (error) throw error;
+  return data;
 }
 
 async function refresh() {
   try {
-    const [cryptoData, forexData] = await Promise.allSettled([
+    const [cryptoData, oandaData] = await Promise.allSettled([
       fetchCrypto(),
-      fetchForex()
+      fetchOanda()
     ]);
 
     // Procesar Crypto (CoinGecko)
@@ -103,35 +102,43 @@ async function refresh() {
       }
     }
 
-    // Procesar Forex & Indices (TwelveData)
-    if (forexData.status === 'fulfilled' && !forexData.value.code) {
-      const data = forexData.value;
+    // Procesar Forex & Indices (OANDA)
+    if (oandaData.status === 'fulfilled' && oandaData.value.prices) {
+      const prices = oandaData.value.prices;
       
-      const xau = data['XAU/USD'];
+      // OANDA devuelve un array de precios. Creamos un mapa rápido:
+      const priceMap = {};
+      for (const p of prices) {
+        priceMap[p.instrument] = p;
+      }
+
+      // XAU_USD (Oro)
+      const xau = priceMap['XAU_USD'];
       if (xau) {
-        const price = parseFloat(xau.close);
-        const change = parseFloat(xau.percent_change);
-        updateTicker('xau', price, change);
-        updateMarketCard('gold', price, change); // Usamos 'gold' para la tarjeta
+        const close = parseFloat(xau.closeoutAsk);
+        updateTicker('xau', close, 0); // OANDA no da % de cambio de 24h fácil en /pricing, lo dejamos neutro por el MVP
+        updateMarketCard('gold', close, 0);
       }
 
-      const eur = data['EUR/USD'];
+      // EUR_USD
+      const eur = priceMap['EUR_USD'];
       if (eur) {
-        const price = parseFloat(eur.close);
-        const change = parseFloat(eur.percent_change);
-        updateTicker('eur', price, change);
-        updateMarketCard('eur', price, change);
+        const close = parseFloat(eur.closeoutAsk);
+        updateTicker('eur', close, 0);
+        updateMarketCard('eur', close, 0);
       }
 
-      // Opcional: Actualizar índices si están en el DOM (sp, nas, dow)
-      const sp = data['SPX'];
-      if (sp) updateTicker('sp', parseFloat(sp.close), parseFloat(sp.percent_change));
+      // SPX500_USD
+      const spx = priceMap['SPX500_USD'];
+      if (spx) updateTicker('sp', parseFloat(spx.closeoutAsk), 0);
       
-      const nas = data['NDX'];
-      if (nas) updateTicker('nas', parseFloat(nas.close), parseFloat(nas.percent_change));
+      // NAS100_USD
+      const nas = priceMap['NAS100_USD'];
+      if (nas) updateTicker('nas', parseFloat(nas.closeoutAsk), 0);
       
-      const dow = data['DJI'];
-      if (dow) updateTicker('dow', parseFloat(dow.close), parseFloat(dow.percent_change));
+      // US30_USD
+      const dow = priceMap['US30_USD'];
+      if (dow) updateTicker('dow', parseFloat(dow.closeoutAsk), 0);
     }
 
     setTimestamp(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
