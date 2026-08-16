@@ -18,6 +18,7 @@ import {
 import data from '../data/markets.json';
 
 let currentUser = null;
+let allNewsCache = [];
 
 async function checkSession() {
   const { data: { session } } = await supabase.auth.getSession();
@@ -58,14 +59,41 @@ async function loadDynamicNews() {
     if (error) throw error;
     
     if (newsItems && newsItems.length > 0) {
-      renderNews(newsItems);
+      allNewsCache = newsItems;
     } else {
-      renderNews(data.news); // Fallback a local
+      allNewsCache = data.news; // Fallback a local
     }
+    renderNews(allNewsCache);
   } catch (err) {
     console.error('[AEON] Error cargando noticias de Supabase:', err.message);
-    renderNews(data.news); // Fallback a local si hay error de conexión
+    allNewsCache = data.news;
+    renderNews(allNewsCache); // Fallback a local si hay error de conexión
   }
+}
+
+function initNewsFilters() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remover clase active de todos
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      // Añadir clase active al clickeado
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      
+      const filterValue = btn.dataset.filter;
+      
+      if (filterValue === 'all') {
+        renderNews(allNewsCache);
+      } else {
+        const filtered = allNewsCache.filter(item => item.tag.toUpperCase() === filterValue.toUpperCase());
+        renderNews(filtered);
+      }
+    });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -79,6 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTickerBar(data.ticker);
 
   loadDynamicNews();
+  initNewsFilters();
   initNavbar();
   initPrices();
   initChart();

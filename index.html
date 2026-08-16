@@ -97,14 +97,36 @@
       <div class="hero-chart" id="hero-chart" aria-label="Gráfico XAU/USD"></div>
     </section>
 
-    <section class="news-section container" id="noticias" aria-labelledby="news-heading">
-      <div class="section-header">
-        <div>
-          <h2 id="news-heading">Noticias macro</h2>
-          <p>Fed, inflación, energía e índices — lo que mueve el sesgo del día.</p>
+    <section class="news-section container" id="news" aria-labelledby="news-heading">
+      <div class="terminal-widget">
+        <div class="radar-header">
+          <div class="radar-title-group">
+            <div class="radar-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M2 12h20"></path>
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            </div>
+            <div class="radar-text">
+              <h2 id="news-heading"><span class="live-dot" aria-hidden="true"></span> Radar de Mercado</h2>
+            </div>
+          </div>
+
+          <!-- Segmented Controls -->
+          <div class="radar-controls" id="news-filters" role="tablist" aria-label="Filtros de noticias">
+            <button class="radar-tab active filter-btn" data-filter="all" role="tab" aria-selected="true">Live Feed</button>
+            <button class="radar-tab filter-btn" data-filter="ORO" role="tab" aria-selected="false">Metales</button>
+            <button class="radar-tab filter-btn" data-filter="FOREX" role="tab" aria-selected="false">Forex</button>
+            <button class="radar-tab filter-btn" data-filter="ÍNDICES" role="tab" aria-selected="false">Índices</button>
+            <button class="radar-tab filter-btn" data-filter="FED" role="tab" aria-selected="false">Centrales</button>
+          </div>
+        </div>
+
+        <div class="news-list" id="news-list">
+          <!-- Renderizado dinámico desde JS -->
         </div>
       </div>
-      <div class="news-list" id="news-list"></div>
     </section>
 
     <section class="market-section container" id="mercados" aria-labelledby="market-heading">
