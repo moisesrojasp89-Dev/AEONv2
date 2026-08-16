@@ -181,15 +181,25 @@
 @media (max-width: 900px) {
   .eco-header-row { display: none; }
   .eco-row {
-    grid-template-columns: 60px 1fr auto;
+    grid-template-columns: 60px 1fr 30px;
+    grid-template-rows: auto auto;
     padding: 1rem;
-    gap: 0.5rem;
+    gap: 0.2rem 0.5rem;
   }
-  .eco-cell.impact { grid-column: 1; grid-row: 2; }
-  .eco-cell.eco-asset { display: none; }
-  .eco-cell.eco-event { grid-column: 2 / -1; font-size: 0.95rem; font-weight: 600; }
-  .eco-cell.actual, .eco-cell.forecast, .eco-cell.previous { display: none; }
-  .eco-details { padding: 1rem; }
+  
+  .eco-cell.eco-time { grid-column: 1; grid-row: 1; }
+  .eco-cell.eco-event { grid-column: 2; grid-row: 1; font-size: 0.9rem; font-weight: 600; align-self: start; }
+  .eco-cell.eco-expand { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+  
+  .eco-cell.impact { grid-column: 1; grid-row: 2; display: flex; align-items: center; justify-content: flex-start; }
+  
+  /* Hides */
+  .eco-cell.eco-asset,
+  .eco-cell.actual, 
+  .eco-cell.forecast, 
+  .eco-cell.previous { display: none; }
+  
+  .eco-details { padding: 1rem; padding-left: 1rem; }
 }
 
 /* --- Sidebar --- */
