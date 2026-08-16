@@ -71,13 +71,13 @@
       </ul>
       <div class="nav-actions">
         <!-- Vistas para visitantes (no logueados) -->
-        <div id="nav-guest-view" style="display: flex; gap: 1rem;">
-          <a href="/login.html" class="btn btn-secondary">Iniciar Sesión</a>
-          <a href="/registro.html" class="btn btn-primary">Acceso Pro</a>
+        <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
+          <a href="/login.html" class="nav-btn btn-ghost">Iniciar Sesión</a>
+          <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
         </div>
         
         <!-- Vistas para usuarios logueados -->
-        <div id="nav-user-view" style="display: none; align-items: center; gap: 1rem;">
+        <div id="nav-user-view" class="desktop-only" style="display: none; gap: 1rem; align-items: center;">
           <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
           <button id="btn-logout" class="btn btn-secondary">Cerrar Sesión</button>
         </div>
@@ -116,7 +116,7 @@
     </section>
 
     <section class="news-section container" id="news" aria-labelledby="news-heading">
-      <div class="data-panel">
+      <div class="eco-grid-container">
         <div class="radar-header">
           <div class="radar-title-group">
             <div class="radar-icon">
