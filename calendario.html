@@ -89,7 +89,7 @@
 
   <main class="container calendar-layout" style="padding-top: 6rem; padding-bottom: 4rem;">
     <!-- Columna Izquierda: Calendario -->
-    <div class="calendar-panel">
+    <div class="calendar-panel" style="border: 5px solid red !important; background: rgba(255,0,0,0.2) !important; min-height: 500px !important;">
       <!-- Radar Terminal Header -->
       <div class="eco-head-header">
         <div class="eco-head-title-group">
@@ -167,6 +167,20 @@
       document.querySelector('.menu-toggle').classList.toggle('open');
       document.querySelector('.mobile-menu').classList.toggle('active');
     }
+    
+    window.addEventListener('error', function(e) {
+      const dbg = document.createElement('div');
+      dbg.style.cssText = 'position:fixed;top:0;left:0;background:red;color:white;z-index:9999;padding:20px;';
+      dbg.innerHTML = 'ERROR CRITICO: ' + e.message + ' en ' + e.filename + ':' + e.lineno;
+      document.body.appendChild(dbg);
+    });
+    
+    window.addEventListener('unhandledrejection', function(e) {
+      const dbg = document.createElement('div');
+      dbg.style.cssText = 'position:fixed;top:0;left:0;background:orange;color:white;z-index:9999;padding:20px;';
+      dbg.innerHTML = 'PROMESA RECHAZADA: ' + e.reason;
+      document.body.appendChild(dbg);
+    });
   </script>
 </body>
 </html>
