@@ -43,40 +43,38 @@
         <img src="/AEON.png" alt="AEON" class="logo-img" />
       </a>
       <ul class="nav-links" role="list">
-        <li><a href="#noticias">Noticias</a></li>
+        <li><a href="#news">Briefing</a></li>
         <li><a href="#mercados">Mercados</a></li>
-        <li><a href="#senales">Señales</a></li>
-        <li><a href="#educacion">Educación</a></li>
+        <li><a href="#señales">Señales</a></li>
+        <li><a href="/calendario.html">Calendario</a></li>
         <li><a href="#partners">Partners</a></li>
       </ul>
       <div class="nav-actions">
         <!-- Vistas para visitantes (no logueados) -->
         <div id="nav-guest-view" style="display: flex; gap: 1rem;">
-          <a href="/login.html" class="btn btn-ghost">Iniciar Sesión</a>
+          <a href="/login.html" class="btn btn-secondary">Iniciar Sesión</a>
           <a href="/registro.html" class="btn btn-primary">Acceso Pro</a>
         </div>
         
         <!-- Vistas para usuarios logueados -->
         <div id="nav-user-view" style="display: none; align-items: center; gap: 1rem;">
-          <span id="nav-user-email" style="color: var(--text-200); font-size: 0.9rem; font-weight: 500;"></span>
-          <button id="btn-logout" class="btn btn-ghost" style="padding: 0.5rem 0.75rem; color: var(--text-300);">Salir</button>
+          <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
+          <button id="btn-logout" class="btn btn-secondary">Cerrar Sesión</button>
         </div>
       </div>
-      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+      <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
     </nav>
+    <div class="mobile-menu">
+      <a href="#news" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
+      <a href="#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
+      <a href="#señales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
+      <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
+      <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">Iniciar Sesión</a>
+      <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
+    </div>
   </header>
-
-  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menú móvil" aria-hidden="true">
-    <a href="#noticias" class="mobile-link">Noticias</a>
-    <a href="#mercados" class="mobile-link">Mercados</a>
-    <a href="#senales" class="mobile-link">Señales</a>
-    <a href="#educacion" class="mobile-link">Educación</a>
-    <a href="#partners" class="mobile-link">Partners</a>
-    <a href="#premium" class="mobile-link">Premium</a>
-    <a href="#pro" class="mobile-cta">Acceso Pro / Iniciar Sesión →</a>
-  </div>
 
   <div class="ticker-bar" aria-label="Precios en tiempo real">
     <div class="ticker-track" id="ticker-track"></div>
@@ -225,6 +223,11 @@
   </footer>
 
   <script type="module" src="/src/js/main.js"></script>
-
+  <script>
+    function toggleMobileMenu() {
+      document.querySelector('.menu-toggle').classList.toggle('open');
+      document.querySelector('.mobile-menu').classList.toggle('active');
+    }
+  </script>
 </body>
 </html>

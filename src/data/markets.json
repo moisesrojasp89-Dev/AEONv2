@@ -156,5 +156,43 @@
     "Niveles clave con OB, FVG y liquidez",
     "Canal educativo con grabaciones y guías",
     "Alertas antes de apertura de sesiones clave"
+  ],
+  "calendar": [
+    {
+      "id": "cal-001",
+      "date": "Mié 20 Mar",
+      "time": "14:00",
+      "event": "Decisión de Tasas FED",
+      "impact": "HIGH",
+      "assets": ["XAU/USD", "EUR/USD", "S&P 500"],
+      "forecast": "5.50%",
+      "previous": "5.50%",
+      "actual": "Pendiente",
+      "description": "La FED decide sobre los tipos de interés. Las palabras de Powell en la rueda de prensa serán clave. Un tono 'Dovish' (recortes pronto) hará subir el oro. Un tono 'Hawkish' lo hundirá."
+    },
+    {
+      "id": "cal-002",
+      "date": "Vie 22 Mar",
+      "time": "08:30",
+      "event": "Nóminas No Agrícolas (NFP)",
+      "impact": "HIGH",
+      "assets": ["USD", "XAU", "ÍNDICES"],
+      "forecast": "198K",
+      "previous": "275K",
+      "actual": "Pendiente",
+      "description": "El termómetro principal del empleo en EE.UU. Si el dato es fuerte, el dólar sube porque la FED no tendrá prisa en bajar tasas. Si el empleo se destruye, el mercado entra en pánico y el oro sube."
+    },
+    {
+      "id": "cal-003",
+      "date": "Mar 26 Mar",
+      "time": "10:00",
+      "event": "Confianza Consumidor CB",
+      "impact": "MED",
+      "assets": ["USD", "S&P 500"],
+      "forecast": "106.7",
+      "previous": "106.7",
+      "actual": "Pendiente",
+      "description": "Mide el nivel de confianza de los consumidores en la economía. Puede generar volatilidad intradiaria en el dólar, pero sin cambiar tendencias macro a menos que la desviación sea enorme."
+    }
   ]
 }

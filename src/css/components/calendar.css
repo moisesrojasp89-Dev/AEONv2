@@ -1,0 +1,288 @@
+/* ============================================================
+   AEON · calendar.css (High-Density Financial Table)
+   ============================================================ */
+
+/* --- Layout Grid 75/25 --- */
+.calendar-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 1100px) {
+  .calendar-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 7.5fr) minmax(0, 2.5fr);
+    align-items: start;
+    gap: 1.5rem;
+  }
+}
+
+/* --- Terminal Panel --- */
+.terminal-widget {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.radar-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.radar-icon {
+  color: var(--accent);
+}
+
+.radar-text h2 {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.radar-text p {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.impact-legend {
+  display: flex;
+  gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.impact-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.impact-dot.high { background: #ff3366; box-shadow: 0 0 8px rgba(255,51,102,0.6); }
+.impact-dot.med { background: #ffaa00; box-shadow: 0 0 8px rgba(255,170,0,0.4); }
+
+/* --- Economic Calendar Table --- */
+.eco-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.eco-header-row {
+  display: grid;
+  grid-template-columns: 80px 60px 40px 1fr 80px 80px 80px 30px;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.eco-row-group {
+  border-bottom: 1px solid var(--border);
+}
+.eco-row-group:last-child {
+  border-bottom: none;
+}
+
+.eco-row {
+  display: grid;
+  grid-template-columns: 80px 60px 40px 1fr 80px 80px 80px 30px;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s ease;
+}
+
+.eco-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.eco-cell {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.eco-time { font-family: var(--font-mono); color: var(--muted); font-size: 0.75rem; }
+.eco-asset { font-family: var(--font-mono); color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+.eco-event { font-weight: 500; letter-spacing: -0.01em; }
+.eco-data { font-family: var(--font-mono); font-size: 0.8rem; text-align: right; }
+.eco-data.actual { font-weight: 600; }
+.eco-data.pending { color: rgba(255,255,255,0.4); font-weight: 400; font-style: italic; }
+.eco-data.better { color: var(--green); }
+.eco-data.worse { color: var(--red); }
+
+.eco-expand {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--muted-2);
+}
+.eco-expand svg {
+  transition: transform 0.2s;
+}
+.eco-row-group.open .eco-expand svg {
+  transform: rotate(180deg);
+}
+
+/* Details Accordion */
+.eco-details {
+  display: none;
+  padding: 1rem 1.5rem 1.25rem 195px; /* Aligned with Event title */
+  background: rgba(0,0,0,0.2);
+  border-top: 1px dashed var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.eco-row-group.open .eco-details {
+  display: block;
+}
+
+/* Mobile Fallback for Table */
+@media (max-width: 900px) {
+  .eco-header-row { display: none; }
+  .eco-row {
+    grid-template-columns: 60px 1fr auto;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+  .eco-cell.impact { grid-column: 1; grid-row: 2; }
+  .eco-cell.asset { display: none; }
+  .eco-cell.event { grid-column: 2 / -1; font-size: 0.95rem; font-weight: 600; }
+  .eco-cell.actual, .eco-cell.forecast, .eco-cell.previous { display: none; }
+  .eco-details { padding: 1rem; }
+}
+
+/* --- Sidebar --- */
+.calendar-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 5rem;
+}
+
+.sidebar-widget {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.widget-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.live-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.1);
+  padding: 0.15rem 0.3rem;
+  border-radius: 2px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  animation: pulse-dot 2s infinite;
+}
+
+.tv-container {
+  height: 250px;
+  width: 100%;
+}
+
+.catalyst-box {
+  padding: 1rem;
+}
+
+.c-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.c-timer::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+.c-event {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.c-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
