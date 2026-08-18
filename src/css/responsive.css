@@ -3,7 +3,9 @@
    ============================================================ */
 
 /* Mobile defaults */
-.desktop-only { display: none !important; }
+@media (max-width: 899px) {
+  .desktop-only { display: none !important; }
+}
 
 .section-header {
   flex-direction: column;
@@ -35,13 +37,6 @@
 /* Desktop ≥ 900px */
 @media (min-width: 900px) {
   :root { --header-h: 65px; }
-
-  .nav-links { display: flex; }
-  .nav-btn   { display: inline-flex; }
-  .menu-toggle { display: none; }
-  .mobile-menu { display: none !important; }
-
-
 
   .hero-chart { height: 420px; }
 

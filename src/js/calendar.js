@@ -7,6 +7,7 @@ import { initNavbar } from './navbar.js';
 import data from '../data/markets.json';
 import { calendarRow } from './templates/calendarItem.js';
 import { supabase } from './supabaseClient.js';
+import { checkSession } from './auth.js';
 
 function renderCalendar() {
   const container = document.getElementById('calendar-feed');
@@ -28,13 +29,22 @@ function renderCalendar() {
   }
 }
 
-// Global function for the onclick attribute
-window.toggleDetails = function(index) {
-  const grp = document.getElementById(`eco-grp-${index}`);
-  if (grp) {
-    grp.classList.toggle('open');
-  }
-};
+// Delegación de eventos (una sola vez)
+const calFeed = document.getElementById('calendar-feed');
+if (calFeed && !calFeed.dataset.hasListener) {
+  calFeed.dataset.hasListener = 'true';
+  calFeed.addEventListener('click', (e) => {
+    const row = e.target.closest('.eco-row');
+    if (!row) return;
+    const index = row.dataset.index;
+    if (index !== undefined) {
+      const grp = document.getElementById(`eco-grp-${index}`);
+      if (grp) {
+        grp.classList.toggle('open');
+      }
+    }
+  });
+}
 
 function initTradingViewWidget() {
   const container = document.getElementById('tv-dxy-widget');
@@ -58,28 +68,7 @@ function initTradingViewWidget() {
   container.appendChild(script);
 }
 
-async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  const guestView = document.getElementById('nav-guest-view');
-  const userView = document.getElementById('nav-user-view');
-  const btnLogout = document.getElementById('btn-logout');
-
-  if (session) {
-    if (guestView) guestView.style.display = 'none';
-    if (userView) userView.style.display = 'flex';
-    
-    if (btnLogout) {
-      btnLogout.onclick = async () => {
-        await supabase.auth.signOut();
-        window.location.reload();
-      };
-    }
-  } else {
-    if (guestView) guestView.style.display = 'flex';
-    if (userView) userView.style.display = 'none';
-  }
-}
+// checkSession local eliminado
 
 async function initApp() {
   checkSession(); // No bloquear el renderizado

@@ -6,6 +6,7 @@ import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
 import { initChart }  from './chart.js';
 import { supabase } from './supabaseClient.js';
+import { checkSession } from './auth.js';
 import {
   renderNews,
   renderMarketCards,
@@ -18,36 +19,89 @@ import {
 import data from '../data/markets.json';
 
 let currentUser = null;
+let isPro = false;
+let activeSignals = [];
 let allNewsCache = [];
 
-async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  const guestView = document.getElementById('nav-guest-view');
-  const userView = document.getElementById('nav-user-view');
-  const userEmail = document.getElementById('nav-user-email');
-  const btnLogout = document.getElementById('btn-logout');
+async function loadSignals() {
+  try {
+    const { data: publicSignals, error: pErr } = await supabase
+      .from('signals')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
 
-  if (session) {
-    currentUser = session.user;
-    if (guestView) guestView.style.display = 'none';
-    if (userView) userView.style.display = 'flex';
-    if (userEmail) userEmail.textContent = currentUser.email;
-    
-    if (btnLogout) {
-      btnLogout.onclick = async () => {
-        await supabase.auth.signOut();
-        window.location.reload();
-      };
+    if (pErr) throw pErr;
+
+    // Guardamos la base pública
+    activeSignals = publicSignals || [];
+
+    // Si es pro, intentamos traer la data privada
+    if (isPro && activeSignals.length > 0) {
+      const signalIds = activeSignals.map(s => s.id);
+      const { data: proData, error: proErr } = await supabase
+        .from('signals_pro_data')
+        .select('*')
+        .in('signal_id', signalIds);
+
+      if (!proErr && proData) {
+        // Hacemos el merge
+        proData.forEach(proInfo => {
+          const target = activeSignals.find(s => s.id === proInfo.signal_id);
+          if (target) {
+            Object.assign(target, proInfo);
+          }
+        });
+      }
     }
-  } else {
-    currentUser = null;
-    if (guestView) guestView.style.display = 'flex';
-    if (userView) userView.style.display = 'none';
+
+    renderSignals(activeSignals, currentUser, isPro);
+  } catch (err) {
+    console.error('[AEON] Error cargando signals:', err);
   }
 }
 
+function initRealtime() {
+  // Listener Público
+  supabase.channel('public:signals')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signals' }, (payload) => {
+      // Agregamos al top de la lista
+      activeSignals.unshift(payload.new);
+      renderSignals(activeSignals, currentUser, isPro);
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'signals' }, (payload) => {
+      // Si el status cambia a won/lost/cancelled, lo quitamos de activas
+      if (payload.new.status !== 'active') {
+        activeSignals = activeSignals.filter(s => s.id !== payload.new.id);
+      } else {
+        // Actualización normal
+        const index = activeSignals.findIndex(s => s.id === payload.new.id);
+        if (index > -1) {
+          Object.assign(activeSignals[index], payload.new);
+        }
+      }
+      renderSignals(activeSignals, currentUser, isPro);
+    })
+    .on('system', { event: 'EXTENSION' }, () => {
+        // reconexión
+        console.log('[AEON] Realtime reconectado. Resincronizando...');
+        loadSignals();
+    })
+    .subscribe();
 
+  // Listener Privado (Solo PRO)
+  if (isPro) {
+    supabase.channel('public:signals_pro_data')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signals_pro_data' }, (payload) => {
+        const target = activeSignals.find(s => s.id === payload.new.signal_id);
+        if (target) {
+          Object.assign(target, payload.new);
+          renderSignals(activeSignals, currentUser, isPro);
+        }
+      })
+      .subscribe();
+  }
+}
 
 async function loadDynamicNews() {
   try {
@@ -61,13 +115,13 @@ async function loadDynamicNews() {
     if (newsItems && newsItems.length > 0) {
       allNewsCache = newsItems;
     } else {
-      allNewsCache = data.news; // Fallback a local
+      allNewsCache = data.news;
     }
     renderNews(allNewsCache);
   } catch (err) {
-    console.error('[AEON] Error cargando noticias de Supabase:', err.message);
+    console.error('[AEON] Error cargando noticias:', err);
     allNewsCache = data.news;
-    renderNews(allNewsCache); // Fallback a local si hay error de conexión
+    renderNews(allNewsCache);
   }
 }
 
@@ -75,17 +129,13 @@ function initNewsFilters() {
   const filterBtns = document.querySelectorAll('.filter-btn');
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remover clase active de todos
       filterBtns.forEach(b => {
         b.classList.remove('active');
         b.setAttribute('aria-selected', 'false');
       });
-      // Añadir clase active al clickeado
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
-      
       const filterValue = btn.dataset.filter;
-      
       if (filterValue === 'all') {
         renderNews(allNewsCache);
       } else {
@@ -97,10 +147,8 @@ function initNewsFilters() {
 }
 
 async function initApp() {
-  checkSession();
-  
+  // Render de elementos estáticos
   renderMarketCards(data.markets);
-  renderSignals(data.signals, currentUser);
   renderEducation(data.education);
   renderPartners(data.partners);
   renderPremiumFeatures(data.premiumFeatures);
@@ -111,6 +159,24 @@ async function initApp() {
   initNavbar();
   initPrices();
   initChart();
+
+  // Auth y Señales
+  try {
+    const sessionInfo = await checkSession();
+    if (sessionInfo && sessionInfo.session) {
+      currentUser = sessionInfo.session.user;
+      isPro = sessionInfo.isPro;
+      
+      const userEmail = document.getElementById('nav-user-email');
+      if (userEmail) userEmail.textContent = currentUser.email;
+    }
+  } catch (err) {
+    console.error('[AEON] Falla en resolución de sesión:', err);
+  }
+
+  // Cargar señales desde Supabase en vez de mocks
+  await loadSignals();
+  initRealtime();
 }
 
 if (document.readyState === 'loading') {

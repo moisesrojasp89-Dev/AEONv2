@@ -168,6 +168,7 @@
       "forecast": "5.50%",
       "previous": "5.50%",
       "actual": "Pendiente",
+      "evaluation": "higherIsBetter",
       "description": "La FED decide sobre los tipos de interés. Las palabras de Powell en la rueda de prensa serán clave. Un tono 'Dovish' (recortes pronto) hará subir el oro. Un tono 'Hawkish' lo hundirá."
     },
     {
@@ -180,6 +181,7 @@
       "forecast": "198K",
       "previous": "275K",
       "actual": "Pendiente",
+      "evaluation": "higherIsBetter",
       "description": "El termómetro principal del empleo en EE.UU. Si el dato es fuerte, el dólar sube porque la FED no tendrá prisa en bajar tasas. Si el empleo se destruye, el mercado entra en pánico y el oro sube."
     },
     {
@@ -192,6 +194,7 @@
       "forecast": "106.7",
       "previous": "106.7",
       "actual": "Pendiente",
+      "evaluation": "higherIsBetter",
       "description": "Mide el nivel de confianza de los consumidores en la economía. Puede generar volatilidad intradiaria en el dólar, pero sin cambiar tendencias macro a menos que la desviación sea enorme."
     }
   ]

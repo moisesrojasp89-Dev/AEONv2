@@ -180,7 +180,7 @@
    ============================================================ */
 @media (min-width: 900px) {
   .nav-links { display: flex; }
-  .nav-btn { display: inline-block; }
-  .menu-toggle { display: none !important; }
-  .mobile-menu { display: none !important; }
+  .nav-btn { display: inline-flex; }
+  .menu-toggle { display: none; }
+  .mobile-menu, .mobile-menu.active { display: none; }
 }

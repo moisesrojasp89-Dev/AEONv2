@@ -23,7 +23,13 @@ function fill(id, html) {
 
 export function renderNews(news)           { fill('news-list',      news.map(newsCard).join('')); }
 export function renderMarketCards(markets) { fill('market-grid',    markets.map(marketCard).join('')); }
-export function renderSignals(signals, currentUser)     { fill('signals-list',   signals.map(s => signalCard(s, currentUser)).join('')); }
+export function renderSignals(signals, currentUser, isPro) { 
+  if (!signals || signals.length === 0) {
+    fill('signals-list', '<p style="color: #6b7280; text-align: center; padding: 3rem 0; width: 100%;">No hay señales activas en este momento. El radar está despejado.</p>');
+    return;
+  }
+  fill('signals-list', signals.map(s => signalCard(s, currentUser, isPro)).join('')); 
+}
 export function renderEducation(items)     { fill('education-grid', items.map(eduCard).join('')); }
 export function renderPartners(partners)   { fill('partners-grid',  partners.map(partnerCard).join('')); }
 

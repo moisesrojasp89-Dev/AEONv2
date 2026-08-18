@@ -121,11 +121,11 @@
   white-space: nowrap;
 }
 
-.radar-tab:hover {
+.eco-head-tab:hover {
   color: var(--text);
 }
 
-.radar-tab.active {
+.eco-head-tab.active {
   background: var(--surface-2);
   color: var(--text);
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);

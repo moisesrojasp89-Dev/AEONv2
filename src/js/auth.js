@@ -1,5 +1,57 @@
 import { supabase } from './supabaseClient.js';
 
+export async function checkSession() {
+  let session = null;
+  let isPro = false;
+  try {
+    const { data } = await supabase.auth.getSession();
+    session = data?.session || null;
+
+    if (session) {
+      // Determinar estado PRO: plan='pro', status='active', y no expirado
+      const { data: subData, error: subErr } = await supabase
+        .from('subscriptions')
+        .select('plan, status, current_period_end')
+        .eq('user_id', session.user.id)
+        .eq('plan', 'pro')
+        .eq('status', 'active')
+        .gte('current_period_end', new Date().toISOString())
+        .maybeSingle();
+
+      if (!subErr && subData) {
+        isPro = true;
+      }
+    }
+  } catch (err) {
+    console.error('[AEON] Error verificando sesión:', err.message);
+  }
+  
+  const guestView = document.getElementById('nav-guest-view');
+  const userView = document.getElementById('nav-user-view');
+  const btnLogout = document.getElementById('btn-logout');
+
+  if (session) {
+    if (guestView) guestView.style.display = 'none';
+    if (userView) userView.style.display = 'flex';
+    
+    if (btnLogout) {
+      btnLogout.onclick = async () => {
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error('Error al cerrar sesión', e);
+        }
+        window.location.reload();
+      };
+    }
+  } else {
+    if (guestView) guestView.style.display = 'flex';
+    if (userView) userView.style.display = 'none';
+  }
+
+  return { session, isPro };
+}
+
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const errorDiv = document.getElementById('auth-error');
