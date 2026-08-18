@@ -29,11 +29,6 @@
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
-      opacity: 0;
-      animation: fadeIn 0.05s ease-in forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
     }
     .bg-mesh {
       position: fixed;
@@ -89,7 +84,7 @@
 
   <main class="container calendar-layout" style="padding-top: 6rem; padding-bottom: 4rem;">
     <!-- Columna Izquierda: Calendario -->
-    <div class="calendar-panel" style="border: 1px solid rgba(14, 165, 233, 0.8) !important; box-shadow: 0 0 20px rgba(14, 165, 233, 0.3) !important; min-height: 500px !important;">
+    <div class="calendar-panel" style="border: 1px solid rgba(14, 165, 233, 0.8) !important; box-shadow: 0 0 20px rgba(14, 165, 233, 0.3) !important; min-height: 500px !important; transform: translateZ(0); background: rgba(14, 165, 233, 0.03);">
       <!-- Radar Terminal Header -->
       <div class="eco-head-header">
         <div class="eco-head-title-group">
