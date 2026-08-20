@@ -145,7 +145,21 @@ function renderEvents() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state">No hay eventos macro programados para esta selección y fecha.</div>';
+    container.innerHTML = `
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; text-align: center; opacity: 0.7;">
+    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(14, 165, 233, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border: 1px solid rgba(14, 165, 233, 0.2);">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+        <path d="M9 16l2 2 4-4"></path>
+      </svg>
+    </div>
+    <h3 style="font-family: var(--font-mono); font-size: 1.1rem; color: #f8fafc; margin-bottom: 0.5rem; letter-spacing: 0.05em;">CERO EVENTOS CATALIZADORES</h3>
+    <p style="font-size: 0.9rem; color: #94a3b8; max-width: 300px;">No se encontraron noticias macroeconómicas de alto o mediano impacto para esta divisa en el rango seleccionado.</p>
+  </div>
+`;
     return;
   }
 
