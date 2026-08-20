@@ -306,3 +306,32 @@
   .eco-cell.eco-expand { display: flex; justify-content: flex-end; grid-column: 4; }
   .eco-cell.impact { grid-column: 3; justify-self: center; padding-right: 10px; }
 }
+
+@media (max-width: 900px) {
+  .eco-details {
+    padding: 1rem !important;
+  }
+}
+
+/* Calendar Selects */
+.calendar-select {
+  appearance: none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-main, #fff);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.calendar-select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(14,165,233,0.2);
+}
+.calendar-select option {
+  background-color: #0f172a;
+  color: #fff;
+}
