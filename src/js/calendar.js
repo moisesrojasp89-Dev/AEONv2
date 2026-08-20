@@ -1,60 +1,71 @@
 /* ============================================================
-   AEON · calendar.js
+   AEON — calendar.js
    Lógica de renderizado del Calendario Económico
    ============================================================ */
 
 import { initNavbar } from './navbar.js';
-import data from '../data/markets.json';
 import { calendarRow } from './templates/calendarItem.js';
 import { supabase } from './supabaseClient.js';
 import { checkSession } from './auth.js';
 
+let globalEvents = [];
 
-// Helper para convertir UTC a Hora Local en formato HH:MM
 function formatLocalTime(utcDateStr) {
   const d = new Date(utcDateStr);
-  // Get short weekday (ej: 'lun', 'mar') and time in local timezone
   const weekday = d.toLocaleDateString('es-ES', { weekday: 'short' }).substring(0, 3);
   const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  return `${weekday.toUpperCase()} ${time}`; // Ej: LUN 14:30
+  return `${weekday.toUpperCase()} ${time}`;
 }
 
-async function renderCalendar() {
+function renderEvents(filterVal = 'all') {
+  const container = document.getElementById('calendar-feed');
+  if (!container) return;
+
+  // Filter
+  let filtered = globalEvents;
+  if (filterVal === 'majors') {
+    const majors = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
+    filtered = globalEvents.filter(e => majors.includes(e.country));
+  } else if (filterVal !== 'all') {
+    filtered = globalEvents.filter(e => e.country === filterVal);
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state">No hay eventos macro programados para esta selección.</div>';
+    return;
+  }
+
+  const mappedEvents = filtered.map(dbEvt => ({
+    time: formatLocalTime(dbEvt.event_time),
+    assets: [dbEvt.country],
+    impact: dbEvt.impact.toUpperCase(),
+    event: dbEvt.event_name,
+    actual: dbEvt.actual || 'Pendiente',
+    forecast: dbEvt.forecast || '-',
+    previous: dbEvt.previous || '-',
+    description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
+  }));
+
+  const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
+  container.innerHTML = html;
+}
+
+async function fetchCalendar() {
   const container = document.getElementById('calendar-feed');
   if (!container) return;
 
   try {
-    // 1. Obtener datos reales de Supabase (Fase 6)
     const { data: events, error } = await supabase
       .from('economic_calendar')
       .select('*')
       .order('event_time', { ascending: true });
 
     if (error) throw error;
-    
-    if (!events || events.length === 0) {
-      container.innerHTML = '<div class="empty-state">No hay eventos macro de alto impacto esta semana.</div>';
-      return;
-    }
-
-    // 2. Mapear datos al formato que espera el template
-    const mappedEvents = events.map(dbEvt => ({
-      time: formatLocalTime(dbEvt.event_time),
-      assets: [dbEvt.country], // 'USD', 'EUR', etc
-      impact: dbEvt.impact.toUpperCase(), // 'HIGH' o 'MEDIUM'
-      event: dbEvt.event_name,
-      actual: dbEvt.actual || 'Pendiente',
-      forecast: dbEvt.forecast || '-',
-      previous: dbEvt.previous || '-',
-      description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
-    }));
-
-    // 3. Renderizar
-    const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
-    container.innerHTML = html;
+    globalEvents = events || [];
+    renderEvents(document.getElementById('calendar-filter')?.value || 'all');
   } catch (err) {
-    console.error('[AEON] Error al renderizar calendario desde Supabase:', err);
-    container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de renderizado DB: ${err.message}</div>`;
+    console.error('[AEON] Error al obtener calendario desde Supabase:', err);
+    container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de DB: ${err.message}</div>`;
   }
 }
 
@@ -75,10 +86,18 @@ if (calFeed && !calFeed.dataset.hasListener) {
   });
 }
 
+function initCalendarFilter() {
+  const sel = document.getElementById('calendar-filter');
+  if (sel) {
+    sel.addEventListener('change', (e) => {
+      renderEvents(e.target.value);
+    });
+  }
+}
+
 function initTradingViewWidget() {
   const container = document.getElementById('tv-dxy-widget');
   if (!container) return;
-
   const script = document.createElement('script');
   script.src = "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
   script.async = true;
@@ -93,16 +112,14 @@ function initTradingViewWidget() {
     "autosize": true,
     "largeChartUrl": ""
   });
-  
   container.appendChild(script);
 }
 
-// checkSession local eliminado
-
 async function initApp() {
-  checkSession(); // No bloquear el renderizado
+  checkSession();
   initNavbar();
-  renderCalendar();
+  initCalendarFilter();
+  await fetchCalendar();
   initTradingViewWidget();
 }
 
