@@ -58,6 +58,20 @@ export const calendarRow = (evt, index) => {
         </div>
       </div>
       <div class="eco-details">
+        <div class="mobile-stats desktop-hidden" style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px;">
+           <div style="text-align: center;">
+             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">ACTUAL</div>
+             <div class="eco-data actual ${actualClass}">${evt.actual}</div>
+           </div>
+           <div style="text-align: center;">
+             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">CONS</div>
+             <div class="eco-data forecast">${evt.forecast}</div>
+           </div>
+           <div style="text-align: center;">
+             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">PREV</div>
+             <div class="eco-data previous">${evt.previous}</div>
+           </div>
+        </div>
         ${evt.description}
       </div>
     </div>
