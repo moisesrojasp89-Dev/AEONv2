@@ -55,3 +55,9 @@ Sistema de diseño atomizado:
 
 ---
 *Documento mantenido para referencia arquitectónica rápida.*
+
+
+## Phase 6 Architecture Updates (Current)
+* **Economic Calendar:** Migrated from static JSON to a Supabase PostgreSQL database (`economic_calendar` table).
+* **UI/UX:** Fully responsive Mobile UI with accordion for data stats. Fixed Desktop dropdown issues with dark mode styling. Added dynamic "Próximo Catalizador" widget that calculates time remaining for the next HIGH impact event.
+* **Scraper (WIP):** Moving from `requests` to a `Playwright` headless browser to bypass ForexFactory/Investing limits and capture real-time "Actual" data.
