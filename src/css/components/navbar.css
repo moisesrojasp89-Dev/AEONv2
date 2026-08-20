@@ -225,7 +225,7 @@ body.no-scroll {
   .nav-links { display: flex; }
   .nav-btn { display: inline-flex; }
   .menu-toggle { display: none; }
-  .mobile-menu, .mobile-menu.active { display: none; }
+  .mobile-menu, .mobile-menu.active, .mobile-drawer, .mobile-overlay { display: none !important; }
 }
 
 .mobile-menu-section {
