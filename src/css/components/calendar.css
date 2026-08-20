@@ -180,6 +180,7 @@
 /* Mobile Fallback for Table */
 
 @media (max-width: 900px) {
+  .mobile-asset-badge.desktop-hidden { display: inline-block !important; }
   .eco-header-row { display: none; }
   
   .eco-row {
