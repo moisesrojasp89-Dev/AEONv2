@@ -13,7 +13,10 @@ import { checkSession } from './auth.js';
 // Helper para convertir UTC a Hora Local en formato HH:MM
 function formatLocalTime(utcDateStr) {
   const d = new Date(utcDateStr);
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // Get short weekday (ej: 'lun', 'mar') and time in local timezone
+  const weekday = d.toLocaleDateString('es-ES', { weekday: 'short' }).substring(0, 3);
+  const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return `${weekday.toUpperCase()} ${time}`; // Ej: LUN 14:30
 }
 
 async function renderCalendar() {
