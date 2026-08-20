@@ -41,6 +41,46 @@ function isThisMonth(dateObj) {
          dateObj.getFullYear() === today.getFullYear();
 }
 
+
+function updateNextCatalyst() {
+  const container = document.querySelector('.upcoming-event');
+  if (!container || !globalEvents || globalEvents.length === 0) return;
+
+  const now = new Date();
+  // Buscar el próximo evento de Alto Impacto
+  const nextEvent = globalEvents.find(e => {
+    return e.impact.toUpperCase() === 'HIGH' && new Date(e.event_time) > now;
+  });
+
+  if (!nextEvent) {
+    container.innerHTML = `<p class="event-desc" style="text-align:center; padding: 1rem 0;">No hay catalizadores mayores programados.</p>`;
+    return;
+  }
+
+  const eventTime = new Date(nextEvent.event_time);
+  const diffMs = eventTime - now;
+  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  // Formato: FALTAN 02H 45M o FALTAN 3D 02H
+  let countdownText = '';
+  if (diffHrs > 24) {
+    const days = Math.floor(diffHrs / 24);
+    const remainHrs = diffHrs % 24;
+    countdownText = `FALTAN ${days}D ${remainHrs.toString().padStart(2, '0')}H`;
+  } else {
+    countdownText = `FALTAN ${diffHrs.toString().padStart(2, '0')}H ${diffMins.toString().padStart(2, '0')}M`;
+  }
+
+  container.innerHTML = `
+    <div class="event-countdown">
+      <span class="live-dot"></span> ${countdownText}
+    </div>
+    <h4 class="event-title" style="margin-top: 0.5rem; font-size: 0.95rem; font-weight: 600;">${nextEvent.country} - ${nextEvent.event_name}</h4>
+    <p class="event-desc" style="margin-top: 0.25rem;">Evento de Alta Volatilidad. Riesgo de inyección de liquidez y barrido de stops.</p>
+  `;
+}
+
 function renderEvents() {
   const container = document.getElementById('calendar-feed');
   const currencyFilter = document.getElementById('calendar-filter')?.value || 'all';
@@ -99,6 +139,7 @@ async function fetchCalendar() {
     if (error) throw error;
     globalEvents = events || [];
     renderEvents();
+    updateNextCatalyst();
   } catch (err) {
     console.error('[AEON] Error al obtener calendario desde Supabase:', err);
     container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de DB: ${err.message}</div>`;
