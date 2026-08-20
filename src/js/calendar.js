@@ -81,6 +81,45 @@ function updateNextCatalyst() {
   `;
 }
 
+
+function startLiveCountdowns() {
+  setInterval(() => {
+    const now = new Date();
+    const rows = document.querySelectorAll('.eco-row');
+    
+    rows.forEach(row => {
+      const timeEl = row.querySelector('.time');
+      if (!timeEl) return;
+      
+      const eventTimeStr = row.getAttribute('data-time');
+      if (!eventTimeStr) return;
+      
+      const eventTime = new Date(eventTimeStr);
+      const diffMs = eventTime - now;
+      
+      // If event is in exactly 5 minutes or less, show countdown
+      if (diffMs > 0 && diffMs <= 5 * 60 * 1000) {
+        const mins = Math.floor(diffMs / 60000);
+        const secs = Math.floor((diffMs % 60000) / 1000);
+        const text = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        if (!timeEl.hasAttribute('data-original-html')) {
+          timeEl.setAttribute('data-original-html', timeEl.innerHTML);
+        }
+        
+        timeEl.innerHTML = `<span style="color: #ef4444; font-weight: bold; font-family: var(--font-mono); animation: pulse 1s infinite;">${text}</span>`;
+      } 
+      // Reset if passed
+      else if (diffMs < 0 && timeEl.hasAttribute('data-original-html')) {
+         timeEl.innerHTML = timeEl.getAttribute('data-original-html');
+         timeEl.removeAttribute('data-original-html');
+      }
+    });
+  }, 1000);
+}
+
+// Start it when events are rendered
+
 function renderEvents() {
   const container = document.getElementById('calendar-feed');
   const currencyFilter = document.getElementById('calendar-filter')?.value || 'all';
@@ -140,6 +179,7 @@ async function fetchCalendar() {
     globalEvents = events || [];
     renderEvents();
     updateNextCatalyst();
+    if (!window.liveCountdownStarted) { startLiveCountdowns(); window.liveCountdownStarted = true; }
   } catch (err) {
     console.error('[AEON] Error al obtener calendario desde Supabase:', err);
     container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de DB: ${err.message}</div>`;
