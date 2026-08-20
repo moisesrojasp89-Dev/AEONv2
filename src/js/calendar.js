@@ -131,10 +131,7 @@ function renderEvents() {
 
   // 1. Filtro de Monedas
   let filtered = globalEvents;
-  if (currencyFilter === 'majors') {
-    const majors = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
-    filtered = globalEvents.filter(e => majors.includes(e.country));
-  } else if (currencyFilter !== 'all') {
+  if (currencyFilter !== 'all') {
     filtered = globalEvents.filter(e => e.country === currencyFilter);
   }
 
