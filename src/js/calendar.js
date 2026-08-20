@@ -43,7 +43,7 @@ function isThisMonth(dateObj) {
 
 
 function updateNextCatalyst() {
-  const container = document.querySelector('.upcoming-event');
+  const container = document.querySelector('.catalyst-box');
   if (!container || !globalEvents || globalEvents.length === 0) return;
 
   const now = new Date();
