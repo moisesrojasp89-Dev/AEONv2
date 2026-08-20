@@ -64,7 +64,7 @@
         <img src="/AEON.png" alt="AEON" class="logo-img" />
       </a>
       <ul class="nav-links" role="list">
-        <li><a href="#news">Briefing</a></li>
+        <li><a href="#briefing">Briefing</a></li>
         <li><a href="#mercados">Mercados</a></li>
           <li><a href="#senales" class="nav-link">Señales</a></li>
           <li><a href="/calendario.html" class="nav-link">Calendario</a></li>
@@ -87,12 +87,28 @@
       </button>
     </nav>
     <div class="mobile-menu">
-      <a href="#news" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
-      <a href="#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
-      <a href="#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
-      <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
-      <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">Iniciar Sesión</a>
-      <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
+      <div class="mobile-menu-section">
+        <p class="mobile-menu-label">Navegación</p>
+        <a href="#briefing" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
+        <a href="#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
+        <a href="#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
+        <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
+      </div>
+      
+      <div class="mobile-menu-section" id="mobile-nav-guest">
+        <p class="mobile-menu-label">Usuario</p>
+        <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">Iniciar Sesión</a>
+      </div>
+      
+      <div class="mobile-menu-section" id="mobile-nav-user" style="display: none;">
+        <p class="mobile-menu-label">Usuario</p>
+        <a href="/dashboard.html" class="mobile-link" onclick="toggleMobileMenu()">Dashboard</a>
+        <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()">Cerrar Sesión</button>
+      </div>
+
+      <div class="mobile-menu-cta">
+        <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
+      </div>
     </div>
   </header>
 
@@ -115,7 +131,7 @@
       <div class="hero-chart" id="hero-chart" aria-label="Gráfico XAU/USD"></div>
     </section>
 
-    <section class="news-section container" id="news" aria-labelledby="news-heading">
+    <section class="news-section container" id="briefing" aria-labelledby="news-heading">
       <div class="news-panel">
         <div class="eco-head-header">
           <div class="eco-head-title-group">
@@ -163,7 +179,7 @@
           <h2 id="signals-heading">Señales educativas</h2>
           <p>Última semana · Niveles, R:R y contexto de sesión.</p>
         </div>
-        <a href="#premium" class="btn-secondary" style="padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.85rem; border-bottom: 1px solid var(--border-2);">Ver todas →</a>
+        <a href="#pro" class="btn-secondary" style="padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.85rem; border-bottom: 1px solid var(--border-2);">Ver todas →</a>
       </div>
       <div class="signals-list" id="signals-list" role="list"></div>
     </section>
@@ -178,7 +194,7 @@
       <div class="education-grid" id="education-grid"></div>
     </section>
 
-    <section class="premium-section container" id="premium" aria-labelledby="premium-heading">
+    <section class="premium-section container" id="pro" aria-labelledby="premium-heading">
       <div class="premium-inner">
         <span class="hero-badge">
           <span class="badge-dot" aria-hidden="true"></span>
@@ -205,7 +221,7 @@
       <div class="footer-links">
         <div class="footer-col">
           <p class="footer-col-title">Plataforma</p>
-          <a href="#noticias">Noticias</a>
+          <a href="#briefing">Noticias</a>
           <a href="#mercados">Mercados</a>
           <a href="#senales">Señales</a>
           <a href="#educacion">Educación</a>

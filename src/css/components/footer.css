@@ -60,3 +60,20 @@
   line-height: 1.65;
   max-width: 72ch;
 }
+
+@media (max-width: 768px) {
+  .footer-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .footer-col {
+    min-width: auto;
+  }
+  .footer-col a {
+    font-size: 0.75rem;
+  }
+  .risk-warning {
+    font-size: 0.65rem;
+  }
+}

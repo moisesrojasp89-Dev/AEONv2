@@ -119,3 +119,26 @@
 .badge-bull    { background: rgba(61,214,140,0.12);  color: var(--green); border: 1px solid rgba(61,214,140,0.22); }
 .badge-bear    { background: rgba(255,92,106,0.12);  color: var(--red);   border: 1px solid rgba(255,92,106,0.22); }
 .badge-lateral { background: rgba(14,165,233,0.12);  color: var(--accent);  border: 1px solid rgba(14,165,233,0.22); }
+
+@media (max-width: 768px) {
+  .market-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .market-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .market-card {
+    min-width: 85%;
+    scroll-snap-align: center;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(4px);
+  }
+}

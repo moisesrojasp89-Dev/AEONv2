@@ -184,3 +184,28 @@
   .menu-toggle { display: none; }
   .mobile-menu, .mobile-menu.active { display: none; }
 }
+
+.mobile-menu-section {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.5rem;
+}
+.mobile-menu-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.mobile-menu-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+  font-weight: 600;
+}
+.mobile-menu-cta {
+  margin-top: auto;
+  padding-top: 1rem;
+}

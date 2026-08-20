@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · hero.css
+   AEON — hero.css
    ============================================================ */
 
 .hero {
@@ -58,7 +58,7 @@
 /* ---- Chart ---- */
 .hero-chart {
   width: 100%;
-  height: 300px;
+  height: 420px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
@@ -70,10 +70,23 @@
   .hero {
     grid-template-columns: 1fr;
     padding: 2.5rem 0 2rem;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 1.5rem;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
   }
 
   .hero-chart {
-    height: 240px;
+    height: 224px;
   }
 }

@@ -127,3 +127,45 @@
 }
 
 .blur-cta:hover { opacity: 0.85; }
+
+.signals-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: var(--surface);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.signals-empty h3 {
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  color: var(--text);
+}
+.signals-empty p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.empty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.empty-badge::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
