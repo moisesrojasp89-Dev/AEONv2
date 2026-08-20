@@ -14,7 +14,9 @@ function formatLocalTime(utcDateStr) {
   const d = new Date(utcDateStr);
   const weekday = d.toLocaleDateString('es-ES', { weekday: 'short' }).substring(0, 3);
   const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  return `${weekday.toUpperCase()} ${time}`;
+  const dayNum = String(d.getDate()).padStart(2, '0');
+  const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+  return `<div style="display:flex; flex-direction:column; line-height:1.2;"><span style="font-size:0.75rem; color:var(--muted);">${weekday.toUpperCase()} ${dayNum}/${monthNum}</span><span style="font-weight:600;">${time}</span></div>`;
 }
 
 // Helpers para fechas en zona local
@@ -152,6 +154,7 @@ function renderEvents() {
 
   const mappedEvents = filtered.map(dbEvt => ({
     time: formatLocalTime(dbEvt.event_time),
+      event_time: dbEvt.event_time,
     assets: [dbEvt.country],
     impact: dbEvt.impact.toUpperCase(),
     event: dbEvt.event_name,

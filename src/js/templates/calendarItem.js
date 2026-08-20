@@ -42,7 +42,7 @@ export const calendarRow = (evt, index) => {
   const currency = evt.assets && evt.assets[0] ? evt.assets[0].split('/')[0] : 'USD';
 
   return `
-    <div class="eco-row" data-time="${event.event_time}"-group" id="eco-grp-${index}">
+    <div class="eco-row-group" id="eco-grp-${index}" data-time="${evt.event_time}">
       <div class="eco-row" data-index="${index}">
         <div class="eco-cell eco-time">${evt.time}</div>
         <div class="eco-cell eco-asset">${currency}</div>
