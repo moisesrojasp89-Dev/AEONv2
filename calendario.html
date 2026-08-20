@@ -38,7 +38,14 @@
       z-index: -1;
     }
   </style>
-</head>
+
+    <style>
+      select.mobile-news-select option {
+        background-color: #0f172a; /* Slate 900 for dark mode dropdowns */
+        color: #ffffff;
+      }
+    </style>
+  </head>
 <body>
 
   <div class="bg-mesh"></div>
@@ -95,12 +102,12 @@
         </div>
 
         <div class="eco-head-controls" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-          <select id="calendar-date-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
+          <select id="calendar-date-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px;">
               <option value="today">Hoy</option>
               <option value="week" selected>Esta Semana</option>
               <option value="month">Este Mes</option>
             </select>
-            <select id="calendar-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); border-radius: 8px;">
+            <select id="calendar-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px;">
             <option value="all">Todas las Divisas</option>
             <option value="majors">Mayores (USD, EUR, GBP, JPY)</option>
             <option value="USD">🇺🇸 USD</option>
