@@ -126,24 +126,46 @@ async function loadDynamicNews() {
 }
 
 function initNewsFilters() {
+  // Desktop buttons
   const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => {
+  
+  function applyFilter(filterValue) {
+    // Update active state on desktop buttons
+    filterBtns.forEach(b => {
+      if (b.dataset.filter === filterValue) {
+        b.classList.add('active');
+        b.setAttribute('aria-selected', 'true');
+      } else {
         b.classList.remove('active');
         b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      const filterValue = btn.dataset.filter;
-      if (filterValue === 'all') {
-        renderNews(allNewsCache);
-      } else {
-        const filtered = allNewsCache.filter(item => item.tag.toUpperCase() === filterValue.toUpperCase());
-        renderNews(filtered);
       }
     });
+    
+    // Sync mobile select if exists
+    const mobileSelect = document.getElementById('mobile-news-select');
+    if (mobileSelect && mobileSelect.value !== filterValue) {
+      mobileSelect.value = filterValue;
+    }
+
+    // Apply the filter logic
+    if (filterValue === 'all') {
+      renderNews(allNewsCache);
+    } else {
+      const filtered = allNewsCache.filter(item => item.tag.toUpperCase() === filterValue.toUpperCase());
+      renderNews(filtered);
+    }
+  }
+
+  // Bind desktop clicks
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
   });
+
+  // Bind mobile select change
+  const mobileSelect = document.getElementById('mobile-news-select');
+  if (mobileSelect) {
+    mobileSelect.addEventListener('change', (e) => applyFilter(e.target.value));
+  }
 }
 
 async function initApp() {
