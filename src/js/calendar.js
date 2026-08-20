@@ -17,21 +17,57 @@ function formatLocalTime(utcDateStr) {
   return `${weekday.toUpperCase()} ${time}`;
 }
 
-function renderEvents(filterVal = 'all') {
+// Helpers para fechas en zona local
+function isToday(dateObj) {
+  const today = new Date();
+  return dateObj.getDate() === today.getDate() &&
+         dateObj.getMonth() === today.getMonth() &&
+         dateObj.getFullYear() === today.getFullYear();
+}
+
+function isThisWeek(dateObj) {
+  const today = new Date();
+  const firstDay = new Date(today.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1))); // Lunes
+  firstDay.setHours(0, 0, 0, 0);
+  const lastDay = new Date(firstDay);
+  lastDay.setDate(lastDay.getDate() + 6);
+  lastDay.setHours(23, 59, 59, 999);
+  return dateObj >= firstDay && dateObj <= lastDay;
+}
+
+function isThisMonth(dateObj) {
+  const today = new Date();
+  return dateObj.getMonth() === today.getMonth() &&
+         dateObj.getFullYear() === today.getFullYear();
+}
+
+function renderEvents() {
   const container = document.getElementById('calendar-feed');
+  const currencyFilter = document.getElementById('calendar-filter')?.value || 'all';
+  const dateFilter = document.getElementById('calendar-date-filter')?.value || 'week';
+  
   if (!container) return;
 
-  // Filter
+  // 1. Filtro de Monedas
   let filtered = globalEvents;
-  if (filterVal === 'majors') {
+  if (currencyFilter === 'majors') {
     const majors = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
     filtered = globalEvents.filter(e => majors.includes(e.country));
-  } else if (filterVal !== 'all') {
-    filtered = globalEvents.filter(e => e.country === filterVal);
+  } else if (currencyFilter !== 'all') {
+    filtered = globalEvents.filter(e => e.country === currencyFilter);
   }
 
+  // 2. Filtro de Rango de Fechas (Calculado en Local Time)
+  filtered = filtered.filter(dbEvt => {
+    const localDate = new Date(dbEvt.event_time);
+    if (dateFilter === 'today') return isToday(localDate);
+    if (dateFilter === 'week') return isThisWeek(localDate);
+    if (dateFilter === 'month') return isThisMonth(localDate);
+    return true;
+  });
+
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state">No hay eventos macro programados para esta selección.</div>';
+    container.innerHTML = '<div class="empty-state">No hay eventos macro programados para esta selección y fecha.</div>';
     return;
   }
 
@@ -62,7 +98,7 @@ async function fetchCalendar() {
 
     if (error) throw error;
     globalEvents = events || [];
-    renderEvents(document.getElementById('calendar-filter')?.value || 'all');
+    renderEvents();
   } catch (err) {
     console.error('[AEON] Error al obtener calendario desde Supabase:', err);
     container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de DB: ${err.message}</div>`;
@@ -86,13 +122,12 @@ if (calFeed && !calFeed.dataset.hasListener) {
   });
 }
 
-function initCalendarFilter() {
-  const sel = document.getElementById('calendar-filter');
-  if (sel) {
-    sel.addEventListener('change', (e) => {
-      renderEvents(e.target.value);
-    });
-  }
+function initCalendarFilters() {
+  const selCurr = document.getElementById('calendar-filter');
+  const selDate = document.getElementById('calendar-date-filter');
+  
+  if (selCurr) selCurr.addEventListener('change', renderEvents);
+  if (selDate) selDate.addEventListener('change', renderEvents);
 }
 
 function initTradingViewWidget() {
@@ -118,7 +153,7 @@ function initTradingViewWidget() {
 async function initApp() {
   checkSession();
   initNavbar();
-  initCalendarFilter();
+  initCalendarFilters();
   await fetchCalendar();
   initTradingViewWidget();
 }

@@ -95,17 +95,12 @@
         </div>
 
         <div class="eco-head-controls" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-          <select id="calendar-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background-color: var(--card-bg);">
-            <option value="all">Todas las Divisas</option>
-            <option value="majors">Mayores (USD, EUR, GBP, JPY)</option>
-            <option value="USD">🇺🇸 USD</option>
-            <option value="EUR">🇪🇺 EUR</option>
-            <option value="GBP">🇬🇧 GBP</option>
-            <option value="CAD">🇨🇦 CAD</option>
-            <option value="AUD">🇦🇺 AUD</option>
-            <option value="NZD">🇳🇿 NZD</option>
-            <option value="CHF">🇨🇭 CHF</option>
+          <select id="calendar-date-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background-color: var(--card-bg);">
+            <option value="today">Hoy</option>
+            <option value="week" selected>Esta Semana</option>
+            <option value="month">Este Mes</option>
           </select>
+          <select id="calendar-filter" class="mobile-news-select" style="margin: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto; background-color: var(--card-bg);">
           <div class="impact-legend">
             <div class="legend-item"><span class="impact-dot high"></span> Alta Volatilidad</div>
             <div class="legend-item"><span class="impact-dot med"></span> Media Volatilidad</div>
