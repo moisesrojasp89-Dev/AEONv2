@@ -120,6 +120,7 @@
 .badge-bear    { background: rgba(255,92,106,0.12);  color: var(--red);   border: 1px solid rgba(255,92,106,0.22); }
 .badge-lateral { background: rgba(14,165,233,0.12);  color: var(--accent);  border: 1px solid rgba(14,165,233,0.22); }
 
+
 @media (max-width: 768px) {
   .market-grid {
     display: flex;
@@ -130,15 +131,20 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  .market-grid::-webkit-scrollbar {
-    display: none;
-  }
+  .market-grid::-webkit-scrollbar { display: none; }
   .market-card {
-    min-width: 85%;
-    scroll-snap-align: center;
-    padding: 1rem;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(30, 41, 59, 0.8);
-    backdrop-filter: blur(4px);
+    min-width: 260px; /* Fixed dimension as requested, instead of 85% */
+    width: 260px;
+    scroll-snap-align: start;
+    padding: 0.75rem;
   }
+  .asset-icon { width: 32px; height: 32px; font-size: 0.75rem; }
+  .market-asset h3 { font-size: 0.9rem; }
+  .asset-pair { font-size: 0.65rem; }
+  .mcard-price { font-size: 1.15rem; }
+  .mcard-change { font-size: 0.75rem; }
+  .market-desc { font-size: 0.75rem; margin-bottom: 0.75rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .market-levels { padding-top: 0.5rem; gap: 0.5rem; }
+  .level-label { font-size: 0.65rem; }
+  .level-val { font-size: 0.8rem; }
 }

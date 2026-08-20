@@ -86,30 +86,36 @@
         <span></span><span></span><span></span>
       </button>
     </nav>
-    <div class="mobile-menu">
-      <div class="mobile-menu-section">
-        <p class="mobile-menu-label">Navegación</p>
-        <a href="#briefing" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
-        <a href="#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
-        <a href="#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
+    <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <aside class="mobile-drawer">
+    <div class="drawer-header">
+      <span class="logo-text">AEON</span>
+      <button class="drawer-close" onclick="toggleMobileMenu()">✕</button>
+    </div>
+    <div class="drawer-content">
+      <div class="drawer-section">
+        <p class="drawer-label">Navegación</p>
+        <a href="/#briefing" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
+        <a href="/#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
+        <a href="/#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
         <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
       </div>
       
-      <div class="mobile-menu-section" id="mobile-nav-guest">
-        <p class="mobile-menu-label">Usuario</p>
+      <div class="drawer-section" id="mobile-nav-guest">
+        <p class="drawer-label">Usuario</p>
         <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">Iniciar Sesión</a>
       </div>
       
-      <div class="mobile-menu-section" id="mobile-nav-user" style="display: none;">
-        <p class="mobile-menu-label">Usuario</p>
+      <div class="drawer-section" id="mobile-nav-user" style="display: none;">
+        <p class="drawer-label">Usuario</p>
         <a href="/dashboard.html" class="mobile-link" onclick="toggleMobileMenu()">Dashboard</a>
         <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()">Cerrar Sesión</button>
       </div>
-
-      <div class="mobile-menu-cta">
-        <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
-      </div>
     </div>
+    <div class="drawer-footer">
+      <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
+    </div>
+  </aside>
   </header>
 
   <div class="ticker-bar" aria-label="Precios en tiempo real">
@@ -248,9 +254,10 @@
   <script type="module" src="/src/js/main.js"></script>
   <script>
     function toggleMobileMenu() {
-      document.querySelector('.menu-toggle').classList.toggle('open');
-      document.querySelector('.mobile-menu').classList.toggle('active');
-    }
+    document.body.classList.toggle('no-scroll');
+    document.querySelector('.mobile-overlay').classList.toggle('active');
+    document.querySelector('.mobile-drawer').classList.toggle('active');
+  }
   </script>
 </body>
 </html>

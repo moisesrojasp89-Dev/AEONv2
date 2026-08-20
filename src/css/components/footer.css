@@ -61,19 +61,19 @@
   max-width: 72ch;
 }
 
+
 @media (max-width: 768px) {
+  .footer { padding-top: 2rem; margin-top: 1rem; }
+  .footer-inner { gap: 1.5rem; padding-bottom: 1.5rem; }
+  .footer-brand p { font-size: 0.75rem; }
   .footer-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
   }
-  .footer-col {
-    min-width: auto;
-  }
-  .footer-col a {
-    font-size: 0.75rem;
-  }
-  .risk-warning {
-    font-size: 0.65rem;
-  }
+  .footer-col { gap: 0.4rem; }
+  .footer-col-title { font-size: 0.65rem; margin-bottom: 0.1rem; }
+  .footer-col a { font-size: 0.8rem; }
+  .footer-bottom { padding: 1rem 0; gap: 0.5rem; }
+  .risk-warning { font-size: 0.65rem; line-height: 1.4; }
 }
