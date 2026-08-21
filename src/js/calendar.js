@@ -175,7 +175,8 @@ function renderEvents() {
     description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
   }));
 
-  const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
+  container.innerHTML = ''; // FIX: Purgar DOM
+    const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
   container.innerHTML = html;
 }
 
