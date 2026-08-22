@@ -6,6 +6,7 @@ import { supabase } from '../supabaseClient.js';
 import { TIMING, ASSETS } from '../config/constants.js';
 
 const CACHE_KEY = 'AEON_PRICES_CACHE_V1';
+const CHART_CACHE_KEY = 'AEON_CHART_CACHE_V1';
 
 /**
  * Fetches Crypto live prices and 24h variation from CoinGecko.
@@ -27,6 +28,39 @@ export async function fetchOandaPrices() {
   const { data, error } = await supabase.functions.invoke('oanda');
   if (error) throw error;
   return data;
+}
+
+/**
+ * Fetches historical candle time-series for chart rendering.
+ * @param {string} instrument
+ * @param {number} count
+ * @returns {Promise<Array>}
+ */
+export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 30) {
+  try {
+    const { data, error } = await supabase.functions.invoke('oanda', {
+      body: { action: 'chart', instrument, count },
+    });
+
+    if (error) throw error;
+    if (data && Array.isArray(data.series) && data.series.length > 0) {
+      // Guardar en caché para carga instantánea
+      try {
+        sessionStorage.setItem(CHART_CACHE_KEY, JSON.stringify(data.series));
+      } catch (_) {}
+      return data.series;
+    }
+  } catch (err) {
+    console.warn('[AEON] Error obteniendo serie histórica del gráfico:', err.message);
+  }
+
+  // Fallback a caché previa si existe
+  try {
+    const cached = sessionStorage.getItem(CHART_CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch (_) {}
+
+  return null;
 }
 
 /**

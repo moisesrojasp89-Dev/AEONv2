@@ -1,17 +1,12 @@
 /* ============================================================
-   AEON · chart.js — Lightweight Charts v5 for hero
+   AEON · chart.js — Lightweight Charts v5 for Hero Section
    ============================================================ */
 
 import { createChart, AreaSeries } from 'lightweight-charts';
+import { fetchHistoricalChartData } from './services/marketService.js';
 
-// Sample XAU/USD area data
-const SAMPLE_DATA = [
-  { time: '2026-07-01', value: 3920 }, { time: '2026-07-03', value: 3945 },
-  { time: '2026-07-07', value: 3910 }, { time: '2026-07-08', value: 3935 },
-  { time: '2026-07-09', value: 3960 }, { time: '2026-07-10', value: 3980 },
-  { time: '2026-07-11', value: 3955 }, { time: '2026-07-14', value: 3990 },
-  { time: '2026-07-15', value: 4020 }, { time: '2026-07-16', value: 4005 },
-  { time: '2026-07-17', value: 4045 }, { time: '2026-07-18', value: 4060 },
+// Baseline fallback data for instant rendering before API arrives
+const DEFAULT_SERIES = [
   { time: '2026-07-21', value: 4035 }, { time: '2026-07-22', value: 4080 },
   { time: '2026-07-23', value: 4070 }, { time: '2026-07-24', value: 4110 },
   { time: '2026-07-25', value: 4095 }, { time: '2026-07-28', value: 4130 },
@@ -21,9 +16,12 @@ const SAMPLE_DATA = [
   { time: '2026-08-06', value: 4245 }, { time: '2026-08-07', value: 4210 },
   { time: '2026-08-08', value: 4260 }, { time: '2026-08-11', value: 4290 },
   { time: '2026-08-12', value: 4320 }, { time: '2026-08-13', value: 4366 },
+  { time: '2026-08-14', value: 4420 }, { time: '2026-08-17', value: 4490 },
+  { time: '2026-08-18', value: 4520 }, { time: '2026-08-19', value: 4580 },
+  { time: '2026-08-20', value: 4604 },
 ];
 
-export function initChart() {
+export async function initChart() {
   const container = document.getElementById('hero-chart');
   if (!container) return;
 
@@ -62,6 +60,29 @@ export function initChart() {
     priceFormat: { type: 'custom', formatter: (p) => p.toFixed(0) },
   });
 
-  series.setData(SAMPLE_DATA);
+  // 1. Cargar datos base de inmediato
+  series.setData(DEFAULT_SERIES);
   chart.timeScale().fitContent();
+
+  // 2. Consultar velas históricas reales de OANDA
+  try {
+    const realSeries = await fetchHistoricalChartData('XAU_USD', 30);
+    if (realSeries && realSeries.length > 0) {
+      series.setData(realSeries);
+      chart.timeScale().fitContent();
+    }
+  } catch (err) {
+    console.warn('[AEON] Error sincronizando histórico del gráfico:', err.message);
+  }
+
+  // 3. Responsive Resize Observer
+  const resizeObserver = new ResizeObserver((entries) => {
+    if (!entries || entries.length === 0 || !entries[0].contentRect) return;
+    chart.applyOptions({
+      width: entries[0].contentRect.width,
+      height: entries[0].contentRect.height,
+    });
+  });
+
+  resizeObserver.observe(container);
 }

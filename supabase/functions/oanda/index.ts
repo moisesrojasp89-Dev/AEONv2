@@ -26,10 +26,40 @@ Deno.serve(async (req) => {
 
     const authHeaders = {
       'Authorization': `Bearer ${OANDA_TOKEN}`,
-      'Accept-Datetime-Format': 'UNIX',
+      'Accept-Datetime-Format': 'RFC3339',
     };
 
-    // Consultamos precios actuales y velas diarias en paralelo para calcular la variación %
+    let body: any = {};
+    if (req.method === 'POST') {
+      try {
+        body = await req.json();
+      } catch (_) {}
+    }
+    const url = new URL(req.url);
+    const action = body.action || url.searchParams.get('action') || 'pricing';
+
+    // Acción 1: Obtener serie histórica para el gráfico (Hero Chart)
+    if (action === 'chart') {
+      const instrument = body.instrument || url.searchParams.get('instrument') || 'XAU_USD';
+      const count = body.count || url.searchParams.get('count') || '30';
+      const candleUrl = `https://api-fxpractice.oanda.com/v3/instruments/${instrument}/candles?count=${count}&granularity=D&price=M`;
+      
+      const res = await fetch(candleUrl, { headers: authHeaders });
+      if (!res.ok) throw new Error(`OANDA error velas ${res.status}`);
+      const data = await res.json();
+      
+      const series = (data.candles || []).map((c: any) => ({
+        time: c.time.split('T')[0],
+        value: parseFloat(parseFloat(c.mid.c).toFixed(2)),
+      }));
+
+      return new Response(JSON.stringify({ instrument, series }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
+    // Acción 2: Pricing en vivo + Variación % de sesión
     const pricingUrl = `https://api-fxpractice.oanda.com/v3/accounts/${OANDA_ACCOUNT_ID}/pricing?instruments=${INSTRUMENTS.join(',')}`;
 
     const [pricingRes, ...candlesResults] = await Promise.all([
