@@ -96,15 +96,29 @@
 
     <section class="hero container" aria-labelledby="hero-heading">
       <div class="hero-content">
-        <p class="hero-tags">Macro · Señales · Educación</p>
+        <p class="hero-tags">Macro · Mercados · Inteligencia</p>
         <h1 id="hero-heading" class="hero-title">El contexto que necesitas<br>antes de operar.</h1>
-        <p class="hero-subtitle">Noticias macro, niveles clave y señales educativas para traders de XAU · EUR · GBP.</p>
+        <p class="hero-subtitle">Contexto macroeconómico, niveles clave y análisis de mercado en tiempo real para operar con estructura en Forex, Índices, Commodities y Cripto.</p>
         <div class="hero-buttons">
           <a href="#mercados" class="btn-primary">Ver mercados →</a>
           <a href="#pro" class="btn-secondary">Explorar Análisis</a>
         </div>
       </div>
-      <div class="hero-chart" id="hero-chart" aria-label="Gráfico XAU/USD"></div>
+      <div class="hero-chart-card">
+        <div class="hero-chart-header">
+          <div class="hero-chart-info">
+            <span class="hero-chart-symbol" id="hero-chart-symbol">Oro · Spot Gold</span>
+            <span class="hero-chart-price-badge" id="hero-chart-price">Cargando...</span>
+          </div>
+          <div class="hero-chart-tabs" role="tablist" aria-label="Seleccionar activo para gráfico">
+            <button class="hero-chart-tab active" data-asset="XAU_USD">Oro (XAU)</button>
+            <button class="hero-chart-tab" data-asset="EUR_USD">EUR/USD</button>
+            <button class="hero-chart-tab" data-asset="SPX500_USD">S&P 500</button>
+            <button class="hero-chart-tab" data-asset="BTC">Bitcoin</button>
+          </div>
+        </div>
+        <div class="hero-chart" id="hero-chart-canvas" aria-label="Gráfico interactivo de mercado"></div>
+      </div>
     </section>
 
     <section class="news-section container" id="briefing" aria-labelledby="news-heading">
@@ -203,7 +217,7 @@
     <div class="footer-inner container">
       <div class="footer-brand">
         <img src="/AEON.png" alt="AEON" class="logo-img" />
-        <p>Inteligencia macro, señales educativas y gestión de riesgo para traders de XAUUSD, EURUSD y GBPUSD.</p>
+        <p>Inteligencia macroeconómica, análisis de mercados e información en tiempo real para traders e inversores.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">

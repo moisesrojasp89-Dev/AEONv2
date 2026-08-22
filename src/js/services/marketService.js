@@ -6,7 +6,7 @@ import { supabase } from '../supabaseClient.js';
 import { TIMING, ASSETS } from '../config/constants.js';
 
 const CACHE_KEY = 'AEON_PRICES_CACHE_V1';
-const CHART_CACHE_KEY = 'AEON_CHART_CACHE_V1';
+const CHART_CACHE_PREFIX = 'AEON_CHART_CACHE_';
 
 /**
  * Fetches Crypto live prices and 24h variation from CoinGecko.
@@ -32,31 +32,57 @@ export async function fetchOandaPrices() {
 
 /**
  * Fetches historical candle time-series for chart rendering.
+ * Supports OANDA instruments ('XAU_USD', 'EUR_USD', 'SPX500_USD', etc.) and Crypto ('BTC').
  * @param {string} instrument
  * @param {number} count
  * @returns {Promise<Array>}
  */
 export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 30) {
-  try {
-    const { data, error } = await supabase.functions.invoke('oanda', {
-      body: { action: 'chart', instrument, count },
-    });
+  const cacheKey = `${CHART_CACHE_PREFIX}${instrument}`;
 
-    if (error) throw error;
-    if (data && Array.isArray(data.series) && data.series.length > 0) {
-      // Guardar en caché para carga instantánea
-      try {
-        sessionStorage.setItem(CHART_CACHE_KEY, JSON.stringify(data.series));
-      } catch (_) {}
-      return data.series;
+  // 1. Caso Crypto (Bitcoin)
+  if (instrument === 'BTC' || instrument === 'BTC_USD') {
+    try {
+      const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${count}&interval=daily`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.prices)) {
+          const series = data.prices.map(([timestamp, price]) => ({
+            time: new Date(timestamp).toISOString().split('T')[0],
+            value: Math.round(price),
+          }));
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(series));
+          } catch (_) {}
+          return series;
+        }
+      }
+    } catch (err) {
+      console.warn('[AEON] Error obteniendo serie BTC:', err.message);
     }
-  } catch (err) {
-    console.warn('[AEON] Error obteniendo serie histórica del gráfico:', err.message);
+  } else {
+    // 2. Caso Forex / Commodities / Indices (OANDA)
+    try {
+      const { data, error } = await supabase.functions.invoke('oanda', {
+        body: { action: 'chart', instrument, count },
+      });
+
+      if (error) throw error;
+      if (data && Array.isArray(data.series) && data.series.length > 0) {
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify(data.series));
+        } catch (_) {}
+        return data.series;
+      }
+    } catch (err) {
+      console.warn(`[AEON] Error obteniendo serie ${instrument}:`, err.message);
+    }
   }
 
-  // Fallback a caché previa si existe
+  // Fallback a caché persistida si existe
   try {
-    const cached = sessionStorage.getItem(CHART_CACHE_KEY);
+    const cached = sessionStorage.getItem(cacheKey);
     if (cached) return JSON.parse(cached);
   } catch (_) {}
 

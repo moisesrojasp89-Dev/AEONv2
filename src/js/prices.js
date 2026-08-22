@@ -14,11 +14,13 @@ const prev = { xau: null, eur: null, btc: null, sp: null, nas: null, dow: null }
 let intervalId = null;
 
 function formatPrice(key, price) {
+  const minDigits = key === 'eur' ? 4 : (key === 'btc' ? 0 : 2);
+  const maxDigits = key === 'eur' ? 4 : (key === 'btc' ? 0 : 2);
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: key === 'btc' ? 0 : 2,
-    maximumFractionDigits: key === 'btc' ? 0 : 2,
+    minimumFractionDigits: minDigits,
+    maximumFractionDigits: maxDigits,
   }).format(price);
 }
 

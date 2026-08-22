@@ -3,29 +3,98 @@
    ============================================================ */
 
 import { createChart, AreaSeries } from 'lightweight-charts';
-import { fetchHistoricalChartData } from './services/marketService.js';
+import { fetchHistoricalChartData, getStoredPricesCache } from './services/marketService.js';
 
-// Baseline fallback data for instant rendering before API arrives
-const DEFAULT_SERIES = [
-  { time: '2026-07-21', value: 4035 }, { time: '2026-07-22', value: 4080 },
-  { time: '2026-07-23', value: 4070 }, { time: '2026-07-24', value: 4110 },
-  { time: '2026-07-25', value: 4095 }, { time: '2026-07-28', value: 4130 },
-  { time: '2026-07-29', value: 4150 }, { time: '2026-07-30', value: 4125 },
-  { time: '2026-07-31', value: 4170 }, { time: '2026-08-01', value: 4200 },
-  { time: '2026-08-04', value: 4185 }, { time: '2026-08-05', value: 4220 },
-  { time: '2026-08-06', value: 4245 }, { time: '2026-08-07', value: 4210 },
-  { time: '2026-08-08', value: 4260 }, { time: '2026-08-11', value: 4290 },
-  { time: '2026-08-12', value: 4320 }, { time: '2026-08-13', value: 4366 },
-  { time: '2026-08-14', value: 4420 }, { time: '2026-08-17', value: 4490 },
-  { time: '2026-08-18', value: 4520 }, { time: '2026-08-19', value: 4580 },
-  { time: '2026-08-20', value: 4604 },
-];
+const ASSET_CONFIG = {
+  XAU_USD: {
+    name: 'Oro · Spot Gold',
+    precision: 2,
+    lineColor: '#0EA5E9',
+    topColor: 'rgba(14,165,233,0.28)',
+    bottomColor: 'rgba(14,165,233,0.01)',
+  },
+  EUR_USD: {
+    name: 'EUR/USD · Euro',
+    precision: 4,
+    lineColor: '#38BDF8',
+    topColor: 'rgba(56,189,248,0.28)',
+    bottomColor: 'rgba(56,189,248,0.01)',
+  },
+  SPX500_USD: {
+    name: 'S&P 500 · US Index',
+    precision: 1,
+    lineColor: '#22C55E',
+    topColor: 'rgba(34,197,94,0.28)',
+    bottomColor: 'rgba(34,197,94,0.01)',
+  },
+  BTC: {
+    name: 'BTC/USD · Bitcoin',
+    precision: 0,
+    lineColor: '#F59E0B',
+    topColor: 'rgba(245,158,11,0.28)',
+    bottomColor: 'rgba(245,158,11,0.01)',
+  },
+};
+
+let currentChart = null;
+let currentSeries = null;
+let currentAsset = 'XAU_USD';
+
+function updateHeaderBadge(instrument, seriesData) {
+  const symbolEl = document.getElementById('hero-chart-symbol');
+  const priceBadgeEl = document.getElementById('hero-chart-price');
+  if (!symbolEl || !priceBadgeEl) return;
+
+  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
+  symbolEl.textContent = cfg.name;
+
+  if (seriesData && seriesData.length > 0) {
+    const latest = seriesData[seriesData.length - 1].value;
+    const first = seriesData[0].value;
+    const diffPct = (((latest - first) / first) * 100).toFixed(2);
+    const sign = diffPct >= 0 ? '+' : '';
+    const arrow = diffPct >= 0 ? '▲' : '▼';
+
+    const formattedPrice = new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: cfg.precision,
+      maximumFractionDigits: cfg.precision,
+    }).format(latest);
+
+    priceBadgeEl.textContent = `${formattedPrice} ${arrow} ${sign}${diffPct}% (30d)`;
+  }
+}
+
+async function loadAssetData(instrument) {
+  currentAsset = instrument;
+  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
+
+  if (currentSeries) {
+    currentSeries.applyOptions({
+      lineColor: cfg.lineColor,
+      topColor: cfg.topColor,
+      bottomColor: cfg.bottomColor,
+      priceFormat: {
+        type: 'custom',
+        formatter: (p) => p.toFixed(cfg.precision),
+      },
+    });
+  }
+
+  const seriesData = await fetchHistoricalChartData(instrument, 30);
+  if (seriesData && seriesData.length > 0 && currentSeries && currentChart) {
+    currentSeries.setData(seriesData);
+    currentChart.timeScale().fitContent();
+    updateHeaderBadge(instrument, seriesData);
+  }
+}
 
 export async function initChart() {
-  const container = document.getElementById('hero-chart');
+  const container = document.getElementById('hero-chart-canvas');
   if (!container) return;
 
-  const chart = createChart(container, {
+  currentChart = createChart(container, {
     autoSize: true,
     layout: {
       background: { color: 'transparent' },
@@ -52,33 +121,33 @@ export async function initChart() {
     handleScale: false,
   });
 
-  const series = chart.addSeries(AreaSeries, {
-    topColor: 'rgba(14,165,233,0.28)',
-    bottomColor: 'rgba(14,165,233,0.01)',
-    lineColor: '#0EA5E9',
+  const cfg = ASSET_CONFIG.XAU_USD;
+  currentSeries = currentChart.addSeries(AreaSeries, {
+    topColor: cfg.topColor,
+    bottomColor: cfg.bottomColor,
+    lineColor: cfg.lineColor,
     lineWidth: 2,
-    priceFormat: { type: 'custom', formatter: (p) => p.toFixed(0) },
+    priceFormat: { type: 'custom', formatter: (p) => p.toFixed(cfg.precision) },
   });
 
-  // 1. Cargar datos base de inmediato
-  series.setData(DEFAULT_SERIES);
-  chart.timeScale().fitContent();
+  // Escuchar clics en las pestañas del gráfico
+  const tabs = document.querySelectorAll('.hero-chart-tab');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const asset = tab.dataset.asset;
+      if (asset) loadAssetData(asset);
+    });
+  });
 
-  // 2. Consultar velas históricas reales de OANDA
-  try {
-    const realSeries = await fetchHistoricalChartData('XAU_USD', 30);
-    if (realSeries && realSeries.length > 0) {
-      series.setData(realSeries);
-      chart.timeScale().fitContent();
-    }
-  } catch (err) {
-    console.warn('[AEON] Error sincronizando histórico del gráfico:', err.message);
-  }
+  // Cargar activo inicial (XAU_USD)
+  await loadAssetData('XAU_USD');
 
-  // 3. Responsive Resize Observer
+  // Observador de cambio de tamaño responsivo
   const resizeObserver = new ResizeObserver((entries) => {
     if (!entries || entries.length === 0 || !entries[0].contentRect) return;
-    chart.applyOptions({
+    currentChart.applyOptions({
       width: entries[0].contentRect.width,
       height: entries[0].contentRect.height,
     });
