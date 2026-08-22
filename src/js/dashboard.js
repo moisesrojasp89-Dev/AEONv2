@@ -21,6 +21,7 @@ async function initDashboard() {
 
   const user = session.user;
   const emailEl = document.getElementById('dash-user-email');
+  const nameValEl = document.getElementById('dash-info-name');
   const emailValEl = document.getElementById('dash-info-email');
   const planBadge = document.getElementById('dash-plan-badge');
   const statusVal = document.getElementById('dash-info-status');
@@ -28,7 +29,14 @@ async function initDashboard() {
   const ctaBtn = document.getElementById('dash-plan-cta');
   const logoutBtn = document.getElementById('dash-logout-btn');
 
-  if (emailEl) emailEl.textContent = user.email || 'Trader';
+  const rawName = user.user_metadata?.full_name 
+    || user.user_metadata?.name 
+    || (user.email ? user.email.split('@')[0] : 'Trader');
+
+  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+
+  if (emailEl) emailEl.textContent = displayName;
+  if (nameValEl) nameValEl.textContent = displayName;
   if (emailValEl) emailValEl.textContent = user.email || '—';
 
   // Consultar suscripción activa

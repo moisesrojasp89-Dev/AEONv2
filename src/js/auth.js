@@ -143,12 +143,13 @@ if (registerForm) {
     e.preventDefault();
     hideFeedback();
     
+    const fullName = document.getElementById('full-name')?.value.trim() || '';
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
     const btn = document.getElementById('btn-register');
 
-    if (!email || !password || !passwordConfirm) {
+    if (!fullName || !email || !password || !passwordConfirm) {
       showError('Por favor, completa todos los campos.');
       return;
     }
@@ -170,6 +171,9 @@ if (registerForm) {
       email, 
       password,
       options: {
+        data: {
+          full_name: fullName,
+        },
         emailRedirectTo: window.location.origin
       }
     });
@@ -179,7 +183,7 @@ if (registerForm) {
       btn.disabled = false;
       btn.textContent = 'Registrarse';
     } else {
-      window.location.href = '/index.html'; 
+      window.location.href = '/dashboard.html'; 
     }
   });
 }
