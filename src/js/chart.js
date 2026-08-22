@@ -40,6 +40,7 @@ const ASSET_CONFIG = {
   },
 };
 
+const SERIES_CACHE = {};
 let currentChart = null;
 let currentSeries = null;
 let currentAsset = 'XAU_USD';
@@ -73,30 +74,58 @@ function updateHeaderBadge(instrument, seriesData) {
   }
 }
 
+function applyAssetSeries(instrument, seriesData) {
+  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
+  if (!currentSeries || !currentChart || !seriesData || seriesData.length === 0) return;
+
+  currentSeries.applyOptions({
+    lineColor: cfg.lineColor,
+    topColor: cfg.topColor,
+    bottomColor: cfg.bottomColor,
+    priceFormat: {
+      type: 'price',
+      precision: cfg.precision,
+      minMove: cfg.minMove,
+    },
+  });
+
+  currentSeries.setData(seriesData);
+  currentChart.timeScale().fitContent();
+  currentChart.priceScale('right').applyOptions({ autoScale: true });
+  updateHeaderBadge(instrument, seriesData);
+}
+
 async function loadAssetData(instrument) {
   currentAsset = instrument;
-  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
 
-  if (currentSeries) {
-    currentSeries.applyOptions({
-      lineColor: cfg.lineColor,
-      topColor: cfg.topColor,
-      bottomColor: cfg.bottomColor,
-      priceFormat: {
-        type: 'price',
-        precision: cfg.precision,
-        minMove: cfg.minMove,
-      },
-    });
+  // 1. Si ya está en memoria caché, renderizado instantáneo en 0ms (cero lag)
+  if (SERIES_CACHE[instrument] && SERIES_CACHE[instrument].length > 0) {
+    applyAssetSeries(instrument, SERIES_CACHE[instrument]);
+    return;
   }
 
+  // 2. Si no, consultar y guardar en caché
   const seriesData = await fetchHistoricalChartData(instrument, 30);
-  if (seriesData && seriesData.length > 0 && currentSeries && currentChart) {
-    currentSeries.setData(seriesData);
-    currentChart.timeScale().fitContent();
-    currentChart.priceScale('right').applyOptions({ autoScale: true });
-    updateHeaderBadge(instrument, seriesData);
+  if (seriesData && seriesData.length > 0) {
+    SERIES_CACHE[instrument] = seriesData;
+    if (currentAsset === instrument) {
+      applyAssetSeries(instrument, seriesData);
+    }
   }
+}
+
+async function prefetchAllAssets() {
+  const instruments = ['XAU_USD', 'EUR_USD', 'SPX500_USD', 'BTC'];
+  await Promise.allSettled(
+    instruments.map(async (inst) => {
+      if (!SERIES_CACHE[inst]) {
+        const data = await fetchHistoricalChartData(inst, 30);
+        if (data && data.length > 0) {
+          SERIES_CACHE[inst] = data;
+        }
+      }
+    })
+  );
 }
 
 export async function initChart() {
@@ -152,7 +181,7 @@ export async function initChart() {
     },
   });
 
-  // Escuchar clics en las pestañas del gráfico
+  // Escuchar clics en las pestañas del gráfico (Respuesta instantánea)
   const tabs = document.querySelectorAll('.hero-chart-tab');
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -163,8 +192,11 @@ export async function initChart() {
     });
   });
 
-  // Cargar activo inicial (XAU_USD)
+  // Cargar activo inicial de inmediato
   await loadAssetData('XAU_USD');
+
+  // Pre-cargar el resto de activos en segundo plano para que los clics sean inmediatos
+  prefetchAllAssets();
 
   // Observador de cambio de tamaño responsivo
   const resizeObserver = new ResizeObserver((entries) => {
