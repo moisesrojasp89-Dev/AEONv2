@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEON | Panel de Usuario</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>✦</text></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/css/variables.css" />
+  <link rel="stylesheet" href="/src/css/reset.css" />
+  <link rel="stylesheet" href="/src/css/layout.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/components/buttons.css" />
+  <link rel="stylesheet" href="/src/css/components/navbar.css" />
+  <link rel="stylesheet" href="/src/css/components/dashboard.css" />
+  <link rel="stylesheet" href="/src/css/components/footer.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
+</head>
+<body>
+
+  <div class="bg-mesh" aria-hidden="true"></div>
+
+  <header class="header" role="banner">
+    <nav class="navbar container" aria-label="Navegación principal">
+      <a href="/index.html" class="logo" aria-label="AEON inicio">
+        <img src="/AEON.png" alt="AEON" class="logo-img" />
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/index.html#briefing">Briefing</a></li>
+        <li><a href="/index.html#mercados">Mercados</a></li>
+        <li><a href="/index.html#senales">Señales</a></li>
+        <li><a href="/calendario.html">Calendario</a></li>
+        <li><a href="/index.html#educacion">Educación</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="desktop-only" style="display: flex; align-items: center; gap: 1rem;">
+          <a href="/index.html" class="nav-btn btn-nav-ghost">Volver a Terminal</a>
+          <button id="dash-logout-btn" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none; cursor: pointer;">Cerrar Sesión</button>
+        </div>
+      </div>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-drawer" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="dashboard-section container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-welcome">Hola, <span id="dash-user-email">Cargando...</span></h1>
+      <p class="dashboard-subtitle">Gestiona tu suscripción, perfil y accesos exclusivos de AEON Terminal.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Card 1: Membresía y Plan -->
+      <div class="dashboard-card">
+        <div>
+          <h2 class="dashboard-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Estado de Membresía
+          </h2>
+          <div id="dash-plan-badge" class="plan-badge-display free">Cargando Plan...</div>
+          
+          <div class="dash-info-list">
+            <div class="dash-info-item">
+              <span class="dash-info-label">Estado</span>
+              <span id="dash-info-status" class="dash-info-val">Verificando...</span>
+            </div>
+            <div class="dash-info-item">
+              <span class="dash-info-label">Vigencia</span>
+              <span id="dash-info-period" class="dash-info-val">—</span>
+            </div>
+          </div>
+        </div>
+
+        <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block" style="margin-top: 1rem; text-decoration: none;">Mejorar a PRO →</a>
+      </div>
+
+      <!-- Card 2: Accesos Directos -->
+      <div class="dashboard-card">
+        <div>
+          <h2 class="dashboard-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Accesos de Plataforma
+          </h2>
+          
+          <div class="dash-actions-group">
+            <a href="/index.html#senales" class="dash-btn">
+              <span>🎯 Señales en Vivo</span>
+              <span>→</span>
+            </a>
+            <a href="/calendario.html" class="dash-btn">
+              <span>📅 Calendario Económico</span>
+              <span>→</span>
+            </a>
+            <a href="/index.html#briefing" class="dash-btn">
+              <span>📡 Radar Macro & Briefing</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Cuenta y Seguridad -->
+      <div class="dashboard-card">
+        <div>
+          <h2 class="dashboard-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Cuenta y Seguridad
+          </h2>
+          
+          <div class="dash-info-list">
+            <div class="dash-info-item">
+              <span class="dash-info-label">Email</span>
+              <span id="dash-info-email" class="dash-info-val" style="font-size: 0.8rem;">—</span>
+            </div>
+          </div>
+
+          <div class="dash-actions-group">
+            <a href="/recuperar.html" class="dash-btn">
+              <span>🔒 Cambiar Contraseña</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner container">
+      <div class="footer-brand">
+        <img src="/AEON.png" alt="AEON" class="logo-img" />
+        <p>Inteligencia macro, señales educativas y gestión de riesgo para traders de XAUUSD, EURUSD y GBPUSD.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-title">Plataforma</p>
+          <a href="/index.html#briefing">Noticias</a>
+          <a href="/index.html#mercados">Mercados</a>
+          <a href="/index.html#senales">Señales</a>
+          <a href="/calendario.html">Calendario</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Legal</p>
+          <a href="/aviso-legal.html">Aviso Legal</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/cookies.html">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      <p>© 2026 AEON Trading Group. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/dashboard.js"></script>
+  <script>
+    function toggleMobileMenu() {
+      document.body.classList.toggle('no-scroll');
+      document.querySelector('.mobile-overlay').classList.toggle('active');
+      document.querySelector('.mobile-drawer').classList.toggle('active');
+    }
+  </script>
+
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación móvil">
+    <div class="drawer-header">
+      <span class="logo-text">AEON</span>
+      <button class="drawer-close" onclick="toggleMobileMenu()">✕</button>
+    </div>
+    <div class="drawer-content">
+      <div class="drawer-section">
+        <p class="drawer-label">Navegación</p>
+        <a href="/index.html#briefing" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
+        <a href="/index.html#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
+        <a href="/index.html#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
+        <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
+      </div>
+      
+      <div class="drawer-section">
+        <p class="drawer-label">Cuenta</p>
+        <a href="/recuperar.html" class="mobile-link" onclick="toggleMobileMenu()">Cambiar Contraseña</a>
+      </div>
+    </div>
+  </aside>
+</body>
+</html>

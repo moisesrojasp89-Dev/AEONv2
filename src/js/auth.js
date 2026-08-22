@@ -51,7 +51,7 @@ export async function checkSession() {
       } catch (e) {
         console.error('Error al cerrar sesión', e);
       }
-      window.location.reload();
+      window.location.href = '/index.html';
     };
 
     if (btnLogout) btnLogout.onclick = handleLogout;
@@ -66,19 +66,39 @@ export async function checkSession() {
 
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
+const recoverForm = document.getElementById('recover-form');
+const updatePasswordForm = document.getElementById('update-password-form');
 const errorDiv = document.getElementById('auth-error');
+const successDiv = document.getElementById('auth-success');
 
 function showError(msg) {
   if (errorDiv) {
     errorDiv.textContent = msg;
     errorDiv.hidden = false;
   }
+  if (successDiv) {
+    successDiv.hidden = true;
+  }
 }
 
-function hideError() {
+function showSuccess(msg) {
+  if (successDiv) {
+    successDiv.textContent = msg;
+    successDiv.hidden = false;
+  }
+  if (errorDiv) {
+    errorDiv.hidden = true;
+  }
+}
+
+function hideFeedback() {
   if (errorDiv) {
     errorDiv.textContent = '';
     errorDiv.hidden = true;
+  }
+  if (successDiv) {
+    successDiv.textContent = '';
+    successDiv.hidden = true;
   }
 }
 
@@ -86,7 +106,7 @@ function hideError() {
 if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    hideError();
+    hideFeedback();
     
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -116,7 +136,7 @@ if (loginForm) {
 if (registerForm) {
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    hideError();
+    hideFeedback();
     
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -155,6 +175,85 @@ if (registerForm) {
       btn.textContent = 'Registrarse';
     } else {
       window.location.href = '/index.html'; 
+    }
+  });
+}
+
+// Lógica de Recuperación de Contraseña (Envío de Enlace)
+if (recoverForm) {
+  recoverForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideFeedback();
+
+    const email = document.getElementById('email').value.trim();
+    const btn = document.getElementById('btn-recover');
+
+    if (!email) {
+      showError('Ingresa tu correo electrónico.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando enlace...';
+
+    const redirectUrl = `${window.location.origin}/actualizar-password.html`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    if (error) {
+      showError(error.message);
+      btn.disabled = false;
+      btn.textContent = 'Enviar Enlace';
+    } else {
+      showSuccess('¡Enlace enviado! Revisa tu bandeja de entrada o carpeta de spam para restablecer tu contraseña.');
+      btn.disabled = false;
+      btn.textContent = 'Reenviar Enlace';
+    }
+  });
+}
+
+// Lógica de Actualización de Nueva Contraseña
+if (updatePasswordForm) {
+  updatePasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideFeedback();
+
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-new-password').value;
+    const btn = document.getElementById('btn-update-password');
+
+    if (!newPassword || !confirmPassword) {
+      showError('Por favor, ingresa tu nueva contraseña.');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      showError('La nueva contraseña debe tener al menos 8 caracteres.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando nueva contraseña...';
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      showError(error.message);
+      btn.disabled = false;
+      btn.textContent = 'Actualizar Contraseña';
+    } else {
+      showSuccess('¡Contraseña actualizada exitosamente! Redirigiendo al inicio...');
+      setTimeout(() => {
+        window.location.href = '/index.html';
+      }, 2000);
     }
   });
 }
