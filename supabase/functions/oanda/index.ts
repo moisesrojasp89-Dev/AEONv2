@@ -48,9 +48,10 @@ Deno.serve(async (req) => {
       if (!res.ok) throw new Error(`OANDA error velas ${res.status}`);
       const data = await res.json();
       
+      // Conservar la precisión decimal original de cada instrumento (sin redondear con toFixed(2))
       const series = (data.candles || []).map((c: any) => ({
         time: c.time.split('T')[0],
-        value: parseFloat(parseFloat(c.mid.c).toFixed(2)),
+        value: parseFloat(c.mid.c),
       }));
 
       return new Response(JSON.stringify({ instrument, series }), {
@@ -81,7 +82,6 @@ Deno.serve(async (req) => {
 
     const pricingData = await pricingRes.json();
 
-    // Calcular cambio porcentual diario respecto a la apertura (Open) de la sesión
     const changes: Record<string, number> = {};
     candlesResults.forEach((cData) => {
       if (cData && cData.instrument && Array.isArray(cData.candles) && cData.candles[0]) {
