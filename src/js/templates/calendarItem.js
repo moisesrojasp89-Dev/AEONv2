@@ -1,8 +1,9 @@
 /* ============================================================
-   AEON · templates/calendarItem.js
+   AEON · templates/calendarItem.js — Rich Macro Impact Matrix
    ============================================================ */
 
 import { escapeHTML } from '../utils/sanitize.js';
+import { getMacroImpactContext } from '../services/calendarService.js';
 
 export function parseEcoValue(str) {
   if (typeof str !== 'string') return null;
@@ -26,65 +27,83 @@ export function parseEcoValue(str) {
 }
 
 export const calendarRow = (evt, index) => {
-  const impactClass = evt.impact === 'HIGH' ? 'high' : 'med';
+  const impactUpper = String(evt.impact || '').toUpperCase();
+  const impactClass = impactUpper === 'HIGH' ? 'high' : (impactUpper === 'MEDIUM' || impactUpper === 'MED' ? 'med' : 'low');
   
   let actualClass = '';
-  if (evt.actual === 'Pendiente') {
+  if (evt.actual === 'Pendiente' || !evt.actual) {
     actualClass = 'pending';
   } else {
     const actVal = parseEcoValue(evt.actual);
     const forVal = parseEcoValue(evt.forecast);
     
-    if (actVal !== null && forVal !== null && evt.evaluation) {
-      if (evt.evaluation === 'higherIsBetter') {
-        actualClass = actVal > forVal ? 'better' : (actVal < forVal ? 'worse' : '');
-      } else if (evt.evaluation === 'lowerIsBetter') {
-        actualClass = actVal < forVal ? 'better' : (actVal > forVal ? 'worse' : '');
-      }
+    if (actVal !== null && forVal !== null) {
+      actualClass = actVal >= forVal ? 'better' : 'worse';
     }
   }
 
-  // Extraer la primera moneda (ej: USD) para el badge
-  const currency = evt.assets && evt.assets[0] ? evt.assets[0].split('/')[0] : 'USD';
+  const currency = evt.country || (evt.assets && evt.assets[0] ? evt.assets[0] : 'USD');
+  const macro = getMacroImpactContext(evt.event_name || evt.event || '', currency, impactUpper);
+
+  const assetBadges = (macro.affectedAssets || [])
+    .map(a => `<span class="macro-asset-badge">${escapeHTML(a)}</span>`)
+    .join('');
 
   return `
     <div class="eco-row-group" id="eco-grp-${index}" data-time="${escapeHTML(evt.event_time)}">
-      <div class="eco-row" data-index="${index}">
+      <div class="eco-row" data-index="${index}" role="button" aria-expanded="false" tabindex="0">
         <div class="eco-cell eco-time">
           <span class="eco-time-date">${escapeHTML(evt.date || '')}</span>
           <span class="eco-time-hour">${escapeHTML(evt.time || '')}</span>
         </div>
-        <div class="eco-cell eco-asset">${escapeHTML(currency)}</div>
-        <div class="eco-cell impact"><span class="impact-dot ${impactClass}" title="Impacto ${escapeHTML(evt.impact)}"></span></div>
-        <div class="eco-cell eco-event">
-          <span class="mobile-asset-badge desktop-hidden" style="display: none; font-size: 0.65rem; font-family: var(--font-mono); padding: 0.15rem 0.35rem; background: rgba(255,255,255,0.1); border-radius: 4px; margin-right: 0.4rem; color: #fff;">${escapeHTML(currency)}</span>
-          ${escapeHTML(evt.event)}
+        <div class="eco-cell eco-asset">
+          <span class="currency-tag">${escapeHTML(currency)}</span>
         </div>
-        <div class="eco-cell eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${escapeHTML(evt.actual)}</div>
-        <div class="eco-cell eco-data forecast" style="color: #cbd5e1;">${escapeHTML(evt.forecast)}</div>
-        <div class="eco-cell eco-data previous" style="color: #cbd5e1;">${escapeHTML(evt.previous)}</div>
+        <div class="eco-cell impact">
+          <span class="impact-dot ${impactClass}" title="Impacto ${escapeHTML(evt.impact)}"></span>
+        </div>
+        <div class="eco-cell eco-event">
+          <span class="event-name">${escapeHTML(evt.event_name || evt.event)}</span>
+          <span class="event-category">${escapeHTML(macro.category)}</span>
+        </div>
+        <div class="eco-cell eco-data actual ${actualClass}">${escapeHTML(evt.actual || 'Pendiente')}</div>
+        <div class="eco-cell eco-data forecast">${escapeHTML(evt.forecast || '—')}</div>
+        <div class="eco-cell eco-data previous">${escapeHTML(evt.previous || '—')}</div>
         <div class="eco-cell eco-expand">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </div>
       </div>
+
       <div class="eco-details">
-        <div class="mobile-stats desktop-hidden" style="display: none; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; width: 100%; box-sizing: border-box;">
-           <div style="text-align: center;">
-             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">ACTUAL</div>
-             <div class="eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${escapeHTML(evt.actual)}</div>
-           </div>
-           <div style="text-align: center;">
-             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">CONS</div>
-             <div class="eco-data forecast" style="color: #cbd5e1;">${escapeHTML(evt.forecast)}</div>
-           </div>
-           <div style="text-align: center;">
-             <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">PREV</div>
-             <div class="eco-data previous" style="color: #cbd5e1;">${escapeHTML(evt.previous)}</div>
-           </div>
+        <div class="macro-impact-card">
+          <div class="macro-header-row">
+            <div class="macro-title-group">
+              <span class="macro-icon">⚡</span>
+              <h4 class="macro-title">Matriz de Transmisión Macro · ${escapeHTML(currency)}</h4>
+            </div>
+            <span class="macro-volatility-badge">Volatilidad: ${escapeHTML(macro.volatility)}</span>
+          </div>
+
+          <p class="macro-summary">${escapeHTML(macro.summary)}</p>
+
+          <div class="macro-scenarios-grid">
+            <div class="macro-scenario-box bullish">
+              <div class="scenario-label">▲ Escenario > Consenso</div>
+              <p class="scenario-text">${escapeHTML(macro.bullishScenario)}</p>
+            </div>
+            <div class="macro-scenario-box bearish">
+              <div class="scenario-label">▼ Escenario < Consenso</div>
+              <p class="scenario-text">${escapeHTML(macro.bearishScenario)}</p>
+            </div>
+          </div>
+
+          <div class="macro-assets-row">
+            <span class="assets-label">Activos en Radar:</span>
+            <div class="assets-list">${assetBadges}</div>
+          </div>
         </div>
-        ${escapeHTML(evt.description)}
       </div>
     </div>
   `;
