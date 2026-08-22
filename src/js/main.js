@@ -1,7 +1,4 @@
-/* ============================================================
-   AEON · main.js — Application Orchestrator
-   ============================================================ */
-
+import { supabase } from './supabaseClient.js';
 import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
 import { initChart }  from './chart.js';
@@ -18,6 +15,13 @@ import {
   renderTickerBar,
 } from './render.js';
 import data from '../data/markets.json';
+
+// Detectar si el usuario llega con enlace de recuperación de contraseña
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    window.location.href = '/actualizar-password.html';
+  }
+});
 
 let currentUser = null;
 let isPro = false;

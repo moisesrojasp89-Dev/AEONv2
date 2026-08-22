@@ -1,9 +1,14 @@
-/* ============================================================
-   AEON · auth.js — Authentication & Session Manager
-   ============================================================ */
-
 import { supabase } from './supabaseClient.js';
 import { DB_TABLES } from './config/constants.js';
+
+// Si el usuario llega con un token de recuperación de contraseña
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    if (!window.location.pathname.includes('actualizar-password.html')) {
+      window.location.href = '/actualizar-password.html';
+    }
+  }
+});
 
 export async function checkSession() {
   let session = null;
