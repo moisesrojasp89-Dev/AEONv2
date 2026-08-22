@@ -1,11 +1,37 @@
 /* ============================================================
-   AEON · dashboard.js — User Dashboard Controller
+   AEON · dashboard.js — Institutional User Terminal Controller
    ============================================================ */
 
 import { supabase } from './supabaseClient.js';
 import { DB_TABLES } from './config/constants.js';
 import { initNavbar } from './navbar.js';
-import { escapeHTML } from './utils/sanitize.js';
+
+function computeInitials(name = '') {
+  if (!name) return 'TR';
+  const clean = name.trim();
+  const parts = clean.split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return clean.slice(0, 2).toUpperCase();
+}
+
+function computeTerminalId(userId = '') {
+  if (!userId) return '#8942';
+  const hex = userId.replace(/-/g, '');
+  return '#' + hex.slice(0, 5).toUpperCase();
+}
+
+function showAlert(alertEl, message, type = 'success') {
+  if (!alertEl) return;
+  alertEl.textContent = message;
+  alertEl.className = `dash-alert ${type}`;
+  alertEl.style.display = 'block';
+
+  setTimeout(() => {
+    alertEl.style.display = 'none';
+  }, 4000);
+}
 
 async function initDashboard() {
   initNavbar();
@@ -14,32 +40,153 @@ async function initDashboard() {
   const session = authData?.session;
 
   if (!session) {
-    // Si no está logueado, redirigir a login
     window.location.href = '/login.html';
     return;
   }
 
   const user = session.user;
-  const emailEl = document.getElementById('dash-user-email');
-  const nameValEl = document.getElementById('dash-info-name');
-  const emailValEl = document.getElementById('dash-info-email');
+  const meta = user.user_metadata || {};
+
+  // Elementos DOM
+  const avatarInitialsEl = document.getElementById('dash-avatar-initials');
+  const userDisplayNameEl = document.getElementById('dash-user-display-name');
+  const userEmailMetaEl = document.getElementById('dash-user-email-meta');
+  const terminalIdEl = document.getElementById('dash-terminal-id');
+  const profileBadgeTop = document.getElementById('dash-profile-badge-top');
+
+  const inputName = document.getElementById('dash-input-name');
+  const inputEmail = document.getElementById('dash-input-email');
+  const inputBackupEmail = document.getElementById('dash-input-backup-email');
+  const selectTimezone = document.getElementById('dash-select-timezone');
+  const profileAlert = document.getElementById('dash-profile-alert');
+  const formProfile = document.getElementById('form-profile');
+
+  const inputNewPass = document.getElementById('dash-input-new-pass');
+  const inputConfirmPass = document.getElementById('dash-input-confirm-pass');
+  const passwordAlert = document.getElementById('dash-password-alert');
+  const formPassword = document.getElementById('form-password');
+
   const planBadge = document.getElementById('dash-plan-badge');
   const statusVal = document.getElementById('dash-info-status');
   const periodVal = document.getElementById('dash-info-period');
   const ctaBtn = document.getElementById('dash-plan-cta');
   const logoutBtn = document.getElementById('dash-logout-btn');
 
-  const rawName = user.user_metadata?.full_name 
-    || user.user_metadata?.name 
-    || (user.email ? user.email.split('@')[0] : 'Trader');
+  // Inicializar Datos del Usuario
+  let currentName = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : 'Trader');
+  let currentBackupEmail = meta.backup_email || '';
+  let currentTimezone = meta.timezone || 'America/Caracas';
 
-  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  function renderUserInfo() {
+    const initials = computeInitials(currentName);
+    if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
+    if (userDisplayNameEl) userDisplayNameEl.textContent = currentName;
+    if (userEmailMetaEl) userEmailMetaEl.textContent = user.email || '—';
+    if (terminalIdEl) terminalIdEl.textContent = `AEON-ID: ${computeTerminalId(user.id)}`;
 
-  if (emailEl) emailEl.textContent = displayName;
-  if (nameValEl) nameValEl.textContent = displayName;
-  if (emailValEl) emailValEl.textContent = user.email || '—';
+    if (inputName) inputName.value = currentName;
+    if (inputEmail) inputEmail.value = user.email || '';
+    if (inputBackupEmail) inputBackupEmail.value = currentBackupEmail;
+    if (selectTimezone) selectTimezone.value = currentTimezone;
+  }
 
-  // Consultar suscripción activa
+  renderUserInfo();
+
+  // 1. Guardar Datos de Perfil
+  if (formProfile) {
+    formProfile.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newName = inputName.value.trim();
+      const newBackupEmail = inputBackupEmail.value.trim();
+      const newTimezone = selectTimezone.value;
+      const saveBtn = document.getElementById('btn-save-profile');
+
+      if (!newName) {
+        showAlert(profileAlert, 'El nombre completo es requerido.', 'error');
+        return;
+      }
+
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Guardando...';
+      }
+
+      try {
+        const { error } = await supabase.auth.updateUser({
+          data: {
+            full_name: newName,
+            backup_email: newBackupEmail,
+            timezone: newTimezone,
+          },
+        });
+
+        if (error) throw error;
+
+        // Sincronizar en memoria
+        currentName = newName;
+        currentBackupEmail = newBackupEmail;
+        currentTimezone = newTimezone;
+        renderUserInfo();
+
+        showAlert(profileAlert, '✓ Perfil actualizado con éxito.', 'success');
+      } catch (err) {
+        console.error('[AEON] Error actualizando perfil:', err);
+        showAlert(profileAlert, `Error: ${err.message}`, 'error');
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Guardar Cambios';
+        }
+      }
+    });
+  }
+
+  // 2. Actualizar Contraseña
+  if (formPassword) {
+    formPassword.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newPass = inputNewPass.value;
+      const confirmPass = inputConfirmPass.value;
+      const updateBtn = document.getElementById('btn-update-password');
+
+      if (newPass.length < 8) {
+        showAlert(passwordAlert, 'La contraseña debe tener al menos 8 caracteres.', 'error');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        showAlert(passwordAlert, 'Las contraseñas no coinciden.', 'error');
+        return;
+      }
+
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.textContent = 'Actualizando...';
+      }
+
+      try {
+        const { error } = await supabase.auth.updateUser({
+          password: newPass,
+        });
+
+        if (error) throw error;
+
+        inputNewPass.value = '';
+        inputConfirmPass.value = '';
+        showAlert(passwordAlert, '✓ Contraseña actualizada correctamente.', 'success');
+      } catch (err) {
+        console.error('[AEON] Error actualizando contraseña:', err);
+        showAlert(passwordAlert, `Error: ${err.message}`, 'error');
+      } finally {
+        if (updateBtn) {
+          updateBtn.disabled = false;
+          updateBtn.textContent = 'Actualizar Contraseña';
+        }
+      }
+    });
+  }
+
+  // 3. Consultar Suscripción
   try {
     const { data: subData } = await supabase
       .from(DB_TABLES.SUBSCRIPTIONS)
@@ -51,9 +198,14 @@ async function initDashboard() {
       .maybeSingle();
 
     if (subData) {
+      const proText = '★ Rango PRO Activo';
       if (planBadge) {
         planBadge.className = 'plan-badge-display pro';
-        planBadge.textContent = '★ Rango PRO Activo';
+        planBadge.textContent = proText;
+      }
+      if (profileBadgeTop) {
+        profileBadgeTop.className = 'plan-badge-display pro';
+        profileBadgeTop.textContent = 'PRO Trader';
       }
       if (statusVal) statusVal.textContent = 'Activo';
       if (periodVal && subData.current_period_end) {
@@ -65,9 +217,14 @@ async function initDashboard() {
         ctaBtn.href = '/index.html#senales';
       }
     } else {
+      const freeText = 'Plan Gratuito';
       if (planBadge) {
         planBadge.className = 'plan-badge-display free';
-        planBadge.textContent = 'Plan Gratuito';
+        planBadge.textContent = freeText;
+      }
+      if (profileBadgeTop) {
+        profileBadgeTop.className = 'plan-badge-display free';
+        profileBadgeTop.textContent = freeText;
       }
       if (statusVal) statusVal.textContent = 'Limitado';
       if (periodVal) periodVal.textContent = 'Ilimitado';
@@ -77,9 +234,10 @@ async function initDashboard() {
       }
     }
   } catch (err) {
-    console.error('[AEON] Error cargando datos de suscripción:', err);
+    console.warn('[AEON] Error verificando suscripción:', err.message);
   }
 
+  // 4. Cerrar Sesión
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();

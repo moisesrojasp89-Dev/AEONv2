@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/src/css/variables.css" />
   <link rel="stylesheet" href="/src/css/reset.css" />
@@ -59,19 +59,104 @@
   </header>
 
   <main class="dashboard-section container">
-    <div class="dashboard-header">
-      <h1 class="dashboard-welcome">Hola, <span id="dash-user-email">Cargando...</span></h1>
-      <p class="dashboard-subtitle">Gestiona tu suscripción, perfil y accesos exclusivos de AEON Terminal.</p>
+    <!-- Header: Banner de Identidad del Trader -->
+    <div class="dash-profile-banner">
+      <div class="dash-profile-main">
+        <div class="dash-avatar" id="dash-avatar-initials">--</div>
+        <div class="dash-profile-info">
+          <h1 class="dash-welcome-name" id="dash-user-display-name">Cargando...</h1>
+          <div class="dash-meta-row">
+            <span id="dash-user-email-meta">—</span>
+            <span>·</span>
+            <span class="dash-terminal-id" id="dash-terminal-id">AEON-ID: #----</span>
+          </div>
+        </div>
+      </div>
+      <div id="dash-profile-badge-top" class="plan-badge-display free" style="margin-bottom: 0;">Plan Gratuito</div>
     </div>
 
+    <!-- Grid Modular del Dashboard -->
     <div class="dashboard-grid">
-      <!-- Card 1: Membresía y Plan -->
+      
+      <!-- Card 1: Perfil y Datos Personales -->
+      <div class="dashboard-card">
+        <div>
+          <h2 class="dashboard-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Perfil del Trader
+          </h2>
+
+          <form id="form-profile" class="dash-form">
+            <div class="dash-field">
+              <label for="dash-input-name" class="dash-label">Nombre Completo</label>
+              <input type="text" id="dash-input-name" class="dash-input" placeholder="Ej. Moisés Alejandro" required />
+            </div>
+
+            <div class="dash-field">
+              <label for="dash-input-email" class="dash-label">Correo Principal</label>
+              <div class="dash-input-wrapper">
+                <input type="email" id="dash-input-email" class="dash-input" readonly />
+                <span class="verified-tag">✓ Verificado</span>
+              </div>
+            </div>
+
+            <div class="dash-field">
+              <label for="dash-input-backup-email" class="dash-label">Correo de Respaldo</label>
+              <input type="email" id="dash-input-backup-email" class="dash-input" placeholder="correo_secundario@gmail.com" />
+            </div>
+
+            <div class="dash-field">
+              <label for="dash-select-timezone" class="dash-label">Zona Horaria de Trading</label>
+              <select id="dash-select-timezone" class="dash-select">
+                <option value="America/Caracas">UTC-4 (Caracas / Santiago / NY Invierno)</option>
+                <option value="America/New_York">UTC-5 (Nueva York / Bogotá / Lima)</option>
+                <option value="America/Argentina/Buenos_Aires">UTC-3 (Buenos Aires / São Paulo)</option>
+                <option value="Europe/Madrid">UTC+1 / UTC+2 (Madrid / París / Roma)</option>
+                <option value="UTC">UTC+0 (Londres / Tiempo Universal)</option>
+              </select>
+            </div>
+
+            <div id="dash-profile-alert" class="dash-alert" role="alert"></div>
+
+            <button type="submit" id="btn-save-profile" class="btn btn-primary btn-block" style="margin-top: 0.5rem; border: none; cursor: pointer;">Guardar Cambios</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Card 2: Seguridad y Credenciales -->
+      <div class="dashboard-card">
+        <div>
+          <h2 class="dashboard-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Seguridad y Acceso
+          </h2>
+
+          <form id="form-password" class="dash-form">
+            <div class="dash-field">
+              <label for="dash-input-new-pass" class="dash-label">Nueva Contraseña</label>
+              <input type="password" id="dash-input-new-pass" class="dash-input" placeholder="Mínimo 8 caracteres" minlength="8" required />
+            </div>
+
+            <div class="dash-field">
+              <label for="dash-input-confirm-pass" class="dash-label">Confirmar Contraseña</label>
+              <input type="password" id="dash-input-confirm-pass" class="dash-input" placeholder="Repite la nueva contraseña" minlength="8" required />
+            </div>
+
+            <div id="dash-password-alert" class="dash-alert" role="alert"></div>
+
+            <button type="submit" id="btn-update-password" class="btn btn-secondary btn-block" style="margin-top: 0.5rem; cursor: pointer;">Actualizar Contraseña</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Card 3: Estado de Membresía & Terminal -->
       <div class="dashboard-card">
         <div>
           <h2 class="dashboard-card-title">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            Estado de Membresía
+            Terminal & Membresía
           </h2>
+          
           <div id="dash-plan-badge" class="plan-badge-display free">Cargando Plan...</div>
           
           <div class="dash-info-list">
@@ -84,19 +169,10 @@
               <span id="dash-info-period" class="dash-info-val">—</span>
             </div>
           </div>
-        </div>
 
-        <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block" style="margin-top: 1rem; text-decoration: none;">Mejorar a PRO →</a>
-      </div>
+          <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block" style="margin-bottom: 1.25rem; text-decoration: none; text-align: center;">Mejorar a PRO →</a>
 
-      <!-- Card 2: Accesos Directos -->
-      <div class="dashboard-card">
-        <div>
-          <h2 class="dashboard-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            Accesos de Plataforma
-          </h2>
-          
+          <h3 class="dash-label" style="margin-bottom: 0.5rem;">Accesos Rápidos</h3>
           <div class="dash-actions-group">
             <a href="/index.html#senales" class="dash-btn">
               <span>🎯 Señales en Vivo</span>
@@ -114,33 +190,6 @@
         </div>
       </div>
 
-      <!-- Card 3: Cuenta y Seguridad -->
-      <div class="dashboard-card">
-        <div>
-          <h2 class="dashboard-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            Cuenta y Seguridad
-          </h2>
-          
-          <div class="dash-info-list">
-            <div class="dash-info-item">
-              <span class="dash-info-label">Usuario</span>
-              <span id="dash-info-name" class="dash-info-val">—</span>
-            </div>
-            <div class="dash-info-item">
-              <span class="dash-info-label">Email</span>
-              <span id="dash-info-email" class="dash-info-val" style="font-size: 0.8rem;">—</span>
-            </div>
-          </div>
-
-          <div class="dash-actions-group">
-            <a href="/recuperar.html" class="dash-btn">
-              <span>🔒 Cambiar Contraseña</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 
@@ -197,7 +246,7 @@
       
       <div class="drawer-section">
         <p class="drawer-label">Cuenta</p>
-        <a href="/recuperar.html" class="mobile-link" onclick="toggleMobileMenu()">Cambiar Contraseña</a>
+        <a href="/dashboard.html" class="mobile-link" onclick="toggleMobileMenu()">Mi Perfil</a>
       </div>
     </div>
   </aside>
