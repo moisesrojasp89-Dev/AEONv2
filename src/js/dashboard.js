@@ -58,6 +58,7 @@ async function initDashboard() {
   const inputEmail = document.getElementById('dash-input-email');
   const inputBackupEmail = document.getElementById('dash-input-backup-email');
   const selectTimezone = document.getElementById('dash-select-timezone');
+  const selectLanguage = document.getElementById('dash-select-language');
   const profileAlert = document.getElementById('dash-profile-alert');
   const formProfile = document.getElementById('form-profile');
 
@@ -76,6 +77,7 @@ async function initDashboard() {
   let currentName = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : 'Trader');
   let currentBackupEmail = meta.backup_email || '';
   let currentTimezone = meta.timezone || 'America/Caracas';
+  let currentLanguage = meta.language || 'es';
 
   function renderUserInfo() {
     const initials = computeInitials(currentName);
@@ -88,6 +90,7 @@ async function initDashboard() {
     if (inputEmail) inputEmail.value = user.email || '';
     if (inputBackupEmail) inputBackupEmail.value = currentBackupEmail;
     if (selectTimezone) selectTimezone.value = currentTimezone;
+    if (selectLanguage) selectLanguage.value = currentLanguage;
   }
 
   renderUserInfo();
@@ -99,6 +102,7 @@ async function initDashboard() {
       const newName = inputName.value.trim();
       const newBackupEmail = inputBackupEmail.value.trim();
       const newTimezone = selectTimezone.value;
+      const newLanguage = selectLanguage ? selectLanguage.value : 'es';
       const saveBtn = document.getElementById('btn-save-profile');
 
       if (!newName) {
@@ -117,6 +121,7 @@ async function initDashboard() {
             full_name: newName,
             backup_email: newBackupEmail,
             timezone: newTimezone,
+            language: newLanguage,
           },
         });
 
@@ -126,6 +131,7 @@ async function initDashboard() {
         currentName = newName;
         currentBackupEmail = newBackupEmail;
         currentTimezone = newTimezone;
+        currentLanguage = newLanguage;
         renderUserInfo();
 
         showAlert(profileAlert, '✓ Perfil actualizado con éxito.', 'success');

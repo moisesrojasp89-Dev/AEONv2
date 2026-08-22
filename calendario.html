@@ -64,7 +64,7 @@
         
         <!-- Vistas para usuarios logueados -->
         <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
-          <a href="/dashboard.html" class="nav-btn btn-ghost">Dashboard</a>
+          <a href="/dashboard.html" class="nav-btn btn-ghost">Mi Perfil</a>
           <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none;">Cerrar Sesión</button>
         </div>
       </div>
@@ -177,34 +177,35 @@
   </script>
 
   <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-  <aside class="mobile-drawer">
+  <aside class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación móvil">
     <div class="drawer-header">
       <span class="logo-text">AEON</span>
       <button class="drawer-close" onclick="toggleMobileMenu()">✕</button>
     </div>
     <div class="drawer-content">
       <div class="drawer-section">
-        <p class="drawer-label">Navegación</p>
-        <a href="/#briefing" class="mobile-link" onclick="toggleMobileMenu()">Briefing</a>
-        <a href="/#mercados" class="mobile-link" onclick="toggleMobileMenu()">Mercados</a>
-        <a href="/#senales" class="mobile-link" onclick="toggleMobileMenu()">Señales</a>
-        <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()">Calendario</a>
+        <p class="drawer-label">Plataforma</p>
+        <a href="/index.html#briefing" class="mobile-link" onclick="toggleMobileMenu()"><span>📡</span> <span>Radar & Briefing</span></a>
+        <a href="/index.html#mercados" class="mobile-link" onclick="toggleMobileMenu()"><span>📊</span> <span>Mercados en Vivo</span></a>
+        <a href="/index.html#senales" class="mobile-link" onclick="toggleMobileMenu()"><span>🎯</span> <span>Señales Institucionales</span></a>
+        <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()"><span>📅</span> <span>Calendario Económico</span></a>
+        <a href="/index.html#educacion" class="mobile-link" onclick="toggleMobileMenu()"><span>📚</span> <span>Academia & Macro</span></a>
       </div>
       
       <div class="drawer-section" id="mobile-nav-guest">
-        <p class="drawer-label">Usuario</p>
-        <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">Iniciar Sesión</a>
+        <p class="drawer-label">Cuenta</p>
+        <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()"><span>🔑</span> <span>Iniciar Sesión</span></a>
       </div>
       
       <div class="drawer-section" id="mobile-nav-user" style="display: none;">
-        <p class="drawer-label">Usuario</p>
-        <a href="/dashboard.html" class="mobile-link" onclick="toggleMobileMenu()">Dashboard</a>
-        <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()">Cerrar Sesión</button>
+        <p class="drawer-label">Mi Cuenta</p>
+        <a href="/dashboard.html" class="mobile-link" onclick="toggleMobileMenu()"><span>👤</span> <span>Mi Perfil</span></a>
+        <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()"><span>🚪</span> <span>Cerrar Sesión</span></button>
       </div>
     </div>
     <div class="drawer-footer">
-      <a href="/registro.html" class="mobile-cta">Acceso Pro</a>
+      <a href="/registro.html" class="mobile-cta">Desbloquear Acceso Pro ✦</a>
     </div>
   </aside>
-  </body>
+</body>
 </html>

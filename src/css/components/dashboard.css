@@ -163,7 +163,7 @@
 .dash-input,
 .dash-select {
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(12, 19, 34, 0.8);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 0.65rem 0.85rem;
@@ -174,11 +174,26 @@
   transition: all var(--dur-fast) var(--ease);
 }
 
+.dash-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230EA5E9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.dash-select option {
+  background-color: #0c1322;
+  color: #E4E4E7;
+  padding: 0.75rem;
+}
+
 .dash-input:focus,
 .dash-select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent-dim);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(12, 19, 34, 0.95);
 }
 
 .dash-input[readonly] {
