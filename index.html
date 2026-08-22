@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -66,27 +66,26 @@
       <ul class="nav-links" role="list">
         <li><a href="#briefing">Briefing</a></li>
         <li><a href="#mercados">Mercados</a></li>
-          <li><a href="#senales" class="nav-link">Señales</a></li>
-          <li><a href="/calendario.html" class="nav-link">Calendario</a></li>
+        <li><a href="#senales" class="nav-link">Señales</a></li>
+        <li><a href="/calendario.html" class="nav-link">Calendario</a></li>
       </ul>
       <div class="nav-actions">
         <!-- Vistas para visitantes (no logueados) -->
         <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
-          <a href="/login.html" class="nav-btn btn-ghost">Iniciar Sesión</a>
+          <a href="/login.html" class="nav-btn btn-nav-ghost">Iniciar Sesión</a>
           <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
         </div>
         
         <!-- Vistas para usuarios logueados -->
         <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
-          <a href="/dashboard.html" class="nav-btn btn-ghost">Dashboard</a>
+          <a href="/dashboard.html" class="nav-btn btn-nav-ghost">Dashboard</a>
           <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none;">Cerrar Sesión</button>
         </div>
       </div>
-      <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMobileMenu()">
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-drawer" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
     </nav>
-    
   </header>
 
   <div class="ticker-bar" aria-label="Precios en tiempo real">
@@ -126,23 +125,23 @@
 
           <!-- Segmented Controls -->
           <div class="eco-head-controls desktop-news-filters" id="news-filters" role="tablist" aria-label="Filtros de noticias">
-              <button class="eco-head-tab active filter-btn" data-filter="all" role="tab" aria-selected="true">Live Feed</button>
-              <button class="eco-head-tab filter-btn" data-filter="ORO" role="tab" aria-selected="false">Metales</button>
-              <button class="eco-head-tab filter-btn" data-filter="FOREX" role="tab" aria-selected="false">Forex</button>
-              <button class="eco-head-tab filter-btn" data-filter="ÍNDICES" role="tab" aria-selected="false">Índices</button>
-              <button class="eco-head-tab filter-btn" data-filter="FED" role="tab" aria-selected="false">Centrales</button>
-            </div>
+            <button class="eco-head-tab active filter-btn" data-filter="all" role="tab" aria-selected="true">Live Feed</button>
+            <button class="eco-head-tab filter-btn" data-filter="ORO" role="tab" aria-selected="false">Metales</button>
+            <button class="eco-head-tab filter-btn" data-filter="FOREX" role="tab" aria-selected="false">Forex</button>
+            <button class="eco-head-tab filter-btn" data-filter="ÍNDICES" role="tab" aria-selected="false">Índices</button>
+            <button class="eco-head-tab filter-btn" data-filter="FED" role="tab" aria-selected="false">Centrales</button>
+          </div>
 
-            <!-- Select Dropdown (Mobile) -->
-            <div class="mobile-news-filters">
-              <select id="mobile-news-select" class="mobile-news-select">
-                <option value="all">Live Feed</option>
-                <option value="ORO">Metales</option>
-                <option value="FOREX">Forex</option>
-                <option value="ÍNDICES">Índices</option>
-                <option value="FED">Centrales</option>
-              </select>
-            </div>
+          <!-- Select Dropdown (Mobile) -->
+          <div class="mobile-news-filters">
+            <select id="mobile-news-select" class="mobile-news-select" aria-label="Filtrar noticias por categoría">
+              <option value="all">Live Feed</option>
+              <option value="ORO">Metales</option>
+              <option value="FOREX">Forex</option>
+              <option value="ÍNDICES">Índices</option>
+              <option value="FED">Centrales</option>
+            </select>
+          </div>
         </div>
 
         <div class="news-list" id="news-list">
@@ -236,13 +235,14 @@
   <script type="module" src="/src/js/main.js"></script>
   <script>
     function toggleMobileMenu() {
-    document.body.classList.toggle('no-scroll');
-    document.querySelector('.mobile-overlay').classList.toggle('active');
-    document.querySelector('.mobile-drawer').classList.toggle('active');
-  }
+      document.body.classList.toggle('no-scroll');
+      document.querySelector('.mobile-overlay').classList.toggle('active');
+      document.querySelector('.mobile-drawer').classList.toggle('active');
+    }
   </script>
-<div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-  <aside class="mobile-drawer">
+
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación móvil">
     <div class="drawer-header">
       <span class="logo-text">AEON</span>
       <button class="drawer-close" onclick="toggleMobileMenu()">✕</button>

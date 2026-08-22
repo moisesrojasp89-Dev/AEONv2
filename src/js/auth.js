@@ -1,4 +1,9 @@
+/* ============================================================
+   AEON · auth.js — Authentication & Session Manager
+   ============================================================ */
+
 import { supabase } from './supabaseClient.js';
+import { DB_TABLES } from './config/constants.js';
 
 export async function checkSession() {
   let session = null;
@@ -10,7 +15,7 @@ export async function checkSession() {
     if (session) {
       // Determinar estado PRO: plan='pro', status='active', y no expirado
       const { data: subData, error: subErr } = await supabase
-        .from('subscriptions')
+        .from(DB_TABLES.SUBSCRIPTIONS)
         .select('plan, status, current_period_end')
         .eq('user_id', session.user.id)
         .eq('plan', 'pro')
@@ -29,21 +34,28 @@ export async function checkSession() {
   const guestView = document.getElementById('nav-guest-view');
   const userView = document.getElementById('nav-user-view');
   const btnLogout = document.getElementById('btn-logout');
+  const btnLogoutMobile = document.getElementById('btn-logout-mobile');
 
   if (session) {
     if (guestView) guestView.style.display = 'none';
     if (userView) userView.style.display = 'flex';
     
-    if (btnLogout) {
-      btnLogout.onclick = async () => {
-        try {
-          await supabase.auth.signOut();
-        } catch (e) {
-          console.error('Error al cerrar sesión', e);
-        }
-        window.location.reload();
-      };
-    }
+    const guestMobile = document.getElementById('mobile-nav-guest');
+    const userMobile = document.getElementById('mobile-nav-user');
+    if (guestMobile) guestMobile.style.display = 'none';
+    if (userMobile) userMobile.style.display = 'block';
+
+    const handleLogout = async () => {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.error('Error al cerrar sesión', e);
+      }
+      window.location.reload();
+    };
+
+    if (btnLogout) btnLogout.onclick = handleLogout;
+    if (btnLogoutMobile) btnLogoutMobile.onclick = handleLogout;
   } else {
     if (guestView) guestView.style.display = 'flex';
     if (userView) userView.style.display = 'none';
@@ -76,21 +88,26 @@ if (loginForm) {
     e.preventDefault();
     hideError();
     
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const btn = document.getElementById('btn-login');
+
+    if (!email || !password) {
+      showError('Por favor, completa todos los campos.');
+      return;
+    }
 
     btn.disabled = true;
     btn.textContent = 'Iniciando sesión...';
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       showError(error.message === 'Invalid login credentials' ? 'Correo o contraseña incorrectos.' : error.message);
       btn.disabled = false;
       btn.textContent = 'Entrar al Sistema';
     } else {
-      window.location.href = '/'; // Redirigir al dashboard/home
+      window.location.href = '/index.html';
     }
   });
 }
@@ -101,10 +118,20 @@ if (registerForm) {
     e.preventDefault();
     hideError();
     
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
     const btn = document.getElementById('btn-register');
+
+    if (!email || !password || !passwordConfirm) {
+      showError('Por favor, completa todos los campos.');
+      return;
+    }
+
+    if (password.length < 8) {
+      showError('La contraseña debe contener al menos 8 caracteres.');
+      return;
+    }
 
     if (password !== passwordConfirm) {
       showError('Las contraseñas no coinciden.');
@@ -114,11 +141,9 @@ if (registerForm) {
     btn.disabled = true;
     btn.textContent = 'Creando cuenta...';
 
-    const { data, error } = await supabase.auth.signUp({ 
+    const { error } = await supabase.auth.signUp({ 
       email, 
       password,
-      // Usamos options para que Supabase no envíe un email de confirmación
-      // asumiendo que para desarrollo desactivaste el "Confirm Email" en Supabase.
       options: {
         emailRedirectTo: window.location.origin
       }
@@ -129,8 +154,7 @@ if (registerForm) {
       btn.disabled = false;
       btn.textContent = 'Registrarse';
     } else {
-      // Supabase por defecto (si no requiere verificación de correo) ya inicia la sesión
-      window.location.href = '/'; 
+      window.location.href = '/index.html'; 
     }
   });
 }
