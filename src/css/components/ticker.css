@@ -1,15 +1,22 @@
 /* ============================================================
-   AEON · ticker.css
+   AEON · ticker.css — Continuous Market Ticker
    ============================================================ */
 
 .ticker-bar {
   width: 100%;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--border);
   overflow: hidden;
   height: 36px;
   display: flex;
   align-items: center;
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ticker-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .ticker-track {
@@ -18,14 +25,16 @@
   white-space: nowrap;
   width: max-content;
   will-change: transform;
-  animation: ticker-scroll 180s linear infinite;
+  animation: ticker-scroll 120s linear infinite;
 }
 
-.ticker-track:hover { animation-play-state: paused; }
+.ticker-track:hover {
+  animation-play-state: paused;
+}
 
 @keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .ticker-item {
@@ -33,6 +42,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0 2rem;
+  flex-shrink: 0;
 }
 
 .ticker-label {
@@ -49,14 +59,17 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
-.ticker-change { font-size: 0.74rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.ticker-change {
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .ticker-change.up   { color: var(--green); }
 .ticker-change.down { color: var(--red); }
-.ticker-sep { color: var(--border-2); padding: 0 0.5rem; }
 
-@media (prefers-reduced-motion: reduce) {
-  .ticker-track {
-    animation: none;
-    overflow-x: auto;
-  }
+.ticker-sep {
+  color: var(--border-2);
+  padding: 0 0.5rem;
 }

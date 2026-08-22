@@ -18,7 +18,10 @@ function formatLocalTime(utcDateStr) {
   const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dayNum = String(d.getDate()).padStart(2, '0');
   const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-  return `<div style="display:flex; flex-direction:column; line-height:1.2;"><span style="font-size:0.75rem; color:var(--muted);">${escapeHTML(weekday.toUpperCase())} ${escapeHTML(dayNum)}/${escapeHTML(monthNum)}</span><span style="font-weight:600;">${escapeHTML(time)}</span></div>`;
+  return {
+    date: `${weekday.toUpperCase()} ${dayNum}/${monthNum}`,
+    time: time
+  };
 }
 
 // Helpers para fechas en zona local
@@ -90,10 +93,11 @@ function startLiveCountdowns() {
     const rows = document.querySelectorAll('.eco-row');
     
     rows.forEach(row => {
-      const timeEl = row.querySelector('.time');
+      const timeEl = row.querySelector('.eco-time-hour');
       if (!timeEl) return;
       
-      const eventTimeStr = row.getAttribute('data-time');
+      const eventGroup = row.closest('.eco-row-group');
+      const eventTimeStr = eventGroup ? eventGroup.getAttribute('data-time') : null;
       if (!eventTimeStr) return;
       
       const eventTime = new Date(eventTimeStr);
@@ -105,16 +109,16 @@ function startLiveCountdowns() {
         const secs = Math.floor((diffMs % 60000) / 1000);
         const text = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         
-        if (!timeEl.hasAttribute('data-original-html')) {
-          timeEl.setAttribute('data-original-html', timeEl.innerHTML);
+        if (!timeEl.hasAttribute('data-original-time')) {
+          timeEl.setAttribute('data-original-time', timeEl.textContent);
         }
         
-        timeEl.innerHTML = `<span style="color: #ef4444; font-weight: bold; font-family: var(--font-mono); animation: pulse 1s infinite;">${escapeHTML(text)}</span>`;
+        timeEl.innerHTML = `<span style="color: #ef4444; font-weight: bold; animation: pulse-glow 1s infinite;">${escapeHTML(text)}</span>`;
       } 
       // Reset if passed
-      else if (diffMs < 0 && timeEl.hasAttribute('data-original-html')) {
-         timeEl.innerHTML = timeEl.getAttribute('data-original-html');
-         timeEl.removeAttribute('data-original-html');
+      else if (diffMs < 0 && timeEl.hasAttribute('data-original-time')) {
+         timeEl.textContent = timeEl.getAttribute('data-original-time');
+         timeEl.removeAttribute('data-original-time');
       }
     });
   }, 1000);
@@ -161,17 +165,21 @@ function renderEvents() {
     return;
   }
 
-  const mappedEvents = filtered.map(dbEvt => ({
-    time: formatLocalTime(dbEvt.event_time),
-    event_time: dbEvt.event_time,
-    assets: [dbEvt.country],
-    impact: String(dbEvt.impact || '').toUpperCase(),
-    event: dbEvt.event_name,
-    actual: dbEvt.actual || 'Pendiente',
-    forecast: dbEvt.forecast || '-',
-    previous: dbEvt.previous || '-',
-    description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
-  }));
+  const mappedEvents = filtered.map(dbEvt => {
+    const timeInfo = formatLocalTime(dbEvt.event_time);
+    return {
+      date: timeInfo.date,
+      time: timeInfo.time,
+      event_time: dbEvt.event_time,
+      assets: [dbEvt.country],
+      impact: String(dbEvt.impact || '').toUpperCase(),
+      event: dbEvt.event_name,
+      actual: dbEvt.actual || 'Pendiente',
+      forecast: dbEvt.forecast || '-',
+      previous: dbEvt.previous || '-',
+      description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
+    };
+  });
 
   const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
   container.innerHTML = html;

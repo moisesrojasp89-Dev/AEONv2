@@ -50,7 +50,10 @@ export const calendarRow = (evt, index) => {
   return `
     <div class="eco-row-group" id="eco-grp-${index}" data-time="${escapeHTML(evt.event_time)}">
       <div class="eco-row" data-index="${index}">
-        <div class="eco-cell eco-time">${escapeHTML(evt.time)}</div>
+        <div class="eco-cell eco-time">
+          <span class="eco-time-date">${escapeHTML(evt.date || '')}</span>
+          <span class="eco-time-hour">${escapeHTML(evt.time || '')}</span>
+        </div>
         <div class="eco-cell eco-asset">${escapeHTML(currency)}</div>
         <div class="eco-cell impact"><span class="impact-dot ${impactClass}" title="Impacto ${escapeHTML(evt.impact)}"></span></div>
         <div class="eco-cell eco-event">

@@ -141,8 +141,24 @@
   color: var(--text);
 }
 
-.eco-time { font-family: var(--font-mono); color: var(--muted); font-size: 0.75rem; }
-.eco-asset { font-family: var(--font-mono); color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+.eco-cell.eco-time {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  justify-content: center;
+}
+.eco-time-date {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.eco-time-hour {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
 .eco-event { font-weight: 500; letter-spacing: -0.01em; }
 .eco-data { font-family: var(--font-mono); font-size: 0.8rem; text-align: right; }
 .eco-data.actual { font-weight: 600; }
