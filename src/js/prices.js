@@ -1,9 +1,14 @@
 /* ============================================================
-   AEON · prices.js — Precios en vivo
+   AEON · prices.js — Precios en vivo & Variación de Sesión
    ============================================================ */
 
-import { supabase } from './supabaseClient.js';
 import { TIMING, ASSETS } from './config/constants.js';
+import {
+  fetchCryptoPrices,
+  fetchOandaPrices,
+  getStoredPricesCache,
+  setStoredPricesCache,
+} from './services/marketService.js';
 
 const prev = { xau: null, eur: null, btc: null, sp: null, nas: null, dow: null };
 let intervalId = null;
@@ -17,7 +22,7 @@ function formatPrice(key, price) {
   }).format(price);
 }
 
-function formatChange(pct) {
+function formatChange(pct = 0) {
   const sign  = pct >= 0 ? '+' : '';
   const arrow = pct >= 0 ? '▲' : '▼';
   return { text: `${arrow} ${sign}${pct.toFixed(2)}%`, cls: pct >= 0 ? 'up' : 'down' };
@@ -29,7 +34,7 @@ function flash(el, dir) {
   el.classList.add(`flash-${dir}`);
 }
 
-function updateTicker(key, price, pct) {
+function updateTicker(key, price, pct = 0) {
   const priceEls = document.querySelectorAll(`[id="price-${key}"]`);
   const changeEls = document.querySelectorAll(`[id="change-${key}"]`);
   if (!priceEls.length || !changeEls.length) return;
@@ -54,7 +59,7 @@ function updateTicker(key, price, pct) {
   });
 }
 
-function updateMarketCard(key, price, pct) {
+function updateMarketCard(key, price, pct = 0) {
   const priceEl  = document.getElementById(`mcard-price-${key}`);
   const changeEl = document.getElementById(`mcard-change-${key}`);
   if (!priceEl || !changeEl) return;
@@ -70,39 +75,53 @@ function setTimestamp(text) {
   if (el) el.textContent = text;
 }
 
-async function fetchCrypto() {
-  const ids = Object.values(ASSETS.CRYPTO).join(',');
-  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
-  if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
-  return res.json();
-}
+function restoreFromCache() {
+  const cached = getStoredPricesCache();
+  if (!cached) return;
 
-async function fetchOanda() {
-  const { data, error } = await supabase.functions.invoke('oanda');
-  if (error) throw error;
-  return data;
+  if (cached.btc) {
+    updateTicker('btc', cached.btc.price, cached.btc.change);
+    updateMarketCard('btc', cached.btc.price, cached.btc.change);
+  }
+  if (cached.xau) {
+    updateTicker('xau', cached.xau.price, cached.xau.change);
+    updateMarketCard('gold', cached.xau.price, cached.xau.change);
+  }
+  if (cached.eur) {
+    updateTicker('eur', cached.eur.price, cached.eur.change);
+    updateMarketCard('eur', cached.eur.price, cached.eur.change);
+  }
+  if (cached.sp) updateTicker('sp', cached.sp.price, cached.sp.change);
+  if (cached.nas) updateTicker('nas', cached.nas.price, cached.nas.change);
+  if (cached.dow) updateTicker('dow', cached.dow.price, cached.dow.change);
+  if (cached.time) setTimestamp(cached.time);
 }
 
 async function refresh() {
+  const cachePayload = getStoredPricesCache() || {};
+
   try {
     const [cryptoData, oandaData] = await Promise.allSettled([
-      fetchCrypto(),
-      fetchOanda()
+      fetchCryptoPrices(),
+      fetchOandaPrices()
     ]);
 
     // Procesar Crypto (CoinGecko)
-    if (cryptoData.status === 'fulfilled') {
+    if (cryptoData.status === 'fulfilled' && cryptoData.value) {
       const btc = cryptoData.value[ASSETS.CRYPTO.BTC];
       if (btc) {
-        updateTicker('btc', btc.usd, btc.usd_24h_change);
-        updateMarketCard('btc', btc.usd, btc.usd_24h_change);
+        const btcPrice = btc.usd;
+        const btcChange = btc.usd_24h_change || 0;
+        updateTicker('btc', btcPrice, btcChange);
+        updateMarketCard('btc', btcPrice, btcChange);
+        cachePayload.btc = { price: btcPrice, change: btcChange };
       }
     }
 
     // Procesar Forex & Indices (OANDA)
-    if (oandaData.status === 'fulfilled' && oandaData.value.prices) {
+    if (oandaData.status === 'fulfilled' && oandaData.value && oandaData.value.prices) {
       const prices = oandaData.value.prices;
+      const changes = oandaData.value.changes || {};
       
       const priceMap = {};
       for (const p of prices) {
@@ -113,36 +132,57 @@ async function refresh() {
       const xau = priceMap['XAU_USD'];
       if (xau) {
         const close = parseFloat(xau.closeoutAsk);
-        updateTicker('xau', close, 0);
-        updateMarketCard('gold', close, 0);
+        const change = changes['XAU_USD'] ?? 0;
+        updateTicker('xau', close, change);
+        updateMarketCard('gold', close, change);
+        cachePayload.xau = { price: close, change };
       }
 
       // EUR_USD
       const eur = priceMap['EUR_USD'];
       if (eur) {
         const close = parseFloat(eur.closeoutAsk);
-        updateTicker('eur', close, 0);
-        updateMarketCard('eur', close, 0);
+        const change = changes['EUR_USD'] ?? 0;
+        updateTicker('eur', close, change);
+        updateMarketCard('eur', close, change);
+        cachePayload.eur = { price: close, change };
       }
 
       // SPX500_USD
       const spx = priceMap['SPX500_USD'];
-      if (spx) updateTicker('sp', parseFloat(spx.closeoutAsk), 0);
+      if (spx) {
+        const close = parseFloat(spx.closeoutAsk);
+        const change = changes['SPX500_USD'] ?? 0;
+        updateTicker('sp', close, change);
+        cachePayload.sp = { price: close, change };
+      }
       
       // NAS100_USD
       const nas = priceMap['NAS100_USD'];
-      if (nas) updateTicker('nas', parseFloat(nas.closeoutAsk), 0);
+      if (nas) {
+        const close = parseFloat(nas.closeoutAsk);
+        const change = changes['NAS100_USD'] ?? 0;
+        updateTicker('nas', close, change);
+        cachePayload.nas = { price: close, change };
+      }
       
       // US30_USD
       const dow = priceMap['US30_USD'];
-      if (dow) updateTicker('dow', parseFloat(dow.closeoutAsk), 0);
+      if (dow) {
+        const close = parseFloat(dow.closeoutAsk);
+        const change = changes['US30_USD'] ?? 0;
+        updateTicker('dow', close, change);
+        cachePayload.dow = { price: close, change };
+      }
     }
 
-    setTimestamp(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+    const timeStr = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    setTimestamp(timeStr);
+    cachePayload.time = timeStr;
+    setStoredPricesCache(cachePayload);
 
   } catch (err) {
-    console.warn('[AEON] Error precios:', err.message);
-    setTimestamp('Desconectado');
+    console.warn('[AEON] Error actualizando precios:', err.message);
   }
 }
 
@@ -157,9 +197,13 @@ function stopInterval() {
 }
 
 export function initPrices() {
+  // 1. Restaurar de inmediato desde caché para 0ms de retraso visual
+  restoreFromCache();
+
+  // 2. Iniciar polling en vivo
   startInterval();
 
-  // Pausar cuando la pestaña no es visible para ahorrar recursos
+  // 3. Pausar cuando la pestaña no es visible para ahorrar recursos
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopInterval();
     else startInterval();
