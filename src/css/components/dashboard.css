@@ -3,6 +3,8 @@
    ============================================================ */
 
 .dashboard-section {
+  position: relative;
+  z-index: 1;
   padding: 4rem 1rem;
   min-height: calc(100dvh - var(--header-h) - 200px);
 }
