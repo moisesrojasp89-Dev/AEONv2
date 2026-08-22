@@ -8,13 +8,7 @@ import { signalCard }    from './templates/signal.js';
 import { eduCard }       from './templates/education.js';
 import { partnerCard }   from './templates/partners.js';
 import { tickerBarItem } from './templates/ticker.js';
-
-const TICKER_PX_PER_SEC = 8;
-
-function syncTickerDuration(track) {
-  // Calculo dinámico removido para garantizar velocidad estable con CSS puro
-  return;
-}
+import { escapeHTML }    from './utils/sanitize.js';
 
 function fill(id, html) {
   const el = document.getElementById(id);
@@ -35,7 +29,7 @@ export function renderPartners(partners)   { fill('partners-grid',  partners.map
 
 export function renderPremiumFeatures(features) {
   fill('premium-features', features.map(
-    (f) => `<li><span class="feat-check" aria-hidden="true">✓</span>${f}</li>`
+    (f) => `<li><span class="feat-check" aria-hidden="true">✓</span>${escapeHTML(f)}</li>`
   ).join(''));
 }
 
@@ -46,15 +40,4 @@ export function renderTickerBar(items) {
   const html = items.map(tickerBarItem).join('');
   el.innerHTML = html + html;
   el.style.animationDuration = '180s';
-
-  requestAnimationFrame(() => syncTickerDuration(el));
-
-  if (!el.dataset.tickerBound) {
-    el.dataset.tickerBound = '1';
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => syncTickerDuration(el), 150);
-    });
-  }
 }

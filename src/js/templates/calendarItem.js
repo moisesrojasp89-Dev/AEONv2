@@ -1,3 +1,9 @@
+/* ============================================================
+   AEON · templates/calendarItem.js
+   ============================================================ */
+
+import { escapeHTML } from '../utils/sanitize.js';
+
 export function parseEcoValue(str) {
   if (typeof str !== 'string') return null;
   const s = str.toUpperCase().trim();
@@ -42,18 +48,18 @@ export const calendarRow = (evt, index) => {
   const currency = evt.assets && evt.assets[0] ? evt.assets[0].split('/')[0] : 'USD';
 
   return `
-    <div class="eco-row-group" id="eco-grp-${index}" data-time="${evt.event_time}">
+    <div class="eco-row-group" id="eco-grp-${index}" data-time="${escapeHTML(evt.event_time)}">
       <div class="eco-row" data-index="${index}">
-        <div class="eco-cell eco-time">${evt.time}</div>
-        <div class="eco-cell eco-asset">${currency}</div>
-        <div class="eco-cell impact"><span class="impact-dot ${impactClass}" title="Impacto ${evt.impact}"></span></div>
+        <div class="eco-cell eco-time">${escapeHTML(evt.time)}</div>
+        <div class="eco-cell eco-asset">${escapeHTML(currency)}</div>
+        <div class="eco-cell impact"><span class="impact-dot ${impactClass}" title="Impacto ${escapeHTML(evt.impact)}"></span></div>
         <div class="eco-cell eco-event">
-          <span class="mobile-asset-badge desktop-hidden" style="display: none; font-size: 0.65rem; font-family: var(--font-mono); padding: 0.15rem 0.35rem; background: rgba(255,255,255,0.1); border-radius: 4px; margin-right: 0.4rem; color: #fff;">${currency}</span>
-          ${evt.event}
+          <span class="mobile-asset-badge desktop-hidden" style="display: none; font-size: 0.65rem; font-family: var(--font-mono); padding: 0.15rem 0.35rem; background: rgba(255,255,255,0.1); border-radius: 4px; margin-right: 0.4rem; color: #fff;">${escapeHTML(currency)}</span>
+          ${escapeHTML(evt.event)}
         </div>
-        <div class="eco-cell eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${evt.actual}</div>
-        <div class="eco-cell eco-data forecast" style="color: #cbd5e1;">${evt.forecast}</div>
-        <div class="eco-cell eco-data previous" style="color: #cbd5e1;">${evt.previous}</div>
+        <div class="eco-cell eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${escapeHTML(evt.actual)}</div>
+        <div class="eco-cell eco-data forecast" style="color: #cbd5e1;">${escapeHTML(evt.forecast)}</div>
+        <div class="eco-cell eco-data previous" style="color: #cbd5e1;">${escapeHTML(evt.previous)}</div>
         <div class="eco-cell eco-expand">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -64,18 +70,18 @@ export const calendarRow = (evt, index) => {
         <div class="mobile-stats desktop-hidden" style="display: none; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; width: 100%; box-sizing: border-box;">
            <div style="text-align: center;">
              <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">ACTUAL</div>
-             <div class="eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${evt.actual}</div>
+             <div class="eco-data actual ${actualClass}" style="color: ${evt.actual === 'Pendiente' ? '#94a3b8' : '#fff'};">${escapeHTML(evt.actual)}</div>
            </div>
            <div style="text-align: center;">
              <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">CONS</div>
-             <div class="eco-data forecast" style="color: #cbd5e1;">${evt.forecast}</div>
+             <div class="eco-data forecast" style="color: #cbd5e1;">${escapeHTML(evt.forecast)}</div>
            </div>
            <div style="text-align: center;">
              <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem;">PREV</div>
-             <div class="eco-data previous" style="color: #cbd5e1;">${evt.previous}</div>
+             <div class="eco-data previous" style="color: #cbd5e1;">${escapeHTML(evt.previous)}</div>
            </div>
         </div>
-        ${evt.description}
+        ${escapeHTML(evt.description)}
       </div>
     </div>
   `;

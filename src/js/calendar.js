@@ -7,8 +7,10 @@ import { initNavbar } from './navbar.js';
 import { calendarRow } from './templates/calendarItem.js';
 import { supabase } from './supabaseClient.js';
 import { checkSession } from './auth.js';
+import { escapeHTML } from './utils/sanitize.js';
 
 let globalEvents = [];
+let liveCountdownStarted = false;
 
 function formatLocalTime(utcDateStr) {
   const d = new Date(utcDateStr);
@@ -16,7 +18,7 @@ function formatLocalTime(utcDateStr) {
   const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const dayNum = String(d.getDate()).padStart(2, '0');
   const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-  return `<div style="display:flex; flex-direction:column; line-height:1.2;"><span style="font-size:0.75rem; color:var(--muted);">${weekday.toUpperCase()} ${dayNum}/${monthNum}</span><span style="font-weight:600;">${time}</span></div>`;
+  return `<div style="display:flex; flex-direction:column; line-height:1.2;"><span style="font-size:0.75rem; color:var(--muted);">${escapeHTML(weekday.toUpperCase())} ${escapeHTML(dayNum)}/${escapeHTML(monthNum)}</span><span style="font-weight:600;">${escapeHTML(time)}</span></div>`;
 }
 
 // Helpers para fechas en zona local
@@ -43,7 +45,6 @@ function isThisMonth(dateObj) {
          dateObj.getFullYear() === today.getFullYear();
 }
 
-
 function updateNextCatalyst() {
   const container = document.querySelector('.catalyst-box');
   if (!container || !globalEvents || globalEvents.length === 0) return;
@@ -51,7 +52,7 @@ function updateNextCatalyst() {
   const now = new Date();
   // Buscar el próximo evento de Alto Impacto
   const nextEvent = globalEvents.find(e => {
-    return e.impact.toUpperCase() === 'HIGH' && new Date(e.event_time) > now;
+    return String(e.impact || '').toUpperCase() === 'HIGH' && new Date(e.event_time) > now;
   });
 
   if (!nextEvent) {
@@ -76,13 +77,12 @@ function updateNextCatalyst() {
 
   container.innerHTML = `
     <div class="event-countdown">
-      <span class="live-dot"></span> ${countdownText}
+      <span class="live-dot"></span> ${escapeHTML(countdownText)}
     </div>
-    <h4 class="event-title" style="margin-top: 0.5rem; font-size: 0.95rem; font-weight: 600;">${nextEvent.country} - ${nextEvent.event_name}</h4>
+    <h4 class="event-title" style="margin-top: 0.5rem; font-size: 0.95rem; font-weight: 600;">${escapeHTML(nextEvent.country)} - ${escapeHTML(nextEvent.event_name)}</h4>
     <p class="event-desc" style="margin-top: 0.25rem;">Evento de Alta Volatilidad. Riesgo de inyección de liquidez y barrido de stops.</p>
   `;
 }
-
 
 function startLiveCountdowns() {
   setInterval(() => {
@@ -109,7 +109,7 @@ function startLiveCountdowns() {
           timeEl.setAttribute('data-original-html', timeEl.innerHTML);
         }
         
-        timeEl.innerHTML = `<span style="color: #ef4444; font-weight: bold; font-family: var(--font-mono); animation: pulse 1s infinite;">${text}</span>`;
+        timeEl.innerHTML = `<span style="color: #ef4444; font-weight: bold; font-family: var(--font-mono); animation: pulse 1s infinite;">${escapeHTML(text)}</span>`;
       } 
       // Reset if passed
       else if (diffMs < 0 && timeEl.hasAttribute('data-original-html')) {
@@ -119,8 +119,6 @@ function startLiveCountdowns() {
     });
   }, 1000);
 }
-
-// Start it when events are rendered
 
 function renderEvents() {
   const container = document.getElementById('calendar-feed');
@@ -146,28 +144,28 @@ function renderEvents() {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; text-align: center; opacity: 0.7;">
-    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(14, 165, 233, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border: 1px solid rgba(14, 165, 233, 0.2);">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="16" y1="2" x2="16" y2="6"></line>
-        <line x1="8" y1="2" x2="8" y2="6"></line>
-        <line x1="3" y1="10" x2="21" y2="10"></line>
-        <path d="M9 16l2 2 4-4"></path>
-      </svg>
-    </div>
-    <h3 style="font-family: var(--font-mono); font-size: 1.1rem; color: #f8fafc; margin-bottom: 0.5rem; letter-spacing: 0.05em;">CERO EVENTOS CATALIZADORES</h3>
-    <p style="font-size: 0.9rem; color: #94a3b8; max-width: 300px;">No se encontraron noticias macroeconómicas de alto o mediano impacto para esta divisa en el rango seleccionado.</p>
-  </div>
-`;
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; text-align: center; opacity: 0.7;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(14, 165, 233, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border: 1px solid rgba(14, 165, 233, 0.2);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="M9 16l2 2 4-4"></path>
+          </svg>
+        </div>
+        <h3 style="font-family: var(--font-mono); font-size: 1.1rem; color: #f8fafc; margin-bottom: 0.5rem; letter-spacing: 0.05em;">CERO EVENTOS CATALIZADORES</h3>
+        <p style="font-size: 0.9rem; color: #94a3b8; max-width: 300px;">No se encontraron noticias macroeconómicas de alto o mediano impacto para esta divisa en el rango seleccionado.</p>
+      </div>
+    `;
     return;
   }
 
   const mappedEvents = filtered.map(dbEvt => ({
     time: formatLocalTime(dbEvt.event_time),
-      event_time: dbEvt.event_time,
+    event_time: dbEvt.event_time,
     assets: [dbEvt.country],
-    impact: dbEvt.impact.toUpperCase(),
+    impact: String(dbEvt.impact || '').toUpperCase(),
     event: dbEvt.event_name,
     actual: dbEvt.actual || 'Pendiente',
     forecast: dbEvt.forecast || '-',
@@ -175,8 +173,7 @@ function renderEvents() {
     description: `Impacto: ${dbEvt.impact}. Evento oficial para ${dbEvt.country}. Datos gestionados en tiempo real.`
   }));
 
-  container.innerHTML = ''; // FIX: Purgar DOM
-    const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
+  const html = mappedEvents.map((evt, index) => calendarRow(evt, index)).join('');
   container.innerHTML = html;
 }
 
@@ -194,10 +191,13 @@ async function fetchCalendar() {
     globalEvents = events || [];
     renderEvents();
     updateNextCatalyst();
-    if (!window.liveCountdownStarted) { startLiveCountdowns(); window.liveCountdownStarted = true; }
+    if (!liveCountdownStarted) {
+      startLiveCountdowns();
+      liveCountdownStarted = true;
+    }
   } catch (err) {
     console.error('[AEON] Error al obtener calendario desde Supabase:', err);
-    container.innerHTML = `<div class="empty-state" style="color: red;">Error crítico de DB: ${err.message}</div>`;
+    container.innerHTML = `<div class="empty-state" style="color: var(--red); padding: 2rem; text-align: center;">No se pudo sincronizar el calendario en este momento.</div>`;
   }
 }
 

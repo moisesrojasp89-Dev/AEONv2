@@ -2,14 +2,17 @@
    AEON · templates/signal.js
    ============================================================ */
 
+import { escapeHTML } from '../utils/sanitize.js';
+
 const STATUS_CLASS = { 'active': 'active', 'won': 'closed', 'lost': 'closed', 'cancelled': 'closed' };
 const STATUS_LABEL = { 'active': 'Activa', 'won': 'Ganada', 'lost': 'Perdida', 'cancelled': 'Cancelada' };
 
 function getAssetIconInfo(asset) {
-  if (asset.includes('XAU')) return { icon: 'Au', iconClass: 'gold' };
-  if (asset.includes('EUR')) return { icon: '€', iconClass: 'euro' };
-  if (asset.includes('GBP')) return { icon: '£', iconClass: 'pound' };
-  if (asset.includes('BTC')) return { icon: '₿', iconClass: 'crypto' };
+  const clean = String(asset || '');
+  if (clean.includes('XAU')) return { icon: 'Au', iconClass: 'gold' };
+  if (clean.includes('EUR')) return { icon: '€', iconClass: 'euro' };
+  if (clean.includes('GBP')) return { icon: '£', iconClass: 'pound' };
+  if (clean.includes('BTC')) return { icon: '₿', iconClass: 'crypto' };
   return { icon: '$', iconClass: 'default' };
 }
 
@@ -34,13 +37,13 @@ const lockedCard = (s, currentUser) => `
     </div>
     <div class="signal-header" aria-hidden="true">
       <div class="signal-asset">
-        <span class="asset-icon ${s.iconInfo.iconClass} sm">${s.iconInfo.icon}</span>
+        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm">${escapeHTML(s.iconInfo.icon)}</span>
         <div>
-          <p class="signal-name">${s.asset}</p>
-          <p class="signal-time">${s.timeStr}</p>
+          <p class="signal-name">${escapeHTML(s.asset)}</p>
+          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
         </div>
       </div>
-      <span class="signal-dir ${s.direction.toLowerCase()}">${s.direction}</span>
+      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
     </div>
     <div class="signal-levels" aria-hidden="true">
       <div class="slevel"><span>Entrada</span><strong>██.███</strong></div>
@@ -51,65 +54,66 @@ const lockedCard = (s, currentUser) => `
 `;
 
 const loadingProCard = (s) => `
-  <article class="signal-card" role="listitem" aria-label="Cargando Señal ${s.asset}">
+  <article class="signal-card" role="listitem" aria-label="Cargando Señal ${escapeHTML(s.asset)}">
     <div class="signal-header">
       <div class="signal-asset">
-        <span class="asset-icon ${s.iconInfo.iconClass} sm" aria-hidden="true">${s.iconInfo.icon}</span>
+        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
         <div>
-          <p class="signal-name">${s.asset}</p>
-          <p class="signal-time">${s.timeStr}</p>
+          <p class="signal-name">${escapeHTML(s.asset)}</p>
+          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
         </div>
       </div>
-      <span class="signal-dir ${s.direction.toLowerCase()}">${s.direction}</span>
+      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
     </div>
     <div class="signal-levels" style="opacity: 0.5; justify-content: center; padding: 2rem 0;">
       <span>⏳ Cargando análisis PRO...</span>
     </div>
     <div class="signal-footer">
       <span class="signal-rr">-</span>
-      <span class="signal-status ${STATUS_CLASS[s.status] ?? ''}">${STATUS_LABEL[s.status] || s.status}</span>
+      <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] ?? '')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
     </div>
   </article>
 `;
 
 const publicCard = (s) => `
-  <article class="signal-card" role="listitem" aria-label="Señal ${s.asset}">
+  <article class="signal-card" role="listitem" aria-label="Señal ${escapeHTML(s.asset)}">
     <div class="signal-header">
       <div class="signal-asset">
-        <span class="asset-icon ${s.iconInfo.iconClass} sm" aria-hidden="true">${s.iconInfo.icon}</span>
+        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
         <div>
-          <p class="signal-name">${s.asset}</p>
-          <p class="signal-time">${s.timeStr}</p>
+          <p class="signal-name">${escapeHTML(s.asset)}</p>
+          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
         </div>
       </div>
-      <span class="signal-dir ${s.direction.toLowerCase()}">${s.direction}</span>
+      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
     </div>
     <div class="signal-levels">
-      <div class="slevel"><span>Entrada</span><strong>${s.entry_price}</strong></div>
-      <div class="slevel"><span>Stop</span><strong class="stop">${s.stop_loss}</strong></div>
-      <div class="slevel"><span>Target</span><strong class="target">${s.take_profit}</strong></div>
+      <div class="slevel"><span>Entrada</span><strong>${escapeHTML(s.entry_price)}</strong></div>
+      <div class="slevel"><span>Stop</span><strong class="stop">${escapeHTML(s.stop_loss)}</strong></div>
+      <div class="slevel"><span>Target</span><strong class="target">${escapeHTML(s.take_profit)}</strong></div>
     </div>
     <div class="signal-footer">
       <span class="signal-rr">RR Calculado</span>
-      <span class="signal-status ${STATUS_CLASS[s.status] ?? ''}">${STATUS_LABEL[s.status] || s.status}</span>
+      <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] ?? '')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
     </div>
   </article>
 `;
 
 export const signalCard = (s, currentUser, isPro) => {
-  s.iconInfo = getAssetIconInfo(s.asset);
-  s.timeStr = getTimeAgo(s.created_at);
+  const cardData = { ...s };
+  cardData.iconInfo = getAssetIconInfo(cardData.asset);
+  cardData.timeStr = getTimeAgo(cardData.created_at);
   
   // Consistencia Eventual: Si es PRO pero aún no tiene datos de entry_price
-  if (isPro && !s.entry_price) {
-    return loadingProCard(s);
+  if (isPro && !cardData.entry_price) {
+    return loadingProCard(cardData);
   }
 
   // Si no es PRO y no tiene entry_price, muestra bloqueado
-  if (!isPro && !s.entry_price) {
-    return lockedCard(s, currentUser);
+  if (!isPro && !cardData.entry_price) {
+    return lockedCard(cardData, currentUser);
   }
 
   // Si tiene los datos (Llegaron por Realtime PRO)
-  return publicCard(s);
+  return publicCard(cardData);
 };
