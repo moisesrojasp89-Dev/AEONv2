@@ -3,12 +3,13 @@
    ============================================================ */
 
 import { createChart, AreaSeries } from 'lightweight-charts';
-import { fetchHistoricalChartData, getStoredPricesCache } from './services/marketService.js';
+import { fetchHistoricalChartData } from './services/marketService.js';
 
 const ASSET_CONFIG = {
   XAU_USD: {
     name: 'Oro · Spot Gold',
     precision: 2,
+    minMove: 0.01,
     lineColor: '#0EA5E9',
     topColor: 'rgba(14,165,233,0.28)',
     bottomColor: 'rgba(14,165,233,0.01)',
@@ -16,6 +17,7 @@ const ASSET_CONFIG = {
   EUR_USD: {
     name: 'EUR/USD · Euro',
     precision: 4,
+    minMove: 0.0001,
     lineColor: '#38BDF8',
     topColor: 'rgba(56,189,248,0.28)',
     bottomColor: 'rgba(56,189,248,0.01)',
@@ -23,6 +25,7 @@ const ASSET_CONFIG = {
   SPX500_USD: {
     name: 'S&P 500 · US Index',
     precision: 1,
+    minMove: 0.1,
     lineColor: '#22C55E',
     topColor: 'rgba(34,197,94,0.28)',
     bottomColor: 'rgba(34,197,94,0.01)',
@@ -30,6 +33,7 @@ const ASSET_CONFIG = {
   BTC: {
     name: 'BTC/USD · Bitcoin',
     precision: 0,
+    minMove: 1,
     lineColor: '#F59E0B',
     topColor: 'rgba(245,158,11,0.28)',
     bottomColor: 'rgba(245,158,11,0.01)',
@@ -76,8 +80,9 @@ async function loadAssetData(instrument) {
       topColor: cfg.topColor,
       bottomColor: cfg.bottomColor,
       priceFormat: {
-        type: 'custom',
-        formatter: (p) => p.toFixed(cfg.precision),
+        type: 'price',
+        precision: cfg.precision,
+        minMove: cfg.minMove,
       },
     });
   }
@@ -108,6 +113,10 @@ export async function initChart() {
     },
     rightPriceScale: {
       borderColor: 'rgba(255,255,255,0.06)',
+      scaleMargins: {
+        top: 0.12,
+        bottom: 0.12,
+      },
     },
     timeScale: {
       borderColor: 'rgba(255,255,255,0.06)',
@@ -127,7 +136,11 @@ export async function initChart() {
     bottomColor: cfg.bottomColor,
     lineColor: cfg.lineColor,
     lineWidth: 2,
-    priceFormat: { type: 'custom', formatter: (p) => p.toFixed(cfg.precision) },
+    priceFormat: {
+      type: 'price',
+      precision: cfg.precision,
+      minMove: cfg.minMove,
+    },
   });
 
   // Escuchar clics en las pestañas del gráfico

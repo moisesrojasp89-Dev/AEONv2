@@ -32,7 +32,7 @@ export async function fetchOandaPrices() {
 
 /**
  * Fetches historical candle time-series for chart rendering.
- * Supports OANDA instruments ('XAU_USD', 'EUR_USD', 'SPX500_USD', etc.) and Crypto ('BTC').
+ * Supports OANDA instruments ('XAU_USD', 'EUR_USD', 'SPX500_USD') and Crypto ('BTC').
  * @param {string} instrument
  * @param {number} count
  * @returns {Promise<Array>}
@@ -40,17 +40,42 @@ export async function fetchOandaPrices() {
 export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 30) {
   const cacheKey = `${CHART_CACHE_PREFIX}${instrument}`;
 
-  // 1. Caso Crypto (Bitcoin)
+  // 1. Caso Crypto (Bitcoin) — Consultamos Coinbase con fallback a Kraken
   if (instrument === 'BTC' || instrument === 'BTC_USD') {
     try {
-      const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${count}&interval=daily`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data.prices)) {
-          const series = data.prices.map(([timestamp, price]) => ({
-            time: new Date(timestamp).toISOString().split('T')[0],
-            value: Math.round(price),
+      const cbUrl = 'https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400';
+      const cbRes = await fetch(cbUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
+      if (cbRes.ok) {
+        const data = await cbRes.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const series = data
+            .slice(0, count)
+            .reverse()
+            .map((d) => ({
+              time: new Date(d[0] * 1000).toISOString().split('T')[0],
+              value: Math.round(d[4]),
+            }));
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(series));
+          } catch (_) {}
+          return series;
+        }
+      }
+    } catch (err) {
+      console.warn('[AEON] Coinbase BTC fallback a Kraken:', err.message);
+    }
+
+    // Fallback a Kraken
+    try {
+      const krUrl = 'https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1440';
+      const krRes = await fetch(krUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
+      if (krRes.ok) {
+        const data = await krRes.json();
+        const raw = data?.result?.XXBTZUSD || data?.result?.XBTUSD;
+        if (Array.isArray(raw) && raw.length > 0) {
+          const series = raw.slice(-count).map((d) => ({
+            time: new Date(d[0] * 1000).toISOString().split('T')[0],
+            value: Math.round(parseFloat(d[4])),
           }));
           try {
             sessionStorage.setItem(cacheKey, JSON.stringify(series));
@@ -59,7 +84,7 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
         }
       }
     } catch (err) {
-      console.warn('[AEON] Error obteniendo serie BTC:', err.message);
+      console.warn('[AEON] Error en fuentes Crypto para gráfico:', err.message);
     }
   } else {
     // 2. Caso Forex / Commodities / Indices (OANDA)
