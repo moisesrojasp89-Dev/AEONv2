@@ -16,7 +16,8 @@
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   backdrop-filter: blur(18px);
-  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  -webkit-backdrop-filter: blur(18px);
+  transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
 }
 
 .market-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
@@ -57,8 +58,8 @@
 
 .asset-icon.sm { width: 32px; height: 32px; font-size: 0.72rem; }
 .asset-icon.gold-icon { background: var(--accent-dim); border-color: var(--accent-border); color: var(--accent); }
-.asset-icon.euro-icon { background: rgba(61,214,140,0.1); border-color: rgba(61,214,140,0.22); color: var(--green); }
-.asset-icon.gbp-icon  { background: rgba(255,92,106,0.1); border-color: rgba(255,92,106,0.22); color: var(--red); }
+.asset-icon.euro-icon { background: var(--green-dim); border-color: rgba(34,197,94,0.22); color: var(--green); }
+.asset-icon.gbp-icon  { background: var(--red-dim); border-color: rgba(239,68,68,0.22); color: var(--red); }
 
 .mcard-price-row {
   display: flex;
@@ -116,10 +117,9 @@
   flex-shrink: 0;
 }
 
-.badge-bull    { background: rgba(61,214,140,0.12);  color: var(--green); border: 1px solid rgba(61,214,140,0.22); }
-.badge-bear    { background: rgba(255,92,106,0.12);  color: var(--red);   border: 1px solid rgba(255,92,106,0.22); }
-.badge-lateral { background: rgba(14,165,233,0.12);  color: var(--accent);  border: 1px solid rgba(14,165,233,0.22); }
-
+.badge-bull    { background: var(--green-dim);  color: var(--green); border: 1px solid rgba(34,197,94,0.22); }
+.badge-bear    { background: var(--red-dim);    color: var(--red);   border: 1px solid rgba(239,68,68,0.22); }
+.badge-lateral { background: var(--accent-dim); color: var(--accent);  border: 1px solid var(--accent-border); }
 
 @media (max-width: 768px) {
   .market-grid {
@@ -133,7 +133,7 @@
   }
   .market-grid::-webkit-scrollbar { display: none; }
   .market-card {
-    min-width: 260px; /* Fixed dimension as requested, instead of 85% */
+    min-width: 260px;
     width: 260px;
     scroll-snap-align: start;
     padding: 0.75rem;

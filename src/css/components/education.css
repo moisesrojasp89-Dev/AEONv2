@@ -19,7 +19,8 @@
   border-radius: var(--radius-lg);
   padding: 1.35rem 1.25rem;
   backdrop-filter: blur(18px);
-  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  -webkit-backdrop-filter: blur(18px);
+  transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
 }
 
 .edu-card:hover {
@@ -49,7 +50,6 @@
   color: var(--muted);
   line-height: 1.65;
 }
-
 
 @media (max-width: 768px) {
   .edu-card {

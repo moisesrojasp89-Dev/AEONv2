@@ -10,41 +10,51 @@
   --accent-glow:   rgba(14,165,233,0.25);
 
   /* Semantic */
-  --green:       #22C55E;
-  --green-dim:   rgba(34,197,94,0.12);
-  --red:         #EF4444;
-  --red-dim:     rgba(239,68,68,0.12);
+  --green:         #22C55E;
+  --green-dim:     rgba(34,197,94,0.12);
+  --red:           #EF4444;
+  --red-dim:       rgba(239,68,68,0.12);
+  --yellow:        #F59E0B;
+  --yellow-dim:    rgba(245,158,11,0.12);
+  --purple:        #A855F7;
+  --purple-dim:    rgba(168,85,247,0.12);
+
+  /* Impact */
+  --impact-high:   #FF3366;
+  --impact-med:    #FFAA00;
 
   /* Surfaces */
-  --bg:          #0B0D11;
-  --surface:     rgba(255,255,255,0.04);
-  --surface-2:   rgba(255,255,255,0.07);
-  --border:      rgba(255,255,255,0.07);
-  --border-2:    rgba(255,255,255,0.12);
+  --bg:            #0B0D11;
+  --surface:       rgba(255,255,255,0.04);
+  --surface-2:     rgba(255,255,255,0.07);
+  --border:        rgba(255,255,255,0.07);
+  --border-2:      rgba(255,255,255,0.12);
 
   /* Text */
-  --text:        #E4E4E7;
-  --muted:       rgba(228,228,231,0.55);
-  --muted-2:     rgba(228,228,231,0.32);
+  --text:          #E4E4E7;
+  --text-main:     var(--text);
+  --muted:         rgba(228,228,231,0.55);
+  --muted-2:       rgba(228,228,231,0.32);
 
   /* Radii */
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   20px;
-  --radius-xl:   28px;
+  --radius:        12px;
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     20px;
+  --radius-xl:     28px;
 
   /* Typography */
-  --font-head:   'Space Grotesk', system-ui, sans-serif;
-  --font-body:   'Inter', system-ui, sans-serif;
-  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-head:     'Space Grotesk', system-ui, sans-serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
 
   /* Easing */
-  --ease:        cubic-bezier(.25,.46,.45,.94);
+  --ease:          cubic-bezier(.25,.46,.45,.94);
 
   /* Durations */
-  --dur-fast:    150ms;
-  --dur-base:    250ms;
+  --dur-fast:      150ms;
+  --dur-base:      250ms;
 
   /* Layout */
-  --header-h:    57px;
+  --header-h:      57px;
 }

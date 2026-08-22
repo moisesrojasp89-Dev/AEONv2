@@ -91,8 +91,8 @@
   border-radius: 50%;
   display: inline-block;
 }
-.impact-dot.high { background: #ff3366; box-shadow: 0 0 8px rgba(255,51,102,0.6); }
-.impact-dot.med { background: #ffaa00; box-shadow: 0 0 8px rgba(255,170,0,0.4); }
+.impact-dot.high { background: var(--impact-high); box-shadow: 0 0 8px rgba(255,51,102,0.6); }
+.impact-dot.med { background: var(--impact-med); box-shadow: 0 0 8px rgba(255,170,0,0.4); }
 
 /* --- Economic Calendar Table --- */
 .eco-table {
@@ -165,7 +165,7 @@
 /* Details Accordion */
 .eco-details {
   display: none;
-  padding: 1rem 1.5rem 1.25rem 195px; /* Aligned with Event title */
+  padding: 1rem 1.5rem 1.25rem 195px;
   background: rgba(0,0,0,0.2);
   border-top: 1px dashed var(--border);
   font-size: 0.8rem;
@@ -177,29 +177,6 @@
   display: block;
 }
 
-/* Mobile Fallback for Table */
-
-@media (max-width: 900px) {
-  .mobile-asset-badge.desktop-hidden { display: inline-block !important; }
-  .eco-header-row { display: none; }
-  
-  .eco-row {
-    grid-template-columns: 60px 1fr auto 30px;
-    padding: 0.85rem 1rem;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  
-  .eco-cell.eco-time { font-size: 0.75rem; grid-column: 1; }
-  .eco-cell.eco-event { font-size: 0.85rem; font-weight: 600; grid-column: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  
-  /* Show impact badge on the right instead of expanding */
-  .eco-cell.impact { grid-column: 3; justify-self: end; }
-  
-  .eco-cell.eco-asset, .eco-cell.actual, .eco-cell.forecast, .eco-cell.previous { display: none; }
-  
-  
-}
 /* --- Sidebar --- */
 .calendar-sidebar {
   display: flex;
@@ -299,29 +276,14 @@
   line-height: 1.5;
 }
 
-@media (max-width: 900px) {
-  .desktop-hidden { display: grid !important; }
-}
-
-@media (max-width: 900px) {
-  .eco-cell.eco-expand { display: flex; justify-content: flex-end; grid-column: 4; }
-  .eco-cell.impact { grid-column: 3; justify-self: center; padding-right: 10px; }
-}
-
-@media (max-width: 900px) {
-  .eco-details {
-    padding: 1rem !important;
-  }
-}
-
 /* Calendar Selects */
 .calendar-select {
   appearance: none;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-main, #fff);
+  color: var(--text);
   padding: 0.4rem 0.8rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 0.85rem;
   cursor: pointer;
   outline: none;
@@ -335,4 +297,33 @@
 .calendar-select option {
   background-color: #0f172a;
   color: #fff;
+}
+
+/* Consolidated Mobile Responsive Layout */
+@media (max-width: 900px) {
+  .mobile-asset-badge.desktop-hidden { display: inline-block !important; }
+  .eco-header-row { display: none; }
+  
+  .eco-row {
+    grid-template-columns: 60px 1fr auto 30px;
+    padding: 0.85rem 1rem;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .eco-cell.eco-time { font-size: 0.75rem; grid-column: 1; }
+  .eco-cell.eco-event { font-size: 0.85rem; font-weight: 600; grid-column: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .eco-cell.impact { grid-column: 3; justify-self: center; padding-right: 10px; }
+  .eco-cell.eco-expand { display: flex; justify-content: flex-end; grid-column: 4; }
+  
+  .eco-cell.eco-asset, 
+  .eco-cell.actual, 
+  .eco-cell.forecast, 
+  .eco-cell.previous { display: none; }
+  
+  .desktop-hidden { display: grid !important; }
+  
+  .eco-details {
+    padding: 1rem !important;
+  }
 }

@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--bg);
   padding: 2rem;
 }
@@ -27,7 +27,7 @@
 }
 
 .auth-header .logo {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 2rem;
   font-weight: 700;
   color: var(--text);
@@ -38,7 +38,7 @@
 }
 
 .auth-header h1 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text);
@@ -66,12 +66,12 @@
   width: 100%;
   background-color: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
   color: var(--text);
   font-family: inherit;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
 
 .auth-form input:focus {
@@ -104,7 +104,7 @@
   color: var(--accent);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .auth-footer a:hover {
@@ -116,7 +116,7 @@
   color: var(--red);
   border: 1px solid rgba(239, 68, 68, 0.2);
   padding: 0.75rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
   text-align: center;

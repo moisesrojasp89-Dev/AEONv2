@@ -53,3 +53,10 @@
 .ticker-change.up   { color: var(--green); }
 .ticker-change.down { color: var(--red); }
 .ticker-sep { color: var(--border-2); padding: 0 0.5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+    overflow-x: auto;
+  }
+}
