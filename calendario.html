@@ -38,9 +38,7 @@
       z-index: -1;
     }
   </style>
-
-    
-  </head>
+</head>
 <body>
 
   <div class="bg-mesh"></div>
@@ -51,10 +49,10 @@
         <img src="/AEON.png" alt="AEON" class="logo-img" />
       </a>
       <ul class="nav-links" role="list">
-        <li><a href="/index.html#news">Briefing</a></li>
+        <li><a href="/index.html#briefing">Briefing</a></li>
         <li><a href="/index.html#mercados">Mercados</a></li>
-        <li><a href="/index.html#señales" class="nav-link">Señales</a></li>
-        <li><a href="#" class="nav-link">Calendario</a></li>
+        <li><a href="/index.html#senales" class="nav-link">Señales</a></li>
+        <li><a href="/calendario.html" class="nav-link">Calendario</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -98,13 +96,12 @@
 
         <div class="calendar-controls" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
           <select id="calendar-date-filter" class="calendar-select">
-              <option value="today">Hoy</option>
-              <option value="week" selected>Esta Semana</option>
-              <option value="month">Este Mes</option>
-            </select>
-            <select id="calendar-filter" class="calendar-select">
+            <option value="today">Hoy</option>
+            <option value="week" selected>Esta Semana</option>
+            <option value="month">Este Mes</option>
+          </select>
+          <select id="calendar-filter" class="calendar-select">
             <option value="all">Todas las Divisas</option>
-            
             <option value="USD">🇺🇸 USD</option>
             <option value="EUR">🇪🇺 EUR</option>
             <option value="GBP">🇬🇧 GBP</option>
@@ -173,26 +170,13 @@
   <script type="module" src="/src/js/calendar.js"></script>
   <script>
     function toggleMobileMenu() {
-    document.body.classList.toggle('no-scroll');
-    document.querySelector('.mobile-overlay').classList.toggle('active');
-    document.querySelector('.mobile-drawer').classList.toggle('active');
-  }
-    
-    window.addEventListener('error', function(e) {
-      const dbg = document.createElement('div');
-      dbg.style.cssText = 'position:fixed;top:0;left:0;background:red;color:white;z-index:9999;padding:20px;';
-      dbg.innerHTML = 'ERROR CRITICO: ' + e.message + ' en ' + e.filename + ':' + e.lineno;
-      document.body.appendChild(dbg);
-    });
-    
-    window.addEventListener('unhandledrejection', function(e) {
-      const dbg = document.createElement('div');
-      dbg.style.cssText = 'position:fixed;top:0;left:0;background:orange;color:white;z-index:9999;padding:20px;';
-      dbg.innerHTML = 'PROMESA RECHAZADA: ' + e.reason;
-      document.body.appendChild(dbg);
-    });
+      document.body.classList.toggle('no-scroll');
+      document.querySelector('.mobile-overlay').classList.toggle('active');
+      document.querySelector('.mobile-drawer').classList.toggle('active');
+    }
   </script>
-<div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
   <aside class="mobile-drawer">
     <div class="drawer-header">
       <span class="logo-text">AEON</span>
