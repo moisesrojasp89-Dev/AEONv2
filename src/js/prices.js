@@ -3,11 +3,9 @@
    ============================================================ */
 
 import { supabase } from './supabaseClient.js';
+import { TIMING, ASSETS } from './config/constants.js';
 
-const REFRESH_MS = 60_000;
-const GECKO_IDS  = { btc: 'bitcoin' }; 
-const prev       = { xau: null, eur: null, btc: null, sp: null, nas: null, dow: null };
-
+const prev = { xau: null, eur: null, btc: null, sp: null, nas: null, dow: null };
 let intervalId = null;
 
 function formatPrice(key, price) {
@@ -73,9 +71,9 @@ function setTimestamp(text) {
 }
 
 async function fetchCrypto() {
-  const ids = Object.values(GECKO_IDS).join(',');
+  const ids = Object.values(ASSETS.CRYPTO).join(',');
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  const res = await fetch(url, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
   return res.json();
 }
@@ -95,7 +93,7 @@ async function refresh() {
 
     // Procesar Crypto (CoinGecko)
     if (cryptoData.status === 'fulfilled') {
-      const btc = cryptoData.value[GECKO_IDS.btc];
+      const btc = cryptoData.value[ASSETS.CRYPTO.BTC];
       if (btc) {
         updateTicker('btc', btc.usd, btc.usd_24h_change);
         updateMarketCard('btc', btc.usd, btc.usd_24h_change);
@@ -106,7 +104,6 @@ async function refresh() {
     if (oandaData.status === 'fulfilled' && oandaData.value.prices) {
       const prices = oandaData.value.prices;
       
-      // OANDA devuelve un array de precios. Creamos un mapa rápido:
       const priceMap = {};
       for (const p of prices) {
         priceMap[p.instrument] = p;
@@ -116,7 +113,7 @@ async function refresh() {
       const xau = priceMap['XAU_USD'];
       if (xau) {
         const close = parseFloat(xau.closeoutAsk);
-        updateTicker('xau', close, 0); // OANDA no da % de cambio de 24h fácil en /pricing, lo dejamos neutro por el MVP
+        updateTicker('xau', close, 0);
         updateMarketCard('gold', close, 0);
       }
 
@@ -151,7 +148,7 @@ async function refresh() {
 
 function startInterval() {
   refresh();
-  intervalId = setInterval(refresh, REFRESH_MS);
+  intervalId = setInterval(refresh, TIMING.PRICES_REFRESH_MS);
 }
 
 function stopInterval() {
@@ -162,7 +159,7 @@ function stopInterval() {
 export function initPrices() {
   startInterval();
 
-  // Pausar cuando la pestaña no es visible
+  // Pausar cuando la pestaña no es visible para ahorrar recursos
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopInterval();
     else startInterval();

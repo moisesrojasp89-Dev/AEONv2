@@ -1,12 +1,13 @@
 /* ============================================================
-   AEON · main.js — Entry point
+   AEON · main.js — Application Orchestrator
    ============================================================ */
 
 import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
 import { initChart }  from './chart.js';
-import { supabase } from './supabaseClient.js';
 import { checkSession } from './auth.js';
+import { fetchActiveSignals, subscribeSignalEvents } from './services/signalService.js';
+import { fetchNews } from './services/newsService.js';
 import {
   renderNews,
   renderMarketCards,
@@ -25,112 +26,55 @@ let allNewsCache = [];
 
 async function loadSignals() {
   try {
-    const { data: publicSignals, error: pErr } = await supabase
-      .from('signals')
-      .select('*')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false });
-
-    if (pErr) throw pErr;
-
-    // Guardamos la base pública
-    activeSignals = publicSignals || [];
-
-    // Si es pro, intentamos traer la data privada
-    if (isPro && activeSignals.length > 0) {
-      const signalIds = activeSignals.map(s => s.id);
-      const { data: proData, error: proErr } = await supabase
-        .from('signals_pro_data')
-        .select('*')
-        .in('signal_id', signalIds);
-
-      if (!proErr && proData) {
-        // Hacemos el merge
-        proData.forEach(proInfo => {
-          const target = activeSignals.find(s => s.id === proInfo.signal_id);
-          if (target) {
-            Object.assign(target, proInfo);
-          }
-        });
-      }
-    }
-
+    activeSignals = await fetchActiveSignals(isPro);
     renderSignals(activeSignals, currentUser, isPro);
   } catch (err) {
     console.error('[AEON] Error cargando signals:', err);
+    renderSignals([], currentUser, isPro);
   }
 }
 
 function initRealtime() {
-  // Listener Público
-  supabase.channel('public:signals')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signals' }, (payload) => {
-      // Agregamos al top de la lista
-      activeSignals.unshift(payload.new);
+  subscribeSignalEvents({
+    isPro,
+    onPublicInsert: newSignal => {
+      activeSignals.unshift(newSignal);
       renderSignals(activeSignals, currentUser, isPro);
-    })
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'signals' }, (payload) => {
-      // Si el status cambia a won/lost/cancelled, lo quitamos de activas
-      if (payload.new.status !== 'active') {
-        activeSignals = activeSignals.filter(s => s.id !== payload.new.id);
+    },
+    onPublicUpdate: updatedSignal => {
+      if (updatedSignal.status !== 'active') {
+        activeSignals = activeSignals.filter(s => s.id !== updatedSignal.id);
       } else {
-        // Actualización normal
-        const index = activeSignals.findIndex(s => s.id === payload.new.id);
+        const index = activeSignals.findIndex(s => s.id === updatedSignal.id);
         if (index > -1) {
-          Object.assign(activeSignals[index], payload.new);
+          Object.assign(activeSignals[index], updatedSignal);
         }
       }
       renderSignals(activeSignals, currentUser, isPro);
-    })
-    .on('system', { event: 'EXTENSION' }, () => {
-        // reconexión
-        console.log('[AEON] Realtime reconectado. Resincronizando...');
-        loadSignals();
-    })
-    .subscribe();
-
-  // Listener Privado (Solo PRO)
-  if (isPro) {
-    supabase.channel('public:signals_pro_data')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signals_pro_data' }, (payload) => {
-        const target = activeSignals.find(s => s.id === payload.new.signal_id);
-        if (target) {
-          Object.assign(target, payload.new);
-          renderSignals(activeSignals, currentUser, isPro);
-        }
-      })
-      .subscribe();
-  }
+    },
+    onProInsert: proPayload => {
+      const target = activeSignals.find(s => s.id === proPayload.signal_id);
+      if (target) {
+        Object.assign(target, proPayload);
+        renderSignals(activeSignals, currentUser, isPro);
+      }
+    },
+    onReconnect: () => {
+      console.log('[AEON] Realtime reconectado. Resincronizando señales...');
+      loadSignals();
+    },
+  });
 }
 
 async function loadDynamicNews() {
-  try {
-    const { data: newsItems, error } = await supabase
-      .from('news')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) throw error;
-    
-    if (newsItems && newsItems.length > 0) {
-      allNewsCache = newsItems;
-    } else {
-      allNewsCache = data.news;
-    }
-    renderNews(allNewsCache);
-  } catch (err) {
-    console.error('[AEON] Error cargando noticias:', err);
-    allNewsCache = data.news;
-    renderNews(allNewsCache);
-  }
+  allNewsCache = await fetchNews(data.news);
+  renderNews(allNewsCache);
 }
 
 function initNewsFilters() {
-  // Desktop buttons
   const filterBtns = document.querySelectorAll('.filter-btn');
   
   function applyFilter(filterValue) {
-    // Update active state on desktop buttons
     filterBtns.forEach(b => {
       if (b.dataset.filter === filterValue) {
         b.classList.add('active');
@@ -141,27 +85,23 @@ function initNewsFilters() {
       }
     });
     
-    // Sync mobile select if exists
     const mobileSelect = document.getElementById('mobile-news-select');
     if (mobileSelect && mobileSelect.value !== filterValue) {
       mobileSelect.value = filterValue;
     }
 
-    // Apply the filter logic
     if (filterValue === 'all') {
       renderNews(allNewsCache);
     } else {
-      const filtered = allNewsCache.filter(item => item.tag.toUpperCase() === filterValue.toUpperCase());
+      const filtered = allNewsCache.filter(item => String(item.tag || '').toUpperCase() === filterValue.toUpperCase());
       renderNews(filtered);
     }
   }
 
-  // Bind desktop clicks
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
   });
 
-  // Bind mobile select change
   const mobileSelect = document.getElementById('mobile-news-select');
   if (mobileSelect) {
     mobileSelect.addEventListener('change', (e) => applyFilter(e.target.value));
@@ -169,7 +109,7 @@ function initNewsFilters() {
 }
 
 async function initApp() {
-  // Render de elementos estáticos
+  // Render de elementos iniciales
   renderMarketCards(data.markets);
   renderEducation(data.education);
   renderPartners(data.partners);
@@ -182,7 +122,7 @@ async function initApp() {
   initPrices();
   initChart();
 
-  // Auth y Señales
+  // Resolución de Sesión
   try {
     const sessionInfo = await checkSession();
     if (sessionInfo && sessionInfo.session) {
@@ -196,7 +136,7 @@ async function initApp() {
     console.error('[AEON] Falla en resolución de sesión:', err);
   }
 
-  // Cargar señales desde Supabase en vez de mocks
+  // Carga de Señales y suscripción Realtime
   await loadSignals();
   initRealtime();
 }
