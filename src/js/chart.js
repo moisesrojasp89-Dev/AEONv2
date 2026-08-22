@@ -7,7 +7,7 @@ import { fetchHistoricalChartData } from './services/marketService.js';
 
 const ASSET_CONFIG = {
   XAU_USD: {
-    name: 'Oro · Spot Gold',
+    name: 'Oro (XAU/USD)',
     precision: 2,
     minMove: 0.01,
     lineColor: '#0EA5E9',
@@ -15,7 +15,7 @@ const ASSET_CONFIG = {
     bottomColor: 'rgba(14,165,233,0.01)',
   },
   EUR_USD: {
-    name: 'EUR/USD · Euro',
+    name: 'EUR/USD (Euro)',
     precision: 4,
     minMove: 0.0001,
     lineColor: '#38BDF8',
@@ -23,7 +23,7 @@ const ASSET_CONFIG = {
     bottomColor: 'rgba(56,189,248,0.01)',
   },
   SPX500_USD: {
-    name: 'S&P 500 · US Index',
+    name: 'S&P 500 (US500)',
     precision: 1,
     minMove: 0.1,
     lineColor: '#22C55E',
@@ -31,7 +31,7 @@ const ASSET_CONFIG = {
     bottomColor: 'rgba(34,197,94,0.01)',
   },
   BTC: {
-    name: 'BTC/USD · Bitcoin',
+    name: 'Bitcoin (BTC/USD)',
     precision: 0,
     minMove: 1,
     lineColor: '#F59E0B',
@@ -66,7 +66,10 @@ function updateHeaderBadge(instrument, seriesData) {
       maximumFractionDigits: cfg.precision,
     }).format(latest);
 
-    priceBadgeEl.textContent = `${formattedPrice} ${arrow} ${sign}${diffPct}% (30d)`;
+    const isMobile = window.innerWidth <= 600;
+    priceBadgeEl.textContent = isMobile 
+      ? `${formattedPrice} ${arrow} ${sign}${diffPct}%` 
+      : `${formattedPrice} ${arrow} ${sign}${diffPct}% (30d)`;
   }
 }
 
@@ -91,6 +94,7 @@ async function loadAssetData(instrument) {
   if (seriesData && seriesData.length > 0 && currentSeries && currentChart) {
     currentSeries.setData(seriesData);
     currentChart.timeScale().fitContent();
+    currentChart.priceScale('right').applyOptions({ autoScale: true });
     updateHeaderBadge(instrument, seriesData);
   }
 }
@@ -117,10 +121,15 @@ export async function initChart() {
         top: 0.12,
         bottom: 0.12,
       },
+      alignLabels: true,
+      borderVisible: false,
     },
     timeScale: {
       borderColor: 'rgba(255,255,255,0.06)',
       timeVisible: false,
+      fixLeftEdge: true,
+      fixRightEdge: true,
+      rightOffset: 0,
     },
     crosshair: {
       vertLine: { color: 'rgba(14,165,233,0.3)', labelBackgroundColor: '#0EA5E9' },
