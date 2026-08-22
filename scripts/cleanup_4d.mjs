@@ -1,9 +1,14 @@
-﻿import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!serviceRoleKey) {
+  console.error("❌ ERROR: SUPABASE_SERVICE_ROLE_KEY no está definida en .env");
+  process.exit(1);
+}
 
 const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 

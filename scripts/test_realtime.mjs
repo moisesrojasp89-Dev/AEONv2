@@ -1,8 +1,7 @@
-﻿import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Usamos las variables del frontend de AEON
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
@@ -11,7 +10,7 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1);
 }
 
-// 1. Conexión a Supabase estrictamente con ANON_KEY
+// Conexión a Supabase estrictamente con ANON_KEY (como el frontend)
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function runTest() {
@@ -64,7 +63,7 @@ async function runTest() {
       }
     });
 
-  console.log("\n⏳ Terminal falsa activa. Esperando recibir una señal del bot de prueba... (Ctrl+C para salir)\n");
+  console.log("\n⏳ Escuchando eventos de Realtime... (Ctrl+C para salir)\n");
 
   function checkCompletion() {
     if (receivedSignals && receivedProData) {
