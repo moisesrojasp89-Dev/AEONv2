@@ -1,0 +1,49 @@
+/* ============================================================
+   AEON · legal.css — Shared Legal & Policy Pages
+   ============================================================ */
+
+.legal-content {
+  padding: 6rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.legal-content h1 {
+  font-family: var(--font-head);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.legal-content h2 {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.legal-content p {
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.legal-content strong {
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .legal-content {
+    padding: 4rem 1rem;
+  }
+  .legal-content h1 {
+    font-size: 1.85rem;
+  }
+  .legal-content h2 {
+    font-size: 1.25rem;
+  }
+}
