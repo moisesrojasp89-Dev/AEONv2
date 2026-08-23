@@ -2,7 +2,7 @@
    AEON · calendar.css (High-Density Financial Table)
    ============================================================ */
 
-/* --- Layout Grid 75/25 --- */
+/* --- Layout Grid --- */
 .calendar-layout {
   display: flex;
   flex-direction: column;
@@ -33,15 +33,15 @@
   flex-direction: column;
 }
 
+/* --- Panel Header --- */
 .eco-head-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 1rem 1.5rem;
-  background: transparent;
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .eco-head-title-group {
@@ -50,13 +50,11 @@
   gap: 0.75rem;
 }
 
-.eco-head-icon {
-  color: var(--accent);
-}
+.eco-head-icon { color: var(--accent); }
 
 .eco-head-text h2 {
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
@@ -72,71 +70,73 @@
   margin: 0;
 }
 
+/* --- Impact legend --- */
 .impact-legend {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--muted);
   font-family: var(--font-mono);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .impact-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
-.impact-dot.high { background: var(--impact-high); box-shadow: 0 0 8px rgba(255,51,102,0.6); }
-.impact-dot.med { background: var(--impact-med); box-shadow: 0 0 8px rgba(255,170,0,0.4); }
-.impact-dot.low { background: #64748B; }
+.impact-dot.high { background: #FF3366; box-shadow: 0 0 8px rgba(255,51,102,0.6); }
+.impact-dot.med  { background: #FFAA00; box-shadow: 0 0 8px rgba(255,170,0,0.4); }
+.impact-dot.low  { background: #64748B; }
 
-/* Filter Controls Bar */
-.calendar-controls-bar {
+/* --- Filter Controls --- */
+.calendar-controls {
   display: flex;
-  align-items: center;
   gap: 0.65rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.015);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
   flex-wrap: wrap;
 }
 
 .calendar-search-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
+  background: rgba(12, 19, 34, 0.8);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-sm);
   color: var(--text);
   padding: 0.4rem 0.75rem;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   outline: none;
-  min-width: 180px;
+  min-width: 170px;
   font-family: var(--font-body);
+  transition: border-color 0.2s;
 }
+.calendar-search-input::placeholder { color: var(--muted); }
+.calendar-search-input:focus { border-color: var(--accent); }
 
-.calendar-search-input:focus {
-  border-color: var(--accent);
-}
-
-/* --- Economic Calendar Table --- */
+/* --- Table structure --- */
 .eco-table {
   width: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
+/* Desktop column header — hidden on mobile */
 .eco-header-row {
   display: grid;
   grid-template-columns: 80px 60px 40px 1fr 80px 80px 80px 30px;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0.6rem 1.5rem;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 600;
@@ -145,117 +145,181 @@
   letter-spacing: 0.08em;
 }
 
+/* --- Row group --- */
 .eco-row-group {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.eco-row-group:last-child {
-  border-bottom: none;
-}
+.eco-row-group:last-child { border-bottom: none; }
 
-.eco-row {
+/* ──────────────────────────────────────────────
+   DESKTOP ROW  (8 columns)
+   Visible on ≥ 900px. Hidden on < 900px.
+────────────────────────────────────────────── */
+.eco-row-desktop {
   display: grid;
   grid-template-columns: 80px 60px 40px 1fr 80px 80px 80px 30px;
   align-items: center;
   padding: 0.9rem 1.5rem;
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s ease;
+  transition: background 0.15s;
 }
+.eco-row-desktop:hover { background: rgba(255,255,255,0.03); }
 
-.eco-row:hover {
-  background: rgba(255,255,255,0.03);
+/* ──────────────────────────────────────────────
+   MOBILE ROW  (4 columns: time | event | impact | expand)
+   Visible on < 900px. Hidden on ≥ 900px.
+────────────────────────────────────────────── */
+.eco-row-mobile {
+  display: none; /* shown via media query */
+  grid-template-columns: 68px 1fr 24px 28px;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
+.eco-row-mobile:hover { background: rgba(255,255,255,0.03); }
 
+/* Common cell base */
 .eco-cell {
   font-family: var(--font-body);
   font-size: 0.88rem;
   color: var(--text);
 }
 
+/* Time cell */
 .eco-cell.eco-time {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
-  justify-content: center;
+  line-height: 1.3;
 }
 .eco-time-date {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   color: var(--muted);
   text-transform: uppercase;
 }
 .eco-time-hour {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text);
 }
+
+/* Currency tag (desktop) */
 .currency-tag {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--accent);
 }
+
+/* Event cell (desktop) */
 .eco-event {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.1rem;
+  min-width: 0;
 }
 .event-name {
   font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 0.88rem;
   color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .event-category {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   color: var(--muted);
   text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
-.eco-data { font-family: var(--font-mono); font-size: 0.8rem; text-align: right; }
-.eco-data.actual { font-weight: 600; }
-.eco-data.pending { color: rgba(255,255,255,0.4); font-weight: 400; font-style: italic; }
-.eco-data.better { color: var(--green); }
-.eco-data.worse { color: var(--red); }
 
-.eco-expand {
+/* Mobile event cell */
+.eco-event-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.mobile-currency-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.eco-event-mobile .event-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Impact cell */
+.eco-cell.impact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Data cells */
+.eco-data {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-align: right;
+  color: var(--muted);
+}
+.eco-data.actual  { font-weight: 700; color: var(--text); }
+.eco-data.pending { color: rgba(255,255,255,0.35); font-style: italic; font-weight: 400; }
+.eco-data.better  { color: #4ADE80; }
+.eco-data.worse   { color: #F87171; }
+
+/* Expand chevron */
+.eco-cell.eco-expand {
   display: flex;
   justify-content: flex-end;
-  color: var(--muted-2);
+  align-items: center;
+  color: var(--muted);
 }
 .eco-expand svg {
-  transition: transform 0.2s;
+  transition: transform 0.25s ease;
 }
 .eco-row-group.open .eco-expand svg {
   transform: rotate(180deg);
 }
 
-/* Details Accordion */
+/* ──────────────────────────────────────────────
+   DETAIL PANEL (shared, works on both layouts)
+────────────────────────────────────────────── */
 .eco-details {
   display: none;
-  padding: 0.75rem 1.5rem 1.25rem 1.5rem;
-  background: rgba(0,0,0,0.3);
-  border-top: 1px dashed var(--border);
+  padding: 0.85rem 1.5rem 1.25rem;
+  background: rgba(0,0,0,0.25);
+  border-top: 1px dashed rgba(255,255,255,0.07);
 }
+.eco-row-group.open .eco-details { display: block; }
 
-.eco-row-group.open .eco-details {
-  display: block;
-}
-
-/* --- Macro Impact Matrix Card --- */
+/* Macro card wrapper */
 .macro-impact-card {
-  background: rgba(12, 19, 34, 0.7);
+  background: rgba(12, 19, 34, 0.65);
   border: 1px solid rgba(14, 165, 233, 0.15);
   border-radius: var(--radius-md);
-  padding: 1.15rem;
+  padding: 1rem 1.15rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.8rem;
 }
 
 .macro-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
@@ -263,16 +327,14 @@
 .macro-title-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
-.macro-icon {
-  font-size: 1rem;
-}
+.macro-icon { font-size: 0.95rem; }
 
 .macro-title {
   font-family: var(--font-head);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text);
   margin: 0;
@@ -280,111 +342,130 @@
 
 .macro-volatility-badge {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: #F59E0B;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  padding: 0.15rem 0.5rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  padding: 0.12rem 0.45rem;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
 }
 
-.macro-summary {
-  font-size: 0.82rem;
-  color: var(--muted);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.macro-scenarios-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .macro-scenarios-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.macro-scenario-box {
-  padding: 0.75rem 0.85rem;
+/* Stats strip — actual / forecast / previous for THIS event */
+.detail-stats-strip {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.detail-stat {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  padding: 0.55rem 0.5rem;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
 }
+.detail-stat:last-child { border-right: none; }
 
-.macro-scenario-box.bullish {
-  background: rgba(34, 197, 94, 0.06);
-  border-color: rgba(34, 197, 94, 0.25);
-}
-
-.macro-scenario-box.bearish {
-  background: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.25);
-}
-
-.scenario-label {
+.detail-stat-label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.62rem;
+  color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
 }
 
-.macro-scenario-box.bullish .scenario-label {
-  color: #4ADE80;
+.detail-stat-val {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
 }
+.detail-stat-val.better  { color: #4ADE80; }
+.detail-stat-val.worse   { color: #F87171; }
+.detail-stat-val.pending { color: rgba(255,255,255,0.4); font-style: italic; font-weight: 400; font-size: 0.78rem; }
 
-.macro-scenario-box.bearish .scenario-label {
-  color: #F87171;
-}
-
-.scenario-text {
-  font-size: 0.78rem;
-  color: #E2E8F0;
+/* Directional signal block */
+.detail-signal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
   line-height: 1.45;
+}
+.detail-signal.beat {
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.22);
+  color: #D1FAE5;
+}
+.detail-signal.miss {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  color: #FEE2E2;
+}
+.detail-signal.pending-signal {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--muted);
+}
+.signal-arrow {
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* What does it measure */
+.macro-what {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.55;
   margin: 0;
 }
+.macro-what strong { color: #E2E8F0; }
 
+/* Affected assets row */
 .macro-assets-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.55rem;
   flex-wrap: wrap;
   padding-top: 0.4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .assets-label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--muted);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.assets-list {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-}
+.assets-list { display: flex; gap: 0.3rem; flex-wrap: wrap; }
 
 .macro-asset-badge {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
-  padding: 0.15rem 0.45rem;
+  padding: 0.12rem 0.4rem;
   border-radius: var(--radius-sm);
 }
 
-/* --- Sidebar --- */
+/* ──────────────────────────────────────────────
+   SIDEBAR
+────────────────────────────────────────────── */
 .calendar-sidebar {
   display: flex;
   flex-direction: column;
@@ -408,7 +489,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background: transparent;
   border-bottom: 1px solid var(--border);
 }
 
@@ -430,17 +510,11 @@
   padding: 0.15rem 0.3rem;
   border-radius: 2px;
   border: 1px solid rgba(14, 165, 233, 0.3);
-  animation: pulse-dot 2s infinite;
 }
 
-.tv-container {
-  height: 250px;
-  width: 100%;
-}
+.tv-container { height: 250px; width: 100%; }
 
-.catalyst-box {
-  padding: 1rem;
-}
+.catalyst-box { padding: 1rem; }
 
 .c-timer {
   display: inline-flex;
@@ -470,7 +544,7 @@
 
 .c-event {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 0.4rem;
@@ -478,12 +552,13 @@
 }
 
 .c-desc {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--muted);
   line-height: 1.5;
+  margin-bottom: 0.35rem;
 }
 
-/* Calendar Selects */
+/* --- Calendar Selects --- */
 .calendar-select {
   appearance: none;
   background: rgba(12, 19, 34, 0.8);
@@ -491,44 +566,47 @@
   color: var(--text);
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   cursor: pointer;
   outline: none;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s;
 }
-.calendar-select:focus {
-  border-color: var(--accent);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(14,165,233,0.2);
-}
-.calendar-select option {
-  background-color: #0c1322;
-  color: #fff;
-  padding: 0.5rem;
+.calendar-select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(14,165,233,0.15); }
+.calendar-select option { background-color: #0c1322; color: #fff; }
+
+/* ──────────────────────────────────────────────
+   RESPONSIVE — Mobile ≤ 900px
+────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Hide desktop-only elements */
+  .eco-header-row   { display: none !important; }
+  .eco-row-desktop  { display: none !important; }
+
+  /* Show mobile row */
+  .eco-row-mobile   { display: grid !important; }
+
+  /* Detail panel padding on mobile */
+  .eco-details { padding: 0.75rem; }
+
+  /* Adjust detail card */
+  .macro-impact-card { padding: 0.85rem; gap: 0.65rem; }
+
+  .macro-header-row { flex-direction: column; gap: 0.4rem; }
+
+  .macro-title { font-size: 0.82rem; }
+
+  /* Stats strip stays horizontal but tighter */
+  .detail-stat { padding: 0.45rem 0.35rem; }
+  .detail-stat-val { font-size: 0.82rem; }
+
+  /* Controls wrap on mobile */
+  .calendar-controls { gap: 0.5rem; }
+  .calendar-search-input { min-width: 100%; order: -1; }
+
+  .eco-head-header { padding: 0.85rem 1rem; }
 }
 
-/* Consolidated Mobile Responsive Layout */
-@media (max-width: 900px) {
-  .eco-header-row { display: none; }
-  
-  .eco-row {
-    grid-template-columns: 60px 1fr auto 30px;
-    padding: 0.85rem 1rem;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  
-  .eco-cell.eco-time { font-size: 0.75rem; grid-column: 1; }
-  .eco-cell.eco-event { font-size: 0.85rem; font-weight: 600; grid-column: 2; }
-  .eco-cell.impact { grid-column: 3; justify-self: center; padding-right: 10px; }
-  .eco-cell.eco-expand { display: flex; justify-content: flex-end; grid-column: 4; }
-  
-  .eco-cell.eco-asset, 
-  .eco-cell.actual, 
-  .eco-cell.forecast, 
-  .eco-cell.previous { display: none; }
-  
-  .eco-details {
-    padding: 0.85rem !important;
-  }
+@media (max-width: 480px) {
+  .detail-stats-strip { flex-direction: row; } /* keep horizontal on small phones too */
+  .macro-volatility-badge { font-size: 0.62rem; }
 }
