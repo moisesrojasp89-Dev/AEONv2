@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · dashboard.js — Institutional User Terminal Controller
+   AEON · perfil.js — Institutional User Profile & Terminal Controller
    ============================================================ */
 
 import { supabase } from './supabaseClient.js';

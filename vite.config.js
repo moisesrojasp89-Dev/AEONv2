@@ -14,7 +14,7 @@ export default defineConfig({
         calendario: resolve(__dirname, 'calendario.html'),
         login: resolve(__dirname, 'login.html'),
         registro: resolve(__dirname, 'registro.html'),
-        dashboard: resolve(__dirname, 'dashboard.html'),
+        perfil: resolve(__dirname, 'perfil.html'),
         recuperar: resolve(__dirname, 'recuperar.html'),
         actualizarPassword: resolve(__dirname, 'actualizar-password.html'),
         avisoLegal: resolve(__dirname, 'aviso-legal.html'),

@@ -144,12 +144,6 @@
       "summary": "Tamaño de posición, R:R y reglas simples para sobrevivir drawdowns y operar con estructura."
     }
   ],
-  "partners": [
-    { "id": "alpha", "name": "Alpha Broker", "initials": "AB", "url": "#" },
-    { "id": "north", "name": "North Markets", "initials": "NM", "url": "#" },
-    { "id": "prime", "name": "Prime Desk", "initials": "PD", "url": "#" },
-    { "id": "vertex", "name": "Vertex Cap", "initials": "VC", "url": "#" }
-  ],
   "premiumFeatures": [
     "Señales educativas en tiempo real por Telegram",
     "Briefing macro diario y contexto de sesión",

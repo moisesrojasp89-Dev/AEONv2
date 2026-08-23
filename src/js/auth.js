@@ -183,7 +183,7 @@ if (registerForm) {
       btn.disabled = false;
       btn.textContent = 'Registrarse';
     } else {
-      window.location.href = '/dashboard.html'; 
+      window.location.href = '/perfil.html'; 
     }
   });
 }

@@ -18,7 +18,7 @@ El proyecto sigue una estructura modular estricta para garantizar la mantenibili
 - `index.html` - Landing page interactiva. Contiene el Hero, Briefing (Live Feed), Mercados y Señales.
 - `calendario.html` - Calendario económico de alto impacto (estructura 75/25 en desktop) con sidebar de contexto (DXY).
 - `login.html` / `registro.html` - Flujos de autenticación conectados a Supabase.
-- `dashboard.html` - (En desarrollo) Área privada para usuarios con "Acceso Pro".
+- `perfil.html` - Área privada del trader: gestión de perfil, membresía y seguridad.
 
 ### Estilos (`/src/css/`)
 Sistema de diseño atomizado:

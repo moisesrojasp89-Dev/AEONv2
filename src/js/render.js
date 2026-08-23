@@ -6,7 +6,6 @@ import { newsCard }      from './templates/news.js';
 import { marketCard }    from './templates/market.js';
 import { signalCard }    from './templates/signal.js';
 import { eduCard }       from './templates/education.js';
-import { partnerCard }   from './templates/partners.js';
 import { tickerBarItem } from './templates/ticker.js';
 import { escapeHTML }    from './utils/sanitize.js';
 
@@ -25,7 +24,6 @@ export function renderSignals(signals, currentUser, isPro) {
   fill('signals-list', signals.map(s => signalCard(s, currentUser, isPro)).join('')); 
 }
 export function renderEducation(items)     { fill('education-grid', items.map(eduCard).join('')); }
-export function renderPartners(partners)   { fill('partners-grid',  partners.map(partnerCard).join('')); }
 
 export function renderPremiumFeatures(features) {
   fill('premium-features', features.map(

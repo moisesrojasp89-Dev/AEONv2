@@ -10,7 +10,6 @@ import {
   renderMarketCards,
   renderSignals,
   renderEducation,
-  renderPartners,
   renderPremiumFeatures,
   renderTickerBar,
 } from './render.js';
@@ -116,7 +115,6 @@ async function initApp() {
   // Render de elementos iniciales
   renderMarketCards(data.markets);
   renderEducation(data.education);
-  renderPartners(data.partners);
   renderPremiumFeatures(data.premiumFeatures);
   renderTickerBar(data.ticker);
 

@@ -24,8 +24,6 @@
   .news-list,
   .education-grid { grid-template-columns: repeat(2, 1fr); }
 
-  .partners-grid { grid-template-columns: repeat(4, 1fr); }
-
   .signal-levels { grid-template-columns: repeat(3, 1fr); }
 
   .section-header {
