@@ -95,15 +95,15 @@
         </div>
 
         <div class="calendar-controls" style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
-          <input type="text" id="calendar-search-input" class="calendar-search-input" placeholder="Buscar (CPI, NFP, FED)..." aria-label="Buscar evento macro" />
+          <input type="text" id="calendar-search-input" class="calendar-search-input" placeholder="Buscar (CPI, NFP, FED, PMI)..." aria-label="Buscar evento macro" />
           <select id="calendar-date-filter" class="calendar-select" aria-label="Filtrar por fecha">
             <option value="today">Hoy</option>
-            <option value="week" selected>Esta Semana</option>
-            <option value="month">Este Mes</option>
+            <option value="week">Esta Semana</option>
+            <option value="month" selected>Este Mes</option>
             <option value="all">Todo el Historial</option>
           </select>
           <select id="calendar-filter" class="calendar-select" aria-label="Filtrar por divisa">
-            <option value="all">Todas las Divisas</option>
+            <option value="all" selected>Todas las Divisas</option>
             <option value="USD">🇺🇸 USD</option>
             <option value="EUR">🇪🇺 EUR</option>
             <option value="GBP">🇬🇧 GBP</option>
@@ -114,9 +114,10 @@
             <option value="CHF">🇨🇭 CHF</option>
           </select>
           <select id="calendar-impact-filter" class="calendar-select" aria-label="Filtrar por impacto">
-            <option value="all">Todos los Impactos</option>
+            <option value="medium-high" selected>🔥⚡ Alto + Medio</option>
             <option value="HIGH">🔥 Solo Alto Impacto</option>
-            <option value="MEDIUM">⚡ Medio Impacto</option>
+            <option value="MEDIUM">⚡ Solo Medio Impacto</option>
+            <option value="all">Todos los Impactos</option>
           </select>
           <div class="impact-legend">
             <div class="legend-item"><span class="impact-dot high"></span> Alto</div>

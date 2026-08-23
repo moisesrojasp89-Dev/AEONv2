@@ -105,12 +105,48 @@ function startLiveCountdowns() {
   }, 10000);
 }
 
+// Common acronym / alias map so users can type "NFP", "PMI", "PCE", etc.
+const SEARCH_ALIASES = {
+  'nfp':      'non-farm',
+  'nonfarm':  'non-farm',
+  'jobs':     'employment',
+  'claims':   'jobless claims',
+  'fomc':     'fomc',
+  'fed':      'fed',
+  'ecb':      'ecb',
+  'boe':      'boe',
+  'rba':      'rba',
+  'boj':      'boj',
+  'snb':      'snb',
+  'rbnz':     'rbnz',
+  'gdp':      'gdp',
+  'pib':      'gdp',
+  'cpi':      'cpi',
+  'ppi':      'ppi',
+  'pce':      'pce',
+  'pmi':      'pmi',
+  'ism':      'ism',
+  'adp':      'adp',
+  'jolts':    'jolts',
+  'jolt':     'jolts',
+  'retail':   'retail',
+  'payroll':  'payroll',
+  'pcpi':     'core',
+  'tasa':     'rate',
+};
+
+function normaliseSearch(raw) {
+  const s = raw.toLowerCase().trim();
+  return SEARCH_ALIASES[s] ?? s;
+}
+
 function renderEvents() {
   const container = document.getElementById('calendar-feed');
   const currencyFilter = document.getElementById('calendar-filter')?.value || 'all';
-  const dateFilter = document.getElementById('calendar-date-filter')?.value || 'week';
-  const impactFilter = document.getElementById('calendar-impact-filter')?.value || 'all';
-  const searchInput = document.getElementById('calendar-search-input')?.value.toLowerCase().trim() || '';
+  const dateFilter     = document.getElementById('calendar-date-filter')?.value || 'month';
+  const impactFilter   = document.getElementById('calendar-impact-filter')?.value || 'medium-high';
+  const rawSearch      = document.getElementById('calendar-search-input')?.value || '';
+  const searchInput    = normaliseSearch(rawSearch);
 
   if (!container) return;
 
@@ -122,11 +158,20 @@ function renderEvents() {
   }
 
   // 2. Filtro de Impacto
-  if (impactFilter !== 'all') {
-    filtered = filtered.filter((e) => String(e.impact || '').toUpperCase() === impactFilter);
+  if (impactFilter === 'HIGH') {
+    filtered = filtered.filter((e) => String(e.impact || '').toUpperCase() === 'HIGH');
+  } else if (impactFilter === 'MEDIUM') {
+    filtered = filtered.filter((e) => String(e.impact || '').toUpperCase() === 'MEDIUM');
+  } else if (impactFilter === 'medium-high') {
+    // default: Medium + High, excluye Low
+    filtered = filtered.filter((e) => {
+      const imp = String(e.impact || '').toUpperCase();
+      return imp === 'HIGH' || imp === 'MEDIUM' || imp === 'MED';
+    });
   }
+  // 'all' → sin filtro
 
-  // 3. Filtro de Búsqueda de Texto
+  // 3. Búsqueda de Texto con alias expandido
   if (searchInput) {
     filtered = filtered.filter(
       (e) =>
