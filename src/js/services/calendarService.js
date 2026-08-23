@@ -22,17 +22,38 @@ export function getMacroImpactContext(eventName = '', country = 'USD', impact = 
   if (
     n.includes('cpi') || n.includes('ipc') || n.includes('pce') ||
     n.includes('ppi') || n.includes('inflation') || n.includes('inflación') ||
-    n.includes('price index') || n.includes('consumer price')
+    n.includes('price index') || n.includes('consumer price') || n.includes('trimmed mean')
   ) {
     const assets =
       country === 'USD' ? ['DXY', 'XAU/USD', 'EUR/USD', 'GBP/USD', 'SPX500', 'NAS100'] :
       country === 'EUR' ? ['EUR/USD', 'EUR/GBP', 'DXY', 'XAU/USD'] :
       country === 'GBP' ? ['GBP/USD', 'EUR/GBP', 'DXY'] :
       country === 'JPY' ? ['USD/JPY', 'EUR/JPY', 'DXY'] :
+      country === 'AUD' ? ['AUD/USD', 'DXY', 'XAU/USD'] :
+      country === 'CAD' ? ['USD/CAD', 'DXY'] :
       [`${country}/USD`, 'DXY', 'XAU/USD'];
+
+    const isCore = n.includes('core');
+    const isPCE  = n.includes('pce');
+    const isPPI  = n.includes('ppi');
+    const isTrimmed = n.includes('trimmed') || n.includes('median');
+
+    let what = '';
+    if (isPCE && country === 'USD') {
+      what = 'PCE (Personal Consumption Expenditures): es el indicador de inflación preferido por la Reserva Federal (Fed) para calibrar su política monetaria. A diferencia del CPI, el PCE ajusta por cambios en el comportamiento del consumidor. Un PCE por encima del objetivo del 2% de la Fed = más presión para mantener o subir tasas = USD más fuerte, Oro bajo presión.';
+    } else if (isCore && country === 'USD') {
+      what = 'CPI Subyacente (Core CPI): excluye alimentos y energía por ser volátiles. Es la lectura que más pesa en las decisiones de la Fed porque muestra la tendencia inflacionaria estructural. Dato clave del segundo martes de cada mes. Sorpresa al alza = presión bajista en Oro y acciones, alcista en USD.';
+    } else if (isPPI) {
+      what = 'Índice de Precios al Productor (PPI): mide la inflación en el origen del ciclo productivo (antes de llegar al consumidor). Anticipa el CPI por 1–2 meses. Un PPI elevado sugiere que los productores trasladarán costes más altos al consumidor final, manteniendo la presión inflacionaria.';
+    } else if (isTrimmed) {
+      what = `CPI Trimmed Mean o Median de ${country}: versión suavizada del CPI que elimina los valores extremos (los componentes más volátiles) para mostrar la tendencia central de la inflación. Utilizado como referencia por el banco central de ${country} para decisiones de tipos.`;
+    } else {
+      what = `IPC (Índice de Precios al Consumidor) de ${country}: mide la variación media de los precios que paga el consumidor por una cesta representativa de bienes y servicios. Si supera el objetivo del banco central (normalmente 2%), aumenta la presión para subir tasas, fortaleciendo la divisa. Si cae por debajo, abre la puerta a recortes y debilita la moneda.`;
+    }
+
     return {
       category: 'Inflación',
-      what: 'Mide la variación de precios al consumidor o productor. Indica si la presión inflacionaria sube, baja o se estabiliza, lo que condiciona directamente las decisiones de tipos de interés del banco central.',
+      what,
       affectedAssets: assets,
       volatilityPips: impact === 'HIGH' ? '40–90 pips' : '15–40 pips',
     };
@@ -43,18 +64,42 @@ export function getMacroImpactContext(eventName = '', country = 'USD', impact = 
     n.includes('non-farm') || n.includes('nonfarm') || n.includes('payroll') ||
     n.includes('unemployment') || n.includes('desempleo') || n.includes('jobless') ||
     n.includes('adp') || n.includes('employment change') || n.includes('labor') ||
-    n.includes('labour') || n.includes('cambio de empleo') || n.includes('claimant')
+    n.includes('labour') || n.includes('cambio de empleo') || n.includes('claimant') ||
+    n.includes('average hourly') || n.includes('wages')
   ) {
     const assets =
       country === 'USD' ? ['DXY', 'XAU/USD', 'EUR/USD', 'SPX500', 'US30'] :
       country === 'EUR' ? ['EUR/USD', 'EUR/GBP', 'DXY'] :
       country === 'GBP' ? ['GBP/USD', 'EUR/GBP'] :
+      country === 'AUD' ? ['AUD/USD', 'DXY', 'XAU/USD'] :
+      country === 'CAD' ? ['USD/CAD', 'DXY'] :
+      country === 'NZD' ? ['NZD/USD', 'DXY'] :
       [`${country}/USD`, 'DXY'];
+
+    // More specific description for NFP
+    const isNFP = n.includes('non-farm') || n.includes('nonfarm') || n.includes('payroll');
+    const isADP = n.includes('adp');
+    const isHourlyEarnings = n.includes('hourly') || n.includes('wages');
+    const isUnemployment = n.includes('unemployment') || n.includes('jobless') || n.includes('claimant');
+
+    let what = '';
+    if (isNFP && country === 'USD') {
+      what = 'Nóminas No Agrícolas (NFP): mide la variación neta de empleados en todos los sectores de EE.UU. excepto agricultura, gobierno, domésticos y autónomos (≈80% de la fuerza laboral que contribuye al PIB). Publicado el primer viernes de cada mes por la Oficina de Estadísticas Laborales (BLS). Es el dato de empleo de mayor impacto global: un resultado débil debilita el USD y presiona a la Fed a recortar tasas; uno sólido fortalece el USD y aleja los recortes.';
+    } else if (isADP) {
+      what = 'Encuesta de empleo privado publicada por ADP dos días antes del NFP oficial. Actúa como adelanto al mercado y puede mover el USD con fuerza si diverge mucho del consenso. No incluye empleo gubernamental.';
+    } else if (isHourlyEarnings) {
+      what = 'Mide la variación mensual en los salarios por hora en el sector no agrícola. Dato clave de presión inflacionaria salarial: salarios al alza = más inflación futura = Fed más hawkish = USD más fuerte. Se publica junto al NFP el primer viernes del mes.';
+    } else if (isUnemployment) {
+      what = 'Tasa de desempleo o número de solicitudes de subsidio por desempleo. El mandato dual de la Fed (empleo máximo + estabilidad de precios) hace que un aumento del paro abra la puerta a recortes de tasas, debilitando el USD. El nivel "natural" de pleno empleo está aproximadamente entre 3.5% y 4.5%.';
+    } else {
+      what = `Datos de empleo de ${country}. El mercado laboral es uno de los dos mandatos principales de los bancos centrales. Una lectura mejor de lo esperado refuerza la divisa al alejar los recortes de tasas; una peor la debilita.`;
+    }
+
     return {
       category: 'Mercado Laboral',
-      what: 'Evalúa la creación de empleo, la tasa de desocupación y la tensión salarial. El mandato dual de los principales bancos centrales hace que estos datos sean de primera línea.',
+      what,
       affectedAssets: assets,
-      volatilityPips: impact === 'HIGH' ? '50–120 pips' : '20–50 pips',
+      volatilityPips: isNFP ? '50–130 pips' : impact === 'HIGH' ? '40–90 pips' : '15–40 pips',
     };
   }
 
