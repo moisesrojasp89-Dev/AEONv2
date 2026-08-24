@@ -437,26 +437,131 @@ const EVENT_CONTEXT_MAP = {
 };
 
 /* ============================================================
+   COUNTRY-SPECIFIC OVERRIDES
+   For events whose name is identical across countries (e.g. "cpi m/m")
+   but whose context should differ by country.
+   Key format: "COUNTRY:event name"
+   ============================================================ */
+const COUNTRY_EVENT_MAP = {
+  /* ── CPI m/m by country ── */
+  'AUD:cpi m/m': {
+    category: 'IPC Mensual — Australia',
+    what: 'Variación mensual del IPC publicado por el Australian Bureau of Statistics. El RBA tiene un objetivo de inflación del 2–3% (banda, no punto exacto). Un CPI mensual sorprendente al alza retrasa los recortes del RBA y refuerza el AUD/USD. Dato especialmente relevante en el contexto de la normalización de la inflación post-pandemia en Australia.',
+    affectedAssets: ['AUD/USD', 'AUD/JPY', 'DXY', 'XAU/USD'],
+    volatilityPips: '20–50 pips',
+  },
+  'CAD:cpi m/m': {
+    category: 'IPC Mensual — Canadá',
+    what: 'Variación mensual del IPC de Canadá publicado por Statistics Canada. El Banco de Canadá (BoC) tiene objetivo de inflación del 2% (punto medio de la banda 1–3%). El BoC también publica simultáneamente tres medidas subyacentes (Common, Trim, Median). Un CPI m/m canadiense fuerte reduce la probabilidad de recortes del BoC, fortaleciendo el CAD (bajista para USD/CAD).',
+    affectedAssets: ['USD/CAD', 'DXY', 'OIL'],
+    volatilityPips: '20–50 pips',
+  },
+  'CHF:cpi m/m': {
+    category: 'IPC Mensual — Suiza',
+    what: 'Variación mensual del IPC de Suiza publicado por el Bundesamt für Statistik. El SNB (Banco Nacional Suizo) tiene un objetivo de inflación inferior al 2%. Suiza históricamente tiene inflación muy baja (cercana a 0% o incluso deflación), por lo que cualquier lectura elevada es relevante. El SNB es conocido por intervenciones directas en el mercado de divisas para controlar la fortaleza del CHF. El USD/CHF y EUR/CHF reaccionan a este dato.',
+    affectedAssets: ['USD/CHF', 'EUR/CHF', 'DXY'],
+    volatilityPips: '15–40 pips',
+  },
+  'GBP:cpi y/y': {
+    category: 'IPC Interanual — Reino Unido',
+    what: 'Variación interanual del IPC del Reino Unido publicado por la ONS. El BoE tiene objetivo de inflación del 2%. Tras el pico del 11.1% en octubre de 2022 (el mayor desde 1981), el BoE subió tipos agresivamente. El regreso del CPI al objetivo 2% es la condición principal para que el BoE complete su ciclo de recortes. Lecturas persistentemente por encima del 3% limitan el margen del BoE y sostienen la GBP.',
+    affectedAssets: ['GBP/USD', 'EUR/GBP', 'DXY', 'XAU/USD'],
+    volatilityPips: '30–70 pips',
+  },
+
+  /* ── GDP m/m by country ── */
+  'GBP:gdp m/m': {
+    category: 'PIB Mensual — Reino Unido',
+    what: 'Variación mensual del PIB del RU publicada por la ONS. El RU es el único país del G7 que publica PIB mensual además del trimestral, lo que permite seguimiento de alta frecuencia. Lecturas negativas consecutivas (dos meses o más) alertan sobre riesgo de recesión técnica. El BoE usa este dato como uno de los inputs clave para evaluar si la economía puede soportar tipos altos o si necesita estímulo.',
+    affectedAssets: ['GBP/USD', 'EUR/GBP', 'DXY'],
+    volatilityPips: '20–50 pips',
+  },
+  'CAD:gdp m/m': {
+    category: 'PIB Mensual — Canadá',
+    what: 'Variación mensual del PIB de Canadá publicada por Statistics Canada. Es el primer país del G7 en publicar PIB mensual (además del trimestral), lo que da visibilidad en tiempo real. El BoC usa este dato para calibrar si la economía canadiense se está frenando lo suficiente como para justificar recortes de tipos. Canadá tiene alta correlación con los precios del petróleo por ser gran exportador.',
+    affectedAssets: ['USD/CAD', 'DXY', 'OIL'],
+    volatilityPips: '20–45 pips',
+  },
+
+  /* ── Employment Change by country ── */
+  'AUD:employment change': {
+    category: 'Variación del Empleo — Australia',
+    what: 'Variación neta mensual del empleo en Australia publicada por el ABS (Australian Bureau of Statistics). Incluye empleo a tiempo completo y parcial. El tiempo completo tiene mayor peso económico. El RBA vigila este dato en su mandato de pleno empleo. Un mercado laboral australiano sólido aleja los recortes del RBA (AUD alcista); deterioro del empleo los acelera (AUD bajista).',
+    affectedAssets: ['AUD/USD', 'AUD/JPY', 'DXY', 'XAU/USD'],
+    volatilityPips: '30–70 pips',
+  },
+  'CAD:employment change': {
+    category: 'Variación del Empleo — Canadá',
+    what: 'Variación neta mensual del empleo en Canadá publicada por Statistics Canada. Se publica el mismo día que el NFP americano (primer viernes del mes), lo que genera doble volatilidad en el USD/CAD. El BoC considera el mercado laboral uno de sus indicadores clave. Un dato canadiense muy diferente al NFP puede crear movimientos explosivos en el USD/CAD.',
+    affectedAssets: ['USD/CAD', 'DXY', 'OIL'],
+    volatilityPips: '25–65 pips',
+  },
+  'NZD:employment change q/q': {
+    category: 'Variación del Empleo Trimestral — Nueva Zelanda',
+    what: 'Variación trimestral del empleo en Nueva Zelanda publicada por Statistics NZ. El RBNZ tiene mandato explícito de apoyar el empleo máximo sostenible junto con la estabilidad de precios. Los datos de empleo en NZ se publican trimestralmente (no mensualmente como en AUS o EE.UU.), por lo que cada publicación tiene mayor peso. NZD muy sensible a estos datos.',
+    affectedAssets: ['NZD/USD', 'AUD/NZD', 'DXY'],
+    volatilityPips: '25–55 pips',
+  },
+
+  /* ── Unemployment Rate by country ── */
+  'AUD:unemployment rate': {
+    category: 'Tasa de Desempleo — Australia',
+    what: 'Tasa de desempleo de Australia publicada por el ABS. Históricamente el mercado laboral australiano ha sido resiliente. El RBA considera una tasa del 4–4.5% compatible con el pleno empleo. Si la tasa sube por encima del 4.5% de forma sostenida, el RBA tiene argumento para recortar tipos más agresivamente. Se publica simultáneamente con Employment Change.',
+    affectedAssets: ['AUD/USD', 'DXY', 'XAU/USD'],
+    volatilityPips: '20–55 pips',
+  },
+  'CAD:unemployment rate': {
+    category: 'Tasa de Desempleo — Canadá',
+    what: 'Tasa de desempleo de Canadá. Se publica el mismo día que el NFP americano. El BoC considera una tasa del 5–6% compatible con el pleno empleo canadiense. Si diverge significativamente del consenso, puede generar movimientos fuertes en el USD/CAD, especialmente cuando el NFP americano ya ha movido el USD.',
+    affectedAssets: ['USD/CAD', 'DXY'],
+    volatilityPips: '20–50 pips',
+  },
+  'NZD:unemployment rate': {
+    category: 'Tasa de Desempleo — Nueva Zelanda',
+    what: 'Tasa de desempleo trimestral de Nueva Zelanda. El RBNZ tiene un mandato dual (inflación + empleo máximo sostenible). El nivel considerado compatible con el pleno empleo en NZ está alrededor del 4–4.5%. Una tasa subiendo por encima de este nivel refuerza la narrativa dovish del RBNZ.',
+    affectedAssets: ['NZD/USD', 'AUD/NZD', 'DXY'],
+    volatilityPips: '20–45 pips',
+  },
+
+  /* ── Prelim GDP q/q ── */
+  'GBP:prelim gdp q/q': {
+    category: 'PIB Trimestral Preliminar — Reino Unido',
+    what: 'Primera estimación trimestral del PIB del RU por la ONS. El mercado reacciona a la comparación vs. consenso: una economía más fuerte de lo esperado limita los recortes del BoE (GBP alcista); una contracción inesperada los acelera. El sector servicios domina el PIB del RU (≈80%), por lo que el PIB de servicios tiene mayor peso en la lectura que el manufacturero.',
+    affectedAssets: ['GBP/USD', 'EUR/GBP', 'DXY'],
+    volatilityPips: '20–50 pips',
+  },
+};
+
+/* ============================================================
    MAIN CONTEXT FUNCTION
-   First tries exact name lookup, then keyword fallback
+   Lookup priority:
+   1. Country+EventName compound key (COUNTRY_EVENT_MAP)
+   2. EventName-only exact key (EVENT_CONTEXT_MAP)
+   3. Partial name match in EVENT_CONTEXT_MAP
+   4. Category keyword fallback
    ============================================================ */
 export function getMacroImpactContext(eventName = '', country = 'USD', impact = 'HIGH') {
   const n = eventName.toLowerCase().trim();
 
-  // 1 ── Exact match lookup (highest precision)
+  // 1 ── Country-specific compound key (most precise)
+  const compoundKey = `${country}:${n}`;
+  if (COUNTRY_EVENT_MAP[compoundKey]) {
+    return COUNTRY_EVENT_MAP[compoundKey];
+  }
+
+  // 2 ── Event-name exact match
   if (EVENT_CONTEXT_MAP[n]) {
     return EVENT_CONTEXT_MAP[n];
   }
 
-  // 2 ── Partial-name match (for events not in the map)
-  //      Tries to find a map entry whose key is contained in the event name
+  // 3 ── Partial name match
   for (const [key, ctx] of Object.entries(EVENT_CONTEXT_MAP)) {
     if (n.includes(key) || key.includes(n)) {
       return ctx;
     }
   }
 
-  // 3 ── Category keyword fallback (for future/unknown events)
+  // 4 ── Category keyword fallback
   return _categoryFallback(n, country, impact);
 }
 
