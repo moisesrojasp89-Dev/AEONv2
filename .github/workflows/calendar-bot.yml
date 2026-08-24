@@ -1,0 +1,62 @@
+# AEON Calendar Bot — GitHub Actions Workflow
+# ============================================================
+# Corre automáticamente el 1ro y 15 de cada mes a las 06:00 UTC.
+# También se puede disparar manualmente desde GitHub → Actions.
+#
+# SECRETS REQUERIDOS en GitHub:
+#   Repositorio → Settings → Secrets and variables → Actions → New repository secret
+#
+#   FMP_API_KEY              ← API key de financialmodelingprep.com (gratis)
+#   VITE_SUPABASE_URL        ← URL de tu proyecto Supabase
+#   SUPABASE_SERVICE_ROLE_KEY ← Dashboard Supabase → Settings → API → service_role key
+# ============================================================
+
+name: Calendar Bot — Import Economic Events
+
+on:
+  schedule:
+    # 1ro de cada mes a las 06:00 UTC (antes de que abran mercados europeos)
+    - cron: '0 6 1 * *'
+    # 15 de cada mes a las 06:00 UTC (para importar la segunda mitad del mes)
+    - cron: '0 6 15 * *'
+
+  # Permite ejecutar manualmente desde GitHub → Actions → Run workflow
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Motivo de ejecución manual'
+        required: false
+        default: 'Manual run'
+
+jobs:
+  import-calendar:
+    name: Import Economic Calendar Events
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Calendar Bot
+        env:
+          FMP_API_KEY:               ${{ secrets.FMP_API_KEY }}
+          VITE_SUPABASE_URL:         ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/calendar_bot.mjs
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "⚠️ Calendar Bot FAILED at $(date -u)"
+          echo "Check logs above for details."
+          # En el futuro puedes añadir aquí notificación por email/Slack/Discord
