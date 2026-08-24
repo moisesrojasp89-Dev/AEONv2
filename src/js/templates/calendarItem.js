@@ -22,6 +22,28 @@ export function parseEcoValue(str) {
 }
 
 /**
+ * Events where a LOWER actual reading is BETTER for the economy/currency.
+ * For these, actual > forecast = miss (bad), actual < forecast = beat (good).
+ * Stored as lowercase fragments that are matched against the event name.
+ */
+const INVERTED_INDICATORS = [
+  'unemployment claims',
+  'jobless claims',
+  'claimant count',
+  'unemployment rate',
+  'initial claims',
+  'continuing claims',
+  'delinquency',
+  'default',
+  'trade deficit',
+];
+
+function isInvertedIndicator(eventName = '') {
+  const n = eventName.toLowerCase();
+  return INVERTED_INDICATORS.some(term => n.includes(term));
+}
+
+/**
  * Renders a single calendar event row + expandable detail panel.
  * The detail panel shows:
  *   - The specific actual / forecast / previous values for THIS event
@@ -35,11 +57,16 @@ export const calendarRow = (evt, index) => {
     impactUpper === 'MEDIUM' ? 'med' :
     impactUpper === 'MED' ? 'med' : 'low';
 
+  const evtName = evt.event_name || evt.event || '';
+
   // ── Actual vs Forecast colouring ──
   const actualRaw   = evt.actual   || '';
   const forecastRaw = evt.forecast || '';
   const previousRaw = evt.previous || '';
   const isPending   = !actualRaw || actualRaw === 'Pendiente' || actualRaw === '—';
+
+  // For inverted indicators (unemployment, claims) lower actual = better
+  const inverted = isInvertedIndicator(evtName);
 
   let actualClass = '';
   let directionSignal = null; // 'beat' | 'miss' | null
@@ -48,9 +75,14 @@ export const calendarRow = (evt, index) => {
     const actVal = parseEcoValue(actualRaw);
     const forVal = parseEcoValue(forecastRaw);
     if (actVal !== null && forVal !== null) {
-      if (actVal > forVal) { actualClass = 'better'; directionSignal = 'beat'; }
-      else if (actVal < forVal) { actualClass = 'worse';  directionSignal = 'miss'; }
-      // equal → no class, no signal
+      const higherIsBetter = !inverted;
+      if (actVal > forVal) {
+        actualClass    = higherIsBetter ? 'better' : 'worse';
+        directionSignal = higherIsBetter ? 'beat'   : 'miss';
+      } else if (actVal < forVal) {
+        actualClass    = higherIsBetter ? 'worse'  : 'better';
+        directionSignal = higherIsBetter ? 'miss'   : 'beat';
+      }
     }
   } else {
     actualClass = 'pending';
@@ -67,18 +99,23 @@ export const calendarRow = (evt, index) => {
   // ── Signal block (only when data published and direction is clear) ──
   let signalBlock = '';
   if (directionSignal === 'beat') {
+    // Beat = positive for currency (already accounts for inverted indicators)
+    const beatText = inverted
+      ? `<strong>Dato menor al consenso</strong> → Menos solicitudes de lo esperado. Señal de mercado laboral más sano de lo previsto. Positivo para ${escapeHTML(currency)}, reduce presión para que el banco central recorte tipos.`
+      : `<strong>Dato supera el consenso.</strong> Publicación positiva para ${escapeHTML(currency)}. Vigilar posibles compras institucionales y presión sobre activos inversos al ${escapeHTML(currency)}.`;
     signalBlock = `
       <div class="detail-signal beat">
         <span class="signal-arrow">▲</span>
-        <span><strong>Dato supera el consenso.</strong> Publicación positiva para ${escapeHTML(currency)}.
-        Vigilar posibles compras institucionales y presión sobre activos inversos al ${escapeHTML(currency)}.</span>
+        <span>${beatText}</span>
       </div>`;
   } else if (directionSignal === 'miss') {
+    const missText = inverted
+      ? `<strong>Dato mayor al consenso</strong> → Más solicitudes de lo esperado. Señal de deterioro en el mercado laboral. Negativo para ${escapeHTML(currency)}, aumenta la probabilidad de recortes de tipos.`
+      : `<strong>Dato por debajo del consenso.</strong> Publicación negativa para ${escapeHTML(currency)}. Vigilar ventas institucionales y rotación hacia activos refugio.`;
     signalBlock = `
       <div class="detail-signal miss">
         <span class="signal-arrow">▼</span>
-        <span><strong>Dato por debajo del consenso.</strong> Publicación negativa para ${escapeHTML(currency)}.
-        Vigilar ventas institucionales y rotación hacia activos refugio.</span>
+        <span>${missText}</span>
       </div>`;
   } else if (isPending) {
     signalBlock = `
