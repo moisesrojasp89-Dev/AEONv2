@@ -15,12 +15,14 @@ name: Calendar Bot — Import Economic Events
 
 on:
   schedule:
-    # 1ro de cada mes a las 06:00 UTC (antes de que abran mercados europeos)
+    # BOT 1 — Pre-carga: 1ro y 15 de cada mes a las 06:00 UTC
     - cron: '0 6 1 * *'
-    # 15 de cada mes a las 06:00 UTC (para importar la segunda mitad del mes)
     - cron: '0 6 15 * *'
+    # BOT 2 — Actualizador de datos reales: todos los días a las 19:00 UTC
+    #          (después del cierre de mercados NY a las 16:00 ET = 21:00 UTC)
+    #          Usamos 19:00 para capturar también datos europeos de la tarde
+    - cron: '0 19 * * *'
 
-  # Permite ejecutar manualmente desde GitHub → Actions → Run workflow
   workflow_dispatch:
     inputs:
       reason:
@@ -29,8 +31,11 @@ on:
         default: 'Manual run'
 
 jobs:
+  # ── JOB 1: Pre-carga de eventos futuros (1ro y 15 del mes) ──
   import-calendar:
-    name: Import Economic Calendar Events
+    name: Pre-load Future Events
+    # Solo corre los días 1 y 15 (o en ejecución manual)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && (startsWith(github.event.schedule, '0 6 1') || startsWith(github.event.schedule, '0 6 15')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -47,16 +52,36 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Calendar Bot
+      - name: Run Calendar Pre-loader
         env:
           FMP_API_KEY:               ${{ secrets.FMP_API_KEY }}
           VITE_SUPABASE_URL:         ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/calendar_bot.mjs
 
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "⚠️ Calendar Bot FAILED at $(date -u)"
-          echo "Check logs above for details."
-          # En el futuro puedes añadir aquí notificación por email/Slack/Discord
+  # ── JOB 2: Actualización de datos reales (todos los días) ────
+  update-actuals:
+    name: Update Published Actual Values
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Calendar Updater
+        env:
+          FMP_API_KEY:               ${{ secrets.FMP_API_KEY }}
+          VITE_SUPABASE_URL:         ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/calendar_updater.mjs
+
