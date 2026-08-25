@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .signals-live-badge {
@@ -40,6 +40,43 @@
   border-radius: 50%;
   box-shadow: 0 0 8px var(--green);
   animation: pulse-dot 2s infinite;
+}
+
+/* Selector de Modo de Vista (Live vs Track Record) */
+.signals-view-switch {
+  display: inline-flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 0.25rem;
+  border-radius: 8px;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.view-switch-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.view-switch-btn:hover {
+  color: var(--text);
+}
+
+.view-switch-btn.active {
+  background: var(--accent);
+  color: #0A0800;
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.25);
 }
 
 /* Barra de KPIs Cuantitativos */
@@ -80,6 +117,10 @@
 
 .kpi-val.highlight {
   color: var(--accent);
+}
+
+.kpi-val.green {
+  color: var(--green);
 }
 
 /* Tabs de Filtrado por Activo */
@@ -152,6 +193,18 @@
 .signal-card.short {
   border-left: 3px solid var(--red);
   box-shadow: 0 4px 20px rgba(239, 68, 68, 0.04);
+}
+
+.signal-card.closed-won {
+  border-left: 3px solid #EAB308;
+}
+
+.signal-card.closed-be {
+  border-left: 3px solid #60A5FA;
+}
+
+.signal-card.closed-lost {
+  border-left: 3px solid #EF4444;
 }
 
 .signal-card:hover {
@@ -230,6 +283,32 @@
   border: 1px solid var(--accent-border);
   padding: 0.22rem 0.55rem;
   border-radius: 4px;
+}
+
+.badge-realized-r {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+}
+
+.badge-realized-r.pill-tp {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-realized-r.pill-be {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60A5FA;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.badge-realized-r.pill-sl {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 /* Sub-Barra con Score Cuantitativo */
@@ -382,6 +461,43 @@
 .slevel-val.target {
   color: #4ADE80;
 }
+
+/* Caja de Salida en Tarjeta de Historial */
+.history-exit-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+
+.history-exit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.hexit-lbl {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hexit-val {
+  font-family: var(--font-head);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  font-variant-numeric: tabular-nums;
+}
+
+.hexit-val.pill-tp { color: var(--green); }
+.hexit-val.pill-be { color: #60A5FA; }
+.hexit-val.pill-sl { color: var(--red); }
 
 /* Estado del Trade */
 .signal-status {

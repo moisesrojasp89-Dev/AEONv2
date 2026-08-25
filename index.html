@@ -189,10 +189,16 @@
         </div>
       </div>
 
-      <!-- Barra de KPIs Cuantitativos -->
-      <div class="signals-kpi-bar">
+      <!-- Selector de Modo de Vista (Live vs Historial Track Record) -->
+      <div class="signals-view-switch" id="signals-view-switch" role="tablist">
+        <button class="view-switch-btn active" data-view="live" role="tab" aria-selected="true">🟢 Señales en Vivo</button>
+        <button class="view-switch-btn" data-view="history" role="tab" aria-selected="false">📊 Track Record & Historial</button>
+      </div>
+
+      <!-- Barra Dinámica de KPIs Cuantitativos -->
+      <div class="signals-kpi-bar" id="signals-kpi-bar">
         <div class="kpi-item">
-          <span class="kpi-lbl">Ratio R:R Promedio</span>
+          <span class="kpi-lbl">Ratio R:R Objetivo</span>
           <span class="kpi-val highlight">1:2.0 – 1:3.0</span>
         </div>
         <div class="kpi-item">

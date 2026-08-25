@@ -14,9 +14,9 @@ export async function fetchActiveSignals(isPro = false) {
   const { data: publicSignals, error: pErr } = await supabase
     .from(DB_TABLES.SIGNALS)
     .select('*')
-    .in('status', ['active', 'hit_tp1', 'won', 'lost', 'closed_tp', 'closed_sl'])
+    .in('status', ['active', 'hit_tp1'])
     .order('timestamp', { ascending: false })
-    .limit(10);
+    .limit(12);
 
   if (pErr) throw pErr;
 
@@ -44,6 +44,96 @@ export async function fetchActiveSignals(isPro = false) {
   }
 
   return signals;
+}
+
+/**
+ * Fetches closed signals for the Track Record & History module.
+ * @param {number} limit
+ * @returns {Promise<Array>}
+ */
+export async function fetchSignalHistory(limit = 50) {
+  const { data: closedSignals, error } = await supabase
+    .from(DB_TABLES.SIGNALS)
+    .select('*')
+    .in('status', ['closed_tp', 'closed_be', 'closed_sl', 'won', 'lost'])
+    .order('timestamp', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return closedSignals || [];
+}
+
+/**
+ * Calculates mathematical metrics for the Track Record Dashboard.
+ * Excludes open trades strictly and uses Number.isFinite() to avoid NaN propagation.
+ * @param {Array} signals
+ * @returns {Object}
+ */
+export function calculateTrackRecordMetrics(signals = []) {
+  const closed = signals.filter(s => ['closed_tp', 'closed_be', 'closed_sl', 'won', 'lost'].includes(s.status));
+  const total = closed.length;
+  
+  if (total === 0) {
+    return {
+      total: 0,
+      won: 0,
+      be: 0,
+      lost: 0,
+      winRate: '0.0%',
+      profitFactor: '0.00',
+      avgR: '0.00',
+      totalR: '+0.0R'
+    };
+  }
+
+  let wonCount = 0;
+  let beCount = 0;
+  let lostCount = 0;
+  let totalGainsR = 0;
+  let totalLossesR = 0;
+
+  closed.forEach(s => {
+    let r = 0;
+    if (Number.isFinite(s.confluences?.realized_r)) {
+      r = s.confluences.realized_r;
+    } else if (s.status === 'closed_tp' || s.status === 'won') {
+      r = Number(s.confluences?.rr_ratio) || 2.5;
+    } else if (s.status === 'closed_be') {
+      r = 0.0;
+    } else if (s.status === 'closed_sl' || s.status === 'lost') {
+      r = -1.0;
+    }
+
+    if (s.status === 'closed_tp' || s.status === 'won' || r > 0) {
+      wonCount++;
+      totalGainsR += r;
+    } else if (s.status === 'closed_be' || r === 0) {
+      beCount++;
+    } else if (s.status === 'closed_sl' || s.status === 'lost' || r < 0) {
+      lostCount++;
+      totalLossesR += Math.abs(r);
+    }
+  });
+
+  const decisiveTrades = wonCount + lostCount;
+  const winRate = decisiveTrades > 0 ? ((wonCount / decisiveTrades) * 100).toFixed(1) + '%' : '0.0%';
+  const profitFactor = totalLossesR > 0 
+    ? (totalGainsR / totalLossesR).toFixed(2) 
+    : (totalGainsR > 0 ? '∞' : '0.00');
+  const avgR = wonCount > 0 ? (totalGainsR / wonCount).toFixed(2) : '2.50';
+  const netR = (totalGainsR - totalLossesR).toFixed(1);
+  const totalR = (netR >= 0 ? `+${netR}` : `${netR}`) + 'R';
+
+  return {
+    total,
+    won: wonCount,
+    be: beCount,
+    lost: lostCount,
+    winRate,
+    profitFactor,
+    avgR,
+    totalR
+  };
 }
 
 /**

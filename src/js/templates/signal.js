@@ -57,7 +57,7 @@ function getTimeAgo(dateString) {
 function formatPrice(asset, val) {
   if (val === undefined || val === null || val === '') return '—';
   const num = Number(val);
-  if (isNaN(num)) return String(val);
+  if (!Number.isFinite(num)) return String(val);
   const cleanAsset = String(asset || '').toUpperCase();
   if (cleanAsset.includes('XAU')) {
     return num.toFixed(2);
@@ -203,6 +203,80 @@ const proInstitutionalCard = (s) => {
         <div class="slevel">
           <span class="slevel-title">TARGET</span>
           <strong class="slevel-val target">${escapeHTML(formattedTP)}</strong>
+        </div>
+      </div>
+    </article>
+  `;
+};
+
+/**
+ * Tarjeta de Historial de Trade Cerrado (Track Record).
+ */
+export const closedSignalCard = (s) => {
+  const cardData = { ...s };
+  cardData.iconInfo = getAssetIconInfo(cardData.asset);
+  const conf = cardData.confluences || {};
+  const setupType = conf.setup_type || 'DAY TRADER M15';
+  const regime = conf.regime || 'TENDENCIA';
+  const reasoning = conf.reasoning || 'Trade cuantitativo ejecutado por reglas de confluencia institucional.';
+  const dirClass = String(cardData.direction || '').toLowerCase();
+  
+  let rPill = '+2.5R';
+  let rClass = 'pill-tp';
+  if (Number.isFinite(conf.realized_r)) {
+    const rVal = conf.realized_r;
+    rPill = (rVal > 0 ? `+${rVal}R` : `${rVal}R`);
+    rClass = rVal > 0 ? 'pill-tp' : (rVal === 0 ? 'pill-be' : 'pill-sl');
+  } else if (cardData.status === 'closed_tp' || cardData.status === 'won') {
+    rPill = `+${conf.rr_ratio || '2.5'}R`;
+    rClass = 'pill-tp';
+  } else if (cardData.status === 'closed_be') {
+    rPill = '0.0R (BE)';
+    rClass = 'pill-be';
+  } else {
+    rPill = '-1.0R (SL)';
+    rClass = 'pill-sl';
+  }
+
+  const exitPriceStr = formatPrice(cardData.asset, conf.exit_price || conf.tp3 || conf.tp1 || cardData.take_profit);
+  const dateStr = cardData.timestamp ? new Date(cardData.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }) : 'Reciente';
+
+  return `
+    <article class="signal-card history-card ${escapeHTML(STATUS_CLASS[cardData.status] || 'closed')}" role="listitem">
+      <div class="signal-card-top">
+        <div class="signal-badge-group">
+          <span class="badge-setup">${escapeHTML(setupType)}</span>
+          <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
+        </div>
+        <div class="signal-top-right">
+          <span class="badge-realized-r ${escapeHTML(rClass)}">${escapeHTML(rPill)}</span>
+          <span class="signal-status ${escapeHTML(STATUS_CLASS[cardData.status] || 'closed')}">${escapeHTML(STATUS_LABEL[cardData.status] || cardData.status)}</span>
+        </div>
+      </div>
+
+      <div class="signal-header">
+        <div class="signal-asset">
+          <span class="asset-icon ${escapeHTML(cardData.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(cardData.iconInfo.icon)}</span>
+          <div>
+            <p class="signal-name">${escapeHTML(cardData.asset)}</p>
+            <p class="signal-time">${escapeHTML(dateStr)} · ${escapeHTML(cardData.iconInfo.name)}</p>
+          </div>
+        </div>
+        <span class="signal-dir ${escapeHTML(dirClass)}">${escapeHTML(cardData.direction)}</span>
+      </div>
+
+      ${renderChips(conf)}
+
+      <p class="signal-thesis">${escapeHTML(reasoning)}</p>
+
+      <div class="history-exit-box">
+        <div class="history-exit-item">
+          <span class="hexit-lbl">PRECIO DE SALIDA</span>
+          <strong class="hexit-val">${escapeHTML(exitPriceStr)}</strong>
+        </div>
+        <div class="history-exit-item">
+          <span class="hexit-lbl">RESULTADO R</span>
+          <strong class="hexit-val ${escapeHTML(rClass)}">${escapeHTML(rPill)}</strong>
         </div>
       </div>
     </article>
