@@ -8,16 +8,26 @@ const STATUS_CLASS = {
   'active': 'active',
   'hit_tp1': 'active',
   'won': 'closed-won',
+  'closed_tp': 'closed-won',
+  'CLOSED_TP': 'closed-won',
   'lost': 'closed-lost',
-  'cancelled': 'closed'
+  'closed_sl': 'closed-lost',
+  'CLOSED_SL': 'closed-lost',
+  'cancelled': 'closed',
+  'CANCELLED': 'closed'
 };
 
 const STATUS_LABEL = {
   'active': '● En Curso',
   'hit_tp1': '🎯 TP1 (SL a BE)',
   'won': '🏆 Ganada (+TP)',
+  'closed_tp': '🏆 Ganada (+TP)',
+  'CLOSED_TP': '🏆 Ganada (+TP)',
   'lost': '🛑 Cerrada (SL)',
-  'cancelled': 'Cancelada'
+  'closed_sl': '🛑 Cerrada (SL)',
+  'CLOSED_SL': '🛑 Cerrada (SL)',
+  'cancelled': 'Cancelada',
+  'CANCELLED': 'Cancelada'
 };
 
 function getAssetIconInfo(asset) {
