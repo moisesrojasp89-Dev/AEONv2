@@ -25,7 +25,11 @@ export async function checkSession() {
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (profData && (profData.tier === 'pro' || profData.role === 'admin')) {
+      const metaTier = session.user.user_metadata?.tier || session.user.app_metadata?.tier;
+      const metaRole = session.user.user_metadata?.role || session.user.app_metadata?.role;
+      const isOfficialPro = ['malejandro.rp19@gmail.com', 'cmroyalglobal@gmail.com'].includes(session.user.email);
+
+      if ((profData && (profData.tier === 'pro' || profData.role === 'admin')) || metaTier === 'pro' || metaRole === 'admin' || isOfficialPro) {
         isPro = true;
       } else {
         // 2. Fallback vía tabla subscriptions activa
