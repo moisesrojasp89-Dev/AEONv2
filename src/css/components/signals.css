@@ -1,13 +1,126 @@
 /* ============================================================
-   AEON · signals.css — Institutional Terminal Setup Cards
+   AEON · signals.css — Institutional Terminal Setup Cards & Layout
    ============================================================ */
 
 .signals-section {
   position: relative;
   z-index: 1;
-  padding: 2.5rem 0;
+  padding: 3rem 0;
 }
 
+/* Header Institucional con Badge Activo */
+.signals-header-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.signals-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green);
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  width: fit-content;
+  letter-spacing: 0.04em;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 2s infinite;
+}
+
+/* Barra de KPIs Cuantitativos */
+.signals-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+}
+
+.kpi-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.kpi-lbl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+}
+
+.kpi-val {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.kpi-val.highlight {
+  color: var(--accent);
+}
+
+/* Tabs de Filtrado por Activo */
+.signals-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.filter-tab-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-tab-btn:hover {
+  color: var(--text);
+  border-color: var(--border-2);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.filter-tab-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 14px rgba(234, 179, 8, 0.15);
+}
+
+/* Grid de Señales */
 .signals-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -25,6 +138,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  position: relative;
+}
+
+.signal-card.long {
+  border-left: 3px solid var(--green);
+}
+
+.signal-card.short {
+  border-left: 3px solid var(--red);
 }
 
 .signal-card:hover {
@@ -33,7 +155,7 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
-/* Header superior: Badges de Modalidad y Régimen */
+/* Header superior: Badges de Modalidad, Régimen y Score */
 .signal-card-top {
   display: flex;
   justify-content: space-between;
@@ -52,13 +174,13 @@
 
 .badge-setup {
   font-family: var(--font-head);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: rgba(255, 255, 255, 0.07);
   color: var(--text);
-  padding: 0.25rem 0.55rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -68,7 +190,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 0.25rem 0.55rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
 }
 
@@ -88,6 +210,17 @@
   background: rgba(234, 179, 8, 0.12);
   color: #EAB308;
   border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+.badge-score {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #60A5FA;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
 }
 
 .signal-top-right {
@@ -296,7 +429,7 @@
   pointer-events: none;
 }
 
-/* Empty State */
+/* Empty State con Radar */
 .signals-empty {
   grid-column: 1 / -1;
   text-align: center;
@@ -318,20 +451,21 @@
 
 .signals-empty p {
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   max-width: 480px;
+  line-height: 1.5;
 }
 
 .empty-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--accent-dim);
-  color: var(--accent);
-  border: 1px solid var(--accent-border);
-  padding: 0.5rem 1rem;
+  background: rgba(34, 197, 94, 0.08);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  padding: 0.35rem 0.85rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 
@@ -340,7 +474,7 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background-color: var(--accent);
+  background-color: var(--green);
   border-radius: 50%;
   animation: pulse-dot 2s infinite;
 }
@@ -351,8 +485,17 @@
   100% { transform: scale(0.95); opacity: 0.8; }
 }
 
+@media (max-width: 900px) {
+  .signals-kpi-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 640px) {
   .signals-list {
+    grid-template-columns: 1fr;
+  }
+  .signals-kpi-bar {
     grid-template-columns: 1fr;
   }
   .signal-levels {

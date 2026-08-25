@@ -60,27 +60,29 @@ function renderChips(confluences) {
   
   return `
     <div class="signal-chips">
-      ${reasons.slice(0, 3).map(r => `<span class="chip-tag">${escapeHTML(r)}</span>`).join('')}
+      ${reasons.slice(0, 4).map(r => `<span class="chip-tag">${escapeHTML(r)}</span>`).join('')}
     </div>
   `;
 }
 
 /**
- * Tarjeta para usuarios FREE (Muestra el Setup, Tesis y Confluencias; difumina solo los números de Entrada/SL/TP).
+ * Tarjeta para usuarios FREE (Muestra Setup, Régimen, Score, Tesis y Confluencias; difumina solo los números de Entrada/SL/TP).
  */
 const freeInstitutionalCard = (s, currentUser) => {
   const conf = s.confluences || {};
   const setupType = conf.setup_type || 'DAY TRADER M15';
   const regime = conf.regime || 'TENDENCIA';
+  const score = Math.min(Math.max(conf.score || 85, 0), 100);
   const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
   const dirClass = String(s.direction || '').toLowerCase();
   
   return `
-    <article class="signal-card institutional-card" role="listitem" aria-label="Señal cuantitativa ${escapeHTML(s.asset)}">
+    <article class="signal-card institutional-card ${dirClass}" role="listitem" aria-label="Señal cuantitativa ${escapeHTML(s.asset)}">
       <div class="signal-card-top">
         <div class="signal-badge-group">
           <span class="badge-setup">${escapeHTML(setupType)}</span>
           <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
+          <span class="badge-score">⚡ Score: ${escapeHTML(String(score))}/100</span>
         </div>
         <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] || 'active')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
       </div>
@@ -111,7 +113,7 @@ const freeInstitutionalCard = (s, currentUser) => {
         <div class="signal-levels blurred-content" aria-hidden="true">
           <div class="slevel"><span>Entrada</span><strong>████.██</strong></div>
           <div class="slevel"><span>Stop Loss</span><strong class="stop">████.██</strong></div>
-          <div class="slevel"><span>Target TP</span><strong class="target">████.██</strong></div>
+          <div class="slevel"><span>Target Final</span><strong class="target">████.██</strong></div>
         </div>
       </div>
     </article>
@@ -119,22 +121,24 @@ const freeInstitutionalCard = (s, currentUser) => {
 };
 
 /**
- * Tarjeta para usuarios PRO (Desbloqueo numérico total con R:R y targets).
+ * Tarjeta para usuarios PRO (Desbloqueo numérico total con R:R, targets y confluencias).
  */
 const proInstitutionalCard = (s) => {
   const conf = s.confluences || {};
   const setupType = conf.setup_type || 'DAY TRADER M15';
   const regime = conf.regime || 'TENDENCIA';
+  const score = Math.min(Math.max(conf.score || 85, 0), 100);
   const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
   const rrRatio = conf.rr_ratio || (s.take_profit && s.entry_price && s.stop_loss ? Math.abs((s.take_profit - s.entry_price)/(s.entry_price - s.stop_loss)).toFixed(1) : '2.5');
   const dirClass = String(s.direction || '').toLowerCase();
   
   return `
-    <article class="signal-card institutional-card pro-unlocked" role="listitem" aria-label="Señal cuantitativa PRO ${escapeHTML(s.asset)}">
+    <article class="signal-card institutional-card pro-unlocked ${dirClass}" role="listitem" aria-label="Señal cuantitativa PRO ${escapeHTML(s.asset)}">
       <div class="signal-card-top">
         <div class="signal-badge-group">
           <span class="badge-setup">${escapeHTML(setupType)}</span>
           <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
+          <span class="badge-score">⚡ Score: ${escapeHTML(String(score))}/100</span>
         </div>
         <div class="signal-top-right">
           <span class="badge-rr">R:R 1:${escapeHTML(String(rrRatio))}</span>

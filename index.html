@@ -175,13 +175,48 @@
     </section>
 
     <section class="signals-section container" id="senales" aria-labelledby="signals-heading">
-      <div class="section-header">
-        <div>
-          <h2 id="signals-heading">Señales educativas</h2>
-          <p>Última semana · Niveles, R:R y contexto de sesión.</p>
+      <div class="signals-header-top">
+        <div class="signals-live-badge">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <span>Motor Cuantitativo Adaptativo Activo · Killzones Londres & NY</span>
         </div>
-        <a href="#pro" class="btn-secondary" style="padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.85rem; border-bottom: 1px solid var(--border-2);">Ver todas →</a>
+        <div class="section-header" style="margin-bottom: 0;">
+          <div>
+            <h2 id="signals-heading">Señales Cuantitativas & Order Flow</h2>
+            <p>Estrategias adaptativas basadas en Perfil de Volumen (POC), Session VWAP y confluencias institucionales.</p>
+          </div>
+          <a href="#pro" class="btn-secondary" style="padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.85rem; border-bottom: 1px solid var(--border-2);">Acceso PRO →</a>
+        </div>
       </div>
+
+      <!-- Barra de KPIs Cuantitativos -->
+      <div class="signals-kpi-bar">
+        <div class="kpi-item">
+          <span class="kpi-lbl">Ratio R:R Promedio</span>
+          <span class="kpi-val highlight">1:2.0 – 1:3.0</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-lbl">Gestión de Riesgo</span>
+          <span class="kpi-val">Break-Even en 1.5R</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-lbl">Timeframes Operados</span>
+          <span class="kpi-val">M5 Scalp / M15 Day</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-lbl">Frecuencia / Disciplina</span>
+          <span class="kpi-val">1 – 3 setups / día</span>
+        </div>
+      </div>
+
+      <!-- Tabs de Filtrado por Activo -->
+      <div class="signals-filter-tabs" id="signals-filter-tabs">
+        <button class="filter-tab-btn active" data-filter="all">Todos los Activos</button>
+        <button class="filter-tab-btn" data-filter="XAUUSD">🟡 Oro (XAU/USD)</button>
+        <button class="filter-tab-btn" data-filter="EURUSD">🇪🇺 Euro (EUR/USD)</button>
+        <button class="filter-tab-btn" data-filter="GBPUSD">🇬🇧 Libra (GBP/USD)</button>
+      </div>
+
       <div class="signals-list" id="signals-list" role="list"></div>
     </section>
 

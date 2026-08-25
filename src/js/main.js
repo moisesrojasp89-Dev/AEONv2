@@ -27,10 +27,33 @@ let isPro = false;
 let activeSignals = [];
 let allNewsCache = [];
 
+let currentSignalFilter = 'all';
+
+function getFilteredSignals() {
+  if (currentSignalFilter === 'all') return activeSignals;
+  return activeSignals.filter(s => String(s.asset || '').toUpperCase().includes(currentSignalFilter.toUpperCase()));
+}
+
+function initSignalFilters() {
+  const container = document.getElementById('signals-filter-tabs');
+  if (!container) return;
+
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-tab-btn');
+    if (!btn) return;
+
+    container.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    currentSignalFilter = btn.dataset.filter || 'all';
+    renderSignals(getFilteredSignals(), currentUser, isPro);
+  });
+}
+
 async function loadSignals() {
   try {
     activeSignals = await fetchActiveSignals(isPro);
-    renderSignals(activeSignals, currentUser, isPro);
+    renderSignals(getFilteredSignals(), currentUser, isPro);
   } catch (err) {
     console.error('[AEON] Error cargando signals:', err);
     renderSignals([], currentUser, isPro);
@@ -42,7 +65,7 @@ function initRealtime() {
     isPro,
     onPublicInsert: newSignal => {
       activeSignals.unshift(newSignal);
-      renderSignals(activeSignals, currentUser, isPro);
+      renderSignals(getFilteredSignals(), currentUser, isPro);
     },
     onPublicUpdate: updatedSignal => {
       const index = activeSignals.findIndex(s => s.id === updatedSignal.id);
@@ -51,13 +74,13 @@ function initRealtime() {
       } else {
         activeSignals.unshift(updatedSignal);
       }
-      renderSignals(activeSignals, currentUser, isPro);
+      renderSignals(getFilteredSignals(), currentUser, isPro);
     },
     onProInsert: proPayload => {
       const target = activeSignals.find(s => s.id === proPayload.signal_id);
       if (target) {
         Object.assign(target, proPayload);
-        renderSignals(activeSignals, currentUser, isPro);
+        renderSignals(getFilteredSignals(), currentUser, isPro);
       }
     },
     onReconnect: () => {
@@ -118,6 +141,7 @@ async function initApp() {
 
   loadDynamicNews();
   initNewsFilters();
+  initSignalFilters();
   initNavbar();
   initPrices();
   initChart();

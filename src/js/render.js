@@ -18,7 +18,13 @@ export function renderNews(news)           { fill('news-list',      news.map(new
 export function renderMarketCards(markets) { fill('market-grid',    markets.map(marketCard).join('')); }
 export function renderSignals(signals, currentUser, isPro) { 
   if (!signals || signals.length === 0) {
-    fill('signals-list', '<p style="color: #6b7280; text-align: center; padding: 3rem 0; width: 100%;">No hay señales activas en este momento. El radar está despejado.</p>');
+    fill('signals-list', `
+      <div class="signals-empty">
+        <div class="empty-badge">Radar Cuantitativo Activo</div>
+        <h3>Escaneando Killzones de Liquidez</h3>
+        <p>El motor adaptativo está monitoreando en vivo los Puntos de Control (POC), Session VWAP y confluencias en las sesiones de Londres y Nueva York. Próxima emisión de alta probabilidad en radar.</p>
+      </div>
+    `);
     return;
   }
   fill('signals-list', signals.map(s => signalCard(s, currentUser, isPro)).join('')); 
