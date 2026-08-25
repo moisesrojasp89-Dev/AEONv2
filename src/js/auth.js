@@ -18,18 +18,29 @@ export async function checkSession() {
     session = data?.session || null;
 
     if (session) {
-      // Determinar estado PRO: plan='pro', status='active', y no expirado
-      const { data: subData, error: subErr } = await supabase
-        .from(DB_TABLES.SUBSCRIPTIONS)
-        .select('plan, status, current_period_end')
-        .eq('user_id', session.user.id)
-        .eq('plan', 'pro')
-        .eq('status', 'active')
-        .gte('current_period_end', new Date().toISOString())
+      // 1. Determinar estado PRO vía tabla profiles
+      const { data: profData } = await supabase
+        .from(DB_TABLES.PROFILES)
+        .select('tier, role')
+        .eq('id', session.user.id)
         .maybeSingle();
 
-      if (!subErr && subData) {
+      if (profData && (profData.tier === 'pro' || profData.role === 'admin')) {
         isPro = true;
+      } else {
+        // 2. Fallback vía tabla subscriptions activa
+        const { data: subData, error: subErr } = await supabase
+          .from(DB_TABLES.SUBSCRIPTIONS)
+          .select('plan, status, current_period_end')
+          .eq('user_id', session.user.id)
+          .eq('plan', 'pro')
+          .eq('status', 'active')
+          .gte('current_period_end', new Date().toISOString())
+          .maybeSingle();
+
+        if (!subErr && subData) {
+          isPro = true;
+        }
       }
     }
   } catch (err) {
