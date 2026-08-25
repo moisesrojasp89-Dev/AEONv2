@@ -31,7 +31,7 @@
 | | **4.2** | Optimización de Estrategias: Volume Profile POC, Session VWAP, SMA 20 + RSI (+152.2% Portafolio Total) | ✅ **100% COMPLETADO** |
 | | **4.3** | Motor Adaptativo (`Aeon_Bot`): Detector ADX $N=3$, Trade Watcher Lifecycle, Score (0-100) y RLS Server-Side | ✅ **100% COMPLETADO** |
 | | **4.4** | Terminal de Señales Frontend: Glassmorphic Cards, Barra de KPIs, Filtros por Activo, Scroll Snap Móvil | ✅ **100% COMPLETADO** |
-| | **4.5** | Módulo de Historial & Track Record Semanal en Frontend (`#senales-historial`) | 🚀 **EN CURSO** |
+| | **4.5** | Módulo de Historial & Track Record Semanal en Frontend (`#senales` view switcher, Win Rate, Profit Factor, `Number.isFinite`, `closed_be`) | ✅ **100% COMPLETADO** |
 | | **4.6** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
 | **Fase 5** | **5.1** | AI Briefing Automatizado (Pipeline de noticias + contexto macro) | ⏳ Planificado |
 | **Fase 8** | **8.1** | Mobile Readiness Audit & Preparación de APIs para iOS/Android | ⏳ Planificado |
@@ -51,23 +51,20 @@ Se completó la batería de backtesting de Order Flow (Volume Profile POC), Sess
 
 ---
 
-## 3. Estado de la Arquitectura de Señales en Producción
+## 3. Estado de la Máquina de Estados del Trade Watcher
 
-```text
-[ MT5 Exness / OANDA ] ──> [ regime_detector.py (ADX N=3) ] ──> [ adaptive_engine.py ]
-                                                                       │
-                                                                       ▼
-                                                       [ delivery/supabase_client.py ]
-                                                        ├── INSERT 'signals' (Público: Tesis, Chips, Score, Régimen)
-                                                        └── INSERT 'signals_pro_data' (Privado PRO: Precios de Entrada, SL, TP)
-                                                                       │
-                                              ┌────────────────────────┴────────────────────────┐
-                                              ▼ (WebSockets)                                    ▼
-                                  [ AEON Frontend / signal.js ]                     [ scheduler/watcher.py ]
-                                  • FREE: Tesis + Chips + Score + Blur UI           • ACTIVE -> HIT_TP1 (SL a BE)
-                                  • PRO: Desbloqueo Numérico Exacto                 • HIT_TP1 -> CLOSED_TP / CLOSED_SL
 ```
-
-### Cuentas de Prueba Configuradas en Desarrollo
-* `malejandro.rp19@gmail.com`: **PRO** (Desbloqueo numérico total).
-* `cmroyalglobal@gmail.com`: **FREE** (Bloqueado con blur para testear experiencia y conversión de usuarios gratuitos).
+                         [ ACTIVE ]
+                             │
+            ┌────────────────┴────────────────┐
+            │ (Precio >= TP1)                 │ (Precio <= SL)
+            ▼                                 ▼
+       [ HIT_TP1 ]                       [ CLOSED_SL ]
+    (Stop a Break-Even)                   (-1.0R loss)
+            │
+    ┌───────┴───────┐
+    │ (Precio >= TP)│ (Precio <= Entry / BE)
+    ▼               ▼
+[ CLOSED_TP ]   [ CLOSED_BE ]
+ (+R profit)     (0.0R loss)
+```
