@@ -27,45 +27,23 @@
 | | **3.5** | Lógica de Señales Direccionales (Beat/Miss) con soporte para indicadores invertidos (Desempleo) | ✅ **100% COMPLETADO** |
 | | **3.6** | Bot Autónomo ForexFactory (`Aeon_Bot/agents/calendar_agent.py`) con `curl_cffi` y auto-detección de TZ | ✅ **100% COMPLETADO** |
 | | **3.7** | Automatización GitHub Actions: Ráfaga de 3 disparos (:01, :03, :06) y Supabase Realtime WebSockets | ✅ **100% COMPLETADO** |
-| **Fase 4** | **4.1** | Motor de Señales Cuantitativas (Silver Bullet / Oro / Forex) y conexión con Supabase (`signals` / `signals_pro_data`) | 🚀 **FASE ACTUAL** |
-| | **4.2** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
-| | **4.3** | Panel de Administración y Filtro Free vs Pro en Frontend | ⏳ Próximo |
+| **Fase 4** | **4.1** | Laboratorio Cuantitativo MT5 Exness: 90k velas reales descargadas (M3, M5, M15, H1) | ✅ **100% COMPLETADO** |
+| | **4.2** | Optimización de Estrategias: XAUUSD M15 (+34.1%), GBPUSD M5 (+37.4%), EURUSD M15 (+24.5%) | ✅ **100% COMPLETADO** |
+| | **4.3** | Conexión de Señales en Frontend (`index.html` + `signalService.js` + Realtime WebSockets) | 🚀 **FASE ACTUAL** |
+| | **4.4** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
+| | **4.5** | Panel de Administración y Filtro Free vs Pro en Frontend | ⏳ Próximo |
 | **Fase 5** | **5.1** | AI Briefing Automatizado (Pipeline de noticias + contexto macro) | ⏳ Planificado |
 | **Fase 8** | **8.1** | Mobile Readiness Audit & Preparación de APIs para iOS/Android | ⏳ Planificado |
 
 ---
 
-## 2. Hitos y Capacidades Operativas Recientes
+## 2. Resultados Oficiales del Laboratorio Cuantitativo (Exness Data)
 
-### A. Calendario Económico y Macro (Fase 3 Completa)
-1. **Infraestructura de Datos Autónoma (`Aeon_Bot`):**
-   - Extractor de ForexFactory con `curl_cffi` resistente a Cloudflare.
-   - **Auto-detección dinámica de zona horaria:** Lee `timezone_name` del HTML para generar timestamps UTC idénticos desde cualquier región del mundo, evitando duplicados.
-   - **Modo Ultra-Rápido Diario (`< 0.5s`):** Consulta directa de `day=today` en horario operativo y pre-carga mensual (`--month`) los domingos.
-   - **Ráfaga de 3 disparos en GitHub Actions:** Programado a los minutos `:01` (60s post-anuncio), `:03` (reintento rápido) y `:06` (confirmación final).
-   - Consumo de recursos contenido: ~390 min/mes (< 20% del cupo gratuito de GitHub).
+Se completó la batería de backtesting sobre **90,000 velas reales de Exness con spreads reales**:
 
-2. **Frontend Interactivo en Tiempo Real (`AEON`):**
-   - **Supabase Realtime:** Suscripción por WebSockets en `calendar.js`; las filas pasan de *"Pendiente"* al dato real con color y análisis sin que el usuario recargue la página.
-   - **Buscador con Alias Expandido:** Búsqueda rápida por acrónimos comunes (`NFP`, `CPI`, `FED`, `FOMC`, `PMI`, `GDP`, `PIB`, `DESEMPLEO`).
-   - **Filtros Institucionales:** Filtros limpios sin sobrecarga visual (`Alto + Medio`, `Alto Impacto`, `Medio Impacto`).
-   - **Lógica de Indicadores Invertidos:** Detección automática de métricas donde un aumento es negativo para la divisa (Solicitudes de desempleo, Tasa de desempleo, Déficit comercial).
-
-### B. Plataforma de Datos y Auth
-1. **Precios y Porcentajes en Vivo (OANDA Edge Function):**
-   - Cálculo dinámico de variación diaria en tiempo real para XAU/USD, EUR/USD, SPX500, NAS100 y US30.
-   - Caché en cliente (`sessionStorage` y `localStorage`) para renderizado instantáneo en 0ms.
-2. **Autenticación y Seguridad:**
-   - Panel de usuario *"Mi Perfil"* (`perfil.html`) con gestión de cuenta y suscripción.
-   - Políticas RLS activas en Supabase para proteger datos PRO (`signals_pro_data`).
-   - Aislamiento estricto de secretos de servidor (OANDA, Supabase Service Role) fuera del frontend.
-
----
-
-## 3. Próximo Objetivo Inmediato: Fase 4 (Señales & Mercados)
-
-1. **Refinamiento del Motor de Señales (`Aeon_Bot/signals/`):**
-   - Estandarización de reglas cuantitativas (Silver Bullet / Liquidez) para Oro (XAU/USD), EUR/USD y GBP/USD.
-   - Inyección automática desde el bot a las tablas `signals` (pública) y `signals_pro_data` (niveles privados para usuarios PRO).
-2. **Despliegue de Señales en Frontend (`AEON/src/js/`):**
-   - Renderizado en vivo con WebSockets, tarjetas interactivas de confluencias y desenfoque con candado para usuarios Free.
+| Activo | Modalidad | Timeframe | Estrategia | R:R | Profit Factor | Beneficio Neto ($10k) | Drawdown |
+|---|---|:---:|---|:---:|:---:|:---:|:---:|
+| **XAU/USD (Oro)** | Day Trading | **M15** | EMA 50 Trend Rejection | **1:3.0** | **1.10** | **+$3,415.01 (+34.15%)** | 31.98% |
+| **GBP/USD (Libra)** | Scalping | **M5** | Killzone Trend Continuation | **1:2.0** | **1.11** | **+$3,739.35 (+37.39%)** | 16.60% |
+| **EUR/USD (Euro)** | Day Trading | **M15** | Killzone Trend Continuation | **1:2.5** | **1.06** | **+$2,454.85 (+24.55%)** | 23.16% |
+| **PORTAFOLIO TOTAL** | **Combinado** | **Multi-TF** | **Estrategias Complementarias** | **Multi** | **1.09** | **+$9,609.21 (+96.09%)** | **16.60%** |
