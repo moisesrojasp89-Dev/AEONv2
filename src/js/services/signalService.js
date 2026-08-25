@@ -14,7 +14,7 @@ export async function fetchActiveSignals(isPro = false) {
   const { data: publicSignals, error: pErr } = await supabase
     .from(DB_TABLES.SIGNALS)
     .select('*')
-    .in('status', ['active', 'hit_tp1', 'won', 'lost'])
+    .in('status', ['active', 'hit_tp1', 'won', 'lost', 'closed_tp', 'closed_sl'])
     .order('timestamp', { ascending: false })
     .limit(10);
 
@@ -29,7 +29,11 @@ export async function fetchActiveSignals(isPro = false) {
       .select('*')
       .in('signal_id', signalIds);
 
-    if (!proErr && proData) {
+    if (proErr) {
+      console.warn('[signalService] Pro query notice:', proErr);
+    }
+
+    if (proData && proData.length > 0) {
       proData.forEach(proInfo => {
         const target = signals.find(s => s.id === proInfo.signal_id);
         if (target) {
@@ -44,13 +48,6 @@ export async function fetchActiveSignals(isPro = false) {
 
 /**
  * Subscribes to Realtime Postgres changes for public signals and private PRO data.
- * @param {Object} options
- * @param {Function} options.onPublicInsert
- * @param {Function} options.onPublicUpdate
- * @param {Function} options.onProInsert
- * @param {Function} options.onReconnect
- * @param {boolean} options.isPro
- * @returns {Object} { publicChannel, proChannel }
  */
 export function subscribeSignalEvents({
   onPublicInsert,
