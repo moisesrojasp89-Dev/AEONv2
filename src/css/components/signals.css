@@ -51,15 +51,15 @@
 }
 
 .kpi-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-md);
   padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  gap: 0.25rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .kpi-lbl {
@@ -75,6 +75,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
 .kpi-val.highlight {
@@ -92,13 +93,13 @@
 }
 
 .filter-tab-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--muted);
   font-family: var(--font-head);
   font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.45rem 1rem;
+  padding: 0.45rem 1.05rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--dur-fast) var(--ease);
@@ -110,8 +111,8 @@
 
 .filter-tab-btn:hover {
   color: var(--text);
-  border-color: var(--border-2);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .filter-tab-btn.active {
@@ -129,41 +130,42 @@
 }
 
 .signal-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
   padding: 1.35rem;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: transform var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
   position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .signal-card.long {
   border-left: 3px solid var(--green);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.04);
 }
 
 .signal-card.short {
   border-left: 3px solid var(--red);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.04);
 }
 
 .signal-card:hover {
-  border-color: var(--border-2);
+  border-color: rgba(255, 255, 255, 0.18);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* Header superior: Badges de Modalidad, Régimen y Score */
+/* Header superior: Badges de Modalidad y Régimen */
 .signal-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 0.75rem;
 }
 
 .signal-badge-group {
@@ -179,11 +181,11 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--text);
-  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #E2E8F0;
+  padding: 0.25rem 0.55rem;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .badge-regime {
@@ -191,7 +193,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.55rem;
   border-radius: 4px;
 }
 
@@ -213,30 +215,38 @@
   border: 1px solid rgba(234, 179, 8, 0.25);
 }
 
-.badge-score {
-  font-family: var(--font-head);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #60A5FA;
-  background: rgba(96, 165, 250, 0.12);
-  border: 1px solid rgba(96, 165, 250, 0.25);
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-}
-
 .signal-top-right {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .badge-rr {
+  font-family: var(--font-head);
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
-  padding: 0.2rem 0.5rem;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+}
+
+/* Sub-Barra con Score Cuantitativo */
+.signal-sub-bar {
+  display: flex;
+  align-items: center;
+  margin-top: -0.25rem;
+}
+
+.badge-score {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #60A5FA;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  padding: 0.22rem 0.55rem;
   border-radius: 4px;
 }
 
@@ -256,9 +266,10 @@
 .signal-name {
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   margin-bottom: 0.1rem;
   letter-spacing: -0.01em;
+  color: #F8FAFC;
 }
 
 .signal-time {
@@ -297,10 +308,10 @@
 .chip-tag {
   font-size: 0.68rem;
   font-weight: 600;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.2rem 0.5rem;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 0.22rem 0.52rem;
   border-radius: 4px;
 }
 
@@ -308,18 +319,18 @@
 .signal-thesis {
   font-size: 0.82rem;
   line-height: 1.45;
-  color: #C3C7D4;
+  color: #CBD5E1;
   margin: 0;
-  padding: 0.65rem 0.8rem;
-  background: rgba(0, 0, 0, 0.22);
+  padding: 0.65rem 0.85rem;
+  background: rgba(0, 0, 0, 0.25);
   border-left: 2px solid var(--accent);
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 6px 6px 0;
 }
 
-/* Niveles de Entrada, Stop y Target */
+/* Niveles de Entrada, Stop y Target (Alineación Horizontal Perfecta) */
 .signal-levels-wrapper {
   position: relative;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -330,37 +341,54 @@
 }
 
 .slevel {
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.65rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: space-between;
+  min-height: 54px;
+  box-sizing: border-box;
+  text-align: left;
 }
 
-.slevel span {
-  font-size: 0.65rem;
-  color: var(--muted-2);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.slevel strong {
-  font-size: 0.92rem;
+.slevel-title {
+  font-size: 0.62rem;
   font-weight: 700;
-  font-family: var(--font-head);
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  white-space: nowrap;
+  margin-bottom: 0.35rem;
+  display: block;
 }
 
-.slevel .stop { color: var(--red); }
-.slevel .target { color: var(--green); }
+.slevel-val {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #F8FAFC;
+  display: block;
+}
+
+.slevel-val.stop {
+  color: #F87171;
+}
+
+.slevel-val.target {
+  color: #4ADE80;
+}
 
 /* Estado del Trade */
 .signal-status {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.03em;
-  padding: 0.2rem 0.6rem;
+  padding: 0.22rem 0.55rem;
   border-radius: 999px;
   white-space: nowrap;
 }
@@ -389,8 +417,8 @@
   inset: 0;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  background: rgba(10, 14, 23, 0.72);
-  border-radius: var(--radius-sm);
+  background: rgba(10, 14, 23, 0.78);
+  border-radius: 8px;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -406,6 +434,12 @@
 
 .blur-overlay svg {
   color: var(--accent);
+}
+
+.blur-title {
+  font-size: 0.75rem;
+  color: #E2E8F0;
+  font-weight: 600;
 }
 
 .blur-cta-btn {
@@ -435,8 +469,8 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 3.5rem 1.5rem;
-  background: var(--surface);
-  border: 1px dashed var(--border-2);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
