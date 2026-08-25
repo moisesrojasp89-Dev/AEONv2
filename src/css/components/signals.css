@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · signals.css — Signal cards & blur overlay
+   AEON · signals.css — Institutional Terminal Setup Cards
    ============================================================ */
 
 .signals-section {
@@ -8,53 +8,195 @@
   padding: 2.5rem 0;
 }
 
-.signals-list { display: flex; flex-direction: column; gap: 0.875rem; }
+.signals-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.25rem;
+}
 
 .signal-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.35rem;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  transition: border-color var(--dur-base) var(--ease);
+  transition: transform var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
-.signal-card:hover { border-color: var(--border-2); }
+.signal-card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
 
+/* Header superior: Badges de Modalidad y Régimen */
+.signal-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.75rem;
+}
+
+.signal-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.badge-setup {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-regime {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+}
+
+.badge-regime.regime-bull {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.badge-regime.regime-bear {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.badge-regime.regime-range {
+  background: rgba(234, 179, 8, 0.12);
+  color: #EAB308;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+.signal-top-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge-rr {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Header con Activo y Dirección */
 .signal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
-.signal-asset { display: flex; align-items: center; gap: 0.75rem; }
+.signal-asset {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-.signal-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.1rem; }
-.signal-time { font-size: 0.72rem; color: var(--muted-2); }
+.signal-name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.1rem;
+  letter-spacing: -0.01em;
+}
+
+.signal-time {
+  font-size: 0.72rem;
+  color: var(--muted-2);
+}
 
 .signal-dir {
   font-family: var(--font-head);
   font-size: 0.75rem;
   font-weight: 800;
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 999px;
   letter-spacing: 0.06em;
 }
 
-.signal-dir.long  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
-.signal-dir.short { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(239,68,68,0.25); }
+.signal-dir.long, .signal-dir.bullish {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.signal-dir.short, .signal-dir.bearish {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Confluencias Chips */
+.signal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Tesis Contextual */
+.signal-thesis {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #C3C7D4;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Niveles de Entrada, Stop y Target */
+.signal-levels-wrapper {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
 
 .signal-levels {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
-  margin-bottom: 0.875rem;
 }
 
 .slevel {
-  background: rgba(255,255,255,0.035);
+  background: rgba(255, 255, 255, 0.035);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.5rem 0.65rem;
@@ -64,74 +206,101 @@
 }
 
 .slevel span {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--muted-2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.slevel strong        { font-size: 0.88rem; font-weight: 700; }
-.slevel .stop         { color: var(--red); }
-.slevel .target       { color: var(--green); }
-
-.signal-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border);
-}
-
-.signal-rr { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
-
-.signal-status {
-  font-size: 0.72rem;
+.slevel strong {
+  font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 0.25rem 0.65rem;
-  border-radius: 999px;
+  font-family: var(--font-head);
 }
 
-.signal-status.active { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.22); }
-.signal-status.closed { background: rgba(255,255,255,0.06); color: var(--muted); }
+.slevel .stop { color: var(--red); }
+.slevel .target { color: var(--green); }
 
-/* Blur / premium lock */
-.blur-card { position: relative; overflow: hidden; }
+/* Estado del Trade */
+.signal-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
 
+.signal-status.active {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.signal-status.closed-won {
+  background: rgba(234, 179, 8, 0.12);
+  color: #EAB308;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+.signal-status.closed-lost {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Blur Lock UI sobre los niveles numéricos */
 .blur-overlay {
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  background: rgba(8,12,20,0.5);
-  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(10, 14, 23, 0.72);
+  border-radius: var(--radius-sm);
   z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   color: var(--muted);
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  text-align: center;
 }
 
-.blur-cta {
-  margin-top: 0.4rem;
+.blur-overlay svg {
+  color: var(--accent);
+}
+
+.blur-cta-btn {
   background: var(--accent);
   color: #0A0800;
   font-weight: 700;
-  font-size: 0.82rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
-  transition: opacity var(--dur-fast) var(--ease);
+  font-size: 0.75rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
 }
 
-.blur-cta:hover { opacity: 0.85; }
+.blur-cta-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
 
+.blurred-content {
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Empty State */
 .signals-empty {
+  grid-column: 1 / -1;
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: 3.5rem 1.5rem;
   background: var(--surface);
   border: 1px dashed var(--border-2);
   border-radius: var(--radius-lg);
@@ -140,15 +309,19 @@
   align-items: center;
   gap: 1rem;
 }
+
 .signals-empty h3 {
   font-family: var(--font-head);
   font-size: 1.25rem;
   color: var(--text);
 }
+
 .signals-empty p {
   color: var(--muted);
   font-size: 0.95rem;
+  max-width: 480px;
 }
+
 .empty-badge {
   display: inline-flex;
   align-items: center;
@@ -161,6 +334,7 @@
   font-size: 0.8rem;
   font-weight: 600;
 }
+
 .empty-badge::before {
   content: '';
   display: inline-block;
@@ -171,7 +345,16 @@
   animation: pulse-dot 2s infinite;
 }
 
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
 @media (max-width: 640px) {
+  .signals-list {
+    grid-template-columns: 1fr;
+  }
   .signal-levels {
     grid-template-columns: 1fr;
   }

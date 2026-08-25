@@ -1,119 +1,171 @@
 /* ============================================================
-   AEON · templates/signal.js
+   AEON · templates/signal.js — Institutional Terminal Setup Card
    ============================================================ */
 
 import { escapeHTML } from '../utils/sanitize.js';
 
-const STATUS_CLASS = { 'active': 'active', 'won': 'closed', 'lost': 'closed', 'cancelled': 'closed' };
-const STATUS_LABEL = { 'active': 'Activa', 'won': 'Ganada', 'lost': 'Perdida', 'cancelled': 'Cancelada' };
+const STATUS_CLASS = {
+  'active': 'active',
+  'hit_tp1': 'active',
+  'won': 'closed-won',
+  'lost': 'closed-lost',
+  'cancelled': 'closed'
+};
+
+const STATUS_LABEL = {
+  'active': '● En Curso',
+  'hit_tp1': '🎯 TP1 (SL a BE)',
+  'won': '🏆 Ganada (+TP)',
+  'lost': '🛑 Cerrada (SL)',
+  'cancelled': 'Cancelada'
+};
 
 function getAssetIconInfo(asset) {
-  const clean = String(asset || '');
-  if (clean.includes('XAU')) return { icon: 'Au', iconClass: 'gold' };
-  if (clean.includes('EUR')) return { icon: '€', iconClass: 'euro' };
-  if (clean.includes('GBP')) return { icon: '£', iconClass: 'pound' };
-  if (clean.includes('BTC')) return { icon: '₿', iconClass: 'crypto' };
-  return { icon: '$', iconClass: 'default' };
+  const clean = String(asset || '').toUpperCase();
+  if (clean.includes('XAU')) return { icon: 'Au', iconClass: 'gold', name: 'Oro / US Dollar' };
+  if (clean.includes('EUR')) return { icon: '€', iconClass: 'euro', name: 'Euro / US Dollar' };
+  if (clean.includes('GBP')) return { icon: '£', iconClass: 'pound', name: 'Libra / US Dollar' };
+  if (clean.includes('BTC')) return { icon: '₿', iconClass: 'crypto', name: 'Bitcoin / US Dollar' };
+  return { icon: '$', iconClass: 'default', name: clean };
 }
 
 function getTimeAgo(dateString) {
   if (!dateString) return 'Reciente';
   const diff = Date.now() - new Date(dateString).getTime();
   const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return 'Ahora mismo';
   if (minutes < 60) return `Hace ${minutes}m`;
   const hours = Math.floor(minutes / 60);
   if (hours < 24) return `Hace ${hours}h`;
   return `Hace ${Math.floor(hours / 24)}d`;
 }
 
-const lockedCard = (s, currentUser) => `
-  <article class="signal-card blur-card" role="listitem" aria-label="Señal premium">
-    <div class="blur-overlay">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4zm6 6H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1zm-6 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" fill="currentColor"/>
-      </svg>
-      <span>Contenido Premium</span>
-      ${currentUser ? '<a href="#planes" class="btn btn-primary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.9rem;">Mejorar Rango a PRO</a>' : '<a href="/registro.html" class="blur-cta">Desbloquear →</a>'}
+function renderChips(confluences) {
+  if (!confluences) return '';
+  const reasons = Array.isArray(confluences) 
+    ? confluences 
+    : (Array.isArray(confluences.reasons) ? confluences.reasons : []);
+  
+  if (reasons.length === 0) return '';
+  
+  return `
+    <div class="signal-chips">
+      ${reasons.slice(0, 3).map(r => `<span class="chip-tag">${escapeHTML(r)}</span>`).join('')}
     </div>
-    <div class="signal-header" aria-hidden="true">
-      <div class="signal-asset">
-        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm">${escapeHTML(s.iconInfo.icon)}</span>
-        <div>
-          <p class="signal-name">${escapeHTML(s.asset)}</p>
-          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
-        </div>
-      </div>
-      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
-    </div>
-    <div class="signal-levels" aria-hidden="true">
-      <div class="slevel"><span>Entrada</span><strong>██.███</strong></div>
-      <div class="slevel"><span>Stop</span><strong class="stop">██.███</strong></div>
-      <div class="slevel"><span>Target</span><strong class="target">██.███</strong></div>
-    </div>
-  </article>
-`;
+  `;
+}
 
-const loadingProCard = (s) => `
-  <article class="signal-card" role="listitem" aria-label="Cargando Señal ${escapeHTML(s.asset)}">
-    <div class="signal-header">
-      <div class="signal-asset">
-        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
-        <div>
-          <p class="signal-name">${escapeHTML(s.asset)}</p>
-          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
+/**
+ * Tarjeta para usuarios FREE (Muestra el Setup, Tesis y Confluencias; difumina solo los números de Entrada/SL/TP).
+ */
+const freeInstitutionalCard = (s, currentUser) => {
+  const conf = s.confluences || {};
+  const setupType = conf.setup_type || 'DAY TRADER M15';
+  const regime = conf.regime || 'TENDENCIA';
+  const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
+  const dirClass = String(s.direction || '').toLowerCase();
+  
+  return `
+    <article class="signal-card institutional-card" role="listitem" aria-label="Señal cuantitativa ${escapeHTML(s.asset)}">
+      <div class="signal-card-top">
+        <div class="signal-badge-group">
+          <span class="badge-setup">${escapeHTML(setupType)}</span>
+          <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
         </div>
+        <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] || 'active')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
       </div>
-      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
-    </div>
-    <div class="signal-levels" style="opacity: 0.5; justify-content: center; padding: 2rem 0;">
-      <span>⏳ Cargando análisis PRO...</span>
-    </div>
-    <div class="signal-footer">
-      <span class="signal-rr">-</span>
-      <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] ?? '')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
-    </div>
-  </article>
-`;
 
-const publicCard = (s) => `
-  <article class="signal-card" role="listitem" aria-label="Señal ${escapeHTML(s.asset)}">
-    <div class="signal-header">
-      <div class="signal-asset">
-        <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
-        <div>
-          <p class="signal-name">${escapeHTML(s.asset)}</p>
-          <p class="signal-time">${escapeHTML(s.timeStr)}</p>
+      <div class="signal-header">
+        <div class="signal-asset">
+          <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
+          <div>
+            <p class="signal-name">${escapeHTML(s.asset)}</p>
+            <p class="signal-time">${escapeHTML(s.timeStr)} · ${escapeHTML(s.iconInfo.name)}</p>
+          </div>
+        </div>
+        <span class="signal-dir ${escapeHTML(dirClass)}">${escapeHTML(s.direction)}</span>
+      </div>
+
+      ${renderChips(conf)}
+
+      <p class="signal-thesis">${escapeHTML(reasoning)}</p>
+
+      <div class="signal-levels-wrapper">
+        <div class="blur-overlay">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4zm6 6H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1zm-6 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" fill="currentColor"/>
+          </svg>
+          <span>Niveles de Entrada y Targets PRO</span>
+          ${currentUser ? '<a href="#planes" class="blur-cta-btn">Desbloquear R:R y Niveles →</a>' : '<a href="/registro.html" class="blur-cta-btn">Crear Cuenta PRO →</a>'}
+        </div>
+        <div class="signal-levels blurred-content" aria-hidden="true">
+          <div class="slevel"><span>Entrada</span><strong>████.██</strong></div>
+          <div class="slevel"><span>Stop Loss</span><strong class="stop">████.██</strong></div>
+          <div class="slevel"><span>Target TP</span><strong class="target">████.██</strong></div>
         </div>
       </div>
-      <span class="signal-dir ${escapeHTML(String(s.direction || '').toLowerCase())}">${escapeHTML(s.direction)}</span>
-    </div>
-    <div class="signal-levels">
-      <div class="slevel"><span>Entrada</span><strong>${escapeHTML(s.entry_price)}</strong></div>
-      <div class="slevel"><span>Stop</span><strong class="stop">${escapeHTML(s.stop_loss)}</strong></div>
-      <div class="slevel"><span>Target</span><strong class="target">${escapeHTML(s.take_profit)}</strong></div>
-    </div>
-    <div class="signal-footer">
-      <span class="signal-rr">RR Calculado</span>
-      <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] ?? '')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
-    </div>
-  </article>
-`;
+    </article>
+  `;
+};
+
+/**
+ * Tarjeta para usuarios PRO (Desbloqueo numérico total con R:R y targets).
+ */
+const proInstitutionalCard = (s) => {
+  const conf = s.confluences || {};
+  const setupType = conf.setup_type || 'DAY TRADER M15';
+  const regime = conf.regime || 'TENDENCIA';
+  const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
+  const rrRatio = conf.rr_ratio || (s.take_profit && s.entry_price && s.stop_loss ? Math.abs((s.take_profit - s.entry_price)/(s.entry_price - s.stop_loss)).toFixed(1) : '2.5');
+  const dirClass = String(s.direction || '').toLowerCase();
+  
+  return `
+    <article class="signal-card institutional-card pro-unlocked" role="listitem" aria-label="Señal cuantitativa PRO ${escapeHTML(s.asset)}">
+      <div class="signal-card-top">
+        <div class="signal-badge-group">
+          <span class="badge-setup">${escapeHTML(setupType)}</span>
+          <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
+        </div>
+        <div class="signal-top-right">
+          <span class="badge-rr">R:R 1:${escapeHTML(String(rrRatio))}</span>
+          <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] || 'active')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
+        </div>
+      </div>
+
+      <div class="signal-header">
+        <div class="signal-asset">
+          <span class="asset-icon ${escapeHTML(s.iconInfo.iconClass)} sm" aria-hidden="true">${escapeHTML(s.iconInfo.icon)}</span>
+          <div>
+            <p class="signal-name">${escapeHTML(s.asset)}</p>
+            <p class="signal-time">${escapeHTML(s.timeStr)} · ${escapeHTML(s.iconInfo.name)}</p>
+          </div>
+        </div>
+        <span class="signal-dir ${escapeHTML(dirClass)}">${escapeHTML(s.direction)}</span>
+      </div>
+
+      ${renderChips(conf)}
+
+      <p class="signal-thesis">${escapeHTML(reasoning)}</p>
+
+      <div class="signal-levels">
+        <div class="slevel"><span>Entrada</span><strong>${escapeHTML(s.entry_price)}</strong></div>
+        <div class="slevel"><span>Stop Loss</span><strong class="stop">${escapeHTML(s.stop_loss)}</strong></div>
+        <div class="slevel"><span>Target Final</span><strong class="target">${escapeHTML(s.take_profit)}</strong></div>
+      </div>
+    </article>
+  `;
+};
 
 export const signalCard = (s, currentUser, isPro) => {
   const cardData = { ...s };
   cardData.iconInfo = getAssetIconInfo(cardData.asset);
-  cardData.timeStr = getTimeAgo(cardData.created_at);
+  cardData.timeStr = getTimeAgo(cardData.timestamp || cardData.created_at);
   
-  // Consistencia Eventual: Si es PRO pero aún no tiene datos de entry_price
-  if (isPro && !cardData.entry_price) {
-    return loadingProCard(cardData);
+  // Si no tiene entry_price (porque la consulta RLS no lo devolvió al ser Free), renderiza versión Free protegida
+  if (!isPro || !cardData.entry_price) {
+    return freeInstitutionalCard(cardData, currentUser);
   }
 
-  // Si no es PRO y no tiene entry_price, muestra bloqueado
-  if (!isPro && !cardData.entry_price) {
-    return lockedCard(cardData, currentUser);
-  }
-
-  // Si tiene los datos (Llegaron por Realtime PRO)
-  return publicCard(cardData);
+  // Usuario PRO autenticado con datos completos
+  return proInstitutionalCard(cardData);
 };

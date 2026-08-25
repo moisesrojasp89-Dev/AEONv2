@@ -45,13 +45,11 @@ function initRealtime() {
       renderSignals(activeSignals, currentUser, isPro);
     },
     onPublicUpdate: updatedSignal => {
-      if (updatedSignal.status !== 'active') {
-        activeSignals = activeSignals.filter(s => s.id !== updatedSignal.id);
+      const index = activeSignals.findIndex(s => s.id === updatedSignal.id);
+      if (index > -1) {
+        Object.assign(activeSignals[index], updatedSignal);
       } else {
-        const index = activeSignals.findIndex(s => s.id === updatedSignal.id);
-        if (index > -1) {
-          Object.assign(activeSignals[index], updatedSignal);
-        }
+        activeSignals.unshift(updatedSignal);
       }
       renderSignals(activeSignals, currentUser, isPro);
     },

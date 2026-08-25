@@ -14,8 +14,9 @@ export async function fetchActiveSignals(isPro = false) {
   const { data: publicSignals, error: pErr } = await supabase
     .from(DB_TABLES.SIGNALS)
     .select('*')
-    .eq('status', 'active')
-    .order('created_at', { ascending: false });
+    .in('status', ['active', 'hit_tp1', 'won', 'lost'])
+    .order('timestamp', { ascending: false })
+    .limit(10);
 
   if (pErr) throw pErr;
 
