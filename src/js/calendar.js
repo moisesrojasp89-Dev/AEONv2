@@ -7,6 +7,8 @@ import { calendarRow } from './templates/calendarItem.js';
 import { fetchCalendarEvents } from './services/calendarService.js';
 import { checkSession } from './auth.js';
 import { escapeHTML } from './utils/sanitize.js';
+import { supabase } from './supabaseClient.js';
+import { DB_TABLES } from './config/constants.js';
 
 let globalEvents = [];
 let liveCountdownStarted = false;
@@ -298,12 +300,28 @@ function initTradingViewWidget() {
   container.appendChild(script);
 }
 
+function subscribeCalendarRealtime() {
+  const channel = supabase.channel('public:economic_calendar')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: DB_TABLES.ECONOMIC_CALENDAR },
+      async () => {
+        console.log('[AEON] Cambio detectado en economic_calendar. Actualizando feed en vivo...');
+        await fetchCalendar();
+      }
+    )
+    .subscribe();
+
+  return channel;
+}
+
 async function initApp() {
   checkSession();
   initNavbar();
   initCalendarFilters();
   await fetchCalendar();
   initTradingViewWidget();
+  subscribeCalendarRealtime();
 }
 
 if (document.readyState === 'loading') {
