@@ -19,7 +19,7 @@
 | | **1.4** | Edge Function Proxy de TwelveData / OANDA multi-activo | ✅ **100% COMPLETADO** |
 | **Fase 2** | **2.1** | Variación Porcentual Diaria Real de Activos OANDA (XAU, EUR, SPX, NAS, US30) | ✅ **100% COMPLETADO** |
 | | **2.2** | Adaptador `marketService` & Sistema de Caché Instantáneo (0ms white-screen) | ✅ **100% COMPLETADO** |
-| | **2.3** | Desacoplamiento de Datos de Gráfico (`chart.js` / TradingView Widgets) | 🚀 **En curso (Fase 4)** |
+| | **2.3** | Desacoplamiento de Datos de Gráfico (`chart.js` / TradingView Widgets) | ⏳ Planificado |
 | **Fase 3** | **3.1** | Flujo de Recuperación de Password & Panel de Usuario (*"Mi Perfil"*) | ✅ **100% COMPLETADO** |
 | | **3.2** | Calendario Económico: Grid Responsive 8 cols desktop / 4 cols mobile + Acordeón | ✅ **100% COMPLETADO** |
 | | **3.3** | Base de Datos PostgreSQL (`economic_calendar`): UNIQUE constraints, Índices y RLS | ✅ **100% COMPLETADO** |
@@ -29,9 +29,10 @@
 | | **3.7** | Automatización GitHub Actions: Ráfaga de 3 disparos (:01, :03, :06) y Supabase Realtime WebSockets | ✅ **100% COMPLETADO** |
 | **Fase 4** | **4.1** | Laboratorio Cuantitativo MT5 Exness: 90k velas reales descargadas (M3, M5, M15, H1) | ✅ **100% COMPLETADO** |
 | | **4.2** | Optimización de Estrategias: Volume Profile POC, Session VWAP, SMA 20 + RSI (+152.2% Portafolio Total) | ✅ **100% COMPLETADO** |
-| | **4.3** | Conexión de Señales en Frontend (`index.html` + `signalService.js` + Realtime WebSockets) | 🚀 **FASE ACTUAL** |
-| | **4.4** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
-| | **4.5** | Panel de Administración y Filtro Free vs Pro en Frontend | ⏳ Próximo |
+| | **4.3** | Motor Adaptativo (`Aeon_Bot`): Detector ADX $N=3$, Trade Watcher Lifecycle, Score (0-100) y RLS Server-Side | ✅ **100% COMPLETADO** |
+| | **4.4** | Terminal de Señales Frontend: Glassmorphic Cards, Barra de KPIs, Filtros por Activo, Scroll Snap Móvil | ✅ **100% COMPLETADO** |
+| | **4.5** | Módulo de Historial & Track Record Semanal en Frontend (`#senales-historial`) | 🚀 **EN CURSO** |
+| | **4.6** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
 | **Fase 5** | **5.1** | AI Briefing Automatizado (Pipeline de noticias + contexto macro) | ⏳ Planificado |
 | **Fase 8** | **8.1** | Mobile Readiness Audit & Preparación de APIs para iOS/Android | ⏳ Planificado |
 
@@ -47,3 +48,26 @@ Se completó la batería de backtesting de Order Flow (Volume Profile POC), Sess
 | **EUR/USD (Euro)** | Day Trading | **M15** | **Session VWAP Pullback & Rejection** | **1:2.5** | **1.11** | **+$5,697.34 (+56.97%)** | 32.31% |
 | **GBP/USD (Libra)** | Scalping | **M5** | **Killzone Trend Continuation / SMA 20** | **1:2.0** | **1.11** | **+$3,739.35 (+37.39%)** | **16.60%** |
 | **PORTAFOLIO MASTER** | **Combinado** | **Multi-TF** | **Confluencias Institucionales** | **Multi** | **1.11** | **+$15,227.73 (+152.27%)** | **16.60%** |
+
+---
+
+## 3. Estado de la Arquitectura de Señales en Producción
+
+```text
+[ MT5 Exness / OANDA ] ──> [ regime_detector.py (ADX N=3) ] ──> [ adaptive_engine.py ]
+                                                                       │
+                                                                       ▼
+                                                       [ delivery/supabase_client.py ]
+                                                        ├── INSERT 'signals' (Público: Tesis, Chips, Score, Régimen)
+                                                        └── INSERT 'signals_pro_data' (Privado PRO: Precios de Entrada, SL, TP)
+                                                                       │
+                                              ┌────────────────────────┴────────────────────────┐
+                                              ▼ (WebSockets)                                    ▼
+                                  [ AEON Frontend / signal.js ]                     [ scheduler/watcher.py ]
+                                  • FREE: Tesis + Chips + Score + Blur UI           • ACTIVE -> HIT_TP1 (SL a BE)
+                                  • PRO: Desbloqueo Numérico Exacto                 • HIT_TP1 -> CLOSED_TP / CLOSED_SL
+```
+
+### Cuentas de Prueba Configuradas en Desarrollo
+* `malejandro.rp19@gmail.com`: **PRO** (Desbloqueo numérico total).
+* `cmroyalglobal@gmail.com`: **FREE** (Bloqueado con blur para testear experiencia y conversión de usuarios gratuitos).
