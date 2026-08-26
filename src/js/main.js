@@ -179,18 +179,36 @@ async function loadDynamicNews() {
 }
 
 function initNewsFilters() {
-  const filterBtns = document.querySelectorAll('.news-filter-btn');
+  const filterBtns = document.querySelectorAll('#news-filters .filter-btn');
 
   function applyFilter(filterValue) {
     filterBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.filter === filterValue);
     });
 
-    if (filterValue === 'all') {
+    if (!filterValue || filterValue === 'all') {
       renderNews(allNewsCache);
     } else {
-      const filtered = allNewsCache.filter(item => String(item.tag || '').toUpperCase() === filterValue.toUpperCase());
-      renderNews(filtered);
+      const val = filterValue.toUpperCase();
+      const filtered = allNewsCache.filter(item => {
+        const tag = String(item.tag || '').toUpperCase();
+        const title = String(item.title || '').toUpperCase();
+        
+        if (val === 'ORO' || val === 'METALES') {
+          return tag.includes('ORO') || tag.includes('METALES') || tag.includes('GOLD') || title.includes('ORO') || title.includes('METALES') || title.includes('XAU');
+        }
+        if (val === 'FOREX') {
+          return tag.includes('FOREX') || tag.includes('EUR') || tag.includes('GBP') || tag.includes('USD') || title.includes('EURUSD') || title.includes('DÓLAR');
+        }
+        if (val === 'ÍNDICES' || val === 'INDICES') {
+          return tag.includes('ÍNDICES') || tag.includes('INDICES') || tag.includes('SPX') || title.includes('S&P') || title.includes('ÍNDICE');
+        }
+        if (val === 'FED' || val === 'CENTRALES') {
+          return tag.includes('FED') || tag.includes('CENTRAL') || tag.includes('POLICY') || tag.includes('INFLACIÓN') || title.includes('FED');
+        }
+        return tag.includes(val) || title.includes(val);
+      });
+      renderNews(filtered.length > 0 ? filtered : allNewsCache);
     }
   }
 
