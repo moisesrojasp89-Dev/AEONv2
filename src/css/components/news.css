@@ -516,17 +516,30 @@
    ============================================================ */
 
 @media (max-width: 768px) {
-  /* Radar de Sesgo: Grid de 2 Columnas Compacto */
+  /* Radar de Sesgo: Fila única compacta con Scroll Horizontal Swipeable */
   .briefing-radar-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.45rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 0.5rem;
+    padding-bottom: 0.4rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .briefing-radar-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .briefing-radar-chip {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.74rem;
-    border-radius: 6px;
+    flex: 0 0 140px;
+    min-width: 140px;
+    scroll-snap-align: start;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
   }
 
   .radar-chip-bias {

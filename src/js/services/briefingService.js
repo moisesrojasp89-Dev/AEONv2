@@ -17,7 +17,7 @@ export const DEFAULT_BRIEFING = {
   session_id: 'london_pre',
   date: new Date().toISOString().split('T')[0],
   title: 'Sesión Europea: Enfoque en Liquidez y Catalizadores Macroeconómicos',
-  image_url: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop',
+  image_url: 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop',
   macro_sentiment: {
     score: 65,
     label: 'RISK_ON',

@@ -17,13 +17,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Curated High-Quality Institutional Cover Images (Glassmorphic dark background)
+# Curated High-Quality Institutional Cover Images (Arquitectura Bancaria y Rascacielos Manhattan)
 CURATED_COVERS = {
-    "central_banks": "https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop", # Trading floor / building
-    "gold": "https://images.unsplash.com/photo-1610375461246-83df859d849d?q=80&w=1200&auto=format&fit=crop",          # Gold bullion
-    "wall_street": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop",    # Stock exchange chart
-    "forex": "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=1200&auto=format&fit=crop",          # Global currencies / charts
-    "inflation": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop",      # Financial dashboard
+    "london_session": "https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop", # Edificio bancario clásico / The City of London
+    "ny_session": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop",     # Rascacielos Distrito Financiero Manhattan NYC
+    "wall_street": "https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop",    # Manhattan Financial District Skyline
+    "gold": "https://images.unsplash.com/photo-1610375461246-83df859d849d?q=80&w=1200&auto=format&fit=crop",           # Lingote de oro
+    "central_banks": "https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop"
 }
 
 def get_session_type(custom_session: str = None) -> str:
@@ -183,8 +183,11 @@ FORMATO JSON REQUERIDO:
         raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
         parsed = json.loads(raw_text)
         
-        img_cat = parsed.get("image_category", "wall_street")
-        img_url = CURATED_COVERS.get(img_cat, CURATED_COVERS["wall_street"])
+        img_cat = parsed.get("image_category")
+        if img_cat and img_cat in CURATED_COVERS:
+            img_url = CURATED_COVERS[img_cat]
+        else:
+            img_url = CURATED_COVERS["london_session"] if is_london else CURATED_COVERS["ny_session"]
         
         return {
             "session_id": session,

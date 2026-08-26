@@ -40,7 +40,7 @@ export function renderBriefingCard(briefing) {
 
   const assetBias = briefing.asset_bias || {};
   const catalysts = Array.isArray(briefing.catalysts) ? briefing.catalysts : [];
-  const imageUrl = sanitizeUrl(briefing.image_url || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop');
+  const imageUrl = sanitizeUrl(briefing.image_url || 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop');
 
   // Generar Chips de Radar
   const radarChipsHtml = Object.entries(assetBias).map(([asset, bias]) => {
