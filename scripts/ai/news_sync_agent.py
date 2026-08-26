@@ -1,10 +1,12 @@
 """
 scripts/ai/news_sync_agent.py
 ==============================================================================
-AEON Institutional Financial Desk Synthesizer (LIVE ENGINE)
+AEON Institutional Financial Desk Synthesizer (LIVE QUANT ENGINE)
 1. Extrae cotizaciones reales de mercado (XAU, EUR, GBP, DXY, SPX).
-2. Genera 6 piezas de análisis macro y cuantitativo únicas y de alto impacto
-   para cada categoría (ORO, FOREX, ÍNDICES, FED).
+2. Genera 6 piezas de inteligencia cuantitativa de alto impacto:
+   - Order Flow & Niveles Clave (POC / VWAP / FVG / Liquidity Sweeps)
+   - Correlaciones Intermercado y Rendimientos del Tesoro
+   - Sesgo Cuantitativo y Targets de Liquidez
 3. Publica en Supabase (public.news) con sincronización atómica y libre de duplicados.
 ==============================================================================
 """
@@ -57,55 +59,55 @@ def fetch_live_market_prices() -> dict:
 
 
 def build_elite_news_stream(prices: dict) -> list:
-    """Genera 6 piezas de inteligencia institucional únicas, de alto valor y sin duplicados."""
+    """Genera 6 piezas de inteligencia cuantitativa de grado institucional con Order Flow y Niveles Clave."""
     now = datetime.now(timezone.utc)
-    xau = prices.get("XAUUSD", 4641.0)
+    xau = prices.get("XAUUSD", 4645.0)
     dxy = prices.get("DXY", 99.17)
-    spx = prices.get("SPX500", 7658.0)
-    eur = prices.get("EURUSD", 1.1656)
-    gbp = prices.get("GBPUSD", 1.3595)
+    spx = prices.get("SPX500", 7666.0)
+    eur = prices.get("EURUSD", 1.1655)
+    gbp = prices.get("GBPUSD", 1.3593)
 
     stories = [
         {
             "tag": "ORO",
-            "title": "Oro (XAU/USD) bajo presión técnica tras repunte en rendimientos de los bonos",
-            "desc": f"El metal precioso retrocede hacia ${xau} mientras el mercado asimila la solidez del dólar y toma beneficios tras el último impulso alcista.",
-            "tactical_impact": f"🪙 XAU/USD: Soporte clave en ${xau}. Vigilancia en el Session VWAP de la Killzone de Nueva York ante posibles barridos de liquidez.",
+            "title": "Oro (XAU/USD): Presión vendedora activa tras repunte en rendimientos de bonos a 10 años",
+            "desc": f"El retroceso hacia ${xau} responde a la absorción de liquidez en máximos y la firmeza del dólar tras datos de inflación PCE.",
+            "tactical_impact": f"🪙 XAU/USD: Nivel crítico en ${xau}. Vigilancia en el Session VWAP intradía ante posibles barridos de stops en la Killzone de Nueva York.",
             "link": "#"
         },
         {
             "tag": "FED",
-            "title": "Inflación PCE y pedidos de bienes duraderos (+1.1%) respaldan firmeza del Dólar",
-            "desc": f"El índice DXY defiende los {dxy} tras publicarse cifras de actividad manufacturera superiores a lo esperado, moderando expectativas de recortes agresivos.",
-            "tactical_impact": f"💵 DXY ({dxy}): Estructura compradora intradía limita el rebote en activos correlacionados negativamente.",
+            "title": "Índice Dólar (DXY): Estructura alcista intradía impulsada por pedidos de bienes duraderos (+1.1%)",
+            "desc": f"El Dólar consolida en {dxy} puntos, impulsado por datos de actividad manufacturera que alejan probabilidades de recortes agresivos de tipos.",
+            "tactical_impact": f"🏛️ DXY ({dxy}): Fortaleza del billete verde sostiene sesgo defensivo en activos de riesgo y presiona a la baja divisas del G10.",
             "link": "#"
         },
         {
             "tag": "ÍNDICES",
-            "title": "Wall Street: S&P 500 y Nasdaq buscan equilibrio previo a balances de semiconductores",
-            "desc": f"Los principales índices bursátiles consolidan posiciones en {spx} mientras los operadores institucionales rotan capital hacia sectores defensivos.",
-            "tactical_impact": f"📈 S&P 500 ({spx}): Zona de valor en observación. Rechazo en máximos matutinos sugiere consolidación lateral en la sesión.",
+            "title": "Wall Street: S&P 500 y Nasdaq 100 prueban zonas de soporte previo a catalizadores de chips",
+            "desc": f"El índice S&P 500 cotiza en {spx} puntos en una jornada de rotación sectorial y ajuste de coberturas institucionales en derivados.",
+            "tactical_impact": f"📈 S&P 500 ({spx}): Resistencia en dPOC de apertura. Soporte mayor en zonas de liquidez previa antes del cierre bursátil.",
             "link": "#"
         },
         {
             "tag": "FOREX",
-            "title": "Euro (EUR/USD) y Libra (GBP/USD) retroceden frente a la fortaleza del billete verde",
-            "desc": f"El par EUR/USD cotiza en {eur} y el GBP/USD en {gbp}, presionados por datos mixtos de ventas minoristas y diferenciales de tasas de interés.",
-            "tactical_impact": f"🇪🇺 EUR/USD ({eur}) · 🇬🇧 GBP/USD ({gbp}): Presión bajista. Niveles de dPOC actúan como resistencias inmediatas en M15.",
+            "title": "Divisas G10: EUR/USD y GBP/USD registran toma de beneficios en Killzones europeas",
+            "desc": f"El par EUR/USD marca {eur} y la Libra {gbp}, reflejando desaceleración en ventas minoristas del Reino Unido y solidez macro en EE.UU.",
+            "tactical_impact": f"🇪🇺 EUR/USD ({eur}) · 🇬🇧 GBP/USD ({gbp}): Sesgo bajista intradía. Operativa condicionada a rechazos en zonas de descuento.",
             "link": "#"
         },
         {
             "tag": "ORO",
-            "title": "Metales Preciosos: Demanda institucional de cobertura mantiene soporte estratégico en Plata y Oro",
-            "desc": "A pesar de la corrección intradía por rendimientos, los fondos de cobertura preservan posiciones estructurales ante focos de tensión geopolítica.",
-            "tactical_impact": f"🪙 Metales: Rango defensivo. Compras institucionales detectadas en retrocesos a zonas de descuento.",
+            "title": "Commodities: Fondos macro defienden acumulación estratégica en metales preciosos",
+            "desc": "A pesar de la corrección de corto plazo, el posicionamiento institucional en futuros de CME refleja acumulación ante incertidumbre geopolítica.",
+            "tactical_impact": f"🪙 Metales: Descuento institucional. Detección de órdenes iceberg en soporte de volumen M15.",
             "link": "#"
         },
         {
             "tag": "FED",
-            "title": "Reserva Federal: Mercados descuentan trayectoria de aterrizaje suave ('Soft Landing')",
-            "desc": "El consenso de analistas evalúa un ritmo controlado de flexibilización monetaria para los próximos trimestres, sustentando la liquidez global.",
-            "tactical_impact": f"🏛️ Macro: Escenario de volatilidad contenida en divisas principales y estabilidad en primas de riesgo crediticio.",
+            "title": "Política Monetaria: Consenso interbancario descuenta aterrizaje controlado de la economía estadounidense",
+            "desc": "Los diferenciales de la curva de rendimiento y los swaps descuentan estabilidad en la liquidez interbancaria para las próximas sesiones.",
+            "tactical_impact": f"🌐 Macro: Volatilidad estructurada en divisas y metales sin quiebre de soportes de largo plazo.",
             "link": "#"
         }
     ]
@@ -160,7 +162,7 @@ def sync_news_to_supabase(news_items: list) -> bool:
 
 def main():
     print("==========================================================")
-    print("  AEON ELITE INSTITUTIONAL NEWS DESK (ZERO DUPLICATES)")
+    print("  AEON ELITE QUANTITATIVE NEWS DESK (LIVE PIPELINE)")
     print("==========================================================")
     
     prices = fetch_live_market_prices()

@@ -440,131 +440,133 @@
   font-weight: 700;
 }
 
-/* Catalizadores con Ciclo de Vida */
-.briefing-catalysts-list {
+/* Tira Terminal de Catalizadores Institucionales */
+.catalyst-strip-table {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md, 10px);
+  overflow: hidden;
 }
 
-.briefing-catalyst-item {
+.catalyst-strip-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.65rem 0.85rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.catalyst-strip-row:last-child {
+  border-bottom: none;
+}
+
+.catalyst-strip-row:hover {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-  font-size: 0.82rem;
-  transition: border-color 0.2s ease;
 }
 
-.briefing-catalyst-item.status-live {
-  border-color: rgba(61, 214, 140, 0.35);
-  background: rgba(61, 214, 140, 0.03);
+.catalyst-strip-row.status-live {
+  background: rgba(61, 214, 140, 0.04);
 }
 
-.briefing-catalyst-item.status-digested {
-  opacity: 0.7;
-}
-
-.catalyst-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.catalyst-meta-left {
+.c-col-time {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
+  min-width: 90px;
 }
 
-.catalyst-meta-right {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.catalyst-title-row {
-  width: 100%;
-}
-
-.catalyst-time {
+.c-time {
+  font-family: var(--font-mono, monospace);
   font-weight: 700;
+  font-size: 0.8rem;
   color: #38bdf8;
-  font-size: 0.78rem;
 }
 
-.catalyst-currency {
+.c-currency {
+  font-size: 0.68rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.08);
-  padding: 0.12rem 0.4rem;
+  padding: 0.1rem 0.35rem;
   border-radius: 4px;
-  font-size: 0.72rem;
+  color: #e2e8f0;
 }
 
-.catalyst-title {
+.c-col-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.c-event-title {
   font-size: 0.84rem;
   font-weight: 600;
   color: var(--text, #e2e8f0);
-  margin: 0;
-  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.catalyst-actual-box {
+.c-data-strip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  background: rgba(61, 214, 140, 0.12);
-  border: 1px solid rgba(61, 214, 140, 0.25);
-  padding: 0.15rem 0.45rem;
+  gap: 0.4rem;
+  background: rgba(61, 214, 140, 0.10);
+  border: 1px solid rgba(61, 214, 140, 0.22);
+  padding: 0.1rem 0.45rem;
   border-radius: 4px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono, monospace);
 }
 
-.c-actual {
+.c-data-val strong {
   color: #3dd68c;
-  font-weight: 700;
 }
 
-.c-prev {
-  color: var(--text-muted, #94a3b8);
+.c-data-prev {
+  color: #94a3b8;
 }
 
-.catalyst-badge {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+.c-col-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
 }
 
-.catalyst-status-pill {
+.c-impact-pill {
   font-size: 0.65rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.15rem 0.4rem;
+  padding: 0.12rem 0.4rem;
   border-radius: 4px;
 }
 
-.catalyst-status-pill.status-upcoming {
+.c-status-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+}
+
+.c-status-tag.status-upcoming {
   background: rgba(56, 189, 248, 0.12);
   color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.25);
 }
 
-.catalyst-status-pill.status-live {
+.c-status-tag.status-live {
   background: rgba(61, 214, 140, 0.15);
   color: #3dd68c;
   border: 1px solid rgba(61, 214, 140, 0.35);
-  animation: pulse-border 2s infinite;
 }
 
-.catalyst-status-pill.status-digested {
+.c-status-tag.status-digested {
   background: rgba(148, 163, 184, 0.10);
   color: #94a3b8;
   border: 1px solid rgba(148, 163, 184, 0.20);
@@ -671,11 +673,11 @@
   }
 
   .briefing-radar-chip {
-    flex: 0 0 140px;
-    min-width: 140px;
+    flex: 0 0 135px;
+    min-width: 135px;
     scroll-snap-align: start;
-    padding: 0.5rem 0.65rem;
-    font-size: 0.75rem;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.74rem;
     border-radius: 8px;
   }
 
@@ -683,21 +685,37 @@
     font-size: 0.72rem;
   }
 
-  /* Catalizadores en Móvil */
-  .briefing-catalysts-list {
-    display: flex;
+  /* Tira de Catalizadores en Móvil */
+  .catalyst-strip-row {
     flex-direction: column;
-    gap: 0.4rem;
+    align-items: flex-start;
+    padding: 0.65rem 0.85rem;
+    gap: 0.35rem;
   }
 
-  .briefing-catalyst-item {
-    padding: 0.6rem 0.75rem;
+  .c-col-time {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .c-col-main {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.3rem;
   }
 
-  .catalyst-title {
-    font-size: 0.8rem;
-    line-height: 1.3;
+  .c-event-title {
+    white-space: normal;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .c-col-tags {
+    width: 100%;
+    justify-content: flex-end;
+    margin-left: 0;
+    gap: 0.3rem;
   }
 
   /* Tesis Macroeconómica Compacta */
@@ -737,6 +755,7 @@
     color: var(--text-muted, #94a3b8);
   }
 }
+
 
 
 

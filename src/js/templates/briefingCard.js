@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · templates/briefingCard.js — Visual Institutional Macro Card
+   AEON · templates/briefingCard.js — Institutional Terminal Macro Card
    Fase 5: AI Platform & Contextual Intelligence
    Gobernanza: Cero Hardcoding, Single Source of Truth & XSS Guard
    ============================================================ */
@@ -82,7 +82,7 @@ export function renderBriefingCard(briefing) {
     `;
   }).join('');
 
-  // Generar Catalizadores con Ciclo de Vida Dinámico y Hora Local
+  // Generar Catalizadores con Tira de Terminal Institucional
   const catalystsHtml = catalysts.map(c => {
     const statusKey = String(c.status || (c.actual ? 'live' : 'upcoming')).toLowerCase();
     const statusCfg = CATALYST_STATUS_CONFIG[statusKey] || CATALYST_STATUS_CONFIG.upcoming;
@@ -92,28 +92,26 @@ export function renderBriefingCard(briefing) {
     let dataPillHtml = '';
     if (c.actual) {
       dataPillHtml = `
-        <span class="catalyst-actual-box">
-          <strong class="c-actual">Act: ${escapeHTML(String(c.actual))}</strong>
-          <span class="c-prev">Prev: ${escapeHTML(String(c.forecast || c.previous || '--'))}</span>
+        <span class="c-data-strip">
+          <span class="c-data-val">Act: <strong>${escapeHTML(String(c.actual))}</strong></span>
+          <span class="c-data-prev">Prev: ${escapeHTML(String(c.forecast || c.previous || '--'))}</span>
         </span>
       `;
     }
 
     return `
-      <div class="briefing-catalyst-item ${escapeHTML(statusCfg.badgeClass)}">
-        <div class="catalyst-header-row">
-          <div class="catalyst-meta-left">
-            <span class="catalyst-time" title="Hora local">${escapeHTML(localTime)}</span>
-            <span class="catalyst-currency">${escapeHTML(c.currency || 'USD')}</span>
-          </div>
-          <div class="catalyst-meta-right">
-            ${dataPillHtml}
-            <span class="catalyst-badge ${escapeHTML(impactClass)}">${escapeHTML(c.impact || 'MED')}</span>
-            <span class="catalyst-status-pill ${escapeHTML(statusCfg.badgeClass)}">${escapeHTML(statusCfg.badgeLabel)}</span>
-          </div>
+      <div class="catalyst-strip-row ${escapeHTML(statusCfg.badgeClass)}">
+        <div class="c-col-time">
+          <span class="c-time">${escapeHTML(localTime)}</span>
+          <span class="c-currency">${escapeHTML(c.currency || 'USD')}</span>
         </div>
-        <div class="catalyst-title-row">
-          <p class="catalyst-title">${escapeHTML(c.title || '')}</p>
+        <div class="c-col-main">
+          <span class="c-event-title">${escapeHTML(c.title || '')}</span>
+          ${dataPillHtml}
+        </div>
+        <div class="c-col-tags">
+          <span class="c-impact-pill ${escapeHTML(impactClass)}">${escapeHTML(c.impact || 'MED')}</span>
+          <span class="c-status-tag ${escapeHTML(statusCfg.badgeClass)}">${escapeHTML(statusCfg.badgeLabel)}</span>
         </div>
       </div>
     `;
@@ -156,17 +154,17 @@ export function renderBriefingCard(briefing) {
           </div>
         </section>
 
-        <!-- Catalizadores de la Jornada -->
+        <!-- Catalizadores de la Jornada en Tira Terminal -->
         ${catalysts.length > 0 ? `
           <section class="briefing-catalysts-section" aria-label="Catalizadores de la Sesión">
             <span class="briefing-section-label">🚨 CATALIZADORES CLAVE DE LA SESIÓN</span>
-            <div class="briefing-catalysts-list">
+            <div class="catalyst-strip-table">
               ${catalystsHtml}
             </div>
           </section>
         ` : ''}
 
-        <!-- Tesis Ejecutiva -->
+        <!-- Tesis Ejecutiva de Terminal -->
         <section class="briefing-thesis-box" aria-label="Tesis Macroeconómica">
           <div class="thesis-header">
             <span class="thesis-icon" aria-hidden="true">💡</span>
