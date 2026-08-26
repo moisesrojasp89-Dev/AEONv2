@@ -24,12 +24,20 @@ export const TIMING = {
 };
 
 /**
- * Supported Assets & Crypto Mapping
+ * Supported Assets & Universal Mapping
  */
 export const ASSETS = {
   CRYPTO: {
     BTC: 'bitcoin',
   },
+  DEFAULT_INSTRUMENTS: [
+    'EUR_USD',
+    'XAU_USD',
+    'SPX500_USD',
+    'NAS100_USD',
+    'US30_USD',
+  ],
+  // Backwards compatibility alias
   OANDA_DEFAULT_INSTRUMENTS: [
     'EUR_USD',
     'XAU_USD',
@@ -40,11 +48,29 @@ export const ASSETS = {
 };
 
 /**
- * Signal Status Labels & CSS Mappings
+ * Canonical Signal Status Enum & UI Mappings
+ * Unified across PostgreSQL, Backend Bots, and Frontend UI.
  */
 export const SIGNAL_STATUS = {
-  ACTIVE: { label: 'Activa', class: 'active' },
-  WON: { label: 'Ganada', class: 'closed' },
-  LOST: { label: 'Perdida', class: 'closed' },
-  CANCELLED: { label: 'Cancelada', class: 'closed' },
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  HIT_TP1: 'hit_tp1',
+  CLOSED_TP: 'closed_tp',
+  CLOSED_BE: 'closed_be',
+  CLOSED_SL: 'closed_sl',
+  WON: 'won',       // Legacy alias for closed_tp
+  LOST: 'lost',     // Legacy alias for closed_sl
+  CANCELLED: 'cancelled',
+};
+
+export const SIGNAL_STATUS_CONFIG = {
+  [SIGNAL_STATUS.PENDING]: { label: '⏳ Pendiente', class: 'pending', isActive: true },
+  [SIGNAL_STATUS.ACTIVE]: { label: '● En Curso', class: 'active', isActive: true },
+  [SIGNAL_STATUS.HIT_TP1]: { label: '🎯 TP1 (SL a BE)', class: 'active', isActive: true },
+  [SIGNAL_STATUS.CLOSED_TP]: { label: '🏆 Ganada (+TP)', class: 'closed-won', isActive: false },
+  [SIGNAL_STATUS.CLOSED_BE]: { label: '🛡️ Break-Even (0.0R)', class: 'closed-be', isActive: false },
+  [SIGNAL_STATUS.CLOSED_SL]: { label: '🛑 Cerrada (SL)', class: 'closed-lost', isActive: false },
+  [SIGNAL_STATUS.WON]: { label: '🏆 Ganada (+TP)', class: 'closed-won', isActive: false },
+  [SIGNAL_STATUS.LOST]: { label: '🛑 Cerrada (SL)', class: 'closed-lost', isActive: false },
+  [SIGNAL_STATUS.CANCELLED]: { label: 'Cancelada', class: 'closed', isActive: false },
 };

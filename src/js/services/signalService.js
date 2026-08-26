@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { supabase } from '../supabaseClient.js';
-import { DB_TABLES } from '../config/constants.js';
+import { DB_TABLES, SIGNAL_STATUS } from '../config/constants.js';
 
 /**
  * Fetches active public signals and merges private PRO data if authenticated as Pro.
@@ -14,7 +14,7 @@ export async function fetchActiveSignals(isPro = false) {
   const { data: publicSignals, error: pErr } = await supabase
     .from(DB_TABLES.SIGNALS)
     .select('*')
-    .in('status', ['active', 'hit_tp1'])
+    .in('status', [SIGNAL_STATUS.ACTIVE, SIGNAL_STATUS.HIT_TP1])
     .order('timestamp', { ascending: false })
     .limit(12);
 
@@ -55,7 +55,13 @@ export async function fetchSignalHistory(limit = 50) {
   const { data: closedSignals, error } = await supabase
     .from(DB_TABLES.SIGNALS)
     .select('*')
-    .in('status', ['closed_tp', 'closed_be', 'closed_sl', 'won', 'lost'])
+    .in('status', [
+      SIGNAL_STATUS.CLOSED_TP,
+      SIGNAL_STATUS.CLOSED_BE,
+      SIGNAL_STATUS.CLOSED_SL,
+      SIGNAL_STATUS.WON,
+      SIGNAL_STATUS.LOST
+    ])
     .order('timestamp', { ascending: false })
     .limit(limit);
 
@@ -64,13 +70,37 @@ export async function fetchSignalHistory(limit = 50) {
 }
 
 /**
- * Calculates mathematical metrics for the Track Record Dashboard.
+ * Fetches server-aggregated Track Record summary via Postgres RPC (0ms lag, 100% full dataset).
+ * Falls back to client-side calculation if RPC is not available.
+ * @param {Array} fallbackSignals
+ * @returns {Promise<Object>}
+ */
+export async function fetchTrackRecordMetrics(fallbackSignals = []) {
+  try {
+    const { data, error } = await supabase.rpc('get_track_record_summary');
+    if (!error && data && typeof data === 'object' && Number.isFinite(data.total)) {
+      return data;
+    }
+  } catch (err) {
+    console.warn('[signalService] RPC get_track_record_summary fallback:', err.message);
+  }
+  return calculateTrackRecordMetrics(fallbackSignals);
+}
+
+/**
+ * Calculates mathematical metrics for the Track Record Dashboard (Fallback Engine).
  * Excludes open trades strictly and uses Number.isFinite() to avoid NaN propagation.
  * @param {Array} signals
  * @returns {Object}
  */
 export function calculateTrackRecordMetrics(signals = []) {
-  const closed = signals.filter(s => ['closed_tp', 'closed_be', 'closed_sl', 'won', 'lost'].includes(s.status));
+  const closed = signals.filter(s => [
+    SIGNAL_STATUS.CLOSED_TP,
+    SIGNAL_STATUS.CLOSED_BE,
+    SIGNAL_STATUS.CLOSED_SL,
+    SIGNAL_STATUS.WON,
+    SIGNAL_STATUS.LOST
+  ].includes(s.status));
   const total = closed.length;
   
   if (total === 0) {

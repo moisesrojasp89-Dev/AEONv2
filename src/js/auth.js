@@ -18,21 +18,17 @@ export async function checkSession() {
     session = data?.session || null;
 
     if (session) {
-      // 1. Determinar estado PRO vía tabla profiles
+      // 1. Determinar estado PRO exclusivamente vía tabla profiles (seguridad server-side en DB)
       const { data: profData } = await supabase
         .from(DB_TABLES.PROFILES)
         .select('tier, role')
         .eq('id', session.user.id)
         .maybeSingle();
 
-      const metaTier = session.user.user_metadata?.tier;
-      const isOfficialAdminPro = session.user.email === 'malejandro.rp19@gmail.com';
-      const isForcedFree = session.user.email === 'cmroyalglobal@gmail.com';
-
-      if (!isForcedFree && (isOfficialAdminPro || (profData && profData.tier === 'pro') || metaTier === 'pro')) {
+      if (profData && (profData.tier === 'pro' || profData.tier === 'institutional' || profData.role === 'admin')) {
         isPro = true;
       } else {
-        // 2. Fallback vía tabla subscriptions activa
+        // 2. Fallback vía tabla subscriptions activa con periodo vigente
         const { data: subData, error: subErr } = await supabase
           .from(DB_TABLES.SUBSCRIPTIONS)
           .select('plan, status, current_period_end')

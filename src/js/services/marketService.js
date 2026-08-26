@@ -9,6 +9,21 @@ const CACHE_KEY = 'AEON_PRICES_CACHE_V1';
 const CHART_CACHE_PREFIX = 'AEON_CHART_CACHE_';
 
 /**
+ * Normalizes universal symbols to backend provider format.
+ * @param {string} sym
+ * @returns {string}
+ */
+export function normalizeInstrument(sym = '') {
+  const s = String(sym || '').toUpperCase().trim();
+  if (s === 'XAUUSD' || s === 'GOLD') return 'XAU_USD';
+  if (s === 'EURUSD' || s === 'EURO') return 'EUR_USD';
+  if (s === 'SPX500' || s === 'SP500' || s === 'SPX') return 'SPX500_USD';
+  if (s === 'NAS100' || s === 'NASDAQ' || s === 'NAS') return 'NAS100_USD';
+  if (s === 'US30' || s === 'DOW' || s === 'DJI') return 'US30_USD';
+  return s;
+}
+
+/**
  * Fetches Crypto live prices and 24h variation from CoinGecko.
  * @returns {Promise<Object>}
  */
@@ -21,14 +36,20 @@ export async function fetchCryptoPrices() {
 }
 
 /**
- * Fetches Forex and Index live prices and session daily changes from OANDA Edge Function.
+ * Fetches Forex, Commodities and Index live prices via backend market pricing provider.
+ * Universal abstraction for OANDA / MT5 / Exness proxies.
  * @returns {Promise<Object>}
  */
-export async function fetchOandaPrices() {
+export async function fetchForexAndIndexPrices() {
   const { data, error } = await supabase.functions.invoke('oanda');
   if (error) throw error;
   return data;
 }
+
+/**
+ * Backwards compatibility alias for fetchForexAndIndexPrices.
+ */
+export const fetchOandaPrices = fetchForexAndIndexPrices;
 
 /**
  * Fetches historical candle time-series for chart rendering.
@@ -38,10 +59,11 @@ export async function fetchOandaPrices() {
  * @returns {Promise<Array>}
  */
 export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 30) {
-  const cacheKey = `${CHART_CACHE_PREFIX}${instrument}`;
+  const normSym = normalizeInstrument(instrument);
+  const cacheKey = `${CHART_CACHE_PREFIX}${normSym}`;
 
   // 1. Caso Crypto (Bitcoin) — Consultamos Coinbase con fallback a Kraken
-  if (instrument === 'BTC' || instrument === 'BTC_USD') {
+  if (normSym === 'BTC' || normSym === 'BTC_USD') {
     try {
       const cbUrl = 'https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400';
       const cbRes = await fetch(cbUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
@@ -87,10 +109,10 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
       console.warn('[AEON] Error en fuentes Crypto para gráfico:', err.message);
     }
   } else {
-    // 2. Caso Forex / Commodities / Indices (OANDA)
+    // 2. Caso Forex / Commodities / Indices (Backend Proxy)
     try {
       const { data, error } = await supabase.functions.invoke('oanda', {
-        body: { action: 'chart', instrument, count },
+        body: { action: 'chart', instrument: normSym, count },
       });
 
       if (error) throw error;
@@ -101,7 +123,7 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
         return data.series;
       }
     } catch (err) {
-      console.warn(`[AEON] Error obteniendo serie ${instrument}:`, err.message);
+      console.warn(`[AEON] Error obteniendo serie ${normSym}:`, err.message);
     }
   }
 

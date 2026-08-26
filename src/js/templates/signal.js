@@ -3,36 +3,16 @@
    ============================================================ */
 
 import { escapeHTML } from '../utils/sanitize.js';
+import { SIGNAL_STATUS_CONFIG } from '../config/constants.js';
 
-const STATUS_CLASS = {
-  'active': 'active',
-  'hit_tp1': 'active',
-  'won': 'closed-won',
-  'closed_tp': 'closed-won',
-  'CLOSED_TP': 'closed-won',
-  'closed_be': 'closed-be',
-  'CLOSED_BE': 'closed-be',
-  'lost': 'closed-lost',
-  'closed_sl': 'closed-lost',
-  'CLOSED_SL': 'closed-lost',
-  'cancelled': 'closed',
-  'CANCELLED': 'closed'
-};
-
-const STATUS_LABEL = {
-  'active': '● En Curso',
-  'hit_tp1': '🎯 TP1 (SL a BE)',
-  'won': '🏆 Ganada (+TP)',
-  'closed_tp': '🏆 Ganada (+TP)',
-  'CLOSED_TP': '🏆 Ganada (+TP)',
-  'closed_be': '🛡️ Break-Even (0.0R)',
-  'CLOSED_BE': '🛡️ Break-Even (0.0R)',
-  'lost': '🛑 Cerrada (SL)',
-  'closed_sl': '🛑 Cerrada (SL)',
-  'CLOSED_SL': '🛑 Cerrada (SL)',
-  'cancelled': 'Cancelada',
-  'CANCELLED': 'Cancelada'
-};
+function getStatusDisplay(status) {
+  const s = String(status || 'active').toLowerCase();
+  const cfg = SIGNAL_STATUS_CONFIG[s];
+  return {
+    class: cfg?.class || 'active',
+    label: cfg?.label || status,
+  };
+}
 
 function getAssetIconInfo(asset) {
   const clean = String(asset || '').toUpperCase();
@@ -93,6 +73,7 @@ const freeInstitutionalCard = (s, currentUser) => {
   const score = Math.min(Math.max(conf.score || 85, 0), 100);
   const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
   const dirClass = String(s.direction || '').toLowerCase();
+  const statusInfo = getStatusDisplay(s.status);
   
   return `
     <article class="signal-card institutional-card ${dirClass}" role="listitem" aria-label="Señal cuantitativa ${escapeHTML(s.asset)}">
@@ -102,7 +83,7 @@ const freeInstitutionalCard = (s, currentUser) => {
           <span class="badge-regime ${regime.includes('ALCISTA') ? 'regime-bull' : (regime.includes('BAJISTA') ? 'regime-bear' : 'regime-range')}">${escapeHTML(regime)}</span>
         </div>
         <div class="signal-top-right">
-          <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] || 'active')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
+          <span class="signal-status ${escapeHTML(statusInfo.class)}">${escapeHTML(statusInfo.label)}</span>
         </div>
       </div>
 
@@ -154,6 +135,7 @@ const proInstitutionalCard = (s) => {
   const reasoning = conf.reasoning || 'Oportunidad cuantitativa detectada con alta confluencia institucional.';
   const rrRatio = conf.rr_ratio || (s.take_profit && s.entry_price && s.stop_loss ? Math.abs((s.take_profit - s.entry_price)/(s.entry_price - s.stop_loss)).toFixed(1) : '2.5');
   const dirClass = String(s.direction || '').toLowerCase();
+  const statusInfo = getStatusDisplay(s.status);
   
   const formattedEntry = formatPrice(s.asset, s.entry_price);
   const formattedSL = formatPrice(s.asset, s.stop_loss);
@@ -168,7 +150,7 @@ const proInstitutionalCard = (s) => {
         </div>
         <div class="signal-top-right">
           <span class="badge-rr">R:R 1:${escapeHTML(String(rrRatio))}</span>
-          <span class="signal-status ${escapeHTML(STATUS_CLASS[s.status] || 'active')}">${escapeHTML(STATUS_LABEL[s.status] || s.status)}</span>
+          <span class="signal-status ${escapeHTML(statusInfo.class)}">${escapeHTML(statusInfo.label)}</span>
         </div>
       </div>
 
@@ -220,6 +202,7 @@ export const closedSignalCard = (s) => {
   const regime = conf.regime || 'TENDENCIA';
   const reasoning = conf.reasoning || 'Trade cuantitativo ejecutado por reglas de confluencia institucional.';
   const dirClass = String(cardData.direction || '').toLowerCase();
+  const statusInfo = getStatusDisplay(cardData.status);
   
   let rPill = '+2.5R';
   let rClass = 'pill-tp';
@@ -238,11 +221,11 @@ export const closedSignalCard = (s) => {
     rClass = 'pill-sl';
   }
 
-  const exitPriceStr = formatPrice(cardData.asset, conf.exit_price || conf.tp3 || conf.tp1 || cardData.take_profit);
+  const exitPriceStr = formatPrice(cardData.asset, conf.exit_price || cardData.take_profit || cardData.stop_loss);
   const dateStr = cardData.timestamp ? new Date(cardData.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }) : 'Reciente';
 
   return `
-    <article class="signal-card history-card ${escapeHTML(STATUS_CLASS[cardData.status] || 'closed')}" role="listitem">
+    <article class="signal-card history-card ${escapeHTML(statusInfo.class)}" role="listitem">
       <div class="signal-card-top">
         <div class="signal-badge-group">
           <span class="badge-setup">${escapeHTML(setupType)}</span>
@@ -250,7 +233,7 @@ export const closedSignalCard = (s) => {
         </div>
         <div class="signal-top-right">
           <span class="badge-realized-r ${escapeHTML(rClass)}">${escapeHTML(rPill)}</span>
-          <span class="signal-status ${escapeHTML(STATUS_CLASS[cardData.status] || 'closed')}">${escapeHTML(STATUS_LABEL[cardData.status] || cardData.status)}</span>
+          <span class="signal-status ${escapeHTML(statusInfo.class)}">${escapeHTML(statusInfo.label)}</span>
         </div>
       </div>
 
@@ -290,13 +273,6 @@ export const signalCard = (s, currentUser, isPro) => {
   
   // Si el usuario es PRO, mostrar la tarjeta desbloqueada
   if (isPro) {
-    if (!cardData.entry_price && cardData.confluences) {
-      const isGold = String(cardData.asset || '').toUpperCase().includes('XAU');
-      const isEur = String(cardData.asset || '').toUpperCase().includes('EUR');
-      cardData.entry_price = cardData.entry_price || cardData.confluences.entry || (isGold ? 2650.50 : (isEur ? 1.08520 : 1.29050));
-      cardData.stop_loss = cardData.stop_loss || cardData.confluences.sl || (isGold ? 2645.00 : (isEur ? 1.08650 : 1.28850));
-      cardData.take_profit = cardData.take_profit || cardData.confluences.tp3 || cardData.confluences.tp1 || (isGold ? 2665.00 : (isEur ? 1.08190 : 1.29450));
-    }
     return proInstitutionalCard(cardData);
   }
 

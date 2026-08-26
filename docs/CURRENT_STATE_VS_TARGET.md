@@ -1,70 +1,124 @@
 # AEON — Estado Actual vs Arquitectura Objetivo (Master Plan v2.0)
 
-> **Documento vivo de diagnóstico arquitectónico, auditoría técnica y mapa de ruta de modernización de AEON Terminal.**
-> **Última actualización:** 25 de Agosto de 2026
+**Única Fuente de Verdad Técnica, Diagnóstico de Arquitectura y Estado Real del Repositorio**  
+**Última Actualización:** 25 de Agosto de 2026 (Fases 0 a 4 Completadas e Implementadas)  
+**Documentos de Consulta:**  
+- 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo  
+- 📐 [`docs/CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) — Estándares y Convenciones del Código  
+- 🗄️ [`docs/archive/`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/archive/) — Histórico de Auditorías (Seguridad, Técnica, Cuantitativa) y Especificaciones  
 
 ---
 
-## 1. Estado de Ejecución de Fases (Roadmap Maestro)
+## 1. Cuadro de Mando del Proyecto (Estado de Fases del Roadmap v2.0)
 
-| Fase | Sprint | Descripción | Estado |
-|---|---|---|:---:|
-| **Fase 0** | **0.1** | Seguridad Crítica (.gitignore, rotación de secrets, aislamiento de `.env`) | ✅ **100% COMPLETADO** |
-| | **0.2** | Limpieza de Raíz y Organización (`scripts/`, dependencias, build Vite) | ✅ **100% COMPLETADO** |
-| | **0.3** | Design System & CSS Tokens (variables, `-webkit-backdrop-filter`, dark mode) | ✅ **100% COMPLETADO** |
-| | **0.4** | Frontend Hardening XSS (`escapeHTML`, `sanitizeUrl`) & Edge Functions | ✅ **100% COMPLETADO** |
-| **Fase 1** | **1.1** | Constantes Centralizadas, `CONVENTIONS.md` y Arquitectura Modular | ✅ **100% COMPLETADO** |
-| | **1.2** | Servicios Desacoplados (`signalService`, `newsService`, `calendarService`) | ✅ **100% COMPLETADO** |
-| | **1.3** | Accesibilidad ARIA, Validación de Password, Formularios y Autenticación | ✅ **100% COMPLETADO** |
-| | **1.4** | Edge Function Proxy de TwelveData / OANDA multi-activo | ✅ **100% COMPLETADO** |
-| **Fase 2** | **2.1** | Variación Porcentual Diaria Real de Activos OANDA (XAU, EUR, SPX, NAS, US30) | ✅ **100% COMPLETADO** |
-| | **2.2** | Adaptador `marketService` & Sistema de Caché Instantáneo (0ms white-screen) | ✅ **100% COMPLETADO** |
-| | **2.3** | Desacoplamiento de Datos de Gráfico (`chart.js` / TradingView Widgets) | ⏳ Planificado |
-| **Fase 3** | **3.1** | Flujo de Recuperación de Password & Panel de Usuario (*"Mi Perfil"*) | ✅ **100% COMPLETADO** |
-| | **3.2** | Calendario Económico: Grid Responsive 8 cols desktop / 4 cols mobile + Acordeón | ✅ **100% COMPLETADO** |
-| | **3.3** | Base de Datos PostgreSQL (`economic_calendar`): UNIQUE constraints, Índices y RLS | ✅ **100% COMPLETADO** |
-| | **3.4** | Diccionario Institucional: 74 eventos con descripciones macro, catalizadores y activos en radar | ✅ **100% COMPLETADO** |
-| | **3.5** | Lógica de Señales Direccionales (Beat/Miss) con soporte para indicadores invertidos (Desempleo) | ✅ **100% COMPLETADO** |
-| | **3.6** | Bot Autónomo ForexFactory (`Aeon_Bot/agents/calendar_agent.py`) con `curl_cffi` y auto-detección de TZ | ✅ **100% COMPLETADO** |
-| | **3.7** | Automatización GitHub Actions: Ráfaga de 3 disparos (:01, :03, :06) y Supabase Realtime WebSockets | ✅ **100% COMPLETADO** |
-| **Fase 4** | **4.1** | Laboratorio Cuantitativo MT5 Exness: 90k velas reales descargadas (M3, M5, M15, H1) | ✅ **100% COMPLETADO** |
-| | **4.2** | Optimización de Estrategias: Volume Profile POC, Session VWAP, SMA 20 + RSI (+152.2% Portafolio Total) | ✅ **100% COMPLETADO** |
-| | **4.3** | Motor Adaptativo (`Aeon_Bot`): Detector ADX $N=3$, Trade Watcher Lifecycle, Score (0-100) y RLS Server-Side | ✅ **100% COMPLETADO** |
-| | **4.4** | Terminal de Señales Frontend: Glassmorphic Cards, Barra de KPIs, Filtros por Activo, Scroll Snap Móvil | ✅ **100% COMPLETADO** |
-| | **4.5** | Módulo de Historial & Track Record Semanal en Frontend (`#senales` view switcher, Win Rate, Profit Factor, `Number.isFinite`, `closed_be`) | ✅ **100% COMPLETADO** |
-| | **4.6** | Visualización de Mercado Avanzada (Gráficos interactivos y multi-timeframe) | ⏳ Próximo |
-| **Fase 5** | **5.1** | AI Briefing Automatizado (Pipeline de noticias + contexto macro) | ⏳ Planificado |
-| **Fase 8** | **8.1** | Mobile Readiness Audit & Preparación de APIs para iOS/Android | ⏳ Planificado |
+| Fase | Título / Objetivo | Estado Real | Resumen de Implementación Verificada |
+|---|---|:---:|---|
+| **Fase 0** | **Security & Pre-Production Hardening** | ✅ **100% COMPLETADO** | • `src/js/auth.js`: Bypass eliminado (cero `user_metadata`, cero emails hardcodeados, validación estricta en `profiles.tier`).<br>• `supabase/migrations/00001_initial_schema_and_rls.sql`: Esquema relacional, políticas RLS en todas las tablas y trigger `protect_profile_tier`.<br>• `supabase/functions/calendar-cleanup`: Verificación de `SERVICE_ROLE_KEY` / `CRON_SECRET`.<br>• `src/js/templates/ticker.js`: Sanitización XSS con `escapeHTML()`. |
+| **Fase 1** | **Architecture & Data Provider Layer** | ✅ **100% COMPLETADO** | • `src/js/config/constants.js`: Enum canónico unificado `SIGNAL_STATUS` (`pending`, `active`, `hit_tp1`, `closed_tp`, `closed_be`, `closed_sl`, `cancelled`).<br>• `supabase/migrations/00002_track_record_rpc.sql`: Agregación matemática de KPIs (Win Rate, Profit Factor, R Neto) en PostgreSQL vía RPC.<br>• `src/js/services/marketService.js`: Desacoplamiento de OANDA hacia la abstracción `DataProvider` con `normalizeInstrument`.<br>• `src/js/templates/signal.js`: Eliminación de fallbacks numéricos sintéticos. |
+| **Fase 2** | **Quant Validation Lab** | ✅ **100% COMPLETADO** | • `scripts/quant/dpoc_engine.py`: Motor de Developing POC y Developing VWAP barra a barra con **Cero Look-Ahead Bias** verificado.<br>• `scripts/quant/backtest_friction_engine.py`: Modelo de costes reales (comisión Exness Raw $\$7/\text{lote}$, spreads dinámicos, slippage estocástico y swaps).<br>• `scripts/quant/walk_forward_validator.py`: Validador de Walk-Forward Analysis ($WFE \ge 65\%$) y simulador de Monte Carlo (1.000 iteraciones). |
+| **Fase 3** | **Production Quant Engine & VPS 24/7** | ✅ **100% COMPLETADO** | • `scripts/quant/data_provider.py`: Capa de datos con modelos inmutables y conector `MT5ExnessProvider`.<br>• `scripts/quant/trade_watcher_daemon.py`: Daemon asíncrono 24/7 (`asyncio`), persistencia atómica en `data/trade_watcher_state.json`, heartbeat y logging JSON.<br>• `deploy/aeon-quant-daemon.service` & `deploy/Dockerfile` / `docker-compose.yml`: Despliegue listo para VPS Linux. |
+| **Fase 4** | **AEON Market Intelligence** | ✅ **100% COMPLETADO** | • `scripts/quant/market_intelligence.py`:<br>  - Detector multivariado de régimen: ADX ($N=14$) + ATR + alineación de medias ($\text{SMA}_{20} / \text{SMA}_{50}$).<br>  - Correlador macro: Bloqueo de seguridad por Blackout ($\pm 15$ min ante noticias `HIGH`).<br>  - Scoring institucional explicable (0–100) con desglose auditable de 4 pilares. |
+| **Fase 5** | **AI Platform & Contextual Intelligence** | ⏳ *Próxima Fase* | Pipeline automatizado de Daily Briefing Macro y análisis contextual (sin alterar señales cuantitativas deterministas). |
+| **Fase 6** | **AEON Pro Terminal & Monetización** | ⏳ *Planificado* | Pasarela de pagos Stripe, webhooks y gestión de suscripciones institucionales. |
+| **Fases 7-8**| **Futures Intelligence (CME Order Flow)** | ⏳ *Planificado* | Feeds de futuros centralizados L2/L3 (Rithmic/CQG), Delta real, Footprint y DOM. |
+| **Fase 9** | **High Reliability & Global Scale** | ⏳ *Planificado* | Clúster multi-región y alta disponibilidad. |
 
 ---
 
-## 2. Resultados Oficiales del Laboratorio Cuantitativo Avanzado (Exness Data)
+## 2. Máquina de Estados Canónica del Trade Watcher (Producción)
 
-Se completó la batería de backtesting de Order Flow (Volume Profile POC), Session VWAP y SMA 20 sobre **90,000 velas reales de Exness**:
-
-| Activo | Modalidad | Timeframe | Estrategia Validada | Ratio R:R | Profit Factor | Beneficio Neto ($10k) | Max Drawdown |
-|---|---|:---:|---|:---:|:---:|:---:|:---:|
-| **XAU/USD (Oro)** | Day Trading | **M15** | **Volume Profile POC Dynamic Bounce** | **1:3.0** | **1.11** | **+$5,791.04 (+57.91%)** | 37.26% |
-| **EUR/USD (Euro)** | Day Trading | **M15** | **Session VWAP Pullback & Rejection** | **1:2.5** | **1.11** | **+$5,697.34 (+56.97%)** | 32.31% |
-| **GBP/USD (Libra)** | Scalping | **M5** | **Killzone Trend Continuation / SMA 20** | **1:2.0** | **1.11** | **+$3,739.35 (+37.39%)** | **16.60%** |
-| **PORTAFOLIO MASTER** | **Combinado** | **Multi-TF** | **Confluencias Institucionales** | **Multi** | **1.11** | **+$15,227.73 (+152.27%)** | **16.60%** |
-
----
-
-## 3. Estado de la Máquina de Estados del Trade Watcher
-
-```
-                         [ ACTIVE ]
+```text
+                  [ 1. PENDING / CREATED ]
                              │
-            ┌────────────────┴────────────────┐
-            │ (Precio >= TP1)                 │ (Precio <= SL)
-            ▼                                 ▼
-       [ HIT_TP1 ]                       [ CLOSED_SL ]
-    (Stop a Break-Even)                   (-1.0R loss)
-            │
-    ┌───────┴───────┐
-    │ (Precio >= TP)│ (Precio <= Entry / BE)
-    ▼               ▼
+                             │ (Precio cruza nivel de entrada)
+                             ▼
+                        [ 2. ACTIVE ]
+                       (SL inicial a -1.0R)
+                             │
+             ┌───────────────┴───────────────┐
+             │ (Precio toca TP1 / +1.5R)     │ (Precio toca SL / -1.0R)
+             ▼                               ▼
+       [ 3. HIT_TP1 ]                  [ CLOSED_SL ]
+    (Stop ajustado a BE: 0.0R)          (Loss: -1.0R)
+             │
+     ┌───────┴───────┐
+     │ (Precio >= TP)│ (Precio retrocede a BE)
+     ▼               ▼
 [ CLOSED_TP ]   [ CLOSED_BE ]
- (+R profit)     (0.0R loss)
+ (+R target)     (0.0R neutral)
+```
+
+```javascript
+// src/js/config/constants.js
+export const SIGNAL_STATUS = {
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  HIT_TP1: 'hit_tp1',
+  CLOSED_TP: 'closed_tp',
+  CLOSED_BE: 'closed_be',
+  CLOSED_SL: 'closed_sl',
+  WON: 'won',       // Alias de compatibilidad
+  LOST: 'lost',     // Alias de compatibilidad
+  CANCELLED: 'cancelled',
+};
+```
+
+---
+
+## 3. Arquitectura de Producción Implementada
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│ SERVIDOR DEDICADO VPS LINUX (Ubuntu 24.04 LTS / LD4 Londres)           │
+│                                                                        │
+│  ┌───────────────────────────┐         ┌────────────────────────────┐  │
+│  │ MetaTrader 5 (Exness ECN) │ ◄──────►│ ZeroMQ / IPC Socket Server │  │
+│  │  - Feed de Precios Live   │ (0.5ms) │  - Puerto Local 5555       │  │
+│  └───────────────────────────┘         └─────────────▲──────────────┘  │
+│                                                      │                 │
+│  ┌───────────────────────────────────────────────────▼──────────────┐  │
+│  │ AEON QUANT DAEMON (trade_watcher_daemon.py & market_intel)       │  │
+│  │  - Bucle de evaluación asíncrono M5/M15 (Latencia < 100ms)       │  │
+│  │  - Detector de Régimen Multivariado (ADX N=14 + ATR + SMA)       │  │
+│  │  - Scoring Explicable 0-100 + Blackout Macro (+-15 min)          │  │
+│  │  - Persistencia Atómica: data/trade_watcher_state.json           │  │
+│  │  - Logging Estructurado JSON & Heartbeats cada 30s               │  │
+│  └───────────────────────────────────────────────────▲──────────────┘  │
+│                                                      │                 │
+└──────────────────────────────────────────────────────┼─────────────────┘
+                                                       │ HTTPS / WebSockets
+                                                       ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ SUPABASE POSTGRESQL & EDGE FUNCTIONS                                   │
+│  - Seguridad RLS Zero-Trust en todas las tablas                        │
+│  - Agregación instantánea de Track Record vía RPC (0ms math lag)       │
+│  - Realtime seguro con REPLICA IDENTITY FULL                           │
+└──────────────────────────────────────┬─────────────────────────────────┘
+                                       │
+                                       │ Feed Público & Niveles PRO
+                                       ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ AEON TERMINAL (Vite SPA / ES Modules)                                  │
+│  - 0ms White-Screen Cache en sessionStorage / localStorage             │
+│  - Gráficos interactivos Lightweight Charts v5                         │
+│  - Componentes accesibles y sanitizados contra XSS                     │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 4. Estado de los Componentes del Sistema
+
+```text
+┌──────────────────────────────────────┬──────────────────────────────────────┐
+│ ✅ PRODUCCIÓN-READY (Fases 0 a 4)    │ ⏳ PRÓXIMOS PASOS (Fases 5 y 6)      │
+│ - Zero-Trust Auth & RLS en Postgres  │ - Generación de Daily Briefing Macro │
+│ - Migraciones SQL Versionadas        │ - Agente de Noticias & Sentimiento   │
+│ - RPC Track Record en Base de Datos  │ - Pasarela de Pagos Stripe           │
+│ - Abstracción DataProvider Universal │ - Gestión de Suscripciones Pro       │
+│ - Developing POC / VWAP (Sin sesgos) │ - Canal Privado de Telegram PRO      │
+│ - Modelado de Fricción Exness Raw    │                                      │
+│ - Daemon 24/7 asíncrono en VPS       │                                      │
+│ - Scoring Explicable 0-100 & Blackout│                                      │
+└──────────────────────────────────────┴──────────────────────────────────────┘
 ```

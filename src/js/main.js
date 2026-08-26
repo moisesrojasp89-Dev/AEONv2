@@ -6,6 +6,7 @@ import { checkSession } from './auth.js';
 import {
   fetchActiveSignals,
   fetchSignalHistory,
+  fetchTrackRecordMetrics,
   calculateTrackRecordMetrics,
   subscribeSignalEvents,
 } from './services/signalService.js';
@@ -48,15 +49,25 @@ function getFilteredHistorySignals() {
   return historySignalsCache.filter(s => String(s.asset || '').toUpperCase().includes(currentSignalFilter.toUpperCase()));
 }
 
-function updateSignalsDisplay() {
+async function updateSignalsDisplay() {
   if (currentViewMode === 'live') {
     renderKPIBar('live');
     renderSignals(getFilteredLiveSignals(), currentUser, isPro);
   } else {
     const filteredHistory = getFilteredHistorySignals();
-    const metrics = calculateTrackRecordMetrics(filteredHistory);
-    renderKPIBar('history', metrics);
+    const localMetrics = calculateTrackRecordMetrics(filteredHistory);
+    renderKPIBar('history', localMetrics);
     renderSignalHistory(filteredHistory);
+
+    // Si el filtro es 'all', consultar métricas globales agregadas en PostgreSQL vía RPC (0ms lag, muestra total)
+    if (currentSignalFilter === 'all') {
+      try {
+        const serverMetrics = await fetchTrackRecordMetrics(filteredHistory);
+        if (serverMetrics && currentViewMode === 'history' && currentSignalFilter === 'all') {
+          renderKPIBar('history', serverMetrics);
+        }
+      } catch (_) {}
+    }
   }
 }
 

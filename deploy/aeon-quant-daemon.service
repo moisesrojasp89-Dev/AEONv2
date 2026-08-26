@@ -1,0 +1,34 @@
+[Unit]
+Description=AEON Quantitative Engine & 24/7 Trade Watcher Daemon
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aeon
+Group=aeon
+WorkingDirectory=/opt/aeon/scripts/quant
+EnvironmentFile=/opt/aeon/.env
+ExecStart=/opt/aeon/venv/bin/python trade_watcher_daemon.py
+Restart=always
+RestartSec=5s
+KillMode=process
+TimeoutStopSec=15s
+
+# Límites de alta concurrencia
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Seguridad del servicio systemd
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Salida de logs estructurados hacia journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aeon-trade-watcher
+
+[Install]
+WantedBy=multi-user.target
