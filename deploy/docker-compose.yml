@@ -1,14 +1,22 @@
 version: '3.8'
 
+# ==============================================================================
+# AEON Production VPS 24/7 Unified Stack
+# Orquesta los 3 Daemons de Inteligencia Cuantitativa y Macro
+# ==============================================================================
+
 services:
-  aeon-trade-watcher:
+  # 1. QUANT DAEMON: Trade Watcher & Signal Execution Engine (24/7 Tick-to-Tick)
+  aeon-quant-daemon:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-    container_name: aeon-trade-watcher-daemon
+    container_name: aeon-quant-daemon
     restart: always
+    command: ["python", "scripts/quant/trade_watcher_daemon.py"]
     environment:
       - TZ=UTC
+      - PYTHONUNBUFFERED=1
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - MT5_SERVER_HOST=127.0.0.1
@@ -21,12 +29,57 @@ services:
         max-size: "20m"
         max-file: "5"
     networks:
-      - aeon-quant-net
+      - aeon-vps-net
+
+  # 2. CALENDAR & NEWS WATCHER: Sincronización en vivo de noticias e impacto táctico
+  aeon-calendar-watcher:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: aeon-calendar-watcher
+    restart: always
+    command: ["python", "scripts/ai/news_sync_agent.py"]
+    environment:
+      - TZ=UTC
+      - PYTHONUNBUFFERED=1
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "15m"
+        max-file: "3"
+    networks:
+      - aeon-vps-net
+
+  # 3. MACRO AI ENGINE: Briefing dual de sesiones y catalizadores dinámicos
+  aeon-macro-ai:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: aeon-macro-ai
+    restart: always
+    command: ["python", "scripts/ai/briefing_agent.py"]
+    environment:
+      - TZ=UTC
+      - PYTHONUNBUFFERED=1
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "15m"
+        max-file: "3"
+    networks:
+      - aeon-vps-net
 
 volumes:
   aeon_state_data:
     driver: local
 
 networks:
-  aeon-quant-net:
+  aeon-vps-net:
     driver: bridge
+

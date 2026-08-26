@@ -128,3 +128,14 @@ export function subscribeToBriefings(onNewBriefing) {
     )
     .subscribe();
 }
+
+/**
+ * Limpia y desuscribe el canal de Supabase Realtime para evitar fugas de memoria.
+ * @param {Object} channel
+ */
+export function unsubscribeFromBriefings(channel) {
+  if (channel && typeof channel.unsubscribe === 'function') {
+    supabase.removeChannel(channel);
+  }
+}
+

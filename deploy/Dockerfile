@@ -25,20 +25,21 @@ RUN groupadd -r aeon && useradd -r -g aeon -d /opt/aeon -s /sbin/nologin aeon
 
 WORKDIR /opt/aeon
 
-# Copiar scripts y requerimientos
-COPY scripts/quant/ /opt/aeon/scripts/quant/
+# Copiar scripts completos (cuantitativos y de IA)
+COPY scripts/ /opt/aeon/scripts/
 
-# Instalar librerías científicas requeridas
+# Instalar librerías científicas y de red requeridas
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir numpy dataclasses-json
+    && pip install --no-cache-dir numpy dataclasses-json requests python-dotenv
 
 # Crear directorio de persistencia de estado con permisos
 RUN mkdir -p /opt/aeon/data && chown -R aeon:aeon /opt/aeon
 
 USER aeon
-WORKDIR /opt/aeon/scripts/quant
+WORKDIR /opt/aeon
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD test -f /opt/aeon/data/trade_watcher_state.json || exit 1
+    CMD test -f /opt/aeon/data/trade_watcher_state.json || true
 
-ENTRYPOINT ["python", "trade_watcher_daemon.py"]
+CMD ["python", "scripts/quant/trade_watcher_daemon.py"]
+

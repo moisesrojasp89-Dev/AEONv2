@@ -249,7 +249,7 @@
     gap: 1.25rem;
   }
   .desktop-news-filters {
-    display: none !important;
+    display: none;
   }
   .mobile-news-filters {
     display: block;
@@ -321,6 +321,18 @@
   letter-spacing: 0.05em;
   padding: 0.25rem 0.6rem;
   border-radius: 9999px;
+}
+
+.session-london {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.session-ny {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
 .session-pill {
@@ -428,7 +440,7 @@
   font-weight: 700;
 }
 
-/* Catalizadores */
+/* Catalizadores con Ciclo de Vida */
 .briefing-catalysts-list {
   display: flex;
   flex-direction: column;
@@ -438,12 +450,22 @@
 .briefing-catalyst-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 6px;
   font-size: 0.82rem;
+  transition: border-color 0.2s ease;
+}
+
+.briefing-catalyst-item.status-live {
+  border-color: rgba(61, 214, 140, 0.35);
+  background: rgba(61, 214, 140, 0.03);
+}
+
+.briefing-catalyst-item.status-digested {
+  opacity: 0.65;
 }
 
 .catalyst-time {
@@ -464,11 +486,59 @@
   color: var(--text, #e2e8f0);
 }
 
+.catalyst-actual-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(61, 214, 140, 0.12);
+  border: 1px solid rgba(61, 214, 140, 0.25);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+}
+
+.c-actual {
+  color: #3dd68c;
+  font-weight: 700;
+}
+
+.c-prev {
+  color: var(--text-muted, #94a3b8);
+}
+
 .catalyst-badge {
   font-size: 0.68rem;
   font-weight: 700;
   padding: 0.15rem 0.45rem;
   border-radius: 4px;
+}
+
+.catalyst-status-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.catalyst-status-pill.status-upcoming {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.catalyst-status-pill.status-live {
+  background: rgba(61, 214, 140, 0.15);
+  color: #3dd68c;
+  border: 1px solid rgba(61, 214, 140, 0.35);
+  animation: pulse-border 2s infinite;
+}
+
+.catalyst-status-pill.status-digested {
+  background: rgba(148, 163, 184, 0.10);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.20);
 }
 
 .impact-high {
@@ -510,6 +580,43 @@
   color: #cbd5e1;
   margin: 0;
 }
+
+/* Lectura Táctica AEON en el Feed de Noticias */
+.news-tactical-reading {
+  margin-top: 0.45rem;
+  padding: 0.45rem 0.75rem;
+  background: rgba(14, 165, 233, 0.06);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.tactical-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.tactical-text {
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.news-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.news-link:hover {
+  color: var(--accent);
+}
+
 
 /* ============================================================
    Optimización Móvil Elegante y Compacta

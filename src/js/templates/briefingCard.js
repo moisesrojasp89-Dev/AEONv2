@@ -1,11 +1,18 @@
 /* ============================================================
    AEON · templates/briefingCard.js — Visual Institutional Macro Card
    Fase 5: AI Platform & Contextual Intelligence
+   Gobernanza: Cero Hardcoding, Single Source of Truth & XSS Guard
    ============================================================ */
 
 import { escapeHTML, sanitizeUrl } from '../utils/sanitize.js';
+import { 
+  ASSET_BIAS_CONFIG, 
+  CATALYST_STATUS_CONFIG, 
+  BRIEFING_SESSIONS_CONFIG, 
+  BRIEFING_SESSIONS 
+} from '../config/constants.js';
 
-const ASSET_ICONS = {
+const ASSET_LABELS = {
   XAUUSD: '🪙 XAU/USD',
   EURUSD: '🇪🇺 EUR/USD',
   GBPUSD: '🇬🇧 GBP/USD',
@@ -15,110 +22,123 @@ const ASSET_ICONS = {
   BTC: '₿ Bitcoin',
 };
 
-const BIAS_COLORS = {
-  BULLISH: { bg: 'rgba(0, 255, 136, 0.12)', border: 'rgba(0, 255, 136, 0.35)', text: '#00ff88', icon: '▲' },
-  BEARISH: { bg: 'rgba(255, 68, 102, 0.12)', border: 'rgba(255, 68, 102, 0.35)', text: '#ff4466', icon: '▼' },
-  NEUTRAL: { bg: 'rgba(160, 174, 192, 0.12)', border: 'rgba(160, 174, 192, 0.35)', text: '#a0aec0', icon: '■' },
-};
-
 /**
- * Renderiza la tarjeta visual completa del Daily Macro Briefing.
+ * Renderiza la tarjeta visual completa del Daily Macro Briefing con ciclo de vida de catalizadores.
  * @param {Object} briefing
  * @returns {string} HTML sanitizado
  */
 export function renderBriefingCard(briefing) {
   if (!briefing) return '';
 
-  const isLondon = (briefing.session_id === 'london_pre');
-  const sessionBadge = isLondon ? '☕ PRE-LONDRES' : '🗽 PRE-NUEVA YORK';
-  const sessionTime = isLondon ? '06:00 UTC' : '12:30 UTC';
+  const sessionId = briefing.session_id || BRIEFING_SESSIONS.LONDON_PRE;
+  const sessionConfig = BRIEFING_SESSIONS_CONFIG[sessionId] || BRIEFING_SESSIONS_CONFIG[BRIEFING_SESSIONS.LONDON_PRE];
   
   const sentiment = briefing.macro_sentiment || { score: 60, label: 'RISK_ON', risk_appetite: 'BULLISH' };
   const sentimentScore = Math.min(Math.max(sentiment.score || 50, 0), 100);
   const isBullishSentiment = sentiment.label === 'RISK_ON' || sentiment.risk_appetite === 'BULLISH';
-  const sentimentColor = isBullishSentiment ? '#00ff88' : '#ff4466';
+  const sentimentColor = isBullishSentiment ? '#3dd68c' : '#ff5c6a';
 
   const assetBias = briefing.asset_bias || {};
   const catalysts = Array.isArray(briefing.catalysts) ? briefing.catalysts : [];
-  const imageUrl = sanitizeUrl(briefing.image_url || 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop');
+  const imageUrl = sanitizeUrl(briefing.image_url || sessionConfig.defaultCover);
+  const briefingTitle = briefing.title || sessionConfig.defaultTitle;
 
-  // Generar Chips de Radar
+  // Generar Chips de Radar desde constants.js
   const radarChipsHtml = Object.entries(assetBias).map(([asset, bias]) => {
-    const assetLabel = ASSET_ICONS[asset] || escapeHTML(asset);
-    const style = BIAS_COLORS[bias] || BIAS_COLORS.NEUTRAL;
+    const assetLabel = ASSET_LABELS[asset] || escapeHTML(asset);
+    const biasKey = String(bias || 'NEUTRAL').toUpperCase();
+    const config = ASSET_BIAS_CONFIG[biasKey] || ASSET_BIAS_CONFIG.NEUTRAL;
     return `
-      <div class="briefing-radar-chip" style="background: ${style.bg}; border: 1px solid ${style.border}; color: ${style.text};">
+      <div class="briefing-radar-chip" style="background: ${config.bg}; border: 1px solid ${config.border}; color: ${config.textColor};">
         <span class="radar-chip-symbol">${assetLabel}</span>
-        <span class="radar-chip-bias">${style.icon} ${escapeHTML(bias)}</span>
+        <span class="radar-chip-bias">${escapeHTML(config.label)}</span>
       </div>
     `;
   }).join('');
 
-  // Generar Catalizadores
-  const catalystsHtml = catalysts.map(c => `
-    <div class="briefing-catalyst-item">
-      <span class="catalyst-time">${escapeHTML(c.time || '--:--')} UTC</span>
-      <span class="catalyst-currency">${escapeHTML(c.currency || 'ALL')}</span>
-      <span class="catalyst-title">${escapeHTML(c.title || '')}</span>
-      <span class="catalyst-badge impact-${(c.impact || 'MED').toLowerCase()}">${escapeHTML(c.impact || 'MED')}</span>
-    </div>
-  `).join('');
+  // Generar Catalizadores con Ciclo de Vida Dinámico
+  const catalystsHtml = catalysts.map(c => {
+    const statusKey = String(c.status || (c.actual ? 'live' : 'upcoming')).toLowerCase();
+    const statusCfg = CATALYST_STATUS_CONFIG[statusKey] || CATALYST_STATUS_CONFIG.upcoming;
+    const impactClass = `impact-${(c.impact || 'MED').toLowerCase()}`;
+    
+    let dataPillHtml = '';
+    if (c.actual) {
+      dataPillHtml = `
+        <span class="catalyst-actual-box">
+          <strong class="c-actual">Act: ${escapeHTML(String(c.actual))}</strong>
+          <span class="c-prev">Prev: ${escapeHTML(String(c.forecast || c.previous || '--'))}</span>
+        </span>
+      `;
+    }
+
+    return `
+      <div class="briefing-catalyst-item ${escapeHTML(statusCfg.badgeClass)}">
+        <span class="catalyst-time">${escapeHTML(c.time || '--:--')} UTC</span>
+        <span class="catalyst-currency">${escapeHTML(c.currency || 'ALL')}</span>
+        <span class="catalyst-title">${escapeHTML(c.title || '')}</span>
+        ${dataPillHtml}
+        <span class="catalyst-badge ${escapeHTML(impactClass)}">${escapeHTML(c.impact || 'MED')}</span>
+        <span class="catalyst-status-pill ${escapeHTML(statusCfg.badgeClass)}">${escapeHTML(statusCfg.badgeLabel)}</span>
+      </div>
+    `;
+  }).join('');
 
   return `
     <article class="briefing-hero-card" role="region" aria-label="Daily Macro Briefing">
       <!-- Cabecera Visual con Imagen y Degradado -->
-      <div class="briefing-cover-wrapper" style="background-image: url('${imageUrl}');">
+      <header class="briefing-cover-wrapper" style="background-image: url('${imageUrl}');">
         <div class="briefing-cover-overlay"></div>
         <div class="briefing-cover-content">
           <div class="briefing-badges-row">
-            <span class="briefing-pill session-pill">${sessionBadge} · ${sessionTime}</span>
+            <span class="briefing-pill ${escapeHTML(sessionConfig.pillClass)}">${escapeHTML(sessionConfig.label)}</span>
             <span class="briefing-pill impact-high-pill">🔴 SESIÓN CLAVE</span>
-            <span class="briefing-date">${escapeHTML(briefing.date)}</span>
+            <time class="briefing-date">${escapeHTML(briefing.date || '')}</time>
           </div>
-          <h3 class="briefing-main-title">${escapeHTML(briefing.title)}</h3>
+          <h3 class="briefing-main-title">${escapeHTML(briefingTitle)}</h3>
         </div>
-      </div>
+      </header>
 
       <!-- Cuerpo del Briefing -->
       <div class="briefing-body">
         
         <!-- Termómetro de Sentimiento Macroeconómico -->
-        <div class="briefing-sentiment-box">
+        <section class="briefing-sentiment-box" aria-label="Sentimiento Institucional">
           <div class="sentiment-box-header">
             <span class="sentiment-title">🧭 SENTIMIENTO MACRO INSTITUCIONAL</span>
             <span class="sentiment-badge" style="color: ${sentimentColor};">${escapeHTML(sentiment.label)} (${sentimentScore}%)</span>
           </div>
-          <div class="sentiment-progress-track">
+          <div class="sentiment-progress-track" role="progressbar" aria-valuenow="${sentimentScore}" aria-valuemin="0" aria-valuemax="100">
             <div class="sentiment-progress-bar" style="width: ${sentimentScore}%; background: linear-gradient(90deg, #0ea5e9, ${sentimentColor});"></div>
           </div>
-        </div>
+        </section>
 
         <!-- Radar de Sesgo por Activo -->
-        <div class="briefing-radar-section">
+        <section class="briefing-radar-section" aria-label="Radar de Sesgos">
           <span class="briefing-section-label">RADAR DE SESGO POR ACTIVO</span>
           <div class="briefing-radar-grid">
             ${radarChipsHtml}
           </div>
-        </div>
+        </section>
 
         <!-- Catalizadores de la Jornada -->
         ${catalysts.length > 0 ? `
-          <div class="briefing-catalysts-section">
+          <section class="briefing-catalysts-section" aria-label="Catalizadores de la Sesión">
             <span class="briefing-section-label">🚨 CATALIZADORES CLAVE DE LA SESIÓN</span>
             <div class="briefing-catalysts-list">
               ${catalystsHtml}
             </div>
-          </div>
+          </section>
         ` : ''}
 
         <!-- Tesis Ejecutiva -->
-        <div class="briefing-thesis-box">
+        <section class="briefing-thesis-box" aria-label="Tesis Macroeconómica">
           <div class="thesis-header">
-            <span class="thesis-icon">💡</span>
+            <span class="thesis-icon" aria-hidden="true">💡</span>
             <span class="thesis-label">TESIS MACROECONÓMICA EJECUTIVA</span>
           </div>
-          <p class="thesis-text">${escapeHTML(briefing.executive_thesis)}</p>
-        </div>
+          <p class="thesis-text">${escapeHTML(briefing.executive_thesis || '')}</p>
+        </section>
 
       </div>
     </article>
