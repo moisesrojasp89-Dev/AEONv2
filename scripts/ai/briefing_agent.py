@@ -274,7 +274,16 @@ def main():
         print("[DRY-RUN] Modo de prueba activo. No se escribe en Supabase.")
         return
 
-    publish_briefing_to_supabase(briefing)
+    published = publish_briefing_to_supabase(briefing)
+
+    # Sincronización automática de noticias en tiempo real
+    try:
+        from scripts.ai.news_sync_agent import fetch_live_financial_news, sync_news_to_supabase
+        live_news = fetch_live_financial_news()
+        if live_news:
+            sync_news_to_supabase(live_news)
+    except Exception as news_err:
+        print(f"[!] Aviso al sincronizar noticias en vivo: {news_err}")
 
 
 if __name__ == "__main__":
