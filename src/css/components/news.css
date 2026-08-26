@@ -500,3 +500,74 @@
   margin: 0;
 }
 
+/* ============================================================
+   Optimización Móvil con Scroll Horizontal (Anti-Scroll Infinito)
+   ============================================================ */
+
+.news-list {
+  max-height: 440px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+@media (max-width: 768px) {
+  /* Radar de Sesgo con Scroll Horizontal Swipeable */
+  .briefing-radar-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .briefing-radar-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .briefing-radar-chip {
+    flex: 0 0 auto;
+    min-width: 145px;
+    scroll-snap-align: start;
+  }
+
+  /* Catalizadores con Scroll Horizontal Swipeable */
+  .briefing-catalysts-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 0.6rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+  .briefing-catalysts-list::-webkit-scrollbar {
+    display: none;
+  }
+  .briefing-catalyst-item {
+    flex: 0 0 240px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    scroll-snap-align: start;
+  }
+  .catalyst-title {
+    font-size: 0.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Altura Compacta del Panel de Noticias en Móvil */
+  .news-list {
+    max-height: 330px;
+  }
+  .news-row {
+    padding: 0.85rem 1rem;
+  }
+}
+
+
