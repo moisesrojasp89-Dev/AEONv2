@@ -12,6 +12,7 @@ export const DB_TABLES = {
   SUBSCRIPTIONS: 'subscriptions',
   PROFILES: 'profiles',
   NEWS: 'news',
+  DAILY_BRIEFINGS: 'daily_briefings',
 };
 
 /**

@@ -11,7 +11,9 @@ import {
   subscribeSignalEvents,
 } from './services/signalService.js';
 import { fetchNews } from './services/newsService.js';
+import { fetchLatestBriefing, subscribeToBriefings } from './services/briefingService.js';
 import {
+  renderBriefing,
   renderNews,
   renderMarketCards,
   renderSignals,
@@ -202,6 +204,17 @@ function initNewsFilters() {
   }
 }
 
+async function loadDynamicBriefing() {
+  const briefing = await fetchLatestBriefing();
+  renderBriefing(briefing);
+  
+  // Suscripción a nuevos briefings publicados en tiempo real
+  subscribeToBriefings((newBriefing) => {
+    console.log('[AEON] Nuevo Daily Macro Briefing recibido en tiempo real:', newBriefing);
+    renderBriefing(newBriefing);
+  });
+}
+
 async function initApp() {
   // Render de elementos iniciales
   renderMarketCards(data.markets);
@@ -209,6 +222,7 @@ async function initApp() {
   renderPremiumFeatures(data.premiumFeatures);
   renderTickerBar(data.ticker);
 
+  loadDynamicBriefing();
   loadDynamicNews();
   initNewsFilters();
   initSignalFilters();

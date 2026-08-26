@@ -3,6 +3,7 @@
    ============================================================ */
 
 import { newsCard }                  from './templates/news.js';
+import { renderBriefingCard }          from './templates/briefingCard.js';
 import { marketCard }                from './templates/market.js';
 import { signalCard, closedSignalCard } from './templates/signal.js';
 import { eduCard }                   from './templates/education.js';
@@ -14,6 +15,7 @@ function fill(id, html) {
   if (el) el.innerHTML = html;
 }
 
+export function renderBriefing(briefing)   { fill('briefing-card-container', renderBriefingCard(briefing)); }
 export function renderNews(news)           { fill('news-list',      news.map(newsCard).join('')); }
 export function renderMarketCards(markets) { fill('market-grid',    markets.map(marketCard).join('')); }
 
