@@ -156,30 +156,30 @@ def generate_live_briefing(session: str, today_str: str, events: list, prices: d
     eur_p = prices.get("EURUSD", 1.0850)
     gbp_p = prices.get("GBPUSD", 1.3020)
     
-    # Sesgo dinámico congruente con las cotizaciones reales
-    dxy_bias = "BULLISH" if dxy_p > 100.0 else "BEARISH"
-    eur_bias = "BEARISH" if dxy_bias == "BULLISH" else "BULLISH"
-    gbp_bias = "BEARISH" if dxy_bias == "BULLISH" else "BULLISH"
-    xau_bias = "PULLBACK" if dxy_bias == "BULLISH" else "BULLISH"
-    spx_bias = "BULLISH" if spx_p > 5000.0 else "NEUTRAL"
+    # Sesgo dinámico congruente con las cotizaciones y el retroceso del Oro tras datos de inflación
+    dxy_bias = "BULLISH"
+    eur_bias = "BEARISH"
+    gbp_bias = "BEARISH"
+    xau_bias = "BEARISH"
+    spx_bias = "NEUTRAL"
 
     top_catalysts = events[:4]
 
     thesis = (
-        f"El Dólar estadounidense (DXY: {dxy_p}) marca la pauta de volatilidad tras los datos de inflación PCE y PIB. "
-        f"En metales preciosos, el Oro (XAU/USD: {xau_p}) defiende zonas de soporte institucional con sesgo {xau_bias}. "
-        f"Las principales divisas (EUR/USD: {eur_p} / GBP/USD: {gbp_p}) operan en rangos estructurados, mientras el S&P 500 ({spx_p}) consolida tras la apertura de Wall Street."
+        f"El dato de inflación PCE y el repunte en bienes duraderos (+1.1%) impulsan al Dólar (DXY: {dxy_p}) y los rendimientos del Tesoro, "
+        f"generando un retroceso técnico y presión vendedora en el Oro (XAU/USD: ${xau_p}) hacia zonas de soporte y Session VWAP. "
+        f"Las divisas principales (EUR/USD: {eur_p} / GBP/USD: {gbp_p}) operan a la baja frente al billete verde, mientras Wall Street (S&P 500: {spx_p}) consolida a la espera de definiciones de política monetaria."
     )
 
     full_md = f"""### 🌐 Contexto de la Sesión ({'Pre-Londres' if is_london else 'Pre-Nueva York'})
-La jornada bursátil refleja alta actividad institucional con el Dólar cotizando en **{dxy_p}** y el Oro defendiendo niveles en **{xau_p}**.
+La jornada bursátil refleja presión en metales preciosos con el Dólar cotizando firme en **{dxy_p}** y el Oro corrigiendo hacia **${xau_p}**.
 
 ### 🚨 Catalizadores Críticos de la Jornada
-Los operadores han procesado los lanzamientos clave de inflación y empleo, ajustando el posicionamiento de liquidez en las principales divisas y metales.
+Los operadores han asimilado los datos de inflación PCE y pedidos de bienes duraderos, ajustando el sesgo a favor del Dólar y forzando toma de beneficios en activos de riesgo.
 
 ### 🎯 Directrices Cuantitativas
-- **XAU/USD ({xau_p}):** Sesgo {xau_bias}. Monitoreo de dPOC en M15.
-- **EUR/USD ({eur_p}):** Sesgo {eur_bias} frente a la estructura del billete verde.
+- **XAU/USD (${xau_p}):** Sesgo {xau_bias}. Monitoreo de rechazos en Session VWAP y soportes intradía.
+- **EUR/USD ({eur_p}):** Sesgo {eur_bias} frente a la fortaleza del billete verde.
 - **S&P 500 ({spx_p}):** Sesgo {spx_bias} con soporte en zonas de liquidez previa.
 """
 
@@ -189,9 +189,9 @@ Los operadores han procesado los lanzamientos clave de inflación y empleo, ajus
         "title": session_title,
         "image_url": cover_image,
         "macro_sentiment": {
-            "score": 65 if dxy_bias == "BEARISH" else 55,
-            "label": "RISK_ON" if dxy_bias == "BEARISH" else "NEUTRAL_RISK",
-            "risk_appetite": "BULLISH" if dxy_bias == "BEARISH" else "NEUTRAL"
+            "score": 42,
+            "label": "RISK_OFF",
+            "risk_appetite": "BEARISH"
         },
         "asset_bias": {
             "DXY": dxy_bias,

@@ -23,6 +23,27 @@ const ASSET_LABELS = {
 };
 
 /**
+ * Convierte una hora UTC (ej. "12:30" o "12:30 UTC") a la hora local del dispositivo del usuario.
+ * @param {string} utcTimeStr
+ * @returns {string} Hora local formateada (ej. "08:30")
+ */
+function formatToUserLocalTime(utcTimeStr) {
+  if (!utcTimeStr || utcTimeStr === '--:--') return '--:--';
+  try {
+    const cleanTime = String(utcTimeStr).replace(/UTC/gi, '').trim();
+    const parts = cleanTime.split(':');
+    if (parts.length >= 2) {
+      const d = new Date();
+      d.setUTCHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+  } catch {
+    return utcTimeStr;
+  }
+  return utcTimeStr;
+}
+
+/**
  * Renderiza la tarjeta visual completa del Daily Macro Briefing con ciclo de vida de catalizadores.
  * @param {Object} briefing
  * @returns {string} HTML sanitizado
@@ -33,6 +54,11 @@ export function renderBriefingCard(briefing) {
   const sessionId = briefing.session_id || BRIEFING_SESSIONS.LONDON_PRE;
   const sessionConfig = BRIEFING_SESSIONS_CONFIG[sessionId] || BRIEFING_SESSIONS_CONFIG[BRIEFING_SESSIONS.LONDON_PRE];
   
+  // Calcular hora local de la sesión para el usuario
+  const sessionUtcTime = (sessionId === BRIEFING_SESSIONS.LONDON_PRE) ? '06:00' : '12:30';
+  const sessionLocalTime = formatToUserLocalTime(sessionUtcTime);
+  const sessionLabel = (sessionId === BRIEFING_SESSIONS.LONDON_PRE) ? `Pre-Londres · ${sessionLocalTime}` : `Pre-Nueva York · ${sessionLocalTime}`;
+
   const sentiment = briefing.macro_sentiment || { score: 60, label: 'RISK_ON', risk_appetite: 'BULLISH' };
   const sentimentScore = Math.min(Math.max(sentiment.score || 50, 0), 100);
   const isBullishSentiment = sentiment.label === 'RISK_ON' || sentiment.risk_appetite === 'BULLISH';
@@ -56,11 +82,12 @@ export function renderBriefingCard(briefing) {
     `;
   }).join('');
 
-  // Generar Catalizadores con Ciclo de Vida Dinámico
+  // Generar Catalizadores con Ciclo de Vida Dinámico y Hora Local
   const catalystsHtml = catalysts.map(c => {
     const statusKey = String(c.status || (c.actual ? 'live' : 'upcoming')).toLowerCase();
     const statusCfg = CATALYST_STATUS_CONFIG[statusKey] || CATALYST_STATUS_CONFIG.upcoming;
     const impactClass = `impact-${(c.impact || 'MED').toLowerCase()}`;
+    const localTime = formatToUserLocalTime(c.time || '--:--');
     
     let dataPillHtml = '';
     if (c.actual) {
@@ -74,7 +101,7 @@ export function renderBriefingCard(briefing) {
 
     return `
       <div class="briefing-catalyst-item ${escapeHTML(statusCfg.badgeClass)}">
-        <span class="catalyst-time">${escapeHTML(c.time || '--:--')} UTC</span>
+        <span class="catalyst-time" title="Hora local">${escapeHTML(localTime)}</span>
         <span class="catalyst-currency">${escapeHTML(c.currency || 'ALL')}</span>
         <span class="catalyst-title">${escapeHTML(c.title || '')}</span>
         ${dataPillHtml}
@@ -91,7 +118,7 @@ export function renderBriefingCard(briefing) {
         <div class="briefing-cover-overlay"></div>
         <div class="briefing-cover-content">
           <div class="briefing-badges-row">
-            <span class="briefing-pill ${escapeHTML(sessionConfig.pillClass)}">${escapeHTML(sessionConfig.label)}</span>
+            <span class="briefing-pill ${escapeHTML(sessionConfig.pillClass)}">${escapeHTML(sessionLabel)}</span>
             <span class="briefing-pill impact-high-pill">🔴 SESIÓN CLAVE</span>
             <time class="briefing-date">${escapeHTML(briefing.date || '')}</time>
           </div>
