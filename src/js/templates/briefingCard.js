@@ -8,8 +8,7 @@ import { escapeHTML, sanitizeUrl } from '../utils/sanitize.js';
 import { 
   ASSET_BIAS_CONFIG, 
   CATALYST_STATUS_CONFIG, 
-  BRIEFING_SESSIONS_CONFIG, 
-  BRIEFING_SESSIONS 
+  getCurrentMarketSession
 } from '../config/constants.js';
 
 const ASSET_LABELS = {
@@ -44,20 +43,15 @@ function formatToUserLocalTime(utcTimeStr) {
 }
 
 /**
- * Renderiza la tarjeta visual completa del Daily Macro Briefing con ciclo de vida de catalizadores.
+ * Renderiza la tarjeta visual completa del Daily Macro Briefing con ciclo de vida de catalizadores y sesión activa dinámica.
  * @param {Object} briefing
  * @returns {string} HTML sanitizado
  */
 export function renderBriefingCard(briefing) {
   if (!briefing) return '';
 
-  const sessionId = briefing.session_id || BRIEFING_SESSIONS.LONDON_PRE;
-  const sessionConfig = BRIEFING_SESSIONS_CONFIG[sessionId] || BRIEFING_SESSIONS_CONFIG[BRIEFING_SESSIONS.LONDON_PRE];
-  
-  // Calcular hora local de la sesión para el usuario
-  const sessionUtcTime = (sessionId === BRIEFING_SESSIONS.LONDON_PRE) ? '06:00' : '12:30';
-  const sessionLocalTime = formatToUserLocalTime(sessionUtcTime);
-  const sessionLabel = (sessionId === BRIEFING_SESSIONS.LONDON_PRE) ? `Pre-Londres · ${sessionLocalTime}` : `Pre-Nueva York · ${sessionLocalTime}`;
+  // Determinar sesión activa en tiempo real según el reloj universal UTC
+  const currentSession = getCurrentMarketSession();
 
   const sentiment = briefing.macro_sentiment || { score: 60, label: 'RISK_ON', risk_appetite: 'BULLISH' };
   const sentimentScore = Math.min(Math.max(sentiment.score || 50, 0), 100);
@@ -66,8 +60,8 @@ export function renderBriefingCard(briefing) {
 
   const assetBias = briefing.asset_bias || {};
   const catalysts = Array.isArray(briefing.catalysts) ? briefing.catalysts : [];
-  const imageUrl = sanitizeUrl(briefing.image_url || sessionConfig.defaultCover);
-  const briefingTitle = briefing.title || sessionConfig.defaultTitle;
+  const imageUrl = sanitizeUrl(briefing.image_url || currentSession.cover);
+  const briefingTitle = briefing.title || currentSession.title;
 
   // Generar Chips de Radar desde constants.js
   const radarChipsHtml = Object.entries(assetBias).map(([asset, bias]) => {
@@ -124,8 +118,8 @@ export function renderBriefingCard(briefing) {
         <div class="briefing-cover-overlay"></div>
         <div class="briefing-cover-content">
           <div class="briefing-badges-row">
-            <span class="briefing-pill ${escapeHTML(sessionConfig.pillClass)}">${escapeHTML(sessionLabel)}</span>
-            <span class="briefing-pill impact-high-pill">🔴 SESIÓN CLAVE</span>
+            <span class="briefing-pill ${escapeHTML(currentSession.pillClass)}">${escapeHTML(currentSession.label)}</span>
+            <span class="briefing-pill impact-high-pill">${escapeHTML(currentSession.statusTag)}</span>
             <time class="briefing-date">${escapeHTML(briefing.date || '')}</time>
           </div>
           <h3 class="briefing-main-title">${escapeHTML(briefingTitle)}</h3>

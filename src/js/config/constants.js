@@ -165,6 +165,91 @@ export const BRIEFING_SESSIONS_CONFIG = {
 };
 
 /**
+ * Dynamic Universal Market Sessions
+ */
+export const MARKET_SESSIONS = {
+  PRE_LONDON: 'PRE_LONDON',
+  LONDON_LIVE: 'LONDON_LIVE',
+  PRE_NY: 'PRE_NY',
+  NY_LIVE: 'NY_LIVE',
+  NY_CLOSE: 'NY_CLOSE',
+  ASIA_PACIFIC: 'ASIA_PACIFIC',
+};
+
+export const MARKET_SESSIONS_CONFIG = {
+  [MARKET_SESSIONS.PRE_LONDON]: {
+    label: 'PRE-LONDRES',
+    statusTag: '🟡 PREPARACIÓN',
+    pillClass: 'session-pre-london',
+    cover: 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop',
+    title: 'Sesión Europea: Preparación Killzones y Liquidez de Londres'
+  },
+  [MARKET_SESSIONS.LONDON_LIVE]: {
+    label: 'SESIÓN LONDRES ACTIVA',
+    statusTag: '🟢 EN VIVO',
+    pillClass: 'session-london-live',
+    cover: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop',
+    title: 'Sesión Europea: Flujo Interbancario y Cruces GBP/EUR'
+  },
+  [MARKET_SESSIONS.PRE_NY]: {
+    label: 'PRE-NUEVA YORK',
+    statusTag: '🟡 AJUSTE MACRO',
+    pillClass: 'session-pre-ny',
+    cover: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop',
+    title: 'Sesión Americana: Reacción a Catalizadores Macro y Datos de EE.UU.'
+  },
+  [MARKET_SESSIONS.NY_LIVE]: {
+    label: 'SESIÓN WALL STREET (NY)',
+    statusTag: '🟢 EN VIVO',
+    pillClass: 'session-ny-live',
+    cover: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop',
+    title: 'Sesión Americana: Apertura Wall Street y Flujo Institucional'
+  },
+  [MARKET_SESSIONS.NY_CLOSE]: {
+    label: 'CIERRE WALL STREET',
+    statusTag: '⚪ POST-MERCADO',
+    pillClass: 'session-ny-close',
+    cover: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop',
+    title: 'Cierre Americano: Balance Institucional y Flujo de Derivados'
+  },
+  [MARKET_SESSIONS.ASIA_PACIFIC]: {
+    label: 'SESIÓN ASIA-PACÍFICO',
+    statusTag: '🔵 TOKIO & SÍDNEY',
+    pillClass: 'session-asia',
+    cover: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop',
+    title: 'Sesión Asiática: Rangos de Consolidación y Flujo del Banco de Japón'
+  }
+};
+
+/**
+ * Resuelve la sesión activa según el reloj UTC en tiempo real.
+ * @param {Date} [now]
+ * @returns {Object} Configuración de la sesión activa
+ */
+export function getCurrentMarketSession(now = new Date()) {
+  const utcHours = now.getUTCHours();
+  const utcMinutes = now.getUTCMinutes();
+  const timeVal = utcHours * 60 + utcMinutes;
+
+  if (timeVal >= 360 && timeVal < 480) {
+    return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.PRE_LONDON];
+  }
+  if (timeVal >= 480 && timeVal < 750) {
+    return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.LONDON_LIVE];
+  }
+  if (timeVal >= 750 && timeVal < 810) {
+    return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.PRE_NY];
+  }
+  if (timeVal >= 810 && timeVal < 1200) {
+    return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.NY_LIVE];
+  }
+  if (timeVal >= 1200 && timeVal < 1260) {
+    return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.NY_CLOSE];
+  }
+  return MARKET_SESSIONS_CONFIG[MARKET_SESSIONS.ASIA_PACIFIC];
+}
+
+/**
  * News Categories & Tactical Tags
  */
 export const NEWS_CATEGORIES = {
@@ -175,4 +260,5 @@ export const NEWS_CATEGORIES = {
   FED: { id: 'FED', label: 'Centrales', tagClass: 'tag-fed' },
   MACRO: { id: 'MACRO', label: 'Macro', tagClass: 'tag-macro' },
 };
+
 
