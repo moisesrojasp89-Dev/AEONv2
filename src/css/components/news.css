@@ -610,50 +610,31 @@
   margin: 0;
 }
 
-/* AEON Intelligence Box en Noticias */
-.news-intelligence-box {
-  margin-top: 0.6rem;
-  padding: 0.65rem 0.85rem;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(234, 179, 8, 0.04) 100%);
-  border: 1px solid rgba(14, 165, 233, 0.22);
-  border-left: 3px solid var(--accent, #eab308);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.intel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.intel-badge {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: var(--accent, #eab308);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.intel-type {
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #38bdf8;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: rgba(56, 189, 248, 0.1);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-}
-
-.intel-text {
+/* Línea de Inteligencia AEON Integrada (Minimalista y Elegante) */
+.news-insight-line {
+  margin-top: 0.5rem;
   font-size: 0.82rem;
   line-height: 1.45;
+  color: #f1f5f9;
+  background: rgba(234, 179, 8, 0.05);
+  border-left: 2px solid var(--accent, #eab308);
+  padding: 0.35rem 0.65rem;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.insight-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--accent, #eab308);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.insight-text {
   color: #e2e8f0;
-  margin: 0;
   font-weight: 500;
 }
 

@@ -1,15 +1,37 @@
 /* ============================================================
-   AEON · templates/news.js — Institutional News & Intelligence Card
+   AEON · templates/news.js — Clean Terminal News Template
    Gobernanza: Renderizado Seguro, Cero Hardcoding y Semántica Accesible
    ============================================================ */
 
 import { escapeHTML, sanitizeUrl } from '../utils/sanitize.js';
 
+function formatLocalNewsTime(createdStr, fallbackTime) {
+  if (createdStr) {
+    try {
+      const d = new Date(createdStr);
+      if (!isNaN(d.getTime())) {
+        const diffMs = Date.now() - d.getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins < 1) return 'Ahora';
+        if (diffMins < 60) return `Hace ${diffMins}m`;
+        const diffHours = Math.floor(diffMins / 60);
+        if (diffHours < 24) return `Hace ${diffHours}h`;
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch {}
+  }
+  if (fallbackTime) {
+    // Limpiar 'UTC' y mostrar sólo hora o texto
+    return fallbackTime.replace(/\s*UTC/gi, '').trim();
+  }
+  return 'Reciente';
+}
+
 export const newsCard = (n) => {
   const tag = escapeHTML(n.tag || 'MACRO');
   const tagClass = escapeHTML(n.tag_class || n.tagClass || '');
   const title = escapeHTML(n.title || '');
-  const time = escapeHTML(n.time || 'Reciente');
+  const time = escapeHTML(formatLocalNewsTime(n.created_at, n.time));
   const link = sanitizeUrl(n.link || n.url || '#');
 
   let rawDesc = String(n.desc || n.summary || '');
@@ -36,17 +58,15 @@ export const newsCard = (n) => {
         </h3>
         <p class="news-summary">${summary}</p>
         ${escapedImpact ? `
-          <div class="news-intelligence-box" aria-label="AEON Intelligence">
-            <div class="intel-header">
-              <span class="intel-badge">◆ AEON INTELLIGENCE</span>
-              <span class="intel-type">ANÁLISIS INSTITUCIONAL</span>
-            </div>
-            <p class="intel-text">${escapedImpact}</p>
-          </div>
+          <p class="news-insight-line">
+            <span class="insight-label">◆ AEON:</span>
+            <span class="insight-text">${escapedImpact}</span>
+          </p>
         ` : ''}
       </div>
     </article>
   `;
 };
+
 
 
