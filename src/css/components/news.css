@@ -449,12 +449,12 @@
 
 .briefing-catalyst-item {
   display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.55rem 0.85rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.85rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.82rem;
   transition: border-color 0.2s ease;
 }
@@ -465,34 +465,63 @@
 }
 
 .briefing-catalyst-item.status-digested {
-  opacity: 0.65;
+  opacity: 0.7;
+}
+
+.catalyst-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.catalyst-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.catalyst-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.catalyst-title-row {
+  width: 100%;
 }
 
 .catalyst-time {
   font-weight: 700;
   color: #38bdf8;
-  min-width: 65px;
+  font-size: 0.78rem;
 }
 
 .catalyst-currency {
   font-weight: 700;
   background: rgba(255, 255, 255, 0.08);
-  padding: 0.15rem 0.4rem;
+  padding: 0.12rem 0.4rem;
   border-radius: 4px;
+  font-size: 0.72rem;
 }
 
 .catalyst-title {
-  flex: 1;
+  font-size: 0.84rem;
+  font-weight: 600;
   color: var(--text, #e2e8f0);
+  margin: 0;
+  line-height: 1.35;
 }
 
 .catalyst-actual-box {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   background: rgba(61, 214, 140, 0.12);
   border: 1px solid rgba(61, 214, 140, 0.25);
-  padding: 0.15rem 0.5rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 4px;
   font-size: 0.72rem;
 }
@@ -581,30 +610,51 @@
   margin: 0;
 }
 
-/* Lectura Táctica AEON en el Feed de Noticias */
-.news-tactical-reading {
-  margin-top: 0.45rem;
-  padding: 0.45rem 0.75rem;
-  background: rgba(14, 165, 233, 0.06);
-  border-left: 2px solid var(--accent);
-  border-radius: 0 4px 4px 0;
+/* AEON Intelligence Box en Noticias */
+.news-intelligence-box {
+  margin-top: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(234, 179, 8, 0.04) 100%);
+  border: 1px solid rgba(14, 165, 233, 0.22);
+  border-left: 3px solid var(--accent, #eab308);
+  border-radius: 6px;
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.intel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
-.tactical-badge {
+.intel-badge {
   font-size: 0.68rem;
   font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
+  color: var(--accent, #eab308);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.tactical-text {
-  font-size: 0.8rem;
+.intel-type {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.intel-text {
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: #e2e8f0;
-  line-height: 1.4;
+  margin: 0;
+  font-weight: 500;
 }
 
 .news-link {
@@ -616,7 +666,6 @@
 .news-link:hover {
   color: var(--accent);
 }
-
 
 /* ============================================================
    Optimización Móvil Elegante y Compacta
@@ -653,80 +702,60 @@
     font-size: 0.72rem;
   }
 
-  /* Catalizadores: Filas Horizontales Ultra-Compactas (Sin tarjetas gigantes) */
+  /* Catalizadores en Móvil */
   .briefing-catalysts-list {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.4rem;
   }
 
   .briefing-catalyst-item {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.45rem 0.65rem;
-    font-size: 0.74rem;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .catalyst-time {
-    font-size: 0.72rem;
-    min-width: 54px;
-    color: #38bdf8;
-  }
-
-  .catalyst-currency {
-    font-size: 0.68rem;
-    padding: 0.1rem 0.3rem;
+    padding: 0.6rem 0.75rem;
+    gap: 0.3rem;
   }
 
   .catalyst-title {
-    font-size: 0.74rem;
-    line-height: 1.25;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .catalyst-badge {
-    font-size: 0.64rem;
-    padding: 0.1rem 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
   }
 
   /* Tesis Macroeconómica Compacta */
   .briefing-thesis-box {
-    padding: 0.75rem 0.9rem;
+    padding: 0.85rem 1rem;
   }
 
   .thesis-text {
-    font-size: 0.8rem;
-    line-height: 1.4;
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
-  /* Panel de Noticias: Flujo Natural Limpio (Sin doble scroll vertical molesto) */
+  /* Panel de Noticias: Flujo Natural Limpio */
   .news-list {
     max-height: none;
     overflow: visible;
   }
 
   .news-row {
-    padding: 0.85rem 1rem;
-    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    gap: 0.65rem;
+    background: rgba(15, 23, 42, 0.45);
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .news-title {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     line-height: 1.35;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem;
   }
 
   .news-summary {
-    font-size: 0.78rem;
-    line-height: 1.4;
+    font-size: 0.8rem;
+    line-height: 1.45;
     color: var(--text-muted, #94a3b8);
   }
 }
+
 
 

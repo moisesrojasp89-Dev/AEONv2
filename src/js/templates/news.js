@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · templates/news.js — Real-Time Tactical News Template
+   AEON · templates/news.js — Institutional News & Intelligence Card
    Gobernanza: Renderizado Seguro, Cero Hardcoding y Semántica Accesible
    ============================================================ */
 
@@ -36,13 +36,17 @@ export const newsCard = (n) => {
         </h3>
         <p class="news-summary">${summary}</p>
         ${escapedImpact ? `
-          <div class="news-tactical-reading" aria-label="Lectura Táctica AEON">
-            <span class="tactical-badge">⚡ IMPACTO AEON:</span>
-            <span class="tactical-text">${escapedImpact}</span>
+          <div class="news-intelligence-box" aria-label="AEON Intelligence">
+            <div class="intel-header">
+              <span class="intel-badge">◆ AEON INTELLIGENCE</span>
+              <span class="intel-type">ANÁLISIS INSTITUCIONAL</span>
+            </div>
+            <p class="intel-text">${escapedImpact}</p>
           </div>
         ` : ''}
       </div>
     </article>
   `;
 };
+
 

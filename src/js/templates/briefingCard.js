@@ -101,12 +101,20 @@ export function renderBriefingCard(briefing) {
 
     return `
       <div class="briefing-catalyst-item ${escapeHTML(statusCfg.badgeClass)}">
-        <span class="catalyst-time" title="Hora local">${escapeHTML(localTime)}</span>
-        <span class="catalyst-currency">${escapeHTML(c.currency || 'ALL')}</span>
-        <span class="catalyst-title">${escapeHTML(c.title || '')}</span>
-        ${dataPillHtml}
-        <span class="catalyst-badge ${escapeHTML(impactClass)}">${escapeHTML(c.impact || 'MED')}</span>
-        <span class="catalyst-status-pill ${escapeHTML(statusCfg.badgeClass)}">${escapeHTML(statusCfg.badgeLabel)}</span>
+        <div class="catalyst-header-row">
+          <div class="catalyst-meta-left">
+            <span class="catalyst-time" title="Hora local">${escapeHTML(localTime)}</span>
+            <span class="catalyst-currency">${escapeHTML(c.currency || 'USD')}</span>
+          </div>
+          <div class="catalyst-meta-right">
+            ${dataPillHtml}
+            <span class="catalyst-badge ${escapeHTML(impactClass)}">${escapeHTML(c.impact || 'MED')}</span>
+            <span class="catalyst-status-pill ${escapeHTML(statusCfg.badgeClass)}">${escapeHTML(statusCfg.badgeLabel)}</span>
+          </div>
+        </div>
+        <div class="catalyst-title-row">
+          <p class="catalyst-title">${escapeHTML(c.title || '')}</p>
+        </div>
       </div>
     `;
   }).join('');
