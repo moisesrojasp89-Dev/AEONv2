@@ -11,6 +11,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        mercados: resolve(__dirname, 'mercados.html'),
         calendario: resolve(__dirname, 'calendario.html'),
         login: resolve(__dirname, 'login.html'),
         registro: resolve(__dirname, 'registro.html'),

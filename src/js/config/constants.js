@@ -13,6 +13,8 @@ export const DB_TABLES = {
   PROFILES: 'profiles',
   NEWS: 'news',
   DAILY_BRIEFINGS: 'daily_briefings',
+  MARKET_INTELLIGENCE: 'market_intelligence',
+  MARKET_INTELLIGENCE_HISTORY: 'market_intelligence_history',
 };
 
 /**

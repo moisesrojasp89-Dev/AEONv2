@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminal de Mercados Globales | AEON</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/src/css/variables.css" />
+  <link rel="stylesheet" href="/src/css/reset.css" />
+  <link rel="stylesheet" href="/src/css/layout.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/components/buttons.css" />
+  <link rel="stylesheet" href="/src/css/components/navbar.css" />
+  <link rel="stylesheet" href="/src/css/components/market.css" />
+  <link rel="stylesheet" href="/src/css/components/footer.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
+  
+  <style>
+    body {
+      background-color: #070b12;
+      color: #E4E4E7;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 10% 40%, rgba(14, 165, 233, 0.08), transparent 30%),
+                  radial-gradient(circle at 90% 20%, rgba(139, 92, 246, 0.08), transparent 30%),
+                  radial-gradient(circle at 50% 80%, rgba(61, 214, 140, 0.04), transparent 35%);
+      z-index: -1;
+    }
+    .main-content {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-mesh"></div>
+
+  <!-- Header & Navbar Global -->
+  <header class="header" role="banner">
+    <nav class="navbar container" aria-label="Navegación principal">
+      <a href="/index.html" class="logo" aria-label="AEON inicio">
+        <img src="/AEON.png" alt="AEON" class="logo-img" />
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="/index.html#briefing">Briefing</a></li>
+        <li><a href="/mercados.html" class="nav-link active" style="color: var(--accent); font-weight: 700;">Mercados</a></li>
+        <li><a href="/index.html#senales" class="nav-link">Señales</a></li>
+        <li><a href="/calendario.html" class="nav-link">Calendario</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Vistas para visitantes (no logueados) -->
+        <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
+          <a href="/login.html" class="nav-btn btn-ghost">Iniciar Sesión</a>
+          <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
+        </div>
+        
+        <!-- Vistas para usuarios logueados -->
+        <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
+          <a href="/perfil.html" class="nav-btn btn-ghost">Mi Perfil</a>
+          <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none; cursor: pointer;">Cerrar Sesión</button>
+        </div>
+      </div>
+      <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content: Terminal de Mercados -->
+  <main class="main-content">
+    <div class="markets-page-container">
+      
+      <!-- Hero de Sección -->
+      <section class="markets-hero-header">
+        <div class="markets-hero-badge font-mono">
+          <span>●</span> 14 ACTIVOS GLOBALES EN VIVO
+        </div>
+        <h1 class="markets-hero-title">Terminal de Inteligencia de Mercados</h1>
+        <p class="markets-hero-subtitle">
+          Análisis cuantitativo institucional en tiempo real: Volume Profile dPOC, Session VWAP, niveles de soporte/resistencia y síntesis macroeconómica generada con IA.
+        </p>
+      </section>
+
+      <!-- Barra de Filtros y Controles -->
+      <div class="markets-controls-bar">
+        <div class="market-filters-pills">
+          <button class="market-filter-pill active" data-category="ALL">Todos (14)</button>
+          <button class="market-filter-pill" data-category="INDICES">⚡ Índices (4)</button>
+          <button class="market-filter-pill" data-category="METALS">🪙 Metales (1)</button>
+          <button class="market-filter-pill" data-category="CRYPTO">₿ Cripto (1)</button>
+          <button class="market-filter-pill" data-category="FOREX">💶 Divisas & DXY (8)</button>
+        </div>
+
+        <div class="market-search-box">
+          <span class="market-search-icon">🔍</span>
+          <input type="text" id="market-search-input" placeholder="Buscar activo, ticker o tag..." />
+        </div>
+      </div>
+
+      <!-- Grid de Activos -->
+      <div id="markets-grid" class="markets-grid-layout">
+        <!-- Renderizado dinámico vía src/js/markets.js -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast flotante de actualización en vivo -->
+  <div id="market-live-toast" class="market-live-toast font-mono"></div>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo" style="margin-top: auto; border-top: 1px solid var(--border); padding: 2rem 0;">
+    <div class="container footer-bottom" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p class="footer-copy font-mono" style="font-size: 0.8rem; color: var(--muted-2);">© 2026 AEON Intelligence Platform. Todos los derechos reservados.</p>
+      <div class="footer-legal-links" style="display: flex; gap: 1.5rem; font-size: 0.8rem;">
+        <a href="/aviso-legal.html" style="color: var(--muted);">Aviso Legal</a>
+        <a href="/privacidad.html" style="color: var(--muted);">Privacidad</a>
+        <a href="/cookies.html" style="color: var(--muted);">Cookies</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="/src/js/markets.js"></script>
+  <script>
+    function toggleMobileMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      if (navLinks) {
+        navLinks.classList.toggle('active');
+      }
+    }
+  </script>
+</body>
+</html>

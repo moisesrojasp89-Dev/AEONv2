@@ -25,6 +25,16 @@ import {
 } from './render.js';
 import data from '../data/markets.json';
 
+// Redirección de ancla #mercados a la página dedicada /mercados.html
+if (window.location.hash === '#mercados') {
+  window.location.href = '/mercados.html';
+}
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === '#mercados') {
+    window.location.href = '/mercados.html';
+  }
+});
+
 // Detectar si el usuario llega con enlace de recuperación de contraseña
 supabase.auth.onAuthStateChange((event) => {
   if (event === 'PASSWORD_RECOVERY') {
