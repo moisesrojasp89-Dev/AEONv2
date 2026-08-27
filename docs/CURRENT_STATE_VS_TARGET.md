@@ -4,6 +4,7 @@
 **Última Actualización:** 26 de Agosto de 2026 (Fases 0 a 5 Completadas e Implementadas — AEON Real Intelligence v2.0 Activo)  
 **Documentos de Consulta:**  
 - 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo  
+- 🛡️ [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) — Estándares Oficiales de Ingeniería e Infraestructura  
 - 📐 [`docs/CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) — Estándares y Convenciones del Código  
 - 🗄️ [`docs/archive/`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/archive/) — Histórico de Auditorías y Especificaciones  
 

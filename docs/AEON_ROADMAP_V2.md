@@ -5,6 +5,7 @@
 **Versión:** 2.1 (Fases 0 a 5 Verificadas y Completadas en Producción)  
 **Fecha de Actualización:** 26 de Agosto de 2026  
 **Documentos de Referencia:**  
+- [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md)  
 - [`docs/CURRENT_STATE_VS_TARGET.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CURRENT_STATE_VS_TARGET.md)  
 - [`docs/CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md)  
 - [`docs/archive/AEON_SECURITY_AUDIT.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/archive/AEON_SECURITY_AUDIT.md)  
