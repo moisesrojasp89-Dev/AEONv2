@@ -5,6 +5,7 @@
 
 import { marketsService } from './services/marketsService.js';
 import { renderMarketCard } from './templates/marketCard.js';
+import { checkSession } from './auth.js';
 
 let allMarkets = [];
 let currentCategory = 'ALL';
@@ -89,7 +90,14 @@ async function initMarketsPage() {
     `;
   }
 
-  // 1. Cargar datos iniciales
+  // 1. Resolver sesión de usuario en navbar
+  try {
+    await checkSession();
+  } catch (err) {
+    console.error('[AEON Markets] Error al resolver sesión:', err);
+  }
+
+  // 2. Cargar datos iniciales
   allMarkets = await marketsService.getMarketIntelligence();
   renderMarkets();
 

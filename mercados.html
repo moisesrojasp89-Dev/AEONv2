@@ -24,9 +24,9 @@
   
   <style>
     body {
-      background-color: #06090e;
-      color: #F8FAFC;
-      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
       margin: 0;
       padding: 0;
       min-height: 100vh;
@@ -37,12 +37,12 @@
       position: fixed;
       inset: 0;
       background: 
-        radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.16) 0%, transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(139, 92, 246, 0.14) 0%, transparent 45%),
-        radial-gradient(circle at 50% 65%, rgba(61, 214, 140, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 20% 85%, rgba(14, 165, 233, 0.10) 0%, transparent 40%),
-        #06090e;
+        radial-gradient(circle at 15% 25%, rgba(14, 165, 233, 0.08) 0%, transparent 35%),
+        radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 35%),
+        radial-gradient(circle at 50% 75%, rgba(34, 197, 94, 0.04) 0%, transparent 40%),
+        var(--bg);
       z-index: -1;
+      pointer-events: none;
     }
     .main-content {
       flex: 1;
@@ -51,7 +51,7 @@
 </head>
 <body>
 
-  <div class="bg-mesh"></div>
+  <div class="bg-mesh" aria-hidden="true"></div>
 
   <!-- Header & Navbar Global -->
   <header class="header" role="banner">
@@ -69,17 +69,17 @@
       <div class="nav-actions">
         <!-- Vistas para visitantes (no logueados) -->
         <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
-          <a href="/login.html" class="nav-btn btn-ghost">Iniciar Sesión</a>
+          <a href="/login.html" class="nav-btn btn-nav-ghost">Iniciar Sesión</a>
           <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
         </div>
         
         <!-- Vistas para usuarios logueados -->
         <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
-          <a href="/perfil.html" class="nav-btn btn-ghost">Mi Perfil</a>
+          <a href="/perfil.html" class="nav-btn btn-nav-ghost">Mi Perfil</a>
           <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none; cursor: pointer;">Cerrar Sesión</button>
         </div>
       </div>
-      <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMobileMenu()">
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-drawer" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
       </button>
     </nav>
@@ -89,14 +89,14 @@
   <main class="main-content">
     <div class="markets-page-container">
       
-      <!-- Hero de Sección -->
+      <!-- Hero de Sección Compacto y Elegante -->
       <section class="markets-hero-header">
-        <div class="markets-hero-badge font-mono">
-          <span>●</span> 14 ACTIVOS GLOBALES EN VIVO
+        <div class="markets-hero-meta">
+          <h1 class="markets-hero-title">Mercados Globales</h1>
+          <span class="markets-hero-pill font-mono"><span class="pulse-dot"></span> 14 Activos en Vivo</span>
         </div>
-        <h1 class="markets-hero-title">Terminal de Inteligencia de Mercados</h1>
         <p class="markets-hero-subtitle">
-          Análisis cuantitativo institucional en tiempo real: Volume Profile dPOC, Session VWAP, niveles de soporte/resistencia y síntesis macroeconómica generada con IA.
+          Análisis cuantitativo institucional: Volume Profile (dPOC), Session VWAP, niveles microestructurales y tesis macro de IA.
         </p>
       </section>
 
@@ -127,6 +127,39 @@
   <!-- Toast flotante de actualización en vivo -->
   <div id="market-live-toast" class="market-live-toast font-mono"></div>
 
+  <!-- Mobile Menu Drawer Unificado -->
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación móvil">
+    <div class="drawer-header">
+      <img src="/AEON.png" alt="AEON" class="logo-img" style="height: 28px;" />
+      <button class="drawer-close" onclick="toggleMobileMenu()">✕</button>
+    </div>
+    <div class="drawer-content">
+      <div class="drawer-section">
+        <p class="drawer-label">Plataforma</p>
+        <a href="/index.html#briefing" class="mobile-link" onclick="toggleMobileMenu()"><span>📡</span> <span>Radar & Briefing</span></a>
+        <a href="/mercados.html" class="mobile-link active" onclick="toggleMobileMenu()" style="color: var(--accent); font-weight: 700;"><span>📊</span> <span>Mercados en Vivo</span></a>
+        <a href="/index.html#senales" class="mobile-link" onclick="toggleMobileMenu()"><span>🎯</span> <span>Señales Institucionales</span></a>
+        <a href="/calendario.html" class="mobile-link" onclick="toggleMobileMenu()"><span>📅</span> <span>Calendario Económico</span></a>
+        <a href="/index.html#educacion" class="mobile-link" onclick="toggleMobileMenu()"><span>📚</span> <span>Academia & Macro</span></a>
+      </div>
+      
+      <div class="drawer-section" id="mobile-nav-guest">
+        <p class="drawer-label">Cuenta</p>
+        <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()"><span>🔑</span> <span>Iniciar Sesión</span></a>
+      </div>
+      
+      <div class="drawer-section" id="mobile-nav-user" style="display: none;">
+        <p class="drawer-label">Mi Cuenta</p>
+        <a href="/perfil.html" class="mobile-link" onclick="toggleMobileMenu()"><span>👤</span> <span>Mi Perfil</span></a>
+        <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()"><span>🚪</span> <span>Cerrar Sesión</span></button>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <a href="/registro.html" class="mobile-cta">Desbloquear Acceso Pro ✦</a>
+    </div>
+  </aside>
+
   <!-- Footer -->
   <footer class="footer" role="contentinfo" style="margin-top: auto; border-top: 1px solid var(--border); padding: 2rem 0;">
     <div class="container footer-bottom" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
@@ -143,9 +176,12 @@
   <script type="module" src="/src/js/markets.js"></script>
   <script>
     function toggleMobileMenu() {
-      const navLinks = document.querySelector('.nav-links');
-      if (navLinks) {
-        navLinks.classList.toggle('active');
+      document.body.classList.toggle('no-scroll');
+      const overlay = document.querySelector('.mobile-overlay');
+      const drawer = document.querySelector('.mobile-drawer');
+      if (overlay && drawer) {
+        overlay.classList.toggle('active');
+        drawer.classList.toggle('active');
       }
     }
   </script>

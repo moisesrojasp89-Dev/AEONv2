@@ -44,6 +44,7 @@ from typing import Dict, List, Optional, Any
 @dataclasses.dataclass
 class AssetConfig:
     symbol: str
+    oanda_symbol: Optional[str]
     yahoo_symbol: str
     category: str
     display_name: str
@@ -53,26 +54,26 @@ class AssetConfig:
 
 ASSET_UNIVERSE: Dict[str, AssetConfig] = {
     # ── 1. ÍNDICES GLOBALES (4) ──
-    "SPX500": AssetConfig("SPX500", "^GSPC", "INDICES", "S&P 500", "US", 2),
-    "NAS100": AssetConfig("NAS100", "NQ=F", "INDICES", "Nasdaq 100", "US", 2),
-    "US30":   AssetConfig("US30", "^DJI", "INDICES", "Dow Jones 30", "US", 2),
-    "JP225":  AssetConfig("JP225", "^N225", "INDICES", "Nikkei 225", "ASIA", 2),
+    "SPX500": AssetConfig("SPX500", "SPX500_USD", "^GSPC", "INDICES", "S&P 500", "US", 2),
+    "NAS100": AssetConfig("NAS100", "NAS100_USD", "NQ=F", "INDICES", "Nasdaq 100", "US", 2),
+    "US30":   AssetConfig("US30", "US30_USD", "^DJI", "INDICES", "Dow Jones 30", "US", 2),
+    "JP225":  AssetConfig("JP225", "JP225_USD", "^N225", "INDICES", "Nikkei 225", "ASIA", 2),
 
     # ── 2. METALES / COMMODITIES (1) ──
-    "XAUUSD": AssetConfig("XAUUSD", "GC=F", "METALS", "Oro al Contado", "GLOBAL", 2),
+    "XAUUSD": AssetConfig("XAUUSD", "XAU_USD", "GC=F", "METALS", "Oro al Contado", "GLOBAL", 2),
 
     # ── 3. CRIPTOACTIVOS (1) ──
-    "BTCUSD": AssetConfig("BTCUSD", "BTC-USD", "CRYPTO", "Bitcoin", "GLOBAL", 2),
+    "BTCUSD": AssetConfig("BTCUSD", None, "BTC-USD", "CRYPTO", "Bitcoin", "GLOBAL", 2),
 
     # ── 4. DIVISAS MAYORES & DXY (8) ──
-    "DXY":    AssetConfig("DXY", "DX-Y.NYB", "FOREX", "Dólar Index (DXY)", "US", 3),
-    "EURUSD": AssetConfig("EURUSD", "EURUSD=X", "FOREX", "Euro / Dólar", "EUROPE", 5),
-    "USDJPY": AssetConfig("USDJPY", "JPY=X", "FOREX", "Dólar / Yen Japonés", "ASIA", 3),
-    "GBPUSD": AssetConfig("GBPUSD", "GBPUSD=X", "FOREX", "Libra / Dólar", "EUROPE", 5),
-    "USDCAD": AssetConfig("USDCAD", "CAD=X", "FOREX", "Dólar / Dólar Canadiense", "US", 5),
-    "AUDUSD": AssetConfig("AUDUSD", "AUDUSD=X", "FOREX", "Dólar Australiano / Dólar", "ASIA", 5),
-    "NZDUSD": AssetConfig("NZDUSD", "NZDUSD=X", "FOREX", "Dólar Neozelandés / Dólar", "ASIA", 5),
-    "USDCHF": AssetConfig("USDCHF", "CHF=X", "FOREX", "Dólar / Franco Suizo", "EUROPE", 5),
+    "DXY":    AssetConfig("DXY", None, "DX-Y.NYB", "FOREX", "Dólar Index (DXY)", "US", 3),
+    "EURUSD": AssetConfig("EURUSD", "EUR_USD", "EURUSD=X", "FOREX", "Euro / Dólar", "EUROPE", 5),
+    "USDJPY": AssetConfig("USDJPY", "USD_JPY", "JPY=X", "FOREX", "Dólar / Yen Japonés", "ASIA", 3),
+    "GBPUSD": AssetConfig("GBPUSD", "GBP_USD", "GBPUSD=X", "FOREX", "Libra / Dólar", "EUROPE", 5),
+    "USDCAD": AssetConfig("USDCAD", "USD_CAD", "CAD=X", "FOREX", "Dólar / Dólar Canadiense", "US", 5),
+    "AUDUSD": AssetConfig("AUDUSD", "AUD_USD", "AUDUSD=X", "FOREX", "Dólar Australiano / Dólar", "ASIA", 5),
+    "NZDUSD": AssetConfig("NZDUSD", "NZD_USD", "NZDUSD=X", "FOREX", "Dólar Neozelandés / Dólar", "ASIA", 5),
+    "USDCHF": AssetConfig("USDCHF", "USD_CHF", "CHF=X", "FOREX", "Dólar / Franco Suizo", "EUROPE", 5),
 }
 
 
@@ -82,6 +83,40 @@ ASSET_UNIVERSE: Dict[str, AssetConfig] = {
 
 class MarketDataIngestor:
     """Ingesta de datos con reintentos y tolerancia a fallos."""
+    OANDA_TOKEN = "48dc4be15b7ed823417264b394f24aa5-1a21bab84499c78af5329491aba2a2af"
+
+    @staticmethod
+    def fetch_oanda_candles(instrument: str, count: int = 40) -> Optional[pd.DataFrame]:
+        """Ingesta primaria directa desde OANDA v20 API de grado broker."""
+        url = f"https://api-fxpractice.oanda.com/v3/instruments/{instrument}/candles?count={count}&granularity=H1&price=M"
+        req = urllib.request.Request(url, headers={
+            "Authorization": f"Bearer {MarketDataIngestor.OANDA_TOKEN}",
+            "Content-Type": "application/json"
+        })
+        try:
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                data = json.loads(resp.read().decode())
+                candles = data.get("candles", [])
+                if not candles:
+                    return None
+                records = []
+                for c in candles:
+                    ts_str = c["time"].split(".")[0].replace("Z", "")
+                    ts = datetime.datetime.fromisoformat(ts_str).replace(tzinfo=datetime.timezone.utc)
+                    mid = c["mid"]
+                    records.append({
+                        "timestamp": ts,
+                        "open": float(mid["o"]),
+                        "high": float(mid["h"]),
+                        "low": float(mid["l"]),
+                        "close": float(mid["c"]),
+                        "volume": max(100.0, float(c.get("volume", 100)))
+                    })
+                df = pd.DataFrame(records)
+                if len(df) >= 10:
+                    return df
+        except Exception:
+            return None
 
     @staticmethod
     def fetch_yahoo_series(symbol: str, interval: str = "1h", range_str: str = "5d", max_retries: int = 2) -> Optional[pd.DataFrame]:
@@ -364,15 +399,22 @@ def run_markets_sync_cycle() -> List[Dict[str, Any]]:
     for symbol, cfg in ASSET_UNIVERSE.items():
         print(f"\n[Sincronizando {symbol}] {cfg.display_name} ({cfg.category})...")
         
-        # 1. Ingesta primaria con fuentes especializadas
+        # 1. Ingesta primaria institucional (OANDA v20 / Binance Spot)
         df = None
-        if symbol == "BTCUSD":
+        if cfg.oanda_symbol:
+            df = ingestor.fetch_oanda_candles(cfg.oanda_symbol)
+            if df is not None:
+                print(f"  [Fuente: OANDA v20 Live Feed ({cfg.oanda_symbol})]")
+                
+        if df is None and symbol == "BTCUSD":
             df = ingestor.fetch_binance_btc()
-        elif symbol == "XAUUSD":
-            df = ingestor.fetch_gold_series()
+            if df is not None:
+                print(f"  [Fuente: Binance Spot API (BTCUSDT)]")
             
         if df is None:
             df = ingestor.fetch_yahoo_series(cfg.yahoo_symbol)
+            if df is not None:
+                print(f"  [Fuente: Yahoo Finance Fallback ({cfg.yahoo_symbol})]")
             
         if df is None:
             print(f"  ⚠️ Advertencia: No se pudo obtener feed para {symbol}. Generando snapshot calibrado.")

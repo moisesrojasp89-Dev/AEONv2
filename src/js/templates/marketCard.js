@@ -6,13 +6,11 @@
 
 import { escapeHTML } from '../utils/sanitize.js';
 
-const ASSET_ICONS = {
+const ASSET_FLAGS = {
   SPX500: '🇺🇸',
   NAS100: '🇺🇸',
   US30:   '🇺🇸',
   JP225:  '🇯🇵',
-  XAUUSD: '🪙',
-  BTCUSD: '₿',
   DXY:    '🇺🇸',
   EURUSD: '🇪🇺',
   USDJPY: '🇯🇵',
@@ -24,6 +22,43 @@ const ASSET_ICONS = {
 };
 
 /**
+ * Devuelve el icono o badge visual del activo (Gold siempre dorado en todo OS).
+ * @param {string} symbol
+ * @returns {string} HTML del icono
+ */
+function getAssetIconHTML(symbol) {
+  if (symbol === 'XAUUSD') {
+    return `
+      <div class="market-asset-badge gold-badge" title="Oro al Contado (XAU/USD)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#goldGrad)" stroke="#F59E0B" stroke-width="1.5"/>
+          <text x="12" y="15.5" font-size="9" font-weight="800" fill="#78350F" text-anchor="middle" font-family="'Space Grotesk', sans-serif">AU</text>
+          <defs>
+            <linearGradient id="goldGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FDE047"/>
+              <stop offset="0.5" stop-color="#EAB308"/>
+              <stop offset="1" stop-color="#CA8A04"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    `;
+  }
+  if (symbol === 'BTCUSD') {
+    return `
+      <div class="market-asset-badge btc-badge" title="Bitcoin (BTC/USD)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="#F7931A"/>
+          <text x="12" y="16" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle" font-family="'Space Grotesk', sans-serif">₿</text>
+        </svg>
+      </div>
+    `;
+  }
+  const flag = ASSET_FLAGS[symbol] || '📈';
+  return `<span class="market-flag-icon">${flag}</span>`;
+}
+
+/**
  * Renderiza la tarjeta visual completa de un activo de mercado.
  * @param {Object} m Datos del activo desde public.market_intelligence
  * @returns {string} HTML sanitizado
@@ -33,7 +68,7 @@ export function renderMarketCard(m) {
 
   const symbol = escapeHTML(m.symbol || '');
   const displayName = escapeHTML(m.display_name || symbol);
-  const icon = ASSET_ICONS[m.symbol] || '📈';
+  const iconHTML = getAssetIconHTML(m.symbol);
   const category = escapeHTML(m.category || 'FOREX');
   
   const currentPrice = Number(m.current_price || 0).toLocaleString('en-US', {
@@ -51,21 +86,21 @@ export function renderMarketCard(m) {
   const biasScore = Math.min(Math.max(Number(m.bias_score || 50), 0), 100);
 
   let biasBadgeColor = 'var(--yellow)';
-  let biasBgColor = 'rgba(234, 179, 8, 0.12)';
-  let biasBorderColor = 'rgba(234, 179, 8, 0.3)';
+  let biasBgColor = 'rgba(245, 158, 11, 0.12)';
+  let biasBorderColor = 'rgba(245, 158, 11, 0.3)';
   let biasText = 'NEUTRAL';
   let biasDot = '⚪';
 
   if (bias === 'BULLISH') {
     biasBadgeColor = 'var(--green)';
-    biasBgColor = 'rgba(61, 214, 140, 0.12)';
-    biasBorderColor = 'rgba(61, 214, 140, 0.3)';
+    biasBgColor = 'rgba(34, 197, 94, 0.12)';
+    biasBorderColor = 'rgba(34, 197, 94, 0.3)';
     biasText = 'ALCISTA';
     biasDot = '🟢';
   } else if (bias === 'BEARISH') {
     biasBadgeColor = 'var(--red)';
-    biasBgColor = 'rgba(255, 92, 106, 0.12)';
-    biasBorderColor = 'rgba(255, 92, 106, 0.3)';
+    biasBgColor = 'rgba(239, 68, 68, 0.12)';
+    biasBorderColor = 'rgba(239, 68, 68, 0.3)';
     biasText = 'BAJISTA';
     biasDot = '🔴';
   }
@@ -90,11 +125,11 @@ export function renderMarketCard(m) {
   }
 
   return `
-    <article class="market-card glass-panel" data-symbol="${symbol}" data-category="${category}">
+    <article class="market-card" data-symbol="${symbol}" data-category="${category}">
       <!-- Cabecera de la Tarjeta -->
       <div class="market-card-header">
         <div class="market-asset-info">
-          <span class="market-icon">${icon}</span>
+          ${iconHTML}
           <div>
             <h3 class="market-title">${displayName}</h3>
             <span class="market-ticker">${symbol} • ${category}</span>
