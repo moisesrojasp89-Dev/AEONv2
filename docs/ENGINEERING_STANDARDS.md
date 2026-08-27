@@ -103,11 +103,45 @@ El módulo **AEON Intelligence** evoluciona más allá de un generador de texto 
 
 ---
 
-## 📑 6. Resumen de Calidad para el Equipo de Desarrollo
+## 📊 6. Protocolo Oficial de Certificación Cuantitativa (Estándar de Riesgo Sonnet)
+
+Ninguna estrategia de trading o motor algorítmico se promoverá a producción ni emitirá señales a usuarios Pro de pago sin haber superado **todos y cada uno** de los siguientes requisitos:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│             MATRIZ OFICIAL DE CERTIFICACIÓN CUANTITATIVA (QUALITY GATES)    │
+├──────────────────────────────┬──────────────────────────────┬───────────────┤
+│ Métrica / Exigencia          │ Umbral de Certificación      │ Verificación  │
+├──────────────────────────────┼──────────────────────────────┼───────────────┤
+│ 1. Periodo Mínimo de Datos   │ ≥ 1 Año continuo (5.000+ H1) │ Determinista  │
+│ 2. Fricción Broker (Exness)  │ Comisiones + Spread + Swap   │ Raw Spread    │
+│ 3. Look-Ahead Bias           │ 0.00% fuga de datos futuros  │ Unit Test T   │
+│ 4. Profit Factor (PF)        │ ≥ 1.35                       │ 1 Año OOS     │
+│ 5. Sharpe Ratio (Anualizado) │ ≥ 1.30                       │ 1 Año OOS     │
+│ 6. Max Drawdown (Histórico)  │ ≤ 12.0%                      │ Monte Carlo   │
+│ 7. Walk-Forward Efficiency   │ ≥ 65.0%                      │ 10 Ventanas   │
+│ 8. Modo Sombra Obligatorio   │ Telemetría en VPS sin trades │ SHADOW_MODE   │
+└──────────────────────────────┴──────────────────────────────┴───────────────┘
+```
+
+### A. Universo Core de 4 Activos de Investigación
+1. **`XAUUSD` (Oro Spot):** Foco en absorción de volumen institucional y retrocesos a dPOC en Killzones Londres/NY.
+2. **`NAS100` (Nasdaq 100):** Foco en expansión de volatilidad, momentum en apertura de Wall Street y rupturas de bandas VWAP con $ADX > 25$.
+3. **`EURUSD` (Euro/Dólar):** Foco en reversión a la media macro en temporalidades H1/H4 con ratios $R \ge 2.5R$ para absorber la comisión de \$7/lote.
+4. **`BTCUSD` (Bitcoin):** Foco en barridos de liquidez y anomalías extremas de dispersión Z-Score con objetivos amplios $\ge 1:3.5R$.
+* **Exclusión Definitiva:** `GBPUSD` y `SPX500` quedan permanentemente descartados del motor de señales por redundancia de correlación ($> 0.85$ y $> 0.90$) y dispersión de liquidez.
+
+### B. Prohibición de Criterios de Marketing
+* La frecuencia de emisión de señales está dictada **única y exclusivamente por la ventaja matemática ($EV > 0$)**. Queda terminantemente prohibido forzar señales artificiales o relajar filtros cuantitativos bajo el pretexto de "retención de usuarios" o "mantener la plataforma activa".
+
+---
+
+## 📑 7. Resumen de Calidad para el Equipo de Desarrollo
 
 | Área | Estándar Obligatorio | Verificación |
 |---|---|:---:|
 | **Frontend** | Single Source of Truth (`constants.js`), Cero Hardcode, XSS Sanitization (`escapeHTML`). | Build Vite $< 400\text{ms}$ |
 | **Backend / DB** | RLS Zero-Trust, Funciones RPC indexadas, Idempotencia en Webhooks. | Migraciones SQL Versionadas |
 | **VPS / Infra** | SSH endurecido, `fail2ban`, Docker Compose aislado, backups cifrados offsite. | Healthcheck cada 30s |
-| **Trading Core** | Cero Look-Ahead Bias en dPOC/VWAP, deducción de comisiones y slippage real. | WFO $WFE \ge 65\%$ |
+| **Trading Core** | Certificación de 1 año con fricción Exness Raw, WFO en 10 ventanas y Quality Gates. | $PF \ge 1.35, SR \ge 1.30, DD \le 12\%$ |
+

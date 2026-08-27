@@ -66,3 +66,16 @@ Los mensajes de commit deben seguir el estándar:
 * `style(...)`: Cambios visuales, CSS, tokens o formato.
 * `refactor(...)`: Reestructuración de código sin alterar comportamiento.
 * `chore(...)`: Tareas de mantenimiento, scripts o configuración.
+
+---
+
+## 5. Gobernanza Cuantitativa y Políticas de Señales (Protocolo Sonnet)
+
+1. **Universo de Activos Permitidos:**
+   * Permitidos para Investigación y Backtesting: `XAUUSD`, `NAS100`, `EURUSD`, `BTCUSD`.
+   * Prohibidos / Descartados Definitivamente: `GBPUSD`, `SPX500` (descartados por redundancia y dispersión).
+
+2. **Certificación Obligatoria Previas a Emisión en Vivo:**
+   * Cero estrategias en producción sin backtesting de $\ge 1$ año con Walk-Forward (10 ventanas), test anti look-ahead y Quality Gates ($PF \ge 1.35, SR \ge 1.30, DD \le 12.0\%$).
+   * Cualquier bot o daemon en desarrollo correrá **estrictamente en `SHADOW_MODE`**, almacenando telemetría interna sin acceso para usuarios Pro de pago hasta contar con certificación oficial.
+
