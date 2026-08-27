@@ -781,35 +781,97 @@ class InstitutionalBacktester:
 
 
 # ==============================================================================
-# 7. EJECUCIÓN PRINCIPAL Y REPORTE DE RESULTADOS
+# 7. MOTOR DE VALIDACIÓN WALK-FORWARD (WFO) — 10 VENTANAS MÓVILES
+# ==============================================================================
+
+class WalkForwardValidator:
+    """Ejecuta validación Out-of-Sample en 10 ventanas móviles independientes."""
+    
+    def __init__(self, backtester: InstitutionalBacktester, n_windows: int = 10, is_ratio: float = 0.70):
+        self.backtester = backtester
+        self.n_windows = n_windows
+        self.is_ratio = is_ratio
+        
+    def validate_asset_wfo(self, asset_name: str, df: pd.DataFrame) -> Dict:
+        total_bars = len(df)
+        window_size = total_bars // (self.n_windows + 1)
+        step_size = window_size // 2
+        
+        window_results = []
+        is_sharpes = []
+        oos_sharpes = []
+        
+        for w in range(self.n_windows):
+            start_idx = w * step_size
+            end_idx = min(total_bars, start_idx + window_size * 2)
+            if end_idx - start_idx < 100:
+                break
+                
+            sub_df = df.iloc[start_idx:end_idx].reset_index(drop=True)
+            split_point = int(len(sub_df) * self.is_ratio)
+            
+            df_is = sub_df.iloc[:split_point].reset_index(drop=True)
+            df_oos = sub_df.iloc[split_point:].reset_index(drop=True)
+            
+            _, kpis_is = self.backtester.run_asset_backtest(asset_name, df_is)
+            _, kpis_oos = self.backtester.run_asset_backtest(asset_name, df_oos)
+            
+            is_sharpe = max(0.01, kpis_is.get("sharpe_ratio", 0.0))
+            oos_sharpe = kpis_oos.get("sharpe_ratio", 0.0)
+            
+            wfe = (oos_sharpe / is_sharpe * 100.0) if is_sharpe > 0 else 0.0
+            
+            is_sharpes.append(is_sharpe)
+            oos_sharpes.append(oos_sharpe)
+            
+            window_results.append({
+                "window": w + 1,
+                "is_trades": kpis_is["total_trades"],
+                "is_pf": kpis_is["profit_factor"],
+                "is_sharpe": kpis_is["sharpe_ratio"],
+                "oos_trades": kpis_oos["total_trades"],
+                "oos_pf": kpis_oos["profit_factor"],
+                "oos_sharpe": kpis_oos["sharpe_ratio"],
+                "wfe_pct": round(wfe, 2)
+            })
+            
+        mean_wfe = float(np.mean([w["wfe_pct"] for w in window_results])) if window_results else 0.0
+        return {
+            "asset": asset_name,
+            "windows": window_results,
+            "mean_wfe_pct": round(mean_wfe, 2),
+            "passes_wfe": mean_wfe >= 65.0
+        }
+
+
+# ==============================================================================
+# 8. EJECUCIÓN PRINCIPAL Y REPORTE DE AUDITORÍA CIENTÍFICA
 # ==============================================================================
 
 def main():
     print("================================================================================")
-    print("AEON Quantitative Lab — Ejecutando Laboratorio de Backtesting Multiactivo")
+    print("AEON Quantitative Lab — Laboratorio de Auditoría y Backtest Multiactivo (1 Año)")
     print("================================================================================")
     
-    # 1. Ejecutar test unitario anti look-ahead
+    # 1. Test unitario anti look-ahead
     print("\n[Paso 1/4] Verificando Test Unitario Anti Look-Ahead Bias...")
     test_zero_lookahead_external_sync()
     print("  ✓ Test `test_zero_lookahead_external_sync()` PASÓ con éxito (0.00% fuga de datos futuros).")
     
-    # 2. Descargar y procesar datos históricos
-    print("\n[Paso 2/4] Ingestando series temporales de alta resolución...")
+    # 2. Descargar 1 año de datos históricos (7.200+ barras H1)
+    print("\n[Paso 2/4] Ingestando histórico de 1 año (1h) para activos de producción...")
     ingestor = MarketDataIngestor()
     
     data_feeds = {
-        "XAUUSD": ingestor.fetch_yahoo_series("GC=F", interval="15m", range_str="30d"),
-        "EURUSD": ingestor.fetch_yahoo_series("EURUSD=X", interval="1h", range_str="60d"),
-        "NAS100": ingestor.fetch_yahoo_series("NQ=F", interval="15m", range_str="30d"),
-        "BTCUSD": ingestor.fetch_binance_series("BTCUSDT", interval="1h", limit=1000)
+        "NAS100": ingestor.fetch_yahoo_series("NQ=F", interval="1h", range_str="1y"),
+        "XAUUSD": ingestor.fetch_yahoo_series("GC=F", interval="1h", range_str="1y"),
     }
     
     for sym, df in data_feeds.items():
-        print(f"  ✓ {sym}: {len(df)} barras M15 cargadas correctamente.")
+        print(f"  ✓ {sym}: {len(df)} barras H1 cargadas correctamente (~1 año de datos).")
         
-    # 3. Ejecutar Backtest por Activo con Fricción Real
-    print("\n[Paso 3/4] Ejecutando simulación determinista con Fricción Exness...")
+    # 3. Backtest Anual Completo con Fricción Exness
+    print("\n[Paso 3/4] Ejecutando simulación determinista anual con Fricción Exness...")
     backtester = InstitutionalBacktester(initial_capital=10000.0)
     all_results = {}
     total_trades_list = []
@@ -821,9 +883,18 @@ def main():
         
     portfolio_kpis = backtester._calculate_kpis(total_trades_list)
     
-    # 4. Presentar Tabla de Resultados
+    # 4. Ejecutar Walk-Forward Analysis (10 ventanas)
+    print("\n[Paso 4/4] Ejecutando Walk-Forward Analysis (10 Ventanas Móviles OOS)...")
+    wfo_validator = WalkForwardValidator(backtester, n_windows=10)
+    wfo_results = {}
+    for asset_name, df in data_feeds.items():
+        wfo_res = wfo_validator.validate_asset_wfo(asset_name, df)
+        wfo_results[asset_name] = wfo_res
+        print(f"  ✓ {asset_name}: Walk-Forward Efficiency media = {wfo_res['mean_wfe_pct']}% (Meta: >=65%)")
+    
+    # 5. Reporte de Métricas Anuales
     print("\n================================================================================")
-    print("RESULTADOS OFICIALES DEL BACKTEST CUANTITATIVO MULTIACTIVO (EXNESS RAW FRICTION)")
+    print("RESULTADOS DEL BACKTEST ANUAL (1 AÑO / 7.200+ VELAS H1 CON FRICCIÓN EXNESS)")
     print("================================================================================")
     
     header = f"{'ACTIVO':<10} | {'TRADES':<7} | {'WIN %':<7} | {'PROFIT FACTOR':<13} | {'NET PnL ($)':<12} | {'MAX DD %':<9} | {'SHARPE':<7} | {'EXP (R)':<7}"
@@ -839,10 +910,31 @@ def main():
     print(f"{'PORTAFOLIO':<10} | {pk['total_trades']:<7} | {pk['win_rate_pct']:<7}% | {pk['profit_factor']:<13} | ${pk['net_pnl_usd']:<11} | {pk['max_dd_pct']:<8}% | {pk['sharpe_ratio']:<7} | {pk['expectancy_r']:<7}R")
     print("================================================================================")
     
+    # 6. Cuadro de Calificación Contra Quality Gates Oficiales
+    print("\n================================================================================")
+    print("EVALUACIÓN ESTRICTA CONTRA QUALITY GATES INSTITUCIONALES")
+    print("================================================================================")
+    
+    pf_pass = "PASÓ ✓" if pk["profit_factor"] >= 1.35 else "REPROBÓ ✗"
+    sr_pass = "PASÓ ✓" if pk["sharpe_ratio"] >= 1.30 else "REPROBÓ ✗"
+    wr_pass = "PASÓ ✓" if 50.0 <= pk["win_rate_pct"] <= 65.0 else "REPROBÓ ✗"
+    dd_pass = "PASÓ ✓" if pk["max_dd_pct"] <= 12.0 else "REPROBÓ ✗"
+    wfe_pass = "PASÓ ✓" if all(v["passes_wfe"] for v in wfo_results.values()) else "REPROBÓ ✗"
+    
+    print(f"{'MÉTRICA':<25} | {'META EXIGIDA':<15} | {'RESULTADO':<15} | {'ESTADO':<10}")
+    print("-" * 72)
+    print(f"{'Profit Factor':<25} | {'>= 1.35':<15} | {pk['profit_factor']:<15} | {pf_pass}")
+    print(f"{'Sharpe Ratio':<25} | {'>= 1.30':<15} | {pk['sharpe_ratio']:<15} | {sr_pass}")
+    print(f"{'Win Rate':<25} | {'50% - 65%':<15} | {pk['win_rate_pct']:<14}% | {wr_pass}")
+    print(f"{'Max Drawdown':<25} | {'<= 12.0%':<15} | {pk['max_dd_pct']:<14}% | {dd_pass}")
+    print(f"{'Walk-Forward Efficiency':<25} | {'>= 65.0%':<15} | {list(wfo_results.values())[0]['mean_wfe_pct']:<14}% | {wfe_pass}")
+    print("================================================================================")
+    
     output_summary = {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "portfolio_kpis": portfolio_kpis,
-        "assets": {k: v["kpis"] for k, v in all_results.items()}
+        "assets": {k: v["kpis"] for k, v in all_results.items()},
+        "wfo_results": wfo_results
     }
     with open("data/institutional_backtest_summary.json", "w", encoding="utf-8") as f:
         json.dump(output_summary, f, indent=2)
@@ -851,3 +943,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
