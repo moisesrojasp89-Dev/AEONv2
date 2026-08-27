@@ -62,7 +62,7 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 | **Fase 3** | **Production Quant Engine & VPS 24/7:** Trade Watcher async 24/7, reconciliación atómica tras reinicios, Docker stack. | ✅ **Completado** |
 | **Fase 4** | **AEON Market Intelligence:** Detector multivariado de régimen, Blackout $\pm 15$ min, scoring institucional explicable. | ✅ **Completado** |
 | **Fase 5** | **AI Platform & Contextual Intelligence v2.0:** Pipeline de datos vivos (Yahoo + ForexFactory), reloj de sesiones UTC dinámico, terminal strip. | ✅ **Completado** |
-| **Fase 6** | **AEON Pro Terminal & Monetización:** Stripe Checkout, webhooks, portal de suscripción y bot privado de Telegram. | 🎯 **Próximo Sprint** |
+| **Fase 6** | **AEON Pro Terminal & Monetización In-App:** Stripe Checkout, webhooks idempotentes, gestión de suscripción y desbloqueo de módulos Pro (Chatbot IA, Señales Pro, Terminal de Mercados). | 🎯 **Próximo Sprint** |
 | **Fases 7-8** | **Futures Intelligence (CME Order Flow):** Feeds centralizados L2/L3, Delta real, Footprint y DOM. | ⏳ Planificado |
 | **Fase 9** | **High Reliability & Global Scale:** Failover multi-región, APM y disponibilidad 99.99%. | ⏳ Planificado |
 
