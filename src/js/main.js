@@ -245,7 +245,6 @@ async function loadDynamicBriefing() {
 
 async function initApp() {
   // Render de elementos iniciales
-  renderMarketCards(data.markets);
   renderEducation(data.education);
   renderPremiumFeatures(data.premiumFeatures);
   renderTickerBar(data.ticker);

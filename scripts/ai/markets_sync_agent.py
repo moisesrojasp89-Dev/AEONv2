@@ -127,6 +127,30 @@ class MarketDataIngestor:
         return None
 
     @staticmethod
+    def fetch_gold_series() -> Optional[pd.DataFrame]:
+        """Ingesta de alta fidelidad para Oro Spot (XAU/USD) anclado a tick de precio spot real."""
+        try:
+            url = "https://api.gold-api.com/price/XAU"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                data = json.loads(resp.read().decode())
+                spot_price = float(data.get("price", 0.0))
+                if spot_price > 1000.0:
+                    df_base = MarketDataIngestor.fetch_yahoo_series("GC=F")
+                    if df_base is not None and len(df_base) > 0:
+                        last_c = float(df_base["close"].iloc[-1])
+                        if last_c > 0:
+                            scale = spot_price / last_c
+                            df_base["open"] = (df_base["open"] * scale).round(2)
+                            df_base["high"] = (df_base["high"] * scale).round(2)
+                            df_base["low"] = (df_base["low"] * scale).round(2)
+                            df_base["close"] = (df_base["close"] * scale).round(2)
+                            return df_base
+        except Exception:
+            pass
+        return MarketDataIngestor.fetch_yahoo_series("GC=F")
+
+    @staticmethod
     def fetch_binance_btc(limit: int = 120) -> Optional[pd.DataFrame]:
         """Ingesta de alta velocidad para Bitcoin desde Binance Spot."""
         url = f"https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit={limit}"
@@ -340,10 +364,12 @@ def run_markets_sync_cycle() -> List[Dict[str, Any]]:
     for symbol, cfg in ASSET_UNIVERSE.items():
         print(f"\n[Sincronizando {symbol}] {cfg.display_name} ({cfg.category})...")
         
-        # 1. Ingesta primaria
+        # 1. Ingesta primaria con fuentes especializadas
         df = None
         if symbol == "BTCUSD":
             df = ingestor.fetch_binance_btc()
+        elif symbol == "XAUUSD":
+            df = ingestor.fetch_gold_series()
             
         if df is None:
             df = ingestor.fetch_yahoo_series(cfg.yahoo_symbol)

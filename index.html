@@ -48,8 +48,12 @@
     .bg-mesh {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 25%),
-                  radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+      background: 
+        radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(139, 92, 246, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 65%, rgba(61, 214, 140, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 20% 85%, rgba(14, 165, 233, 0.10) 0%, transparent 40%),
+        #06090e;
       z-index: -1;
     }
   </style>
@@ -167,16 +171,7 @@
       </div>
     </section>
 
-    <section class="market-section container" id="mercados" aria-labelledby="market-heading">
-      <div class="section-header">
-        <div>
-          <h2 id="market-heading">Mercados Globales & Análisis IA</h2>
-          <p>Cobertura en tiempo real de 14 activos: Índices, Oro, Bitcoin y Divisas G8 con niveles dPOC y VWAP.</p>
-        </div>
-        <a href="/mercados.html" class="btn-secondary" style="padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.85rem;">Abrir Terminal Completa (14 Activos) →</a>
-      </div>
-      <div class="market-grid" id="market-grid"></div>
-    </section>
+    <!-- Sección de Mercados eliminada del Home (Ahora vive exclusivamente en /mercados.html) -->
 
     <section class="signals-section container" id="senales" aria-labelledby="signals-heading">
       <div class="signals-header-top">
