@@ -50,8 +50,27 @@ function formatToUserLocalTime(utcTimeStr) {
 export function renderBriefingCard(briefing) {
   if (!briefing) return '';
 
-  // Determinar sesión activa en tiempo real según el reloj universal UTC
-  const currentSession = getCurrentMarketSession();
+  // Determinar sesión basada de forma estricta en el contenido y metadatos del briefing
+  let sessionLabel = 'SESIÓN AMERICANA';
+  let sessionStatus = 'WALL STREET & FED';
+  let sessionPillClass = 'session-ny-live';
+
+  const sessionKey = String(briefing.session || '').toLowerCase();
+  const titleLower = String(briefing.title || '').toLowerCase();
+
+  if (sessionKey === 'london_pre' || sessionKey.includes('london') || titleLower.includes('europea') || titleLower.includes('londres')) {
+    sessionLabel = 'SESIÓN EUROPEA';
+    sessionStatus = 'LONDRES & BCE';
+    sessionPillClass = 'session-london-live';
+  } else if (sessionKey.includes('asia') || titleLower.includes('asia') || titleLower.includes('tokio')) {
+    sessionLabel = 'SESIÓN ASIA-PACÍFICO';
+    sessionStatus = 'TOKIO & SÍDNEY';
+    sessionPillClass = 'session-asia';
+  } else {
+    sessionLabel = 'SESIÓN AMERICANA';
+    sessionStatus = 'WALL STREET & FED';
+    sessionPillClass = 'session-ny-live';
+  }
 
   const sentiment = briefing.macro_sentiment || { score: 60, label: 'RISK_ON', risk_appetite: 'BULLISH' };
   const sentimentScore = Math.min(Math.max(sentiment.score || 50, 0), 100);
@@ -60,8 +79,8 @@ export function renderBriefingCard(briefing) {
 
   const assetBias = briefing.asset_bias || {};
   const catalysts = Array.isArray(briefing.catalysts) ? briefing.catalysts : [];
-  const imageUrl = sanitizeUrl(briefing.image_url || currentSession.cover);
-  const briefingTitle = briefing.title || currentSession.title;
+  const imageUrl = sanitizeUrl(briefing.image_url || (sessionLabel === 'SESIÓN EUROPEA' ? 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop'));
+  const briefingTitle = briefing.title || (sessionLabel === 'SESIÓN EUROPEA' ? 'Sesión Europea: Flujo Institucional y Killzones de Londres' : 'Sesión Americana: Apertura Wall Street y Reacción a Datos Macro');
 
   // Generar Chips de Radar desde constants.js
   const radarChipsHtml = Object.entries(assetBias).map(([asset, bias]) => {
@@ -118,8 +137,8 @@ export function renderBriefingCard(briefing) {
         <div class="briefing-cover-overlay"></div>
         <div class="briefing-cover-content">
           <div class="briefing-badges-row">
-            <span class="briefing-pill ${escapeHTML(currentSession.pillClass)}">${escapeHTML(currentSession.label)}</span>
-            <span class="briefing-pill impact-high-pill">${escapeHTML(currentSession.statusTag)}</span>
+            <span class="briefing-pill ${escapeHTML(sessionPillClass)}">${escapeHTML(sessionLabel)}</span>
+            <span class="briefing-pill impact-high-pill">${escapeHTML(sessionStatus)}</span>
             <time class="briefing-date">${escapeHTML(briefing.date || '')}</time>
           </div>
           <h3 class="briefing-main-title">${escapeHTML(briefingTitle)}</h3>

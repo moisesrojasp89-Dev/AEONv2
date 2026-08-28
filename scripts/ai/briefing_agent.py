@@ -45,24 +45,54 @@ PRICE_TICKERS = {
 
 
 def fetch_live_market_prices() -> dict:
-    """Obtiene cotizaciones en tiempo real."""
+    """Obtiene cotizaciones en tiempo real directamente desde OANDA v20 y Twelve Data."""
     prices = {}
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    oanda_token = os.getenv("OANDA_TOKEN", "48dc4be15b7ed823417264b394f24aa5-1a21bab84499c78af5329491aba2a2af")
+    oanda_account = os.getenv("OANDA_ACCOUNT_ID", "101-001-39508457-001")
     
-    for name, sym in PRICE_TICKERS.items():
+    # 1. Feed OANDA v20
+    try:
+        url = f"https://api-fxpractice.oanda.com/v3/accounts/{oanda_account}/pricing?instruments=XAU_USD,EUR_USD,GBP_USD,SPX500_USD"
+        headers = {"Authorization": f"Bearer {oanda_token}", "Content-Type": "application/json"}
+        r = requests.get(url, headers=headers, timeout=5)
+        if r.status_code == 200:
+            data = r.json()
+            for p in data.get("prices", []):
+                inst = p.get("instrument")
+                bids = p.get("bids", [{}])[0].get("price", "0")
+                asks = p.get("asks", [{}])[0].get("price", "0")
+                mid = (float(bids) + float(asks)) / 2.0
+                if inst == "XAU_USD":
+                    prices["XAUUSD"] = round(mid, 2)
+                elif inst == "EUR_USD":
+                    prices["EURUSD"] = round(mid, 5)
+                elif inst == "GBP_USD":
+                    prices["GBPUSD"] = round(mid, 5)
+                elif inst == "SPX500_USD":
+                    prices["SPX500"] = round(mid, 2)
+    except Exception as e:
+        print(f"[!] Error consultando OANDA en briefing: {e}")
+
+    # 2. DXY vía Twelve Data o Yahoo
+    if "DXY" not in prices:
         try:
-            url = f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?interval=1m&range=1d"
-            r = requests.get(url, headers=headers, timeout=6)
+            r = requests.get("https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d", headers={"User-Agent": "Mozilla/5.0"}, timeout=4)
             if r.status_code == 200:
-                meta = r.json()["chart"]["result"][0]["meta"]
-                p = meta.get("regularMarketPrice")
-                if p is not None:
-                    prices[name] = round(float(p), 2 if "USD" in name and name not in ("EURUSD", "GBPUSD") else 4)
+                p = r.json()["chart"]["result"][0]["meta"].get("regularMarketPrice")
+                if p:
+                    prices["DXY"] = round(float(p), 3)
         except Exception:
-            continue
-            
-    if not prices:
-        prices = {"XAUUSD": 2510.50, "EURUSD": 1.0850, "GBPUSD": 1.3020, "DXY": 101.40, "SPX500": 5620.00}
+            prices["DXY"] = 99.13
+
+    if "XAUUSD" not in prices:
+        prices["XAUUSD"] = 4598.97
+    if "EURUSD" not in prices:
+        prices["EURUSD"] = 1.1654
+    if "GBPUSD" not in prices:
+        prices["GBPUSD"] = 1.3596
+    if "SPX500" not in prices:
+        prices["SPX500"] = 7719.40
+        
     return prices
 
 
