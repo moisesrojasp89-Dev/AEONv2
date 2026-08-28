@@ -15,10 +15,17 @@ const ASSET_LABELS = {
   XAUUSD: '🪙 XAU/USD',
   EURUSD: '🇪🇺 EUR/USD',
   GBPUSD: '🇬🇧 GBP/USD',
+  USDJPY: '🇯🇵 USD/JPY',
   DXY: '🇺🇸 DXY (Dólar)',
   SPX500: '📈 S&P 500',
   NAS100: '💻 NASDAQ',
+  US30: '🏭 DOW 30',
+  BTCUSD: '₿ Bitcoin',
   BTC: '₿ Bitcoin',
+  AUDUSD: '🇦🇺 AUD/USD',
+  NZDUSD: '🇳🇿 NZD/USD',
+  USDCAD: '🇨🇦 USD/CAD',
+  USDCHF: '🇨🇭 USD/CHF',
 };
 
 /**

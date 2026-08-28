@@ -85,8 +85,25 @@ SYMBOL_MAP = {
 }
 
 # ==============================================================================
-# 2. ESTADO GLOBAL DEL MOTOR
+# 2. ESTADO GLOBAL DEL MOTOR & BENCHMARKS DE APERTURA INSTITUCIONAL
 # ==============================================================================
+BENCHMARKS = {
+    'XAUUSD': {'base': 4580.00, 'decimals': 2, 'spread_pct': 0.004, 'name': 'Oro Spot', 'category': 'METALES'},
+    'EURUSD': {'base': 1.1660, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Euro / Dólar', 'category': 'FOREX'},
+    'GBPUSD': {'base': 1.3620, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Libra / Dólar', 'category': 'FOREX'},
+    'USDJPY': {'base': 158.50, 'decimals': 3, 'spread_pct': 0.003, 'name': 'Dólar / Yen', 'category': 'FOREX'},
+    'AUDUSD': {'base': 0.7210, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar Australiano / Dólar', 'category': 'FOREX'},
+    'NZDUSD': {'base': 0.6320, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar Neozelandés / Dólar', 'category': 'FOREX'},
+    'USDCAD': {'base': 1.3820, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar / Dólar Canadiense', 'category': 'FOREX'},
+    'USDCHF': {'base': 0.8030, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar / Franco Suizo', 'category': 'FOREX'},
+    'DXY': {'base': 99.10, 'decimals': 3, 'spread_pct': 0.0025, 'name': 'Dólar Index (DXY)', 'category': 'DIVISAS'},
+    'SPX500': {'base': 7710.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'S&P 500', 'category': 'INDICES'},
+    'NAS100': {'base': 29500.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Nasdaq 100', 'category': 'INDICES'},
+    'US30': {'base': 44800.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Dow Jones 30', 'category': 'INDICES'},
+    'JP225': {'base': 66500.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Nikkei 225', 'category': 'INDICES'},
+    'BTCUSD': {'base': 78500.00, 'decimals': 2, 'spread_pct': 0.008, 'name': 'Bitcoin', 'category': 'CRIPTO'}
+}
+
 state = {
     'last_market_sync': 0,
     'last_history_snapshot': 0,
@@ -94,8 +111,81 @@ state = {
     'last_briefing_check': 0,
     'current_session': 'asian_wrap',
     'sniper_event_id': None,
-    'prices_cache': {}
+    'prices_cache': {},
+    'quant_records': {}
 }
+
+def compute_institutional_quant_metrics(sym: str, live_price: float) -> dict:
+    """Calcula matemáticamente el sesgo institucional, microestructura y niveles clave para cualquier activo."""
+    meta = BENCHMARKS.get(sym, {'base': live_price, 'decimals': 2, 'spread_pct': 0.003, 'name': sym})
+    base = meta['base']
+    dec = meta['decimals']
+    spread = meta['spread_pct']
+    name = meta['name']
+
+    # 1. Delta porcentual real
+    pct_change = round(((live_price - base) / base) * 100.0, 2)
+
+    # 2. Microestructura determinista dinámica
+    if pct_change >= 0.15:
+        bias = "BULLISH"
+        score = min(96, int(55 + abs(pct_change) * 20))
+        dpoc = round(live_price * (1 - spread * 0.4), dec)
+        vwap = round(live_price * (1 - spread * 0.2), dec)
+        s1 = round(live_price * (1 - spread * 1.5), dec)
+        s2 = round(live_price * (1 - spread * 2.8), dec)
+        r1 = round(live_price * (1 + spread * 1.5), dec)
+        r2 = round(live_price * (1 + spread * 2.8), dec)
+        rsi = round(min(88.0, 52.0 + abs(pct_change) * 12.0), 1)
+        macro_driver = f"Flujo comprador institucional activo por encima del dPOC ({dpoc}) y Session VWAP ({vwap})."
+        technical_thesis = f"Estructura alcista con soporte clave en {s1}. La absorción compradora proyecta expansión hacia la resistencia {r1} con RSI en {rsi}."
+        tags = ["BULLISH_FLOW", "VWAP_SUPPORT", "DPOC_EXPANSION"]
+    elif pct_change <= -0.15:
+        bias = "BEARISH"
+        score = min(96, int(55 + abs(pct_change) * 20))
+        dpoc = round(live_price * (1 + spread * 0.4), dec)
+        vwap = round(live_price * (1 + spread * 0.2), dec)
+        s1 = round(live_price * (1 - spread * 1.5), dec)
+        s2 = round(live_price * (1 - spread * 2.8), dec)
+        r1 = round(live_price * (1 + spread * 1.5), dec)
+        r2 = round(live_price * (1 + spread * 2.8), dec)
+        rsi = round(max(18.0, 48.0 - abs(pct_change) * 12.0), 1)
+        macro_driver = f"Presión vendedora institucional por debajo del dPOC ({dpoc}) y Session VWAP ({vwap})."
+        technical_thesis = f"Estructura bajista con resistencia clave en {r1}. La absorción vendedora proyecta retroceso hacia el soporte {s1} con RSI en {rsi}."
+        tags = ["BEARISH_FLOW", "VWAP_REJECTION", "DPOC_BREAK"]
+    else:
+        bias = "NEUTRAL"
+        score = 50
+        dpoc = round(live_price, dec)
+        vwap = round(live_price * (1 + spread * 0.05), dec)
+        s1 = round(live_price * (1 - spread * 1.2), dec)
+        s2 = round(live_price * (1 - spread * 2.2), dec)
+        r1 = round(live_price * (1 + spread * 1.2), dec)
+        r2 = round(live_price * (1 + spread * 2.2), dec)
+        rsi = 50.0
+        macro_driver = f"Consolidación en rango equilibrado alrededor del punto de control dPOC ({dpoc})."
+        technical_thesis = f"Precio oscilando entre el soporte {s1} y la resistencia {r1}. Se recomienda esperar confirmación de ruptura de banda VWAP ({vwap})."
+        tags = ["RANGE_CONSOLIDATION", "NEUTRAL_POC", "WAIT_BREAKOUT"]
+
+    return {
+        'symbol': sym,
+        'current_price': live_price,
+        'change_24h_pct': pct_change,
+        'bias': bias,
+        'bias_score': score,
+        'support_1': s1,
+        'support_2': s2,
+        'resistance_1': r1,
+        'resistance_2': r2,
+        'dpoc_price': dpoc,
+        'session_vwap': vwap,
+        'macro_driver': macro_driver,
+        'technical_thesis': technical_thesis,
+        'cited_key_levels': [s1, dpoc, r1, vwap],
+        'catalyst_tags': tags,
+        'last_updated': datetime.now(timezone.utc).isoformat(),
+        'updated_by': 'AEON_AUTONOMOUS_ENGINE_V2'
+    }
 
 def log(module: str, icon: str, message: str):
     """Genera logs limpios y visuales con timestamps exactos."""
@@ -163,13 +253,15 @@ def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
     return quotes
 
 def sync_markets_loop():
-    """Ejecuta la actualización continua de los 14 activos y su microestructura."""
+    """Ejecuta la actualización continua de los 14 activos y su microestructura cuántica unificada."""
     t0 = time.time()
     quotes = fetch_live_quotes()
     if not quotes:
         return
 
-    snapshot_path = os.path.join(ROOT_DIR, 'data', 'market_intelligence_snapshot.json')
+    snapshot_path = os.path.join(ROOT_DIR, 'src', 'data', 'market_intelligence_snapshot.json')
+    if not os.path.exists(snapshot_path):
+        snapshot_path = os.path.join(ROOT_DIR, 'data', 'market_intelligence_snapshot.json')
     if not os.path.exists(snapshot_path):
         return
 
@@ -182,16 +274,11 @@ def sync_markets_loop():
         q = quotes.get(sym)
         if q:
             price = q['price']
-            asset['current_price'] = price
-            # Microestructura determinista dinámica
-            decimals = 2 if price > 50 else (4 if 'USD' in sym else 2)
-            spread = 0.003 if 'USD' in sym and sym != 'XAUUSD' else 0.0015
-            asset['dpoc_price'] = round(price * (1 - spread * 0.2), decimals)
-            asset['session_vwap'] = round(price * (1 + spread * 0.1), decimals)
-            asset['support_1'] = round(price * (1 - spread * 2.0), decimals)
-            asset['resistance_1'] = round(price * (1 + spread * 2.0), decimals)
-            asset['last_updated'] = datetime.now(timezone.utc).isoformat()
-            asset['updated_by'] = 'AEON_AUTONOMOUS_ENGINE_V2'
+            # Cálculo cuántico institucional dinámico para CADA UNO de los 14 activos
+            metrics = compute_institutional_quant_metrics(sym, price)
+            asset.update(metrics)
+            state['prices_cache'][sym] = price
+            state['quant_records'][sym] = metrics
 
         cleaned = {k: v for k, v in asset.items() if k in VALID_MARKET_COLUMNS}
         updated_records.append(cleaned)
@@ -206,9 +293,10 @@ def sync_markets_loop():
         )
         with urllib.request.urlopen(req, timeout=6) as resp:
             elapsed_ms = int((time.time() - t0) * 1000)
-            gold_p = quotes.get('XAUUSD', {}).get('price', 4580.28)
-            btc_p = quotes.get('BTCUSD', {}).get('price', 80294.0)
-            log("MERCADOS", "✅", f"Ciclo OK — 14 activos sincronizados en {elapsed_ms}ms (XAU: ${gold_p:,.2f} | BTC: ${btc_p:,.0f})")
+            gold_p = quotes.get('XAUUSD', {}).get('price', 4471.0)
+            btc_p = quotes.get('BTCUSD', {}).get('price', 77849.0)
+            spx_p = quotes.get('SPX500', {}).get('price', 7728.75)
+            log("MERCADOS", "✅", f"Ciclo OK — 14 activos calculados en {elapsed_ms}ms (XAU: ${gold_p:,.2f} | SPX: {spx_p:,.2f} | BTC: ${btc_p:,.0f})")
     except Exception as e:
         log("MERCADOS", "❌", f"Error al sincronizar con Supabase: {e}")
 
@@ -218,6 +306,10 @@ def sync_markets_loop():
         try:
             with open(snapshot_path, 'w', encoding='utf-8') as f:
                 json.dump(updated_records, f, indent=2, ensure_ascii=False)
+            data_alt = os.path.join(ROOT_DIR, 'data', 'market_intelligence_snapshot.json')
+            if os.path.exists(os.path.dirname(data_alt)):
+                with open(data_alt, 'w', encoding='utf-8') as f:
+                    json.dump(updated_records, f, indent=2, ensure_ascii=False)
         except Exception:
             pass
         try:
@@ -466,15 +558,19 @@ def sync_macro_and_news():
                 {'time': '08:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
                 {'time': '10:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
             ]
-            sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
-
-        asset_bias = {
-            'XAUUSD': gold_bias,
-            'EURUSD': eur_bias,
-            'GBPUSD': eur_bias,
-            'DXY': dxy_bias,
-            'SPX500': spx_bias
-        }
+        # Construcción dinámica 100% de todos los activos calculados por el motor cuántico
+        asset_bias = {}
+        for sym in ['DXY', 'EURUSD', 'GBPUSD', 'USDJPY', 'SPX500', 'NAS100', 'XAUUSD', 'BTCUSD']:
+            if sym in state['quant_records']:
+                asset_bias[sym] = state['quant_records'][sym]['bias']
+            elif sym == 'DXY':
+                asset_bias[sym] = 'BULLISH' if dxy_price >= 99.30 else 'BEARISH'
+            elif sym == 'XAUUSD':
+                asset_bias[sym] = 'BEARISH' if gold_price < 4540.0 else 'BULLISH'
+            elif sym == 'SPX500':
+                asset_bias[sym] = 'BULLISH' if spx_price >= 7700.0 else 'NEUTRAL'
+            else:
+                asset_bias[sym] = 'NEUTRAL'
 
         briefing_payload = {
             'id': 'd813f823-b0b1-4e7f-bd1e-4417aee65432' if session_id == 'asian_wrap' else ('820972a1-6677-418f-8020-797029198f9d' if session_id == 'london_pre' else 'fe02dfe6-6047-4b52-b7e9-d312da06ee7a'),
@@ -500,7 +596,7 @@ def sync_macro_and_news():
             urllib.request.urlopen(b_req, timeout=6)
             state['current_session'] = session_id
             state['last_briefing_check'] = time.time()
-            log("BRIEFING", "🌏", f"Briefing actualizado ({session_name} | Oro: {gold_bias} ${gold_price:,.2f} | DXY: {dxy_bias} {dxy_price:.2f})")
+            log("BRIEFING", "🌏", f"Briefing actualizado ({session_name} | Radar: {len(asset_bias)} activos sincronizados)")
         except Exception as e:
             log("BRIEFING", "⚠️", f"Error en briefing: {e}")
 
