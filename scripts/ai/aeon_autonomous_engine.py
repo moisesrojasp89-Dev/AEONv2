@@ -64,8 +64,8 @@ VALID_MARKET_COLUMNS = {
     'last_updated', 'updated_by'
 }
 
-# 12 Activos OANDA en una sola llamada por lotes
-OANDA_INSTRUMENTS = "XAU_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,SPX500_USD,NAS100_USD,US30_USD,JP225_USD"
+# 13 Activos OANDA en una sola llamada por lotes (incluyendo USD_SEK para la fórmula del DXY)
+OANDA_INSTRUMENTS = "XAU_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,USD_SEK,SPX500_USD,NAS100_USD,US30_USD,JP225_USD"
 
 # Mapeo a símbolos oficiales AEON
 SYMBOL_MAP = {
@@ -77,6 +77,7 @@ SYMBOL_MAP = {
     'AUD_USD': 'AUDUSD',
     'NZD_USD': 'NZDUSD',
     'USD_CHF': 'USDCHF',
+    'USD_SEK': 'USDSEK',
     'SPX500_USD': 'SPX500',
     'NAS100_USD': 'NAS100',
     'US30_USD': 'US30',
@@ -104,20 +105,19 @@ def log(module: str, icon: str, message: str):
 # ==============================================================================
 # 3. MÓDULO 1: MERCADOS GLOBALES EN ALTA FRECUENCIA (0 Req a TwelveData)
 # ==============================================================================
-def calculate_dxy(eur: float, jpy: float, gbp: float, cad: float, chf: float) -> float:
-    """Calcula el índice ICE DXY matemáticamente a partir de sus componentes."""
+def calculate_dxy(eur: float, jpy: float, gbp: float, cad: float, sek: float, chf: float) -> float:
+    """Calcula el índice ICE DXY con la fórmula oficial geométrica ponderada completa."""
     try:
-        # Fórmula geométrica ponderada del Dollar Index
-        dxy = 50.14348112 * (eur ** -0.576) * (jpy ** 0.136) * (gbp ** -0.119) * (cad ** 0.091) * (chf ** 0.036)
+        dxy = 50.14348112 * (eur ** -0.576) * (jpy ** 0.136) * (gbp ** -0.119) * (cad ** 0.091) * (sek ** 0.042) * (chf ** 0.036)
         return round(dxy, 3)
     except Exception:
-        return 99.130
+        return 99.198
 
 def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
     """Obtiene cotizaciones de 14 activos usando 1 llamada OANDA + 1 llamada Binance."""
     quotes = {}
     
-    # 1. OANDA Batch (12 Activos en 1 llamada HTTP)
+    # 1. OANDA Batch (13 Activos en 1 llamada HTTP)
     try:
         url = f"https://api-fxpractice.oanda.com/v3/accounts/{OANDA_ACCOUNT_ID}/pricing?instruments={OANDA_INSTRUMENTS}"
         req = urllib.request.Request(url, headers={"Authorization": f"Bearer {OANDA_TOKEN}", "Content-Type": "application/json"})
@@ -146,18 +146,19 @@ def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
     except Exception:
         quotes['BTCUSD'] = {'price': 80294.0, 'change_24h': 2.04}
 
-    # 3. Dólar Index (DXY) derivado
+    # 3. Dólar Index (DXY) derivado con fórmula completa oficial ICE
     if 'EURUSD' in quotes and 'USDJPY' in quotes and 'GBPUSD' in quotes:
         dxy_val = calculate_dxy(
             quotes['EURUSD']['price'],
             quotes['USDJPY']['price'],
             quotes['GBPUSD']['price'],
             quotes.get('USDCAD', {}).get('price', 1.385),
+            quotes.get('USDSEK', {}).get('price', 9.60),
             quotes.get('USDCHF', {}).get('price', 0.804)
         )
         quotes['DXY'] = {'price': dxy_val, 'change_24h': 0.02}
     else:
-        quotes['DXY'] = {'price': 99.130, 'change_24h': 0.02}
+        quotes['DXY'] = {'price': 99.198, 'change_24h': 0.02}
 
     return quotes
 
