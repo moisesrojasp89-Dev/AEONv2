@@ -1,5 +1,5 @@
 /* ============================================================
-   AEON · navbar.css — Modern Institutional Navbar & Drawer
+   AEON · navbar.css — Modern Institutional Navbar & Minimalist Nexora Drawer
    ============================================================ */
 
 .header {
@@ -29,69 +29,51 @@
   display: block;
 }
 
-.logo-text {
-  font-family: var(--font-head);
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--text);
-}
-
 .nav-links {
   display: none;
   align-items: center;
-  gap: 1.35rem;
+  gap: 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links a {
-  font-size: 0.9rem;
   color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 0.88rem;
   font-weight: 500;
+  text-decoration: none;
   transition: color 0.2s var(--ease);
-  position: relative;
 }
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: width 0.25s var(--ease);
-}
-
-.nav-links a:hover { color: var(--text); }
-.nav-links a:hover::after { width: 100%; }
-
-.nav-btn {
-  display: none;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.55rem 1.1rem;
-  border-radius: var(--radius-sm);
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
-  flex-shrink: 0;
-}
-
-.nav-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-
-.btn-nav-ghost,
-.nav-btn.btn-ghost {
-  background: transparent;
-  border: 1px solid var(--border);
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--text);
 }
-.btn-nav-ghost:hover,
-.nav-btn.btn-ghost:hover {
-  background: var(--surface);
-  border-color: var(--border-2);
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-/* Hamburger Toggle */
+.btn-nav-ghost {
+  color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+}
+
+.btn-nav-ghost:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
 .menu-toggle {
   display: flex;
   flex-direction: column;
@@ -122,13 +104,13 @@
 .menu-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .menu-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* Mobile Drawer (Deslizamiento suave desde la derecha) */
+/* ── Mobile Overlay & Minimalist Drawer (Nexora Style) ── */
 .mobile-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(3, 7, 18, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(3, 7, 18, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 998;
   opacity: 0;
   pointer-events: none;
@@ -145,15 +127,13 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: min(85vw, 320px);
-  background: rgba(10, 16, 28, 0.97);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-left: 1px solid rgba(14, 165, 233, 0.2);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.75);
+  width: min(85vw, 300px);
+  background: #090D18;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.85);
   z-index: 999;
   transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
 }
@@ -166,108 +146,146 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .drawer-close {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s var(--ease);
 }
 
 .drawer-close:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
   color: #EF4444;
 }
 
 .drawer-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: 1.15rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .drawer-section {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.drawer-section:last-child {
-  border-bottom: none;
+  gap: 0.25rem;
 }
 
 .drawer-label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  margin-bottom: 0.4rem;
-  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #64748B;
+  margin-bottom: 0.35rem;
+  padding-left: 0.5rem;
 }
 
 .mobile-link {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.92rem;
-  color: #E4E4E7;
-  padding: 0.65rem 0.85rem;
-  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: #94A3B8;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
   font-weight: 500;
   text-decoration: none;
   background: transparent;
-  transition: all 0.2s var(--ease);
+  transition: all 0.18s var(--ease);
+}
+
+.mobile-link svg {
+  color: #64748B;
+  flex-shrink: 0;
+  transition: color 0.18s;
 }
 
 .mobile-link:hover {
-  color: #FFFFFF;
-  background: rgba(14, 165, 233, 0.1);
-  border-left: 2px solid var(--accent);
-  padding-left: 1rem;
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.drawer-footer {
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+.mobile-link:hover svg {
+  color: var(--accent);
 }
 
-.mobile-cta {
-  display: block;
-  background: linear-gradient(135deg, #0EA5E9, #2563EB);
-  color: #FFFFFF;
+.mobile-link.active {
+  background: rgba(14, 165, 233, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.mobile-link.active svg {
+  color: var(--accent);
+}
+
+/* ── Tarjeta Pro Estilo Nexora ── */
+.drawer-pro-card {
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: auto;
+}
+
+.drawer-pro-icon {
+  font-size: 1.15rem;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+.drawer-pro-title {
   font-family: var(--font-head);
+  font-size: 0.9rem;
   font-weight: 700;
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.35);
-  transition: all 0.2s var(--ease);
+  color: #F8FAFC;
 }
 
-.mobile-cta:hover {
-  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.5);
-  transform: translateY(-1px);
+.drawer-pro-desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+
+.drawer-pro-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #0EA5E9;
+  color: #06090E;
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.drawer-pro-btn:hover {
+  background: #38BDF8;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
 }
 
 body.no-scroll {
