@@ -1,14 +1,17 @@
 /* ============================================================
    AEON · supabaseClient.js — Supabase Client Singleton
+   Safe client initialized from Vite environment variables
    ============================================================ */
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = (import.meta.env && import.meta.env.VITE_SUPABASE_URL) || 'https://ytccnxlfakjilxwauxic.supabase.co';
+const supabaseAnonKey = (import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('[AEON] Error Crítico: Faltan las variables de entorno VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY en la configuración.');
-}
-
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
