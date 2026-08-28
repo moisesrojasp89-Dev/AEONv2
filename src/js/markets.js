@@ -6,6 +6,7 @@
 import { marketsService } from './services/marketsService.js';
 import { renderMarketCard } from './templates/marketCard.js';
 import { checkSession } from './auth.js';
+import { initNavbar } from './navbar.js';
 
 let allMarkets = [];
 let currentCategory = 'ALL';
@@ -91,7 +92,8 @@ async function initMarketsPage() {
     `;
   }
 
-  // 1. Resolver sesión de usuario en navbar
+  // 1. Inicializar navegación y sesión
+  initNavbar();
   try {
     await checkSession();
   } catch (err) {

@@ -399,8 +399,24 @@
   transform: translateY(0);
 }
 
+.markets-swipe-hint {
+  display: none;
+}
+
 /* ── RESPONSIVE MÓVIL: ZERO SCROLL VERTICAL & HORIZONTAL SWIPE CON ALTA PRIORIDAD ── */
 @media (max-width: 768px) {
+  .markets-swipe-hint {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 0.35rem !important;
+    flex-shrink: 0 !important;
+    animation: pulse 2s infinite ease-in-out;
+  }
   html, body {
     overflow-x: hidden;
   }
