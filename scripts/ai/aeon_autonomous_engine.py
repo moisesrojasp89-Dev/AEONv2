@@ -558,6 +558,8 @@ def sync_macro_and_news():
                 {'time': '08:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
                 {'time': '10:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
             ]
+            sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
+
         # Construcción dinámica 100% de todos los activos calculados por el motor cuántico
         asset_bias = {}
         for sym in ['DXY', 'EURUSD', 'GBPUSD', 'USDJPY', 'SPX500', 'NAS100', 'XAUUSD', 'BTCUSD']:
