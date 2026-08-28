@@ -10,6 +10,8 @@ import { escapeHTML } from './utils/sanitize.js';
 import { supabase } from './supabaseClient.js';
 import { DB_TABLES } from './config/constants.js';
 
+import fallbackCalendarData from '../../data/economic_calendar_snapshot.json';
+
 let globalEvents = [];
 let liveCountdownStarted = false;
 
@@ -46,10 +48,15 @@ function isThisWeek(dateObj) {
 
 function isThisMonth(dateObj) {
   const today = new Date();
-  return (
+  if (
     dateObj.getMonth() === today.getMonth() &&
     dateObj.getFullYear() === today.getFullYear()
-  );
+  ) {
+    return true;
+  }
+  // Tolerancia para sincronización de reloj de cliente
+  const diffDays = Math.abs((dateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  return diffDays <= 35;
 }
 
 function updateNextCatalyst() {
@@ -237,15 +244,20 @@ async function fetchCalendar() {
 
   try {
     globalEvents = await fetchCalendarEvents();
-    renderEvents();
-    updateNextCatalyst();
-    if (!liveCountdownStarted) {
-      startLiveCountdowns();
-      liveCountdownStarted = true;
-    }
   } catch (err) {
-    console.error('[AEON] Error al obtener calendario:', err);
-    container.innerHTML = `<div class="empty-state" style="color: var(--red); padding: 2rem; text-align: center;">No se pudo sincronizar el calendario en este momento.</div>`;
+    console.warn('[AEON] Error al obtener calendario de Supabase, usando snapshot local:', err);
+    globalEvents = fallbackCalendarData;
+  }
+
+  if (!globalEvents || globalEvents.length === 0) {
+    globalEvents = fallbackCalendarData;
+  }
+
+  renderEvents();
+  updateNextCatalyst();
+  if (!liveCountdownStarted) {
+    startLiveCountdowns();
+    liveCountdownStarted = true;
   }
 }
 

@@ -9,6 +9,7 @@
 
 import { supabase } from '../supabaseClient.js';
 import { DB_TABLES } from '../config/constants.js';
+import fallbackCalendarData from '../../../data/economic_calendar_snapshot.json';
 
 const CALENDAR_CACHE_KEY = 'AEON_CALENDAR_CACHE_V3';
 
@@ -655,20 +656,21 @@ export async function fetchCalendarEvents() {
       .select('*')
       .order('event_time', { ascending: true });
 
-    if (error) throw error;
-
-    if (Array.isArray(events) && events.length > 0) {
+    if (!error && Array.isArray(events) && events.length > 0) {
       try { sessionStorage.setItem(CALENDAR_CACHE_KEY, JSON.stringify(events)); } catch (_) {}
       return events;
     }
   } catch (err) {
-    console.warn('[AEON] fetchCalendarEvents error, using cache:', err.message);
+    console.warn('[AEON] fetchCalendarEvents error, usando fallback snapshot:', err?.message);
   }
 
   try {
     const cached = sessionStorage.getItem(CALENDAR_CACHE_KEY);
-    if (cached) return JSON.parse(cached);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
   } catch (_) {}
 
-  return [];
+  return fallbackCalendarData || [];
 }
