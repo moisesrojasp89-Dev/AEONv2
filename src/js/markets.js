@@ -7,6 +7,7 @@ import { marketsService } from './services/marketsService.js';
 import { renderMarketCard } from './templates/marketCard.js';
 import { checkSession } from './auth.js';
 import { initNavbar } from './navbar.js';
+import fallbackData from '../../data/market_intelligence_snapshot.json';
 
 let allMarkets = [];
 let currentCategory = 'ALL';
@@ -101,7 +102,14 @@ async function initMarketsPage() {
   }
 
   // 2. Cargar datos iniciales
-  allMarkets = await marketsService.getMarketIntelligence();
+  try {
+    allMarkets = await marketsService.getMarketIntelligence();
+  } catch (e) {
+    allMarkets = fallbackData;
+  }
+  if (!allMarkets || allMarkets.length === 0) {
+    allMarkets = fallbackData;
+  }
   renderMarkets();
 
   // 2. Configurar pestañas de categorías
