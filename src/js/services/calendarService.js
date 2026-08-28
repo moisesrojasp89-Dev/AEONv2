@@ -9,7 +9,7 @@
 
 import { supabase } from '../supabaseClient.js';
 import { DB_TABLES } from '../config/constants.js';
-import fallbackCalendarData from '../../../data/economic_calendar_snapshot.json';
+import fallbackCalendarData from '../../data/economic_calendar_snapshot.json';
 
 const CALENDAR_CACHE_KEY = 'AEON_CALENDAR_CACHE_V3';
 

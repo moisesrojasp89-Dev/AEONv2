@@ -29,7 +29,8 @@ dist-ssr
 !.env.example
 
 # Runtime & Quant state data
-data/
+/data/
+!src/data/
 *.tmp
 __pycache__/
 *.pyc

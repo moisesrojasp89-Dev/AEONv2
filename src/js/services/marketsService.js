@@ -5,7 +5,7 @@
 
 import { supabase } from '../supabaseClient.js';
 import { DB_TABLES } from '../config/constants.js';
-import fallbackData from '../../../data/market_intelligence_snapshot.json';
+import fallbackData from '../../data/market_intelligence_snapshot.json';
 
 const FALLBACK_SNAPSHOT = fallbackData || [];
 

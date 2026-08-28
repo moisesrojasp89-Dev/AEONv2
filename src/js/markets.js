@@ -7,7 +7,7 @@ import { marketsService } from './services/marketsService.js';
 import { renderMarketCard } from './templates/marketCard.js';
 import { checkSession } from './auth.js';
 import { initNavbar } from './navbar.js';
-import fallbackData from '../../data/market_intelligence_snapshot.json';
+import fallbackData from '../data/market_intelligence_snapshot.json';
 
 let allMarkets = [];
 let currentCategory = 'ALL';

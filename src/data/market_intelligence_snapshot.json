@@ -1,0 +1,436 @@
+[
+  {
+    "symbol": "SPX500",
+    "category": "INDICES",
+    "display_name": "S&P 500",
+    "session_origin": "US",
+    "current_price": 7728.75,
+    "change_24h_pct": -0.12,
+    "bias": "BULLISH",
+    "bias_score": 92,
+    "support_1": 7705.56,
+    "support_2": 7665.87,
+    "resistance_1": 7751.94,
+    "resistance_2": 7772.67,
+    "dpoc_price": 7726.43,
+    "session_vwap": 7729.91,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (7706.28) y Session VWAP (7714.65).",
+    "technical_thesis": "Estructura alcista con soporte clave en 7692.63. La absorción en 7706.28 proyecta expansión hacia la resistencia 7746.03 con RSI en 50.7.",
+    "cited_key_levels": [
+      7692.63,
+      7706.28,
+      7746.03,
+      7714.65
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "NAS100",
+    "category": "INDICES",
+    "display_name": "Nasdaq 100",
+    "session_origin": "US",
+    "current_price": 29597.75,
+    "change_24h_pct": -0.14,
+    "bias": "BULLISH",
+    "bias_score": 92,
+    "support_1": 29508.96,
+    "support_2": 29214.67,
+    "resistance_1": 29686.54,
+    "resistance_2": 29827.87,
+    "dpoc_price": 29588.87,
+    "session_vwap": 29602.19,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (29548.03) y Session VWAP (29510.81).",
+    "technical_thesis": "Estructura alcista con soporte clave en 29384.73. La absorción en 29548.03 proyecta expansión hacia la resistencia 29691.33 con RSI en 48.5.",
+    "cited_key_levels": [
+      29384.73,
+      29548.03,
+      29691.33,
+      29510.81
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "US30",
+    "category": "INDICES",
+    "display_name": "Dow Jones 30",
+    "session_origin": "US",
+    "current_price": 53637.3,
+    "change_24h_pct": -0.32,
+    "bias": "BEARISH",
+    "bias_score": 85,
+    "support_1": 53476.39,
+    "support_2": 53121.77,
+    "resistance_1": 53798.21,
+    "resistance_2": 53937.77,
+    "dpoc_price": 53621.21,
+    "session_vwap": 53645.35,
+    "macro_driver": "Presión vendedora dominante cotizando bajo la línea de Session VWAP (53548.42).",
+    "technical_thesis": "Rechazo en zona de resistencia 53740.03 con objetivo en soporte 53332.03. Pérdida de dPOC en 53465.28 confirma sesgo bajista (RSI 55.0).",
+    "cited_key_levels": [
+      53740.03,
+      53332.03,
+      53465.28,
+      53548.42
+    ],
+    "catalyst_tags": [
+      "BEARISH_PRESSURE",
+      "VWAP_REJECTION",
+      "LIQUIDITY_RUN"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "JP225",
+    "category": "INDICES",
+    "display_name": "Nikkei 225",
+    "session_origin": "ASIA",
+    "current_price": 66594.3,
+    "change_24h_pct": -1.63,
+    "bias": "BEARISH",
+    "bias_score": 90,
+    "support_1": 66394.52,
+    "support_2": 64759.23,
+    "resistance_1": 66794.08,
+    "resistance_2": 67834.23,
+    "dpoc_price": 66574.32,
+    "session_vwap": 66604.29,
+    "macro_driver": "Presión vendedora dominante cotizando bajo la línea de Session VWAP (66141.54).",
+    "technical_thesis": "Rechazo en zona de resistencia 66913.27 con objetivo en soporte 65375.77. Pérdida de dPOC en 66001.67 confirma sesgo bajista (RSI 40.9).",
+    "cited_key_levels": [
+      66913.27,
+      65375.77,
+      66001.67,
+      66141.54
+    ],
+    "catalyst_tags": [
+      "BEARISH_PRESSURE",
+      "VWAP_REJECTION",
+      "LIQUIDITY_RUN"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "XAUUSD",
+    "category": "METALS",
+    "display_name": "Oro al Contado",
+    "session_origin": "GLOBAL",
+    "current_price": 4579.4,
+    "change_24h_pct": -0.51,
+    "bias": "BEARISH",
+    "bias_score": 90,
+    "support_1": 4565.66,
+    "support_2": 4523.55,
+    "resistance_1": 4593.14,
+    "resistance_2": 4681.43,
+    "dpoc_price": 4578.03,
+    "session_vwap": 4580.09,
+    "macro_driver": "Presión vendedora dominante cotizando bajo la línea de Session VWAP (4601.91).",
+    "technical_thesis": "Rechazo en zona de resistencia 4640.72 con objetivo en soporte 4561.78. Pérdida de dPOC en 4609.18 confirma sesgo bajista (RSI 50.3).",
+    "cited_key_levels": [
+      4640.72,
+      4561.78,
+      4609.18,
+      4601.91
+    ],
+    "catalyst_tags": [
+      "BEARISH_PRESSURE",
+      "VWAP_REJECTION",
+      "LIQUIDITY_RUN"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "BTCUSD",
+    "category": "CRYPTO",
+    "display_name": "Bitcoin",
+    "session_origin": "GLOBAL",
+    "current_price": 79680.01,
+    "change_24h_pct": 2.04,
+    "bias": "BULLISH",
+    "bias_score": 92,
+    "support_1": 79201.93,
+    "support_2": 77593.68,
+    "resistance_1": 80158.09,
+    "resistance_2": 82198.9,
+    "dpoc_price": 79632.2,
+    "session_vwap": 79703.91,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (78686.15) y Session VWAP (79750.58).",
+    "technical_thesis": "Estructura alcista con soporte clave en 78943.84. La absorción en 78686.15 proyecta expansión hacia la resistencia 81246.45 con RSI en 55.5.",
+    "cited_key_levels": [
+      78943.84,
+      78686.15,
+      81246.45,
+      79750.58
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "DXY",
+    "category": "FOREX",
+    "display_name": "Dólar Index (DXY)",
+    "session_origin": "US",
+    "current_price": 90.224,
+    "change_24h_pct": 0.02,
+    "bias": "BULLISH",
+    "bias_score": 85,
+    "support_1": 89.95,
+    "support_2": 98.963,
+    "resistance_1": 90.49,
+    "resistance_2": 99.343,
+    "dpoc_price": 90.2,
+    "session_vwap": 90.24,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (99.125) y Session VWAP (99.158).",
+    "technical_thesis": "Estructura alcista con soporte clave en 99.046. La absorción en 99.125 proyecta expansión hacia la resistencia 99.236 con RSI en 33.8.",
+    "cited_key_levels": [
+      99.046,
+      99.125,
+      99.236,
+      99.158
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "EURUSD",
+    "category": "FOREX",
+    "display_name": "Euro / Dólar",
+    "session_origin": "EUROPE",
+    "current_price": 1.1645400000000001,
+    "change_24h_pct": -0.03,
+    "bias": "NEUTRAL",
+    "bias_score": 50,
+    "support_1": 1.1576,
+    "support_2": 1.16265,
+    "resistance_1": 1.1715,
+    "resistance_2": 1.16733,
+    "dpoc_price": 1.1638,
+    "session_vwap": 1.1649,
+    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (1.16526).",
+    "technical_thesis": "Precio oscilando entre el soporte 1.16397 y la resistencia 1.16631. Se recomienda esperar confirmación de ruptura de banda VWAP (1.16499).",
+    "cited_key_levels": [
+      1.16397,
+      1.16631,
+      1.16526,
+      1.16499
+    ],
+    "catalyst_tags": [
+      "RANGE_CONSOLIDATION",
+      "NEUTRAL_POC",
+      "WAIT_BREAKOUT"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "USDJPY",
+    "category": "FOREX",
+    "display_name": "Dólar / Yen Japonés",
+    "session_origin": "ASIA",
+    "current_price": 159.483,
+    "change_24h_pct": 0.11,
+    "bias": "BULLISH",
+    "bias_score": 85,
+    "support_1": 158.53,
+    "support_2": 158.921,
+    "resistance_1": 160.44,
+    "resistance_2": 159.747,
+    "dpoc_price": 159.39,
+    "session_vwap": 159.53,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (159.414) y Session VWAP (159.348).",
+    "technical_thesis": "Estructura alcista con soporte clave en 159.14. La absorción en 159.414 proyecta expansión hacia la resistencia 159.553 con RSI en 36.7.",
+    "cited_key_levels": [
+      159.14,
+      159.414,
+      159.553,
+      159.348
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "GBPUSD",
+    "category": "FOREX",
+    "display_name": "Libra / Dólar",
+    "session_origin": "EUROPE",
+    "current_price": 1.3588200000000001,
+    "change_24h_pct": 0.03,
+    "bias": "NEUTRAL",
+    "bias_score": 50,
+    "support_1": 1.3507,
+    "support_2": 1.35578,
+    "resistance_1": 1.367,
+    "resistance_2": 1.3622,
+    "dpoc_price": 1.358,
+    "session_vwap": 1.3592,
+    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (1.35924).",
+    "technical_thesis": "Precio oscilando entre el soporte 1.35771 y la resistencia 1.36092. Se recomienda esperar confirmación de ruptura de banda VWAP (1.35877).",
+    "cited_key_levels": [
+      1.35771,
+      1.36092,
+      1.35924,
+      1.35877
+    ],
+    "catalyst_tags": [
+      "RANGE_CONSOLIDATION",
+      "NEUTRAL_POC",
+      "WAIT_BREAKOUT"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "USDCAD",
+    "category": "FOREX",
+    "display_name": "Dólar / Dólar Canadiense",
+    "session_origin": "US",
+    "current_price": 1.385325,
+    "change_24h_pct": -0.15,
+    "bias": "BEARISH",
+    "bias_score": 90,
+    "support_1": 1.377,
+    "support_2": 1.38244,
+    "resistance_1": 1.3936,
+    "resistance_2": 1.39056,
+    "dpoc_price": 1.3845,
+    "session_vwap": 1.3857,
+    "macro_driver": "Presión vendedora dominante cotizando bajo la línea de Session VWAP (1.38715).",
+    "technical_thesis": "Rechazo en zona de resistencia 1.38792 con objetivo en soporte 1.38386. Pérdida de dPOC en 1.38617 confirma sesgo bajista (RSI 16.1).",
+    "cited_key_levels": [
+      1.38792,
+      1.38386,
+      1.38617,
+      1.38715
+    ],
+    "catalyst_tags": [
+      "BEARISH_PRESSURE",
+      "VWAP_REJECTION",
+      "LIQUIDITY_RUN"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "AUDUSD",
+    "category": "FOREX",
+    "display_name": "Dólar Australiano / Dólar",
+    "session_origin": "ASIA",
+    "current_price": 0.719955,
+    "change_24h_pct": 0.18,
+    "bias": "BULLISH",
+    "bias_score": 92,
+    "support_1": 0.7156,
+    "support_2": 0.71662,
+    "resistance_1": 0.7243,
+    "resistance_2": 0.72118,
+    "dpoc_price": 0.7195,
+    "session_vwap": 0.7202,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (0.71813) y Session VWAP (0.71869).",
+    "technical_thesis": "Estructura alcista con soporte clave en 0.71799. La absorción en 0.71813 proyecta expansión hacia la resistencia 0.72027 con RSI en 83.0.",
+    "cited_key_levels": [
+      0.71799,
+      0.71813,
+      0.72027,
+      0.71869
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "NZDUSD",
+    "category": "FOREX",
+    "display_name": "Dólar Neozelandés / Dólar",
+    "session_origin": "ASIA",
+    "current_price": 0.59625,
+    "change_24h_pct": 0.1,
+    "bias": "BULLISH",
+    "bias_score": 92,
+    "support_1": 0.5927,
+    "support_2": 0.59294,
+    "resistance_1": 0.5998,
+    "resistance_2": 0.59696,
+    "dpoc_price": 0.5959,
+    "session_vwap": 0.5964,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (0.5947) y Session VWAP (0.59484).",
+    "technical_thesis": "Estructura alcista con soporte clave en 0.59418. La absorción en 0.5947 proyecta expansión hacia la resistencia 0.59619 con RSI en 72.0.",
+    "cited_key_levels": [
+      0.59418,
+      0.5947,
+      0.59619,
+      0.59484
+    ],
+    "catalyst_tags": [
+      "BULLISH_FLOW",
+      "VWAP_SUPPORT",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "USDCHF",
+    "category": "FOREX",
+    "display_name": "Dólar / Franco Suizo",
+    "session_origin": "EUROPE",
+    "current_price": 0.80498,
+    "change_24h_pct": -0.15,
+    "bias": "BEARISH",
+    "bias_score": 90,
+    "support_1": 0.8002,
+    "support_2": 0.80119,
+    "resistance_1": 0.8098,
+    "resistance_2": 0.80755,
+    "dpoc_price": 0.8045,
+    "session_vwap": 0.8052,
+    "macro_driver": "Presión vendedora dominante cotizando bajo la línea de Session VWAP (0.80489).",
+    "technical_thesis": "Rechazo en zona de resistencia 0.80576 con objetivo en soporte 0.80258. Pérdida de dPOC en 0.80552 confirma sesgo bajista (RSI 24.2).",
+    "cited_key_levels": [
+      0.80576,
+      0.80258,
+      0.80552,
+      0.80489
+    ],
+    "catalyst_tags": [
+      "BEARISH_PRESSURE",
+      "VWAP_REJECTION",
+      "LIQUIDITY_RUN"
+    ],
+    "last_updated": "2026-08-28T04:40:27.967229+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  }
+]

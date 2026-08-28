@@ -10,7 +10,7 @@ import { escapeHTML } from './utils/sanitize.js';
 import { supabase } from './supabaseClient.js';
 import { DB_TABLES } from './config/constants.js';
 
-import fallbackCalendarData from '../../data/economic_calendar_snapshot.json';
+import fallbackCalendarData from '../data/economic_calendar_snapshot.json';
 
 let globalEvents = [];
 let liveCountdownStarted = false;
