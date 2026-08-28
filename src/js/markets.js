@@ -52,6 +52,7 @@ function renderMarkets() {
   }
 
   container.innerHTML = filtered.map(m => renderMarketCard(m)).join('');
+  container.scrollTo({ left: 0, behavior: 'smooth' });
 }
 
 /**

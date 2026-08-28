@@ -1,9 +1,10 @@
 /* ============================================================
    AEON · market.css — Senior Institutional Markets Terminal
-   14 Activos Globales • High-Contrast Glassmorphism & Fluid Mobile UX
+   14 Activos Globales • High-Contrast Glassmorphism
+   Desktop: 3-Col Grid • Mobile: Zero-Vertical-Scroll Horizontal Swipe
    ============================================================ */
 
-/* ── Contenedor Principal de la Página de Mercados ── */
+/* ── Contenedor Principal Desktop ── */
 .markets-page-container {
   position: relative;
   z-index: 1;
@@ -12,7 +13,7 @@
   padding: 1.5rem 1.25rem 4rem;
 }
 
-/* ── Hero Header Compacto & Elegante ── */
+/* ── Hero Header ── */
 .markets-hero-header {
   margin-bottom: 1.25rem;
 }
@@ -149,7 +150,7 @@
   color: var(--muted-2);
 }
 
-/* ── Grid de Tarjetas de Mercado ── */
+/* ── Grid Desktop de Tarjetas de Mercado ── */
 .markets-grid-layout {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -398,51 +399,63 @@
   transform: translateY(0);
 }
 
-/* ── Responsive Móvil UI/UX Senior Ultracompacto ── */
+/* ── RESPONSIVE MÓVIL: ZERO SCROLL VERTICAL & HORIZONTAL SWIPE ── */
 @media (max-width: 768px) {
+  body.markets-body-locked {
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+
   .markets-page-container {
-    padding: 0.75rem 0.75rem 3rem;
+    padding: 0.5rem 0.65rem 0.5rem;
+    height: calc(100dvh - var(--header-h));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   
   .markets-hero-header {
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.4rem;
+    flex-shrink: 0;
   }
 
   .markets-hero-meta {
-    gap: 0.5rem;
+    gap: 0.4rem;
     margin-bottom: 0;
   }
   
   .markets-hero-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
   .markets-hero-pill {
-    font-size: 0.68rem;
-    padding: 0.15rem 0.5rem;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
   }
   
   .markets-hero-subtitle {
-    display: none; /* Ocultar párrafo verboso en móvil para priorizar tarjetas */
+    display: none; /* Oculto en móvil */
   }
   
   .markets-controls-bar {
+    flex-shrink: 0;
     flex-direction: column;
     align-items: stretch;
-    padding: 0.45rem;
-    gap: 0.5rem;
-    margin-bottom: 0.85rem;
+    padding: 0.35rem 0.45rem;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
     border-radius: var(--radius-sm);
   }
   
   .market-filters-pills {
     width: 100%;
-    gap: 0.3rem;
+    gap: 0.25rem;
   }
 
   .market-filter-pill {
-    padding: 0.28rem 0.65rem;
-    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.7rem;
   }
   
   .market-search-box {
@@ -451,19 +464,43 @@
   }
 
   .market-search-box input {
-    padding: 0.32rem 0.65rem 0.32rem 1.85rem;
-    font-size: 0.75rem;
+    padding: 0.28rem 0.55rem 0.28rem 1.75rem;
+    font-size: 0.72rem;
   }
   
+  /* ── CARRUSEL HORIZONTAL CON SWIPE ── */
   .markets-grid-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
     gap: 0.75rem;
+    padding: 0.15rem 0.15rem 0.5rem;
+    scrollbar-width: none;
+  }
+
+  .markets-grid-layout::-webkit-scrollbar {
+    display: none;
   }
   
   .market-card {
-    padding: 0.95rem;
-    gap: 0.75rem;
-    border-radius: var(--radius-sm);
+    flex: 0 0 88vw;
+    max-width: 360px;
+    scroll-snap-align: center;
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.85rem;
+    gap: 0.55rem;
+    border-radius: var(--radius-md);
+    overflow-y: auto; /* Scroll interno solo en la tesis si es muy extensa */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 
   .market-price {
@@ -471,6 +508,10 @@
   }
 
   .market-title {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+  }
+
+  .footer {
+    display: none; /* En móvil en la pantalla de terminal bloqueada ocultar footer para cero scroll */
   }
 }
