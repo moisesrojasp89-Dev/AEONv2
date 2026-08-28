@@ -6,6 +6,13 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   base: '/',
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    watch: {
+      ignored: ['**/data/**', '**/scripts/**', '**/.git/**']
+    }
+  },
   resolve: {
     alias: { '@': resolve(__dirname, 'src') },
   },

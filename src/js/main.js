@@ -218,7 +218,19 @@ function initNewsFilters() {
         }
         return tag.includes(val) || title.includes(val);
       });
-      renderNews(filtered.length > 0 ? filtered : allNewsCache);
+      if (filtered.length === 0) {
+        const container = document.getElementById('news-list');
+        if (container) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 0.9rem;">
+              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">🔍</span>
+              No hay noticias activas en la categoría seleccionada en este momento.
+            </div>
+          `;
+        }
+      } else {
+        renderNews(filtered);
+      }
     }
   }
 

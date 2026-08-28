@@ -14,36 +14,36 @@
   ],
   "news": [
     {
-      "id": "fed-minutes",
-      "tag": "Fed",
-      "tagClass": "tag-policy",
-      "time": "Hoy · 09:15 CET",
-      "title": "Actas de la Fed refuerzan un recorte gradual en 2026",
-      "summary": "El mercado lee un tono menos restrictivo. Dólar suave y soporte renovado en metales."
+      "id": "gold-spot-live",
+      "tag": "Metales",
+      "tagClass": "tag-gold",
+      "time": "En vivo",
+      "title": "Oro Spot (XAU/USD): Cotización consolidando en dPOC con soporte institucional",
+      "desc": "El Oro Spot defiende su rango asiático acumulando volumen sobre el Session VWAP. ⚡ IMPACTO: 🪙 XAU/USD: Nivel crítico en $4,570.00. Flujo comprador en metales preciosos."
     },
     {
-      "id": "cpi-us",
-      "tag": "Inflación",
-      "tagClass": "tag-macro",
-      "time": "Ayer · 14:30 CET",
-      "title": "CPI EE.UU. se modera y alivia presión sobre yields",
-      "summary": "Treasuries rebotan y el sesgo de riesgo mejora en índices. Vigilar reacción en EURUSD."
+      "id": "forex-tokyo-yen",
+      "tag": "Forex",
+      "tagClass": "tag-forex",
+      "time": "En vivo",
+      "title": "Divisas G10: EUR/USD en 1.1653 y GBP/USD en 1.3593 en equilibrio de sesión",
+      "desc": "Los principales cruces de divisas muestran estabilidad en Tokio respetando sus puntos de control dPOC. ⚡ IMPACTO: 💶 EUR/USD: Soporte clave 1.1639."
     },
     {
-      "id": "oil-opec",
-      "tag": "Energía",
-      "tagClass": "tag-energy",
-      "time": "Ayer · 11:00 CET",
-      "title": "OPEP+ mantiene cuotas: petróleo estable, impacto limitado en riesgo",
-      "summary": "Sin sorpresa de oferta. El foco vuelve a datos de empleo y PMI manufacturero."
-    },
-    {
-      "id": "spx-levels",
+      "id": "indices-nikkei-spx",
       "tag": "Índices",
-      "tagClass": "tag-markets",
-      "time": "Hace 2 días",
-      "title": "S&P 500 consolida bajo resistencia: liquidez y sesgo de sesión",
-      "summary": "Rango definido. Breakout con volumen abriría extensión; rechazo favorece pullback técnico."
+      "tagClass": "tag-indices",
+      "time": "En vivo",
+      "title": "Nikkei 225 y Asia-Pacífico absorben liquidez tras cierre de Wall Street",
+      "desc": "El índice JP225 cotiza sobre los 66,617 puntos mientras los futuros del S&P 500 consolidan en 7,728. ⚡ IMPACTO: 📈 Renta variable en rango defensivo."
+    },
+    {
+      "id": "fed-dxy-structure",
+      "tag": "Centrales",
+      "tagClass": "tag-policy",
+      "time": "En vivo",
+      "title": "Dólar Index (DXY): Estructura defensiva en 99.13 puntos",
+      "desc": "El billete verde mantiene su rango sobre los 99.13 puntos mientras el mercado monitorea los próximos catalizadores. ⚡ IMPACTO: 🏛️ DXY: Yields estables."
     }
   ],
   "education": [
