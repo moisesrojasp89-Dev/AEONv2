@@ -74,18 +74,24 @@ export function initNavbar() {
     if (e.key === 'Escape') toggleMobileMenu(true);
   });
 
-  // 6. Activar la píldora correspondiente según la URL
+  // 6. Activar estrictamente una sola píldora según la URL y hash
   const currentPath = window.location.pathname;
+  const currentHash = window.location.hash || '#briefing';
+
   mobileLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    if (
-      (currentPath === '/' || currentPath.endsWith('index.html')) && href.includes('index.html') ||
-      (currentPath.includes('mercados.html') && href.includes('mercados.html')) ||
-      (currentPath.includes('calendario.html') && href.includes('calendario.html')) ||
-      (currentPath.includes('perfil.html') && href.includes('perfil.html'))
-    ) {
+    link.classList.remove('active');
+    const href = link.getAttribute('href') || '';
+    
+    if (currentPath.includes('mercados.html') && href.includes('mercados.html')) {
       link.classList.add('active');
+    } else if (currentPath.includes('calendario.html') && href.includes('calendario.html')) {
+      link.classList.add('active');
+    } else if (currentPath.includes('perfil.html') && href.includes('perfil.html')) {
+      link.classList.add('active');
+    } else if (currentPath === '/' || currentPath.endsWith('index.html') || currentPath === '') {
+      if (href.includes(currentHash)) {
+        link.classList.add('active');
+      }
     }
   });
 }

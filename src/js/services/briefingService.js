@@ -13,30 +13,30 @@ const CACHE_KEY = 'aeon_latest_briefing_cache';
  * Fallback institucional de respaldo si la base de datos está offline o vacía.
  */
 export const DEFAULT_BRIEFING = {
-  id: 'fallback-briefing',
-  session_id: 'london_pre',
+  id: 'asia-briefing-live',
+  session_id: 'asian_wrap',
   date: new Date().toISOString().split('T')[0],
-  title: 'Sesión Europea: Enfoque en Liquidez y Catalizadores Macroeconómicos',
-  image_url: 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop',
+  title: 'Sesión Asia-Pacífico: Flujo de Tokio & Sídney y Reacción a Datos Macro',
+  image_url: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop',
   macro_sentiment: {
-    score: 65,
+    score: 58,
     label: 'RISK_ON',
     risk_appetite: 'BULLISH',
   },
   asset_bias: {
     XAUUSD: 'BULLISH',
-    EURUSD: 'NEUTRAL',
-    GBPUSD: 'BULLISH',
-    DXY: 'BEARISH',
-    SPX500: 'BULLISH',
+    EURUSD: 'BEARISH',
+    GBPUSD: 'BEARISH',
+    DXY: 'BULLISH',
+    SPX500: 'NEUTRAL',
   },
   catalysts: [
-    { time: '08:30', currency: 'USD', title: 'Core PCE Price Index m/m', impact: 'HIGH' },
-    { time: '13:30', currency: 'USD', title: 'Prelim GDP q/q', impact: 'HIGH' },
-    { time: '15:00', currency: 'USD', title: 'ISM Servicios PMI', impact: 'MEDIUM' },
+    { time: '19:30', currency: 'JPY', title: 'Tokyo Core CPI y/y', impact: 'HIGH', status: 'live', actual: '2.2%', forecast: '2.1%' },
+    { time: '01:30', currency: 'AUD', title: 'Private Capital Expenditure q/q', impact: 'MEDIUM', status: 'upcoming', actual: null, forecast: '0.8%' },
+    { time: '08:30', currency: 'USD', title: 'Unemployment Claims', impact: 'HIGH', status: 'upcoming', actual: null, forecast: '230K' },
   ],
-  executive_thesis: 'Consolidación en el Dólar (DXY) favorece soporte técnico en Oro (XAU/USD) e Índices. Se proyecta volatilidad institucional durante la apertura con sesgo favorable a continuación de tendencia.',
-  full_content_md: 'Contexto institucional en vivo generado por AEON AI Platform.',
+  executive_thesis: 'Apertura de la sesión asiática con tono constructivo tras el IPC de Tokio (2.2%). El Oro Spot ($4,598.06) sostiene dPOC mientras el Nikkei 225 y los cruces del Yen absorben la liquidez inicial.',
+  full_content_md: '### 🌐 Contexto de la Sesión Asia-Pacífico\nApertura de mercados en Tokio y Sídney.',
   author: 'AEON Macro Intelligence AI',
 };
 
