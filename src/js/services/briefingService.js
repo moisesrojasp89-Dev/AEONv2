@@ -43,16 +43,17 @@ export const DEFAULT_BRIEFING = {
 /**
  * Obtiene el último Daily Macro Briefing disponible.
  * Implementa estrategia Cache-First (0ms white-screen) con actualización en background.
+ * @param {Function} [onBackgroundUpdate] - Callback opcional si la versión de Supabase es más reciente que el caché.
  * @returns {Promise<Object>}
  */
-export async function fetchLatestBriefing() {
+export async function fetchLatestBriefing(onBackgroundUpdate) {
   // 1. Intentar cargar desde caché local para renderizado instantáneo en 0ms
   try {
     const cached = sessionStorage.getItem(CACHE_KEY);
     if (cached) {
       const parsed = JSON.parse(cached);
       // Disparar sincronización asíncrona con Supabase en background
-      syncBriefingBackground();
+      syncBriefingBackground(parsed, onBackgroundUpdate);
       return parsed;
     }
   } catch {
@@ -84,11 +85,11 @@ export async function fetchLatestBriefing() {
 }
 
 /**
- * Sincronización silenciosa en background.
+ * Sincronización silenciosa en background que actualiza la UI si hay una sesión más nueva.
  */
-async function syncBriefingBackground() {
+async function syncBriefingBackground(currentCached, onBackgroundUpdate) {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from(DB_TABLES.DAILY_BRIEFINGS)
       .select('*')
       .order('date', { ascending: false })
@@ -96,8 +97,16 @@ async function syncBriefingBackground() {
       .limit(1)
       .maybeSingle();
 
-    if (data) {
+    if (error || !data) return;
+
+    // Verificar si el dato remoto es más reciente o de otra sesión
+    const isNewer = !currentCached || data.id !== currentCached.id || data.session_id !== currentCached.session_id || data.created_at !== currentCached.created_at;
+    
+    if (isNewer) {
       sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      if (typeof onBackgroundUpdate === 'function') {
+        onBackgroundUpdate(data);
+      }
     }
   } catch {
     // Ignorar errores silenciosos de background

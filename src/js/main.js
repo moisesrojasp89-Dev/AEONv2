@@ -245,7 +245,9 @@ function initNewsFilters() {
 }
 
 async function loadDynamicBriefing() {
-  const briefing = await fetchLatestBriefing();
+  const briefing = await fetchLatestBriefing((updated) => {
+    renderBriefing(updated);
+  });
   renderBriefing(briefing);
   
   // Suscripción a nuevos briefings publicados en tiempo real

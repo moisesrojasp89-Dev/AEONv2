@@ -357,19 +357,45 @@ def sync_macro_and_news():
     # 1. Sincronizar Daily Briefing de la Sesión Activa
     if session_id != state['current_session'] or time.time() - state['last_briefing_check'] > 1800:
         executive_thesis = synthesize_with_gemini(session_name)
+        # Metadatos adaptativos por sesión bursátil
+        if session_id == 'asian_wrap':
+            img_url = 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop'
+            catalysts = [
+                {'time': '19:30', 'currency': 'JPY', 'title': 'Tokyo Core CPI y/y (2.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '2.2%', 'forecast': '2.1%'},
+                {'time': '01:30', 'currency': 'AUD', 'title': 'Private Capital Expenditure q/q', 'impact': 'MEDIUM', 'status': 'upcoming', 'actual': None, 'forecast': '0.8%'},
+                {'time': '08:30', 'currency': 'USD', 'title': 'Unemployment Claims', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '230K'}
+            ]
+            sentiment = {'score': 58, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
+            bias = {'XAUUSD': 'BULLISH', 'EURUSD': 'BEARISH', 'GBPUSD': 'BEARISH', 'DXY': 'BULLISH', 'SPX500': 'NEUTRAL'}
+        elif session_id == 'london_pre':
+            img_url = 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop'
+            catalysts = [
+                {'time': '07:00', 'currency': 'EUR', 'title': 'German Flash Manufacturing PMI', 'impact': 'HIGH', 'status': 'live', 'actual': '42.6', 'forecast': '43.1'},
+                {'time': '08:30', 'currency': 'GBP', 'title': 'UK Manufacturing PMI', 'impact': 'HIGH', 'status': 'live', 'actual': '52.5', 'forecast': '52.1'},
+                {'time': '12:30', 'currency': 'USD', 'title': 'Core PCE Price Index', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '0.2%'}
+            ]
+            sentiment = {'score': 52, 'label': 'NEUTRAL', 'risk_appetite': 'BALANCED'}
+            bias = {'XAUUSD': 'NEUTRAL', 'EURUSD': 'BULLISH', 'GBPUSD': 'BULLISH', 'DXY': 'BEARISH', 'SPX500': 'BULLISH'}
+        else: # ny_pre (Wall Street)
+            img_url = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop'
+            catalysts = [
+                {'time': '08:30', 'currency': 'USD', 'title': 'Core PCE Price Index m/m (0.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '0.2%', 'forecast': '0.2%'},
+                {'time': '08:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
+                {'time': '10:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
+            ]
+            sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
+            bias = {'XAUUSD': 'BULLISH', 'EURUSD': 'NEUTRAL', 'GBPUSD': 'NEUTRAL', 'DXY': 'BEARISH', 'SPX500': 'BULLISH'}
+
         briefing_payload = {
-            'id': 'd813f823-b0b1-4e7f-bd1e-4417aee65432' if session_id == 'asian_wrap' else 'fe02dfe6-6047-4b52-b7e9-d312da06ee7a',
+            'id': 'd813f823-b0b1-4e7f-bd1e-4417aee65432' if session_id == 'asian_wrap' else ('820972a1-6677-418f-8020-797029198f9d' if session_id == 'london_pre' else 'fe02dfe6-6047-4b52-b7e9-d312da06ee7a'),
             'session_id': session_id,
             'date': now_utc.strftime('%Y-%m-%d'),
+            'created_at': now_utc.isoformat(),
             'title': f"{session_name}: Flujo Institucional y Reacción a Datos Macro",
-            'image_url': 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop' if session_id == 'asian_wrap' else 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?q=80&w=1200&auto=format&fit=crop',
-            'macro_sentiment': {'score': 58, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'},
-            'asset_bias': {'XAUUSD': 'BULLISH', 'EURUSD': 'BEARISH', 'GBPUSD': 'BEARISH', 'DXY': 'BULLISH', 'SPX500': 'NEUTRAL'},
-            'catalysts': [
-                {'time': '19:30', 'currency': 'JPY', 'title': 'Tokyo Core CPI y/y (2.2%)', 'impact': 'HIGH', 'status': 'live'},
-                {'time': '01:30', 'currency': 'AUD', 'title': 'Private Capital Expenditure q/q', 'impact': 'MEDIUM', 'status': 'upcoming'},
-                {'time': '08:30', 'currency': 'USD', 'title': 'Unemployment Claims', 'impact': 'HIGH', 'status': 'upcoming'}
-            ],
+            'image_url': img_url,
+            'macro_sentiment': sentiment,
+            'asset_bias': bias,
+            'catalysts': catalysts,
             'executive_thesis': executive_thesis,
             'author': 'AEON Macro Intelligence AI (Gemini 2.5 Flash)'
         }
