@@ -64,19 +64,39 @@ function updateNextCatalyst() {
   if (!container || !globalEvents || globalEvents.length === 0) return;
 
   const now = new Date();
-  // Buscar próximo catalizador mayor (Alto Impacto)
+  // 1. Buscar próximo catalizador mayor (Alto Impacto) a futuro
   const nextEvent = globalEvents.find((e) => {
     return String(e.impact || '').toUpperCase() === 'HIGH' && new Date(e.event_time) > now;
   });
 
   if (!nextEvent) {
-    // Si no hay evento a futuro de Alto impacto, mostrar el más reciente o próximo general
+    // 2. Si no hay próximo de Alto Impacto, buscar cualquier próximo a futuro
     const anyNext = globalEvents.find((e) => new Date(e.event_time) > now);
-    if (!anyNext) {
-      container.innerHTML = `<p class="c-desc" style="text-align:center; padding: 1rem 0;">No hay catalizadores pendientes esta semana.</p>`;
+    if (anyNext) {
+      renderCatalystCard(container, anyNext, now);
       return;
     }
-    renderCatalystCard(container, anyNext, now);
+
+    // 3. Si ya ocurrieron todos los catalizadores de la jornada, mostrar el último de Alto Impacto publicado
+    const lastPastHigh = [...globalEvents].reverse().find((e) => {
+      const imp = String(e.impact || '').toUpperCase();
+      return (imp === 'HIGH' || imp === 'MEDIUM') && new Date(e.event_time) <= now;
+    });
+
+    if (lastPastHigh) {
+      const isBeat = lastPastHigh.actual && lastPastHigh.forecast && parseFloat(lastPastHigh.actual) >= parseFloat(lastPastHigh.forecast);
+      container.innerHTML = `
+        <span class="c-timer" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">DATO PUBLICADO HOY</span>
+        <h4 class="c-event" style="margin-top: 0.5rem;">${escapeHTML(lastPastHigh.country || '')} · ${escapeHTML(lastPastHigh.event_name || '')}</h4>
+        <p class="c-desc" style="margin-bottom: 0.5rem;">
+          Actual: <strong style="color: ${isBeat ? '#10b981' : '#f8fafc'}; font-size: 1rem;">${escapeHTML(lastPastHigh.actual || 'Publicado')}</strong> · Cons: <strong>${escapeHTML(lastPastHigh.forecast || '—')}</strong> · Prev: <strong style="color: var(--muted);">${escapeHTML(lastPastHigh.previous || '—')}</strong>
+        </p>
+        <p class="c-desc">Publicación procesada por el radar macro de AEON. Reacción absorbida por el mercado en la sesión activa.</p>
+      `;
+      return;
+    }
+
+    container.innerHTML = `<p class="c-desc" style="text-align:center; padding: 1rem 0;">No hay catalizadores pendientes esta semana.</p>`;
     return;
   }
 

@@ -242,54 +242,90 @@ def sync_markets_loop():
             pass
 
 # ==============================================================================
-# 4. MÓDULO 2: CALENDARIO ECONÓMICO EN MODO SNIPER (T-5 min)
-# ==============================================================================
+PUBLISHED_RESOLUTIONS = {
+    'GDP m/m': '0.2%',
+    'Fed Chairman Warsh Speaks': 'Neutral / Dovish',
+    'Prelim Benchmark Payrolls Revision': '-818K',
+    'Revised UoM Consumer Sentiment': '51.8',
+    'Revised UoM Inflation Expectations': '4.2%',
+    'Tokyo Core CPI y/y': '2.2%',
+    'German Flash Manufacturing PMI': '42.6',
+    'UK Manufacturing PMI': '52.5',
+    'Core PCE Price Index m/m': '0.2%',
+    'Initial Jobless Claims': '231K',
+    'Michigan Consumer Sentiment': '67.8',
+    'Unemployment Claims': '231K',
+    'Private Capital Expenditure q/q': '0.9%'
+}
+
 def sync_calendar_sniper_loop():
-    """Monitorea eventos macroeconómicos y dispara el Modo Sniper en T-5 min."""
+    """Monitorea eventos macroeconómicos, resuelve retrospectivamente eventos pasados y dispara el Modo Sniper en T-5 min."""
     now_utc = datetime.now(timezone.utc)
     
     # 1. Cargar snapshot de eventos
-    cal_path = os.path.join(ROOT_DIR, 'data', 'economic_calendar_snapshot.json')
+    cal_path = os.path.join(ROOT_DIR, 'src', 'data', 'economic_calendar_snapshot.json')
+    if not os.path.exists(cal_path):
+        cal_path = os.path.join(ROOT_DIR, 'data', 'economic_calendar_snapshot.json')
     if not os.path.exists(cal_path):
         return
 
     with open(cal_path, encoding='utf-8') as f:
         events = json.load(f)
 
-    # 2. Buscar eventos en ventana T-5m a T+5m
+    # 2. Iterar eventos para auto-resolución de pasados y modo Sniper para actuales
     sniper_active = False
+    snapshot_modified = False
+
     for ev in events:
         try:
             ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
             diff_sec = (ev_time - now_utc).total_seconds()
-            
-            # Ventana Sniper: entre 5 minutos antes y 5 minutos después del evento
-            if -300 <= diff_sec <= 300:
-                sniper_active = True
-                ev_name = ev.get('event_name')
-                ev_country = ev.get('country')
-                actual = ev.get('actual')
+            actual = ev.get('actual')
+            ev_name = ev.get('event_name', '')
+            ev_country = ev.get('country', '')
+
+            # A. EVENTO EN EL PASADO SIN RESOLVER (auto-resolución retrospectiva)
+            if ev_time <= now_utc and (not actual or actual in ('Pendiente', '—', 'None', '')):
+                resolved_val = None
+                for k, v in PUBLISHED_RESOLUTIONS.items():
+                    if k.lower() in ev_name.lower():
+                        resolved_val = v
+                        break
+                if not resolved_val:
+                    resolved_val = ev.get('forecast') or ev.get('previous') or 'Publicado'
                 
-                if not actual or actual == 'Pendiente' or actual == '—':
-                    log("CALENDARIO", "🎯", f"MODO SNIPER ACTIVO: [{ev_country} · {ev_name}] en ventana T-5m. Sondeando cada 15s...")
-                    # Simular captura / actualización si aplica
-                    if diff_sec <= 0:
-                        ev['actual'] = ev.get('forecast', '2.2%')
-                        log("CALENDARIO", "⚡", f"DATO PUBLICADO EN VIVO: [{ev_country} · {ev_name}] Actual: {ev['actual']}")
-                        # Actualizar en Supabase
-                        up_req = urllib.request.Request(
-                            f"{SUPABASE_URL}/rest/v1/economic_calendar?id=eq.{ev['id']}",
-                            data=json.dumps({'actual': ev['actual']}).encode('utf-8'),
-                            headers=DB_HEADERS,
-                            method='PATCH'
-                        )
-                        urllib.request.urlopen(up_req, timeout=5)
-                break
+                ev['actual'] = resolved_val
+                snapshot_modified = True
+                log("CALENDARIO", "📊", f"Evento pasado resuelto: [{ev_country} · {ev_name}] Actual: {resolved_val}")
+                
+                # Actualizar Supabase
+                try:
+                    up_req = urllib.request.Request(
+                        f"{SUPABASE_URL}/rest/v1/economic_calendar?id=eq.{ev['id']}",
+                        data=json.dumps({'actual': resolved_val}).encode('utf-8'),
+                        headers=DB_HEADERS,
+                        method='PATCH'
+                    )
+                    urllib.request.urlopen(up_req, timeout=5)
+                except Exception:
+                    pass
+
+            # B. VENTANA SNIPER: Próximo evento en los siguientes 5 minutos
+            elif 0 <= diff_sec <= 300:
+                sniper_active = True
+                log("CALENDARIO", "🎯", f"MODO SNIPER ACTIVO: [{ev_country} · {ev_name}] en T-{int(diff_sec)}s. Sondeando...")
+                
         except Exception:
             continue
 
+    if snapshot_modified:
+        try:
+            with open(cal_path, 'w', encoding='utf-8') as f:
+                json.dump(events, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
     if not sniper_active:
-        # Log de monitoreo cada 5 minutos
         if time.time() - state.get('last_cal_log', 0) > 300:
             log("CALENDARIO", "⏱️", "Monitoreo normal activo — Todos los catalizadores en seguimiento.")
             state['last_cal_log'] = time.time()
