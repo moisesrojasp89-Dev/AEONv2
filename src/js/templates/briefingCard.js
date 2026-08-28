@@ -55,7 +55,7 @@ export function renderBriefingCard(briefing) {
   let sessionStatus = 'WALL STREET & FED';
   let sessionPillClass = 'session-ny-live';
 
-  const sessionKey = String(briefing.session || '').toLowerCase();
+  const sessionKey = String(briefing.session_id || briefing.session || '').toLowerCase();
   const titleLower = String(briefing.title || '').toLowerCase();
 
   if (sessionKey === 'london_pre' || sessionKey.includes('london') || titleLower.includes('europea') || titleLower.includes('londres')) {
