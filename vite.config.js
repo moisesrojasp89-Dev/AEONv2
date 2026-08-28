@@ -1,10 +1,13 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   base: '/',
   resolve: {
-    alias: { '@': '/src' },
+    alias: { '@': resolve(__dirname, 'src') },
   },
   build: {
     target: 'es2020',
