@@ -538,9 +538,9 @@ def sync_macro_and_news():
         if session_id == 'asian_wrap':
             img_url = 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop'
             catalysts = [
-                {'time': '19:30', 'currency': 'JPY', 'title': 'Tokyo Core CPI y/y (2.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '2.2%', 'forecast': '2.1%'},
+                {'time': '23:30', 'currency': 'JPY', 'title': 'Tokyo Core CPI y/y (2.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '2.2%', 'forecast': '2.1%'},
                 {'time': '01:30', 'currency': 'AUD', 'title': 'Private Capital Expenditure q/q', 'impact': 'MEDIUM', 'status': 'upcoming', 'actual': None, 'forecast': '0.8%'},
-                {'time': '08:30', 'currency': 'USD', 'title': 'Unemployment Claims', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '230K'}
+                {'time': '12:30', 'currency': 'USD', 'title': 'Unemployment Claims', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '230K'}
             ]
             sentiment = {'score': 58, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
         elif session_id == 'london_pre':
@@ -554,9 +554,9 @@ def sync_macro_and_news():
         else: # ny_pre (Wall Street)
             img_url = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop'
             catalysts = [
-                {'time': '08:30', 'currency': 'USD', 'title': 'Core PCE Price Index m/m (0.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '0.2%', 'forecast': '0.2%'},
-                {'time': '08:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
-                {'time': '10:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
+                {'time': '12:30', 'currency': 'USD', 'title': 'Core PCE Price Index m/m (0.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '0.2%', 'forecast': '0.2%'},
+                {'time': '12:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
+                {'time': '14:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
             ]
             sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
 

@@ -27,7 +27,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-08-29T21:56:54.981580+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -58,7 +58,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-08-29T21:56:54.981580+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -89,7 +89,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-08-29T21:56:54.981580+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -120,7 +120,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.981580+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -151,7 +151,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -159,30 +159,30 @@
     "category": "CRYPTO",
     "display_name": "Bitcoin",
     "session_origin": "GLOBAL",
-    "current_price": 78198.0,
-    "change_24h_pct": -0.38,
+    "current_price": 78100.6,
+    "change_24h_pct": -0.51,
     "bias": "BEARISH",
-    "bias_score": 62,
-    "support_1": 77259.62,
-    "support_2": 76446.36,
-    "resistance_1": 79136.38,
-    "resistance_2": 79949.64,
-    "dpoc_price": 78448.23,
-    "session_vwap": 78323.12,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (78448.23) y Session VWAP (78323.12).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 79136.38. La absorción vendedora proyecta retroceso hacia el soporte 77259.62 con RSI en 43.4.",
+    "bias_score": 65,
+    "support_1": 77163.39,
+    "support_2": 76351.15,
+    "resistance_1": 79037.81,
+    "resistance_2": 79850.05,
+    "dpoc_price": 78350.52,
+    "session_vwap": 78225.56,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (78350.52) y Session VWAP (78225.56).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 79037.81. La absorción vendedora proyecta retroceso hacia el soporte 77163.39 con RSI en 41.9.",
     "cited_key_levels": [
-      77259.62,
-      78448.23,
-      79136.38,
-      78323.12
+      77163.39,
+      78350.52,
+      79037.81,
+      78225.56
     ],
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -213,7 +213,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -244,7 +244,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -275,7 +275,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -306,7 +306,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -337,7 +337,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -368,7 +368,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -399,7 +399,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -430,7 +430,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-08-29T21:56:54.982805+00:00",
+    "last_updated": "2026-08-29T22:23:36.995430+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   }
 ]
