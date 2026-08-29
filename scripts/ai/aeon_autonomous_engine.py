@@ -582,15 +582,23 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
         try:
             ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
             actual_val = ev.get('actual')
-            is_live = bool(actual_val and actual_val not in ('Pendiente', '—', 'None', ''))
+            is_past = (ev_time <= now_utc)
+            
+            if is_past:
+                status = 'live'
+                if not actual_val or actual_val in ('Pendiente', '—', 'None'):
+                    actual_val = 'Publicado'
+            else:
+                status = 'upcoming'
+                actual_val = None
             
             catalysts_payload.append({
                 'time': ev_time.strftime('%H:%M'), # UTC estandarizado
                 'currency': ev.get('country', 'USD'),
                 'title': ev.get('event_name', ''),
                 'impact': str(ev.get('impact', 'HIGH')).upper(),
-                'status': 'live' if is_live else 'upcoming',
-                'actual': actual_val if is_live else None,
+                'status': status,
+                'actual': actual_val,
                 'forecast': ev.get('forecast'),
                 'previous': ev.get('previous')
             })
