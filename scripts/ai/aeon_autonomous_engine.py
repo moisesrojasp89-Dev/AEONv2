@@ -654,10 +654,10 @@ def sync_macro_and_news():
 
         briefing_payload = {
             'id': 'd813f823-b0b1-4e7f-bd1e-4417aee65432' if session_id == 'asian_wrap' else ('820972a1-6677-418f-8020-797029198f9d' if session_id == 'london_pre' else 'fe02dfe6-6047-4b52-b7e9-d312da06ee7a'),
-            'session_id': session_id,
+            'session_id': 'ny_pre' if session_id == 'weekend_wrap' else session_id,
             'date': now_utc.strftime('%Y-%m-%d'),
             'created_at': now_utc.isoformat(),
-            'title': f"{session_name}: Flujo Institucional y Reacción a Datos Macro",
+            'title': f"{session_name}: Balance Macro y Perspectiva de Apertura" if session_id == 'weekend_wrap' else f"{session_name}: Flujo Institucional y Reacción a Datos Macro",
             'image_url': img_url,
             'macro_sentiment': sentiment,
             'asset_bias': asset_bias,
