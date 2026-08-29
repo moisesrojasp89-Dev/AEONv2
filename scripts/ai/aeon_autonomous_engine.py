@@ -512,6 +512,78 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
             f"La renta variable (S&P 500 en {spx_price:,.0f}) y Bitcoin (${btc_price:,.0f}) absorben liquidez en rangos clave."
         )
 
+def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
+    """Extrae dinámicamente los 3 catalizadores de mayor impacto de la base de datos de calendario para la sesión activa."""
+    if now_utc is None:
+        now_utc = datetime.now(timezone.utc)
+    
+    events = []
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/economic_calendar?select=*&order=event_time.asc",
+            headers=DB_HEADERS
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            events = json.loads(resp.read().decode('utf-8'))
+    except Exception:
+        cal_path = os.path.join(ROOT_DIR, 'src', 'data', 'economic_calendar_snapshot.json')
+        if not os.path.exists(cal_path):
+            cal_path = os.path.join(ROOT_DIR, 'data', 'economic_calendar_snapshot.json')
+        if os.path.exists(cal_path):
+            with open(cal_path, encoding='utf-8') as f:
+                events = json.load(f)
+
+    if not events:
+        return []
+
+    session_currencies = {
+        'asian_wrap': ['JPY', 'AUD', 'NZD', 'CNY'],
+        'london_pre': ['EUR', 'GBP', 'CHF'],
+        'ny_pre': ['USD', 'CAD']
+    }
+    target_currencies = session_currencies.get(session_id, ['USD', 'EUR', 'JPY', 'GBP'])
+
+    scored_events = []
+    for ev in events:
+        try:
+            ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
+            diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
+            curr_match = ev.get('country') in target_currencies
+            impact_score = 3 if str(ev.get('impact', '')).upper() == 'HIGH' else (2 if str(ev.get('impact', '')).upper() == 'MEDIUM' else 1)
+            time_proximity_score = 0
+            if -48 <= diff_hours <= 48:
+                time_proximity_score = 100 - abs(diff_hours)
+            
+            total_score = (50 if curr_match else 0) + (impact_score * 20) + time_proximity_score
+            scored_events.append((total_score, ev_time, ev))
+        except Exception:
+            continue
+
+    scored_events.sort(key=lambda x: (x[0], -abs((x[1] - now_utc).total_seconds())), reverse=True)
+    top_events = [x[2] for x in scored_events[:3]]
+
+    catalysts_payload = []
+    for ev in top_events:
+        try:
+            ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
+            actual_val = ev.get('actual')
+            is_live = bool(actual_val and actual_val not in ('Pendiente', '—', 'None', ''))
+            
+            catalysts_payload.append({
+                'time': ev_time.strftime('%H:%M'), # UTC estandarizado
+                'currency': ev.get('country', 'USD'),
+                'title': ev.get('event_name', ''),
+                'impact': str(ev.get('impact', 'HIGH')).upper(),
+                'status': 'live' if is_live else 'upcoming',
+                'actual': actual_val if is_live else None,
+                'forecast': ev.get('forecast'),
+                'previous': ev.get('previous')
+            })
+        except Exception:
+            continue
+
+    return catalysts_payload
+
 def sync_macro_and_news():
     """Actualiza noticias y briefings con frecuencia adaptativa según la fase bursátil y cotizaciones vivas."""
     session_id, session_name, is_open_window = get_current_trading_session()
@@ -537,28 +609,16 @@ def sync_macro_and_news():
         
         if session_id == 'asian_wrap':
             img_url = 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop'
-            catalysts = [
-                {'time': '23:30', 'currency': 'JPY', 'title': 'Tokyo Core CPI y/y (2.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '2.2%', 'forecast': '2.1%'},
-                {'time': '01:30', 'currency': 'AUD', 'title': 'Private Capital Expenditure q/q', 'impact': 'MEDIUM', 'status': 'upcoming', 'actual': None, 'forecast': '0.8%'},
-                {'time': '12:30', 'currency': 'USD', 'title': 'Unemployment Claims', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '230K'}
-            ]
             sentiment = {'score': 58, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
         elif session_id == 'london_pre':
             img_url = 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop'
-            catalysts = [
-                {'time': '07:00', 'currency': 'EUR', 'title': 'German Flash Manufacturing PMI', 'impact': 'HIGH', 'status': 'live', 'actual': '42.6', 'forecast': '43.1'},
-                {'time': '08:30', 'currency': 'GBP', 'title': 'UK Manufacturing PMI', 'impact': 'HIGH', 'status': 'live', 'actual': '52.5', 'forecast': '52.1'},
-                {'time': '12:30', 'currency': 'USD', 'title': 'Core PCE Price Index', 'impact': 'HIGH', 'status': 'upcoming', 'actual': None, 'forecast': '0.2%'}
-            ]
             sentiment = {'score': 52, 'label': 'NEUTRAL', 'risk_appetite': 'BALANCED'}
         else: # ny_pre (Wall Street)
             img_url = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop'
-            catalysts = [
-                {'time': '12:30', 'currency': 'USD', 'title': 'Core PCE Price Index m/m (0.2%)', 'impact': 'HIGH', 'status': 'live', 'actual': '0.2%', 'forecast': '0.2%'},
-                {'time': '12:30', 'currency': 'USD', 'title': 'Initial Jobless Claims (231K)', 'impact': 'HIGH', 'status': 'live', 'actual': '231K', 'forecast': '232K'},
-                {'time': '14:00', 'currency': 'USD', 'title': 'Michigan Consumer Sentiment (67.8)', 'impact': 'MEDIUM', 'status': 'live', 'actual': '67.8', 'forecast': '67.5'}
-            ]
             sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
+
+        # Extracción dinámica 100% de catalizadores reales desde la base de datos de calendario
+        catalysts = get_session_dynamic_catalysts(session_id, now_utc)
 
         # Construcción dinámica 100% de todos los activos calculados por el motor cuántico
         asset_bias = {}
