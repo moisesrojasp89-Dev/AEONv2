@@ -631,7 +631,7 @@ def sync_macro_and_news():
         executive_thesis = synthesize_with_gemini(session_name, gold_price, btc_price, dxy_price, spx_price, gold_bias)
         
         if session_id == 'weekend_wrap':
-            img_url = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop'
+            img_url = 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=1200&auto=format&fit=crop'
             sentiment = {'score': 55, 'label': 'RISK_ON', 'risk_appetite': 'NEUTRAL'}
         elif session_id == 'asian_wrap':
             img_url = 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop'
