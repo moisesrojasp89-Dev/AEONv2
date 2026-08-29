@@ -22,6 +22,26 @@
   /* Impact */
   --impact-high:   #FF3366;
   --impact-med:    #FFAA00;
+  --impact-low:    #64748B;
+
+  /* Stat comparison (actual vs. forecast) */
+  --stat-better:        #4ADE80;
+  --stat-better-bg:     rgba(74, 222, 128, 0.08);
+  --stat-better-border: rgba(74, 222, 128, 0.22);
+  --stat-better-text:   #D1FAE5;
+  --stat-worse:         #F87171;
+  --stat-worse-bg:      rgba(248, 113, 113, 0.08);
+  --stat-worse-border:  rgba(248, 113, 113, 0.22);
+  --stat-worse-text:    #FEE2E2;
+  --stat-pending:       rgba(255,255,255,0.35);
+  --stat-pending-2:     rgba(255,255,255,0.40);
+
+  /* Glass panel & inputs */
+  --glass-bg:           linear-gradient(180deg, rgba(8,12,22,0.7) 0%, rgba(5,8,15,0.9) 100%);
+  --glass-border:       rgba(255,255,255,0.08);
+  --input-bg:           rgba(12, 19, 34, 0.8);
+  --input-bg-solid:     #0c1322;
+  --input-border:       rgba(255, 255, 255, 0.1);
 
   /* Surfaces */
   --bg:            #0B0D11;

@@ -1,0 +1,40 @@
+/* ============================================================
+   AEON · form-controls.css — shared input / select styling
+   Split out of the original calendar.css on 2026-08-28.
+   Currently used by the calendar toolbar; safe to reuse anywhere
+   else on the site that needs the same dark input/select look.
+   ============================================================ */
+
+.calendar-search-input,
+.calendar-select {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.calendar-search-input {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  min-width: 170px;
+  font-family: var(--font-body);
+}
+.calendar-search-input::placeholder { color: var(--muted); }
+.calendar-search-input:focus { border-color: var(--accent); }
+
+.calendar-select {
+  appearance: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.83rem;
+  cursor: pointer;
+}
+.calendar-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(14,165,233,0.15);
+}
+.calendar-select option {
+  background-color: var(--input-bg-solid);
+  color: #fff;
+}

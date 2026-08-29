@@ -1,0 +1,98 @@
+/* ============================================================
+   AEON · sidebar-widget.css — Calendar page sidebar
+   (TradingView chart panel + "next catalyst" countdown box)
+   Split out of the original calendar.css on 2026-08-28.
+   Depends on: the pulse-dot keyframe (defined in animations.css)
+   ============================================================ */
+
+.calendar-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 5rem;
+}
+
+.sidebar-widget {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.widget-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.live-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 0.15rem 0.3rem;
+  border-radius: 2px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.tv-container { height: 250px; width: 100%; }
+
+.catalyst-box { padding: 1rem; }
+
+.c-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px solid var(--accent-border);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.c-timer::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+.c-event {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.c-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 0.35rem;
+}
