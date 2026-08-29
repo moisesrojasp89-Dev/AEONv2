@@ -65,7 +65,11 @@ export function renderBriefingCard(briefing) {
   const sessionKey = String(briefing.session_id || briefing.session || '').toLowerCase();
   const titleLower = String(briefing.title || '').toLowerCase();
 
-  if (sessionKey === 'london_pre' || sessionKey.includes('london') || titleLower.includes('europea') || titleLower.includes('londres')) {
+  if (sessionKey === 'weekend_wrap' || sessionKey.includes('weekend') || titleLower.includes('semanal') || titleLower.includes('cierre de mercados')) {
+    sessionLabel = 'RESUMEN SEMANAL';
+    sessionStatus = 'MERCADOS CERRADOS · CRIPTO 24/7';
+    sessionPillClass = 'session-weekend-wrap';
+  } else if (sessionKey === 'london_pre' || sessionKey.includes('london') || titleLower.includes('europea') || titleLower.includes('londres')) {
     sessionLabel = 'SESIÓN EUROPEA';
     sessionStatus = 'LONDRES & BCE';
     sessionPillClass = 'session-london-live';

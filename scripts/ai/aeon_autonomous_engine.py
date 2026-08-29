@@ -427,21 +427,26 @@ def sync_calendar_sniper_loop():
 # 5. MÓDULO 3: BRIEFING MACRO & NOTICIAS POR FASES DE SESIÓN
 # ==============================================================================
 def get_current_trading_session() -> tuple[str, str, bool]:
-    """Determina la sesión bursátil activa y si está en ventana de apertura."""
+    """Determina la sesión bursátil activa, incluyendo fin de semana (mercados cerrados)."""
     now_utc = datetime.now(timezone.utc)
+    weekday = now_utc.weekday() # 0: Lun, 1: Mar, 2: Mie, 3: Jue, 4: Vie, 5: Sab, 6: Dom
     hour = now_utc.hour + now_utc.minute / 60.0
 
-    # 1. Sesión Asia-Pacífico (Tokio/Sídney): 22:00 a 07:00 UTC
-    if hour >= 22.0 or hour < 7.0:
-        is_open_window = (hour >= 22.0 or hour < 1.0)
+    # FIN DE SEMANA: Desde Viernes 21:00 UTC hasta Domingo 21:00 UTC (17:00 NY)
+    if weekday == 5 or (weekday == 4 and hour >= 21.0) or (weekday == 6 and hour < 21.0):
+        return 'weekend_wrap', 'Resumen Semanal & Cierre de Mercados', False
+
+    # 1. Sesión Asia-Pacífico (Tokio/Sídney): 21:00 a 07:00 UTC
+    if hour >= 21.0 or hour < 7.0:
+        is_open_window = (hour >= 21.0 or hour < 1.0)
         return 'asian_wrap', 'Sesión Asia-Pacífico (Tokio & Sídney)', is_open_window
 
-    # 2. Sesión Europea (Londres): 06:30 a 15:30 UTC
+    # 2. Sesión Europea (Londres): 06:30 a 12:30 UTC
     elif 7.0 <= hour < 12.5:
         is_open_window = (7.0 <= hour < 9.5)
         return 'london_pre', 'Sesión Europea (Londres & BCE)', is_open_window
 
-    # 3. Sesión Americana (Wall Street): 12.5 a 22.0 UTC
+    # 3. Sesión Americana (Wall Street): 12.5 a 21.0 UTC
     else:
         is_open_window = (12.5 <= hour < 15.0)
         return 'ny_pre', 'Sesión Americana (Wall Street & Fed)', is_open_window
@@ -474,6 +479,11 @@ def fetch_rss_headlines() -> list[dict]:
 def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: float, dxy_price: float, spx_price: float, gold_bias: str) -> str:
     """Genera la tesis macroeconómica institucional con Gemini o fallback matemático de alta precisión."""
     if not GEMINI_API_KEY:
+        if 'Semanal' in session_name or 'Fin de Semana' in session_name:
+            return (
+                f"Cierre semanal de mercados globales. El Oro Spot (${gold_price:,.2f}) y las divisas consolidan tras asimilar la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
+                f"Bitcoin (${btc_price:,.0f}) mantiene negociación activa 24/7 de cara a la apertura del domingo."
+            )
         gold_note = f"sufre fuerte presión bajista quebrando su dPOC hacia soportes en $4,480" if gold_bias == "BEARISH" else f"consolida sobre dPOC con absorción activa"
         return (
             f"Apertura en {session_name}. El Oro Spot (${gold_price:,.2f}) {gold_note} "
@@ -485,10 +495,10 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
         prompt = (
             f"Actúa como un estratega macroeconómico cuantitativo sénior para la firma Fintech AEON. "
-            f"Estamos en la {session_name}. Cotizaciones reales en vivo: Oro Spot en ${gold_price:,.2f} (Sesgo: {gold_bias}), "
-            f"Dólar Index DXY en {dxy_price:.2f}, S&P 500 en {spx_price:,.0f}, Bitcoin en ${btc_price:,.0f}. "
-            f"Redacta un análisis ejecutivo conciso de 2 oraciones (máximo 45 palabras) explicando la liquidez institucional, "
-            f"la reacción al dólar/Fed y los soportes/resistencias dPOC sin usar lenguaje vago."
+            f"Estamos en: {session_name}. Cotizaciones de cierre semanal: Oro Spot en ${gold_price:,.2f} (Sesgo: {gold_bias}), "
+            f"Dólar Index DXY en {dxy_price:.2f}, S&P 500 en {spx_price:,.0f}, Bitcoin (en vivo 24/7) en ${btc_price:,.0f}. "
+            f"Redacta un análisis ejecutivo conciso de 2 oraciones (máximo 45 palabras) explicando el balance semanal de liquidez, "
+            f"la absorción del dólar/Fed y la preparación de apertura para futuros de materias primas e índices."
         )
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
@@ -505,6 +515,11 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
             log("GEMINI 2.5", "✨", f"Tesis generada por Gemini AI ({len(text)} chars)")
             return text
     except Exception as e:
+        if 'Semanal' in session_name or 'Fin de Semana' in session_name:
+            return (
+                f"Cierre semanal de mercados globales. El Oro Spot (${gold_price:,.2f}) y las divisas consolidan tras asimilar la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
+                f"Bitcoin (${btc_price:,.0f}) mantiene negociación activa 24/7 de cara a la apertura del domingo."
+            )
         gold_note = f"sufre fuerte presión bajista quebrando su dPOC hacia soportes en $4,480" if gold_bias == "BEARISH" else f"consolida sobre dPOC con absorción activa"
         return (
             f"Apertura en {session_name}. El Oro Spot (${gold_price:,.2f}) {gold_note} "
@@ -607,7 +622,10 @@ def sync_macro_and_news():
     if session_id != state['current_session'] or time.time() - state['last_briefing_check'] > 1800:
         executive_thesis = synthesize_with_gemini(session_name, gold_price, btc_price, dxy_price, spx_price, gold_bias)
         
-        if session_id == 'asian_wrap':
+        if session_id == 'weekend_wrap':
+            img_url = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop'
+            sentiment = {'score': 55, 'label': 'RISK_ON', 'risk_appetite': 'NEUTRAL'}
+        elif session_id == 'asian_wrap':
             img_url = 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1200&auto=format&fit=crop'
             sentiment = {'score': 58, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
         elif session_id == 'london_pre':
