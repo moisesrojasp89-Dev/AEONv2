@@ -106,16 +106,84 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 
 ---
 
-## 📋 4. Buenas Prácticas y Protocolos para Futuras Actualizaciones
+### D. Refactorización Modular de la Arquitectura CSS del Calendario Económico
+* **Problema:** El archivo `src/css/components/calendar.css` había crecido hasta superar las 700 líneas, mezclando estilos de controles de formulario, paneles laterales de TradingView y la tabla de alta densidad.
+* **Refactorización Modular Implementada:**
+  1. **`src/css/variables.css`:** Inclusión de tokens de comparación de datos (`--stat-better`, `--stat-worse`, `--stat-pending`, `--stat-better-bg/border/text`), token de impacto bajo (`--impact-low`) y superficies de inputs oscuros (`--glass-bg`, `--input-bg`, `--input-border`).
+  2. **`src/css/components/form-controls.css` (Nuevo Componente):** Extracción de `.calendar-search-input` y `.calendar-select` como utilidades reutilizables para cualquier formulario de la plataforma.
+  3. **`src/css/components/sidebar-widget.css` (Nuevo Componente):** Extracción del panel lateral independiente con el widget de TradingView en vivo (`.tv-container`) y la tarjeta del próximo catalizador / dato publicado con animación de pulso (`pulse-dot`).
+  4. **`src/css/components/calendar.css` (Limpio y Compacto):** Rediseño de la tabla de alta densidad con un layout responsivo estricto:
+     * **Desktop ($\ge 900\text{px}$):** Grid de 8 columnas (`--eco-cols: 80px 60px 40px 1fr 80px 80px 80px 30px`).
+     * **Móvil ($< 900\text{px}$):** Grid optimizado de 4 columnas (`68px 1fr 24px 28px`) con tarjeta de impacto macro colapsable (`.macro-impact-card`).
 
-1. **Gestión de Rutas y Snapshots:**
-   * Cualquier archivo de datos consumido por el frontend mediante `import` DEBE residir dentro de `src/` (ej. `src/data/`) y estar rastreado en Git.
-   * La carpeta `/data/` en la raíz se reserva exclusivamente para archivos temporales del backend/Python y debe permanecer en `.gitignore`.
-2. **Despliegues en Vercel:**
-   * Nunca usar expresiones regulares complejas con tuberías `|` o barras invertidas en `vercel.json`. Usar patrones glob oficiales `/(.*)`.
-   * Mantener siempre `vite` en `dependencies` en `package.json` para evitar que `NODE_ENV=production` lo excluya.
-   * Ejecutar `npm install` tras cualquier cambio en `package.json` antes de hacer commit.
-3. **Optimización de Feeds Cuantitativos:**
-   * Priorizar siempre endpoints por lotes (*batch endpoints*) y APIs públicas sin rate limit (como Binance) para mantener la frecuencia alta a costo \$0.
-4. **Telemetría y Logs:**
-   * Todos los daemons y motores deben incluir timestamps y emojis visuales (`✅`, `🎯`, `⚠️`, `❌`) para diagnóstico inmediato desde la consola.
+---
+
+## 🧠 3. Evolución del Cerebro Cuántico y Agentes Autónomos (AEON Engine)
+
+### A. Motor Cuántico Universal para los 14 Activos (`compute_institutional_quant_metrics`)
+* **Mandato Institucional:** Eliminar cualquier sesgo aislado o cálculo manual. Todo trader (de Forex, Metales, Cripto o Índices) debe ver datos matemáticamente exactos.
+* **Lógica Cuantitativa:** Cada 20 segundos se calcula el delta de sesión $\Delta_{\text{Sesión}} = \frac{P - P_{\text{Base}}}{P_{\text{Base}}} \times 100$ frente a benchmarks de apertura calibrados institucionalmente.
+* **Métricas Deterministas Generadas:**
+  * **Sesgo (`BULLISH` / `BEARISH` / `NEUTRAL`)** con puntuación de convicción ($50\% - 96\%$).
+  * **Niveles dPOC (Daily Point of Control)** según bandas de volatilidad interbancaria.
+  * **Session VWAP** y soportes/resistencias dinámicos ($S_1, S_2, R_1, R_2$).
+  * **Tesis institucional y tags de catalizadores** (`DPOC_EXPANSION`, `BEARISH_FLOW`, `VWAP_SUPPORT`).
+* **Sincronización:** Alimenta en tiempo real el radar del Daily Briefing (`asset_bias`), la terminal de `mercados.html` y las noticias.
+
+### B. Corrección de la Fórmula Oficial ICE del Dollar Index (DXY)
+* **Error Encontrado:** La fórmula geométrica del DXY calculaba `90.544` en lugar del valor real de mercado (`99.566`).
+* **Causa:** Faltaba el componente ponderado de la corona sueca $(USDSEK^{0.042})$.
+* **Solución:** Se incorporó `USD_SEK` al lote de OANDA y se aplicó la fórmula oficial de ICE:
+  $$DXY = 50.14348112 \times EURUSD^{-0.576} \times USDJPY^{0.136} \times GBPUSD^{-0.119} \times USDCAD^{0.091} \times USDSEK^{0.042} \times USDCHF^{0.036}$$
+  Resultado: Exactitud milimétrica de nivel interbancario.
+
+### C. Modo Institucional de Fin de Semana (`weekend_wrap`)
+* **Detección Temporal:** Reconoce automáticamente el cierre bursátil de Forex y Renta Variable (Viernes 21:00 UTC a Domingo 21:00 UTC).
+* **Comportamiento:**
+  * **Píldora:** `MERCADOS CERRADOS · CRIPTO 24/7`.
+  * **Portada:** Gráfica financiera institucional en tonos azul cian y neón dark fintech (`#0EA5E9` / `#070B12`).
+  * **Cotizaciones:** Congela precios de cierre del viernes en Forex/Índices/Metales y mantiene **Bitcoin cotizando en tiempo real 24/7** con websocket/API de Binance.
+  * **Tesis:** Balance semanal de absorción institucional y preparación de apertura de futuros para el domingo.
+
+---
+
+## 🐞 4. Registro de Errores Críticos (Bugs) y Malas Prácticas Resueltas
+
+### Error 1: Fallos Consecutivos de Compilación en Vercel CI (`Module not found` & `Error`)
+* **Síntoma:** Vercel cancelaba todos los despliegues con error rojo (`🔴 Error`) y seguía sirviendo una versión congelada.
+* **Solución Implementada:** Corrección de `.gitignore` (`/data/`, `!src/data/`), `vercel.json` con globs estándar y sincronización de `package-lock.json`.
+
+### Error 2: Bucle de Auto-Recargas de la Página en el Servidor Local
+* **Síntoma:** En `http://192.168.1.8:5173/`, la página web parpadeaba y se recargaba sola cada 20 segundos.
+* **Solución Implementada:** Se ignoraron rutas de snapshots en `vite.config.js` (`server.watch.ignored`).
+
+### Error 3: Riesgo de Agotamiento de Rate Limits en TwelveData (Error 429)
+* **Solución Implementada:** Migración total a la API por lotes de OANDA v20 (1 sola petición para 12 activos) + Binance público para BTC. Consumo TwelveData reducido a 0.
+
+### Error 4: Discrepancia Horaria en Catalizadores del Daily Briefing (04:30 vs 08:30)
+* **Síntoma:** Eventos de las 08:30 AM (hora Nueva York/Caracas) figuraban como 04:30 AM en la interfaz.
+* **Causa Raíz:** El backend guardaba `"08:30"` asumiendo hora local, pero la función `formatToUserLocalTime()` interpretaba la cadena como UTC y le restaba 4 horas (`08:30 UTC - 4 = 04:30`).
+* **Solución:** Estandarización de todos los catalizadores a **formato UTC estricto** en el backend (`12:30 UTC` para 08:30 ET, `14:00 UTC` para 10:00 ET, `23:30 UTC` para 19:30 Local / Tokio 08:30).
+
+### Error 5: Datos Estáticos Inventados en Noticias y Plantilla del IPC de Tokio (2.2% vs 1.8%)
+* **Síntoma:** Las noticias debajo del briefing mostraban *"Japón: IPC Subyacente de Tokio repunta al 2.2%"* cuando en el calendario el dato oficial publicado era **1.8%**.
+* **Causa Raíz:** En `scripts/ai/aeon_autonomous_engine.py`, la rama de noticias asiáticas contenía un bloque con cadenas de texto estáticas *hardcodeadas* como mock inicial.
+* **Solución:** **Eliminación total y definitiva de plantillas estáticas.** El generador de noticias ahora implementa **Grounding Obligatorio**: extrae directamente los datos publicados de la tabla `economic_calendar` de Supabase y las cotizaciones en tiempo real del motor cuantitativo, garantizando 100% de coherencia en cada número publicado.
+
+### Error 6: Eventos Pasados de Discursos (Warsh) Mostrados como "PRÓXIMO" en Fin de Semana
+* **Síntoma:** El evento *Fed Chairman Warsh Speaks* (ocurrido el viernes a las 10:00 AM) figuraba con el badge `PRÓXIMO` un sábado por la noche.
+* **Causa Raíz:** Las comparecencias no tienen previsión numérica (`actual: null`). La condición anterior `status = 'live' if ev.get('actual') else 'upcoming'` asignaba erróneamente `PRÓXIMO` porque `actual` era nulo, ignorando que la fecha `event_time` ya había transcurrido.
+* **Solución:** Se implementó la regla temporal estricta `is_past = (ev_time <= now_utc)`. Si la fecha ya transcurrió, el evento se marca como `live` (`PUBLICADO`) y se le asigna `"Publicado"` si el campo `actual` estaba vacío.
+
+---
+
+## 📋 5. Buenas Prácticas y Protocolos para Futuras Actualizaciones
+
+1. **Principio de Single Source of Truth (SSOT):**
+   * El Daily Briefing, las Noticias en Vivo y los Widgets NUNCA deben usar listas de eventos o números manuales en código. Todo debe originarse en la base de datos `public.economic_calendar` y `public.market_intelligence`.
+2. **Grounding de Inteligencia Artificial (Gemini):**
+   * Al invocar LLMs para análisis macro, se deben proporcionar como contexto los datos limpios de la base de datos con instrucciones explícitas de "Cero Alucinaciones".
+3. **Manejo de Zonas Horarias:**
+   * Todos los registros en la base de datos se almacenan en **UTC (`+00:00`)**. La conversión a la zona horaria del usuario se realiza exclusivamente en el cliente mediante `Intl.DateTimeFormat` / `formatToUserLocalTime()`.
+4. **Modularidad CSS:**
+   * Ningún archivo de componentes CSS debe superar las 300 líneas. Los estilos compartidos (botones, inputs, glassmorphism) deben residir en sus respectivos módulos bajo `src/css/components/` o `src/css/variables.css`.

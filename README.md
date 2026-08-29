@@ -16,13 +16,18 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │  └─────────────┬─────────────┘         └─────────────┬──────────────┘  │
 │                │                                     │                 │
 │  ┌─────────────▼─────────────────────────────────────▼──────────────┐  │
-│  │ MÓDULOS DEL MOTOR DE AGENTES                                     │  │
-│  │  1. Mercados (sync_markets_loop): Cada 20s en lote (0 TwelveData)│  │
+│  │ CEREBRO CUÁNTICO & AGENTES AUTÓNOMOS                             │  │
+│  │  1. Motor Cuántico (14 Activos simultáneos):                     │  │
 │  │     - dPOC de Volumen, Session VWAP, S1/S2/R1/R2 deterministas   │  │
+│  │     - Sesgo cuantitativo institucional (BULLISH/BEARISH/NEUTRAL) │  │
+│  │     - Cálculo exacto DXY mediante fórmula oficial ICE            │  │
 │  │  2. Calendario Sniper (sync_calendar_sniper): T-5m sondeo rápido │  │
-│  │     - Captura de valor 'Actual' y recálculo de impacto macro     │  │
-│  │  3. Briefing & Noticias (sync_macro_and_news): Fases de sesión   │  │
-│  │     - Síntesis macro con Gemini 2.5 Flash / Fallback calibrado   │  │
+│  │     - Auto-resolución de eventos pasados y captura de 'Actual'   │  │
+│  │  3. Daily Briefing Dinámico (get_session_dynamic_catalysts):     │  │
+│  │     - Grounding directo en DB de calendario (Cero mock data)     │  │
+│  │     - Modo Weekend Wrap (Cierre Semanal / Cripto 24/7 en vivo)   │  │
+│  │  4. Generador de Noticias con Grounding Obligatorio:             │  │
+│  │     - 5 categorías vivas ancladas a datos reales verificados     │  │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
 │                                                      │                 │
 └──────────────────────────────────────────────────────┼─────────────────┘
@@ -44,7 +49,8 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │  - Entorno Local (Wi-Fi): http://192.168.1.8:5173                      │
 │  - Menú Lateral Minimalista estilo Drawer Nexora con SVG vectoriales   │
 │  - Carrusel Táctil Horizontal en Mercados (0 scroll vertical en móvil) │
-│  - Gráficos interactivos Lightweight Charts v5                         │
+│  - Calendario Modular (form-controls, sidebar-widget, calendar.css)    │
+│  - Gráficos interactivos TradingView & Lightweight Charts v5           │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,8 +70,8 @@ npx vite --host 0.0.0.0 --port 5173
 python scripts/ai/aeon_autonomous_engine.py
 ```
 * Sincroniza los 14 activos cada 20s (Oro Spot, Bitcoin, S&P 500, Nasdaq, Forex).
-* Monitorea el calendario en Modo Sniper ($T-5\text{ min}$).
-* Publica noticias contextualizadas y actualiza el briefing según la sesión activa (Tokio, Londres, NY).
+* Extrae catalizadores y noticias directamente de la base de datos de calendario oficial.
+* Detecta automáticamente las sesiones bursátiles (**Tokio**, **Londres**, **Nueva York** y **Weekend Wrap de fin de semana**).
 
 ---
 
@@ -74,15 +80,19 @@ python scripts/ai/aeon_autonomous_engine.py
 | Componente | Descripción | Estado |
 |---|---|:---:|
 | **Motor Autónomo VPS** | Ingesta batch OANDA + Binance, 0 TwelveData calls, Modo Sniper en Calendario. | ✅ **Operativo** |
+| **Cerebro Cuántico 14 Activos** | Microestructura dPOC, VWAP, sesgos deterministas y fórmula ICE DXY. | ✅ **Operativo** |
+| **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
+| **Modo Weekend Wrap** | Gestión de cierre semanal, síntesis de balance macro y Bitcoin en vivo 24/7. | ✅ **Operativo** |
+| **Arquitectura CSS Modular** | Componentes desacoplados (`form-controls`, `sidebar-widget`, `calendar.css`). | ✅ **Desplegado** |
 | **Menú Móvil Nexora** | Drawer minimalista con iconos SVG vectoriales, píldora cian y tarjeta Pro. | ✅ **Desplegado** |
 | **Mercados Móvil** | Carrusel horizontal táctil `86vw` con cero scroll vertical. | ✅ **Desplegado** |
-| **Calendario Económico** | 74 eventos macro con failover atómico y widgets interactivos. | ✅ **Desplegado** |
-| **Producción Vercel** | Despliegues automatizados desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
+| **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
 
 ---
 
 ## 📚 Documentación Técnica Adicional
 
-* 📖 **[Bitácora de Desarrollo y Errores](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico de bugs, refactorizaciones y lecciones aprendidas.
+* 📖 **[Bitácora de Desarrollo y Errores](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico detallado de bugs resueltos, refactorizaciones y lecciones aprendidas.
 * 🏛️ **[Estándares de Ingeniería](docs/ENGINEERING_STANDARDS.md):** Convenciones de código, seguridad RLS y gobernanza cuantitativa.
 * 🗺️ **[Roadmap v2.0](docs/AEON_ROADMAP_V2.md):** Fases y arquitectura a largo plazo.
+
