@@ -893,7 +893,7 @@
     "country": "JPY",
     "event_name": "Retail Sales y/y",
     "impact": "Medium",
-    "actual": null,
+    "actual": "1.2%",
     "forecast": "1.2%",
     "previous": "1.5%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
