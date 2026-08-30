@@ -38,12 +38,22 @@ function isToday(dateObj) {
 
 function isThisWeek(dateObj) {
   const today = new Date();
-  const firstDay = new Date(today.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)));
-  firstDay.setHours(0, 0, 0, 0);
-  const lastDay = new Date(firstDay);
-  lastDay.setDate(lastDay.getDate() + 6);
-  lastDay.setHours(23, 59, 59, 999);
-  return dateObj >= firstDay && dateObj <= lastDay;
+  const dayOfWeek = today.getDay(); // 0 = Domingo, 1 = Lunes, ...
+  
+  // En domingo (día de planificación/apertura), abarca desde la sesión asiática del domingo hasta el domingo siguiente
+  const startDay = new Date(today);
+  if (dayOfWeek === 0) {
+    startDay.setHours(0, 0, 0, 0);
+  } else {
+    startDay.setDate(today.getDate() - dayOfWeek + 1);
+    startDay.setHours(0, 0, 0, 0);
+  }
+
+  const endDay = new Date(startDay);
+  endDay.setDate(startDay.getDate() + (dayOfWeek === 0 ? 7 : 6));
+  endDay.setHours(23, 59, 59, 999);
+
+  return dateObj >= startDay && dateObj <= endDay;
 }
 
 function isThisMonth(dateObj) {
@@ -54,7 +64,7 @@ function isThisMonth(dateObj) {
   ) {
     return true;
   }
-  // Tolerancia para sincronización de reloj de cliente
+  // Tolerancia para la semana de solape entre fin de mes e inicio de mes
   const diffDays = Math.abs((dateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   return diffDays <= 35;
 }
