@@ -1,15 +1,16 @@
 /* ============================================================
-   AEON · market.css — Senior Institutional Markets Terminal
+   AEON · market.css — Institutional Markets Terminal
    14 Activos Globales • High-Contrast Glassmorphism
-   Desktop: 3-Col Grid • Mobile: Zero-Vertical-Scroll Horizontal Swipe
+   Base component styles only — all breakpoint behavior lives in
+   responsive.css (mobile <640 / tablet 640-899 / desktop ≥900).
    ============================================================ */
 
-/* ── Contenedor Principal Desktop ── */
+/* ── Contenedor Principal ── */
 .markets-page-container {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   max-width: 1320px;
-  margin: 0 auto;
+  margin-inline: auto;
   padding: 1.5rem 1.25rem 4rem;
 }
 
@@ -28,10 +29,10 @@
 
 .markets-hero-title {
   font-family: var(--font-head);
-  font-size: 1.75rem;
+  font-size: clamp(1.15rem, 4.5vw, 1.75rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #F8FAFC;
+  color: var(--text-bright);
   margin: 0;
 }
 
@@ -39,11 +40,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.2rem 0.6rem;
+  padding: 0.18rem 0.55rem;
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--accent);
 }
@@ -75,8 +76,8 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .market-filters-pills {
@@ -104,7 +105,7 @@
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s var(--ease);
+  transition: color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
 }
 
 .market-filter-pill:hover {
@@ -112,11 +113,16 @@
   border-color: var(--border-2);
 }
 
+.market-filter-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .market-filter-pill.active {
   background: var(--accent-dim);
   border-color: var(--accent-border);
   color: var(--accent);
-  box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 10px var(--accent-border);
 }
 
 .market-search-box {
@@ -134,7 +140,7 @@
   color: var(--text);
   font-size: 0.78rem;
   outline: none;
-  transition: border-color 0.2s var(--ease);
+  transition: border-color var(--dur-base) var(--ease);
 }
 
 .market-search-box input:focus {
@@ -150,32 +156,32 @@
   color: var(--muted-2);
 }
 
-/* ── Grid Desktop de Tarjetas de Mercado ── */
+/* ── Grid de Tarjetas de Mercado ── */
 .markets-grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-max-w), 1fr));
   gap: 1.15rem;
 }
 
-/* ── Tarjeta Individual de Mercado (Glassmorphism de Alto Contraste) ── */
+/* ── Tarjeta Individual de Mercado ── */
 .market-card {
   background: linear-gradient(150deg, rgba(22, 27, 38, 0.9) 0%, rgba(13, 17, 26, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-2);
   border-radius: var(--radius-md);
   padding: 1.25rem;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   display: flex;
   flex-direction: column;
   gap: 0.95rem;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  box-shadow: 0 6px 20px -2px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
 }
 
 .market-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(14, 165, 233, 0.35);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(14, 165, 233, 0.12);
+  border-color: var(--accent-border);
+  box-shadow: 0 12px 30px var(--shadow-strong), 0 0 16px var(--accent-dim);
 }
 
 /* Cabecera de la Tarjeta */
@@ -202,13 +208,13 @@
 }
 
 .gold-badge {
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: var(--yellow-dim);
+  border: 1px solid var(--yellow-border);
 }
 
 .btc-badge {
-  background: rgba(247, 147, 26, 0.15);
-  border: 1px solid rgba(247, 147, 26, 0.35);
+  background: var(--btc-dim);
+  border: 1px solid var(--btc-border);
 }
 
 .market-flag-icon {
@@ -218,9 +224,9 @@
 
 .market-title {
   font-family: var(--font-head);
-  font-size: 1.05rem;
+  font-size: clamp(0.92rem, 2.5vw, 1.05rem);
   font-weight: 700;
-  color: #F8FAFC;
+  color: var(--text-bright);
   line-height: 1.2;
 }
 
@@ -234,9 +240,9 @@
 }
 
 .market-price {
-  font-size: 1.2rem;
+  font-size: clamp(1.1rem, 3vw, 1.2rem);
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-bright);
 }
 
 .market-change {
@@ -250,8 +256,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.4rem 0.65rem;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--overlay);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
 }
 
@@ -275,8 +281,8 @@
 /* Rango Microestructural Visual */
 .market-levels-box {
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--overlay);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
 }
 
@@ -292,7 +298,7 @@
   position: relative;
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--glass-border);
   border-radius: 999px;
   overflow: visible;
   margin-bottom: 0.45rem;
@@ -313,7 +319,7 @@
   border: 2px solid var(--accent);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 8px rgba(14, 165, 233, 0.8);
+  box-shadow: 0 0 8px var(--accent-glow-strong);
 }
 
 .market-vwap-note {
@@ -325,8 +331,8 @@
 /* Síntesis AEON Real Intelligence */
 .market-thesis-box {
   padding: 0.85rem;
-  background: rgba(14, 165, 233, 0.04);
-  border: 1px solid rgba(14, 165, 233, 0.18);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-border);
   border-left: 3px solid var(--accent);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   font-size: 0.82rem;
@@ -347,7 +353,7 @@
 }
 
 .market-macro-text {
-  color: #F1F5F9;
+  color: var(--text-bright);
   font-weight: 500;
   margin-bottom: 0.35rem;
 }
@@ -367,8 +373,8 @@
 
 .market-tag {
   padding: 0.15rem 0.45rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-2);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
   color: var(--muted);
   font-weight: 500;
@@ -384,14 +390,14 @@
   border: 1px solid var(--accent-border);
   color: var(--accent);
   border-radius: var(--radius-sm);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px var(--shadow-strong);
   font-size: 0.8rem;
   font-weight: 600;
-  z-index: 1000;
+  z-index: var(--z-toast);
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
 }
 
 .market-live-toast.visible {
@@ -399,141 +405,19 @@
   transform: translateY(0);
 }
 
+/* Hint de swipe — solo visible en mobile, ver responsive.css */
 .markets-swipe-hint {
   display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
-/* ── RESPONSIVE MÓVIL: ZERO SCROLL VERTICAL & HORIZONTAL SWIPE CON ALTA PRIORIDAD ── */
-@media (max-width: 768px) {
-  .markets-swipe-hint {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-    color: var(--accent) !important;
-    letter-spacing: 0.04em !important;
-    margin-bottom: 0.35rem !important;
-    flex-shrink: 0 !important;
-    animation: pulse 2s infinite ease-in-out;
-  }
-  html, body {
-    overflow-x: hidden;
-  }
-
-  body.markets-body-locked {
-    overflow: hidden !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-  }
-
-  .markets-page-container {
-    padding: 0.45rem 0.65rem 0.45rem !important;
-    height: calc(100dvh - var(--header-h, 60px)) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-  }
-  
-  .markets-hero-header {
-    margin-bottom: 0.35rem !important;
-    flex-shrink: 0 !important;
-  }
-
-  .markets-hero-meta {
-    gap: 0.4rem !important;
-    margin-bottom: 0 !important;
-  }
-  
-  .markets-hero-title {
-    font-size: 1.15rem !important;
-  }
-
-  .markets-hero-pill {
-    font-size: 0.65rem !important;
-    padding: 0.12rem 0.45rem !important;
-  }
-  
-  .markets-hero-subtitle {
-    display: none !important; /* Oculto en móvil */
-  }
-  
-  .markets-controls-bar {
-    flex-shrink: 0 !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    padding: 0.35rem 0.45rem !important;
-    gap: 0.35rem !important;
-    margin-bottom: 0.45rem !important;
-    border-radius: var(--radius-sm) !important;
-  }
-  
-  .market-filters-pills {
-    width: 100% !important;
-    gap: 0.25rem !important;
-  }
-
-  .market-filter-pill {
-    padding: 0.22rem 0.55rem !important;
-    font-size: 0.7rem !important;
-  }
-  
-  .market-search-box {
-    width: 100% !important;
-    min-width: unset !important;
-  }
-
-  .market-search-box input {
-    padding: 0.26rem 0.55rem 0.26rem 1.75rem !important;
-    font-size: 0.72rem !important;
-  }
-  
-  /* ── CARRUSEL HORIZONTAL OBLIGATORIO CON SWIPE ── */
-  .markets-grid-layout {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 0.75rem !important;
-    padding: 0.15rem 0.15rem 0.5rem !important;
-    scrollbar-width: none !important;
-  }
-
-  .markets-grid-layout::-webkit-scrollbar {
-    display: none !important;
-  }
-  
-  .market-card {
-    flex: 0 0 86vw !important;
-    min-width: 86vw !important;
-    max-width: 360px !important;
-    scroll-snap-align: center !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    padding: 0.85rem !important;
-    gap: 0.55rem !important;
-    border-radius: var(--radius-md) !important;
-    overflow-y: auto !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-  }
-
-  .market-price {
-    font-size: 1.1rem !important;
-  }
-
-  .market-title {
-    font-size: 0.92rem !important;
-  }
-
-  .footer {
-    display: none !important;
-  }
+@keyframes markets-swipe-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
 }

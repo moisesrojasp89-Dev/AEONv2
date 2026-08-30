@@ -4,10 +4,12 @@
 
 :root {
   /* Brand */
-  --accent:        #0EA5E9;
-  --accent-dim:    rgba(14,165,233,0.10);
-  --accent-border: rgba(14,165,233,0.20);
-  --accent-glow:   rgba(14,165,233,0.25);
+  --accent:             #0EA5E9;
+  --accent-wash:        rgba(14,165,233,0.04);
+  --accent-dim:         rgba(14,165,233,0.10);
+  --accent-border:      rgba(14,165,233,0.20);
+  --accent-glow:        rgba(14,165,233,0.25);
+  --accent-glow-strong: rgba(14,165,233,0.8);
 
   /* Semantic */
   --green:         #22C55E;
@@ -16,8 +18,14 @@
   --red-dim:       rgba(239,68,68,0.12);
   --yellow:        #F59E0B;
   --yellow-dim:    rgba(245,158,11,0.12);
+  --yellow-border: rgba(245,158,11,0.35);
   --purple:        #A855F7;
   --purple-dim:    rgba(168,85,247,0.12);
+
+  /* Asset brand colors */
+  --btc:        #F7931A;
+  --btc-dim:    rgba(247,147,26,0.15);
+  --btc-border: rgba(247,147,26,0.35);
 
   /* Impact */
   --impact-high:   #FF3366;
@@ -39,6 +47,7 @@
   /* Glass panel & inputs */
   --glass-bg:           linear-gradient(180deg, rgba(8,12,22,0.7) 0%, rgba(5,8,15,0.9) 100%);
   --glass-border:       rgba(255,255,255,0.08);
+  --glass-blur:         18px;
   --input-bg:           rgba(12, 19, 34, 0.8);
   --input-bg-solid:     #0c1322;
   --input-border:       rgba(255, 255, 255, 0.1);
@@ -47,12 +56,14 @@
   --bg:            #0B0D11;
   --surface:       rgba(255,255,255,0.04);
   --surface-2:     rgba(255,255,255,0.07);
+  --overlay:       rgba(0,0,0,0.25);
   --border:        rgba(255,255,255,0.07);
   --border-2:      rgba(255,255,255,0.12);
 
   /* Text */
   --text:          #E4E4E7;
   --text-main:     var(--text);
+  --text-bright:   #F8FAFC;
   --muted:         rgba(228,228,231,0.55);
   --muted-2:       rgba(228,228,231,0.32);
 
@@ -75,6 +86,15 @@
   --dur-fast:      150ms;
   --dur-base:      250ms;
 
+  /* Shadows */
+  --shadow:        rgba(0,0,0,0.4);
+  --shadow-strong: rgba(0,0,0,0.5);
+
+  /* Z-index */
+  --z-base:  1;
+  --z-toast: 1000;
+
   /* Layout */
-  --header-h:      57px;
+  --header-h:   57px;
+  --card-max-w: 360px;
 }

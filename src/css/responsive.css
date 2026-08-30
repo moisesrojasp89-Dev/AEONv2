@@ -16,6 +16,96 @@
   grid-template-columns: 1fr;
 }
 
+/* Keeps the markets horizontal carousel (and any future edge-bleed)
+   from causing page-level horizontal scroll at any viewport. */
+html, body { overflow-x: hidden; }
+
+/* ============================================================
+   Markets — mobile (<640px): Zero-Vertical-Scroll Horizontal Swipe.
+   Scoped explicitly instead of bare mobile-first: this block moves
+   ~20 properties together, so an isolated media query keeps them
+   atomic instead of relying on the tablet/desktop tiers below to
+   individually restore each one. Previously this lived in market.css
+   under `max-width: 768px`, which didn't match this file's own
+   640/900 breakpoints and left a 769–899px dead zone (common tablet
+   portrait width) where the rest of the site treated the viewport
+   as mobile but the markets grid had already reverted to desktop.
+   ============================================================ */
+@media (max-width: 639px) {
+  .markets-swipe-hint {
+    display: flex;
+    animation: markets-swipe-pulse 2s infinite ease-in-out;
+  }
+
+  body.markets-body-locked {
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .markets-page-container {
+    padding: 0.45rem 0.65rem;
+    height: calc(100dvh - var(--header-h, 57px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .markets-hero-header { margin-bottom: 0.35rem; flex-shrink: 0; }
+  .markets-hero-meta   { gap: 0.4rem; margin-bottom: 0; }
+  .markets-hero-subtitle { display: none; }
+
+  .markets-controls-bar {
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.35rem 0.45rem;
+    gap: 0.35rem;
+    margin-bottom: 0.45rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .market-filters-pills { width: 100%; gap: 0.25rem; }
+  .market-filter-pill   { padding: 0.22rem 0.55rem; font-size: 0.7rem; }
+
+  .market-search-box { width: 100%; min-width: unset; }
+  .market-search-box input { padding: 0.26rem 0.55rem 0.26rem 1.75rem; font-size: 0.72rem; }
+
+  .markets-grid-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.15rem 0.15rem 0.5rem;
+    scrollbar-width: none;
+  }
+
+  .markets-grid-layout::-webkit-scrollbar { display: none; }
+
+  .market-card {
+    flex: 0 0 86vw;
+    min-width: 86vw;
+    max-width: var(--card-max-w);
+    scroll-snap-align: center;
+    height: 100%;
+    max-height: 100%;
+    justify-content: space-between;
+    padding: 0.85rem;
+    gap: 0.55rem;
+    overflow-y: auto;
+  }
+
+  /* Page-level element, not markets-specific — ideally this belongs
+     in the layout/router, not here. Kept for now since that file
+     wasn't part of this refactor; flagging for a follow-up. */
+  .footer { display: none; }
+}
+
 /* Tablet ≥ 640px */
 @media (min-width: 640px) {
   .hero-buttons { flex-direction: row; flex-wrap: wrap; }
@@ -30,6 +120,12 @@
     flex-direction: row;
     align-items: flex-end;
   }
+
+  /* Markets — tablet: static 2-col grid, normal scroll. Previously
+     this range fell through to the desktop auto-fill grid before
+     899px; now aligned to the same tier as market-grid/news-list/
+     education-grid above. */
+  .markets-grid-layout { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* Desktop ≥ 900px */
