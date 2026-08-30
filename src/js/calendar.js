@@ -58,15 +58,10 @@ function isThisWeek(dateObj) {
 
 function isThisMonth(dateObj) {
   const today = new Date();
-  if (
+  return (
     dateObj.getMonth() === today.getMonth() &&
     dateObj.getFullYear() === today.getFullYear()
-  ) {
-    return true;
-  }
-  // Tolerancia para la semana de solape entre fin de mes e inicio de mes
-  const diffDays = Math.abs((dateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  return diffDays <= 35;
+  );
 }
 
 function updateNextCatalyst() {
