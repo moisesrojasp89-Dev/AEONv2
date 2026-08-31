@@ -624,11 +624,8 @@
     font-size: 0.64rem;
   }
 
-  .market-tag {
-    padding: 0.1rem 0.35rem;
-  }
-
-  .footer {
+  /* Solo ocultar footer en la terminal de mercados de pantalla completa */
+  body.markets-body-locked .footer {
     display: none;
   }
 }
