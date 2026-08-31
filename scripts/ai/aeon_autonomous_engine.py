@@ -412,6 +412,7 @@ def sync_calendar_sniper_loop():
             continue
 
     if snapshot_modified:
+        state['last_briefing_check'] = 0 # Forzar actualización inmediata del Daily Briefing
         try:
             with open(cal_path, 'w', encoding='utf-8') as f:
                 json.dump(events, f, indent=2, ensure_ascii=False)
@@ -626,8 +627,8 @@ def sync_macro_and_news():
     spx_bias = "BULLISH" if spx_price >= 7700.0 else "NEUTRAL"
     eur_bias = "BEARISH" if dxy_price >= 99.30 else "BULLISH"
 
-    # 2. Sincronizar Daily Briefing de la Sesión Activa
-    if session_id != state['current_session'] or time.time() - state['last_briefing_check'] > 1800:
+    # 2. Sincronizar Daily Briefing de la Sesión Activa (cada 60s o en cambio de sesión/datos)
+    if session_id != state['current_session'] or time.time() - state['last_briefing_check'] > 60:
         executive_thesis = synthesize_with_gemini(session_name, gold_price, btc_price, dxy_price, spx_price, gold_bias)
         
         if session_id == 'weekend_wrap':
