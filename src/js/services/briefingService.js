@@ -99,11 +99,13 @@ async function syncBriefingBackground(currentCached, onBackgroundUpdate) {
 
     if (error || !data) return;
 
-    // Verificar si el dato remoto es más reciente o de otra sesión
-    const isNewer = !currentCached || data.id !== currentCached.id || data.session_id !== currentCached.session_id || data.created_at !== currentCached.created_at;
+    // Verificar si el dato remoto es diferente al guardado en caché (ej. catalizador publicado)
+    const isDifferent = !currentCached || JSON.stringify(data) !== JSON.stringify(currentCached);
     
-    if (isNewer) {
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    if (isDifferent) {
+      try {
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      } catch {}
       if (typeof onBackgroundUpdate === 'function') {
         onBackgroundUpdate(data);
       }
