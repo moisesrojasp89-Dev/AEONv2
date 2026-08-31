@@ -67,11 +67,11 @@
     }
   ],
   "premiumFeatures": [
-    "Señales educativas en tiempo real por Telegram",
-    "Briefing macro diario y contexto de sesión",
-    "Niveles clave con OB, FVG y liquidez",
-    "Canal educativo con grabaciones y guías",
-    "Alertas antes de apertura de sesiones clave"
+    "AEON AI Copilot: Consulta escenarios, contexto macro y correlaciones en tiempo real",
+    "Terminal de Mercados: 14 activos en vivo con dPOC diario, Session VWAP y tesis ejecutivas",
+    "Daily Macro Briefings: Sentimiento de riesgo (Risk-On/Off) y catalizadores antes de cada sesión",
+    "Calendario Económico Sniper: Sincronización instantánea de datos macroeconómicos de alto impacto",
+    "Zonas de Liquidez & Confluencias: Detección de desequilibrios (FVG) y áreas de alta probabilidad"
   ],
   "calendar": [
     {
