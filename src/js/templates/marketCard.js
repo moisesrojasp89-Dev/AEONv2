@@ -124,6 +124,26 @@ export function renderMarketCard(m) {
     tagsHTML = m.catalyst_tags.map(t => `<span class="market-tag">#${escapeHTML(t)}</span>`).join(' ');
   }
 
+  const ANALYSIS_SYMBOLS = {
+    XAUUSD: 'XAUUSD',
+    BTCUSD: 'BTCUSDT',
+    BTCUSDT: 'BTCUSDT',
+    EURUSD: 'EURUSD',
+    NAS100: 'NAS100',
+  };
+
+  const targetAnalysisSymbol = ANALYSIS_SYMBOLS[m.symbol];
+  const actionHTML = targetAnalysisSymbol
+    ? `
+      <div class="market-card-action">
+        <a href="/analisis.html?symbol=${targetAnalysisSymbol}" class="market-action-btn font-mono">
+          <span>Analizar ZAP</span>
+          <span class="market-action-arrow">→</span>
+        </a>
+      </div>
+    `
+    : '';
+
   return `
     <article class="market-card" data-symbol="${symbol}" data-category="${category}">
       <!-- Cabecera de la Tarjeta -->
@@ -179,6 +199,9 @@ export function renderMarketCard(m) {
         <p class="market-tech-text">${technicalThesis}</p>
         ${tagsHTML ? `<div class="market-tags-row font-mono">${tagsHTML}</div>` : ''}
       </div>
+
+      <!-- Acción directa a la terminal de Análisis -->
+      ${actionHTML}
     </article>
   `;
 }

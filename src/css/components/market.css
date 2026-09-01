@@ -380,6 +380,44 @@
   font-weight: 500;
 }
 
+/* ── Acción hacia Terminal de Análisis ── */
+.market-card-action {
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.market-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.22);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.market-action-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 2px 10px rgba(14, 165, 233, 0.3);
+}
+
+.market-action-arrow {
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.market-action-btn:hover .market-action-arrow {
+  transform: translateX(3px);
+}
+
 /* Toast flotante en vivo */
 .market-live-toast {
   position: fixed;

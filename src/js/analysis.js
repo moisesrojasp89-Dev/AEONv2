@@ -304,7 +304,12 @@ export function initAnalysisPage() {
     });
   });
 
-  loadAssetAnalysis('XAUUSD');
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedSymbol = (urlParams.get('symbol') || '').toUpperCase();
+  const validSymbols = ['XAUUSD', 'BTCUSDT', 'EURUSD', 'NAS100'];
+  const initialSymbol = validSymbols.includes(requestedSymbol) ? requestedSymbol : 'XAUUSD';
+
+  loadAssetAnalysis(initialSymbol);
 }
 
 if (document.readyState === 'loading') {
