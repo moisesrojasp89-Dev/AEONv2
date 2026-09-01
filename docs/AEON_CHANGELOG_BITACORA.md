@@ -175,6 +175,20 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 * **Causa Raíz:** Las comparecencias no tienen previsión numérica (`actual: null`). La condición anterior `status = 'live' if ev.get('actual') else 'upcoming'` asignaba erróneamente `PRÓXIMO` porque `actual` era nulo, ignorando que la fecha `event_time` ya había transcurrido.
 * **Solución:** Se implementó la regla temporal estricta `is_past = (ev_time <= now_utc)`. Si la fecha ya transcurrió, el evento se marca como `live` (`PUBLICADO`) y se le asigna `"Publicado"` si el campo `actual` estaba vacío.
 
+### Error 7: Bloqueo de Actualización del Briefing por Conflicto HTTP 409 y Catalizadores Cruzados (Europeos en Sesión Americana)
+* **Síntoma:** Estando en plena Sesión Americana (Wall Street & Fed), la tarjeta del Daily Briefing mostraba catalizadores de la sesión europea y asiática (AUD RBA Rate, EUR PMI, GBP PMI) y no los datos clave de EE.UU. publicados hoy (ISM PMI, JOLTS, Precios ISM).
+* **Causas Raíz:**
+  1. **Fallo de Upsert (HTTP 409 Conflict):** La tabla `public.daily_briefings` tiene una restricción de unicidad estricta `unique_daily_session` sobre `(date, session_id)`. El script `aeon_autonomous_engine.py` realizaba peticiones con `?on_conflict=id` inyectando un UUID fijo (`fe02dfe6-...`). Como en la base de datos ya existía un registro para `(2026-09-01, ny_pre)` creado previamente con otro UUID, PostgreSQL rechazaba el insert con error `23505 duplicate key value violates unique constraint "unique_daily_session"`, dejando el motor en bucle arrojando silenciosamente `HTTP Error 409: Conflict` e impidiendo que el briefing se sobreescribiera con los datos frescos.
+  2. **Ponderación Descalibrada de Catalizadores:** En la función `get_session_dynamic_catalysts`, la coincidencia de divisa solo otorgaba `+50` puntos, permitiendo que eventos de alto impacto de Europa ocurridos más temprano superaran a los eventos de EE.UU. del mismo día.
+* **Solución Implementada:**
+  1. **Corrección de Upsert en REST API:** Se cambió el endpoint a `?on_conflict=date,session_id` y se retiró el UUID hardcodeado, permitiendo que PostgreSQL actualice (`UPDATE / merge-duplicates`) limpiamente la fila de la sesión activa del día.
+  2. **Ponderación Absoluta por Sesión y Fecha:**
+     * Mismo día (`ev_time.date() == now_utc.date()`): `+1000` puntos.
+     * Divisa objetivo de la sesión (`USD/CAD` en NY, `EUR/GBP` en Londres, `JPY/AUD` en Asia): `+500` puntos.
+     * Impacto: HIGH `+300`, MEDIUM `+150`.
+     * Resultado: Durante la Sesión Americana, los eventos de EE.UU. de hoy (ISM Manufacturing PMI 54.6, JOLTS 7.27M, ISM Prices 71.1) tienen prioridad matemática total frente a cualquier dato de otra región.
+
+
 ---
 
 ## 📋 5. Buenas Prácticas y Protocolos para Futuras Actualizaciones

@@ -557,20 +557,23 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
         'london_pre': ['EUR', 'GBP', 'CHF'],
         'ny_pre': ['USD', 'CAD']
     }
-    target_currencies = session_currencies.get(session_id, ['USD', 'EUR', 'JPY', 'GBP'])
+    target_currencies = session_currencies.get(session_id, ['USD', 'CAD'])
 
     scored_events = []
     for ev in events:
         try:
             ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
             diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
+            same_day = (ev_time.date() == now_utc.date())
             curr_match = ev.get('country') in target_currencies
-            impact_score = 3 if str(ev.get('impact', '')).upper() == 'HIGH' else (2 if str(ev.get('impact', '')).upper() == 'MEDIUM' else 1)
-            time_proximity_score = 0
-            if -48 <= diff_hours <= 48:
-                time_proximity_score = 100 - abs(diff_hours)
+            impact_score = 300 if str(ev.get('impact', '')).upper() == 'HIGH' else (150 if str(ev.get('impact', '')).upper() == 'MEDIUM' else 50)
             
-            total_score = (50 if curr_match else 0) + (impact_score * 20) + time_proximity_score
+            # Prioridad estricta y absoluta: eventos de la divisa de la sesión en el mismo día
+            date_score = 1000 if same_day else 0
+            curr_score = 500 if curr_match else 0
+            time_prox = max(0, 100 - abs(diff_hours) * 2)
+            
+            total_score = date_score + curr_score + impact_score + time_prox
             scored_events.append((total_score, ev_time, ev))
         except Exception:
             continue
@@ -644,10 +647,10 @@ def sync_macro_and_news():
             img_url = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop'
             sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
 
-        # Extracción dinámica 100% de catalizadores reales desde la base de datos de calendario
+        # Extracción dinámica 100% de catalizadores reales de la sesión
         catalysts = get_session_dynamic_catalysts(session_id, now_utc)
 
-        # Construcción dinámica 100% de todos los activos calculados por el motor cuántico
+        # Construcción dinámica de todos los activos calculados por el motor cuántico
         asset_bias = {}
         for sym in ['DXY', 'EURUSD', 'GBPUSD', 'USDJPY', 'SPX500', 'NAS100', 'XAUUSD', 'BTCUSD']:
             if sym in state['quant_records']:
@@ -662,11 +665,10 @@ def sync_macro_and_news():
                 asset_bias[sym] = 'NEUTRAL'
 
         briefing_payload = {
-            'id': 'd813f823-b0b1-4e7f-bd1e-4417aee65432' if session_id == 'asian_wrap' else ('820972a1-6677-418f-8020-797029198f9d' if session_id == 'london_pre' else 'fe02dfe6-6047-4b52-b7e9-d312da06ee7a'),
             'session_id': 'ny_pre' if session_id == 'weekend_wrap' else session_id,
             'date': now_utc.strftime('%Y-%m-%d'),
             'created_at': now_utc.isoformat(),
-            'title': f"{session_name}: Balance Macro y Perspectiva de Apertura" if session_id == 'weekend_wrap' else f"{session_name}: Flujo Institucional y Reacción a Datos Macro",
+            'title': f"{session_name}: Balance Macro y Perspectiva de Apertura" if session_id == 'weekend_wrap' else f"{session_name}: Apertura Wall Street y Reacción a Datos Macro",
             'image_url': img_url,
             'macro_sentiment': sentiment,
             'asset_bias': asset_bias,
@@ -677,7 +679,7 @@ def sync_macro_and_news():
 
         try:
             b_req = urllib.request.Request(
-                f"{SUPABASE_URL}/rest/v1/daily_briefings?on_conflict=id",
+                f"{SUPABASE_URL}/rest/v1/daily_briefings?on_conflict=date,session_id",
                 data=json.dumps([briefing_payload]).encode('utf-8'),
                 headers=DB_HEADERS,
                 method='POST'
@@ -685,7 +687,7 @@ def sync_macro_and_news():
             urllib.request.urlopen(b_req, timeout=6)
             state['current_session'] = session_id
             state['last_briefing_check'] = time.time()
-            log("BRIEFING", "🌏", f"Briefing actualizado ({session_name} | Radar: {len(asset_bias)} activos sincronizados)")
+            log("BRIEFING", "🌏", f"Briefing actualizado ({session_name} | Catalizadores: {len(catalysts)} | Radar: {len(asset_bias)} activos)")
         except Exception as e:
             log("BRIEFING", "⚠️", f"Error en briefing: {e}")
 
