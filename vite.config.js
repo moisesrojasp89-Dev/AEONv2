@@ -22,6 +22,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         mercados: resolve(__dirname, 'mercados.html'),
+        analisis: resolve(__dirname, 'analisis.html'),
         calendario: resolve(__dirname, 'calendario.html'),
         login: resolve(__dirname, 'login.html'),
         registro: resolve(__dirname, 'registro.html'),

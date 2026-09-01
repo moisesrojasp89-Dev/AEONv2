@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminal de Análisis Estructural & Zonas de Liquidez | AEON</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/src/css/variables.css" />
+  <link rel="stylesheet" href="/src/css/reset.css" />
+  <link rel="stylesheet" href="/src/css/layout.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/components/buttons.css" />
+  <link rel="stylesheet" href="/src/css/components/navbar.css" />
+  <link rel="stylesheet" href="/src/css/components/analysis.css" />
+  <link rel="stylesheet" href="/src/css/components/footer.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
+</head>
+<body>
+
+  <div class="bg-mesh" aria-hidden="true"></div>
+
+  <!-- Header & Navbar Global Centralizada -->
+  <div id="navbar-root"></div>
+
+  <!-- Main Content: Terminal de Análisis -->
+  <main class="main-content analysis-page" id="analysis-root">
+    <div class="analysis-container">
+      
+      <!-- Hero de Sección Compacto -->
+      <section class="analysis-header">
+        <div class="analysis-meta-row">
+          <div class="analysis-title-group">
+            <h1 class="analysis-title">Terminal de Análisis</h1>
+            <span class="analysis-badge"><span class="pulse-dot"></span> 4 Reyes del Mercado</span>
+          </div>
+          <a id="btn-open-tv-ext" href="https://es.tradingview.com/chart/?symbol=OANDA%3AXAUUSD" target="_blank" rel="noopener noreferrer" class="chart-ext-btn">
+            Abrir en TradingView ↗
+          </a>
+        </div>
+        <p class="analysis-subtitle">
+          Inteligencia de estructura institucional: Order Flow, Volume Profile (dPOC), Session VWAP, Piscinas de Liquidez ($$$) y Zonas ZAP / POI con escenarios condicionales.
+        </p>
+
+        <!-- Selector de los 4 Activos Reyes -->
+        <nav class="asset-selector-nav" aria-label="Seleccionar activo para análisis">
+          <button class="asset-pill-btn active" data-symbol="XAUUSD">
+            <span>🪙 Oro Spot (XAU/USD)</span>
+          </button>
+          <button class="asset-pill-btn" data-symbol="BTCUSDT">
+            <span>₿ Bitcoin (BTC/USDT)</span>
+          </button>
+          <button class="asset-pill-btn" data-symbol="EURUSD">
+            <span>💶 Euro / Dólar (EUR/USD)</span>
+          </button>
+          <button class="asset-pill-btn" data-symbol="NAS100">
+            <span>📈 Nasdaq 100 (NAS100)</span>
+          </button>
+        </nav>
+      </section>
+
+      <!-- Workspace de Análisis: Gráfico + Terminal Escrita -->
+      <section class="analysis-workspace" id="analysis-workspace">
+        <div class="chart-viewport" id="chart-viewport">
+          <!-- Widget TradingView se montará dinámicamente aquí -->
+          <div class="chart-placeholder font-mono">
+            <p>Cargando gráfico institucional en tiempo real...</p>
+          </div>
+        </div>
+
+        <div class="terminal-viewport" id="terminal-viewport">
+          <!-- Tarjetas de Análisis ZAP/POI y Escenarios se montarán aquí -->
+          <div class="terminal-placeholder font-mono">
+            <p>Sincronizando confluencias de Order Flow...</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer Institucional Unificado -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer-bottom">
+      <p class="footer-copy font-mono">© 2026 AEON Intelligence Platform. Todos los derechos reservados.</p>
+      <div class="footer-legal-links">
+        <a href="/aviso-legal.html">Aviso Legal</a>
+        <a href="/privacidad.html">Privacidad</a>
+        <a href="/cookies.html">Cookies</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Entry Script Modular -->
+  <script type="module" src="/src/js/analysis.js"></script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+{
+  "XAUUSD": {
+    "symbol": "XAUUSD",
+    "display_name": "Oro al Contado / Dólar",
+    "category": "COMMODITIES",
+    "current_price": 4365.20,
+    "change_24h_pct": -0.85,
+    "bias": "BEARISH",
+    "bias_score": 74,
+    "session_origin": "US",
+    "tv_symbol": "OANDA:XAUUSD",
+    "diagnosis": "El Oro sufrió una fuerte liquidación institucional que quebró la directriz alcista de 1H, ejecutando un barrido agresivo de liquidez en SSL ($4,365.00). El precio cotiza bajo el VAL ($4,380.00) y de la EMA 50 ($4,442.78). Se detectó absorción de volumen pasivo en la mecha de $4,320.",
+    "session_levels": {
+      "pdh": 4520.00,
+      "pdl": 4410.00,
+      "asian_high": 4435.00,
+      "asian_low": 4405.00,
+      "current_session": "NEW_YORK",
+      "ema_50_1h": 4442.78,
+      "sma_200_1d": 4180.00,
+      "session_vwap": 4402.50,
+      "vwap_upper_1s": 4425.00,
+      "vwap_lower_1s": 4380.00,
+      "vwap_upper_2s": 4448.00,
+      "vwap_lower_2s": 4358.00,
+      "dpoc_price": 4415.00,
+      "vah_price": 4435.00,
+      "val_price": 4380.00,
+      "volume_spike_alert": "Absorción institucional 2.4x detectada en $4,320"
+    },
+    "liquidity_pools": {
+      "bsl": [
+        {
+          "price": 4680.00,
+          "label": "Máximo Semanal / Trendline Liquidity $$$",
+          "status": "unmitigated",
+          "timeframe": "1H"
+        },
+        {
+          "price": 4520.00,
+          "label": "PDH (Máximo de Ayer)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ],
+      "ssl": [
+        {
+          "price": 4365.00,
+          "label": "Soporte de Directriz $$$",
+          "status": "swept",
+          "timeframe": "1H"
+        },
+        {
+          "price": 4280.00,
+          "label": "Mínimo Estructural Mayor $$$",
+          "status": "unmitigated",
+          "timeframe": "4H"
+        }
+      ]
+    },
+    "structural_poi": [
+      {
+        "id": "xau-poi-sell",
+        "type": "SELLSIDE_POI",
+        "zone_label": "ZAP Oferta / Venta (1H)",
+        "range_low": 4438.00,
+        "range_high": 4448.00,
+        "mean_threshold": 4443.00,
+        "confluences": [
+          "EMA 50 (1H) en $4,442.78",
+          "FVG Bajista de Ruptura (1H)",
+          "61.8% Fibonacci OTE",
+          "VAH Sesión Previa ($4,435)"
+        ],
+        "status": "active"
+      },
+      {
+        "id": "xau-poi-buy",
+        "type": "BUYSIDE_POI",
+        "zone_label": "ZAP Demanda / Rebote (1H)",
+        "range_low": 4330.00,
+        "range_high": 4350.00,
+        "mean_threshold": 4340.00,
+        "confluences": [
+          "Barrido SSL $4,365 purgado",
+          "Order Block Semanal",
+          "Banda VWAP -2σ (Sobreventa)"
+        ],
+        "status": "active"
+      }
+    ],
+    "structural_scenarios": {
+      "bullish_path": "SI el precio reconquista con vela de 15m el VAL ($4,380.00), ENTONCES aplicará la regla del 80% buscando expansión hacia el dPOC ($4,415.00) y mitigación del POI Sellside en la EMA 50 ($4,442.00).",
+      "bearish_path": "SI el precio no logra superar los $4,380 y pierde el mínimo del barrido en $4,320, ENTONCES continuará la cascada de liquidación hacia la ZAP mayor en $4,280.00.",
+      "invalidation_level": 4310.00,
+      "invalidation_text": "Cierre de vela de 1H bajo $4,310 invalida la tesis de rebote intradía."
+    }
+  },
+  "BTCUSDT": {
+    "symbol": "BTCUSDT",
+    "display_name": "Bitcoin / TetherUS",
+    "category": "CRYPTO",
+    "current_price": 77881.32,
+    "change_24h_pct": -1.42,
+    "bias": "BEARISH",
+    "bias_score": 68,
+    "session_origin": "US",
+    "tv_symbol": "BINANCE:BTCUSDT",
+    "diagnosis": "Bitcoin intentó recuperar los $78,500 pero fue fuertemente rechazado en la EMA 50 de 1H ($78,295.35), que actuó como resistencia confluente con el dPOC del día. La caída barrió los mínimos intradiarios de $77,500 (SSL local), pero aún mantiene una piscina masiva de liquidez sin tomar en BSL ($80,722.88).",
+    "session_levels": {
+      "pdh": 79400.00,
+      "pdl": 77200.00,
+      "asian_high": 78600.00,
+      "asian_low": 77800.00,
+      "current_session": "NEW_YORK",
+      "ema_50_1h": 78295.35,
+      "sma_200_1d": 75400.00,
+      "session_vwap": 78120.00,
+      "vwap_upper_1s": 78450.00,
+      "vwap_lower_1s": 77790.00,
+      "vwap_upper_2s": 78780.00,
+      "vwap_lower_2s": 77460.00,
+      "dpoc_price": 78350.00,
+      "vah_price": 78800.00,
+      "val_price": 77650.00,
+      "volume_spike_alert": null
+    },
+    "liquidity_pools": {
+      "bsl": [
+        {
+          "price": 80722.88,
+          "label": "Máximo Semanal $$$ (Stops de Vendedores)",
+          "status": "unmitigated",
+          "timeframe": "1H"
+        },
+        {
+          "price": 79400.00,
+          "label": "PDH (Máximo de Ayer)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ],
+      "ssl": [
+        {
+          "price": 77500.00,
+          "label": "Mínimo Intradía $$$",
+          "status": "swept",
+          "timeframe": "1H"
+        },
+        {
+          "price": 76000.00,
+          "label": "PWL (Mínimo Semanal $$$)",
+          "status": "unmitigated",
+          "timeframe": "4H"
+        }
+      ]
+    },
+    "structural_poi": [
+      {
+        "id": "btc-poi-sell",
+        "type": "SELLSIDE_POI",
+        "zone_label": "ZAP Oferta / Venta (1H)",
+        "range_low": 78250.00,
+        "range_high": 78600.00,
+        "mean_threshold": 78425.00,
+        "confluences": [
+          "EMA 50 (1H) en $78,295.35",
+          "iFVG (Inversion Fair Value Gap)",
+          "dPOC + Banda VWAP +1σ"
+        ],
+        "status": "active"
+      },
+      {
+        "id": "btc-poi-buy",
+        "type": "BUYSIDE_POI",
+        "zone_label": "ZAP Demanda / Soporte (1H)",
+        "range_low": 76500.00,
+        "range_high": 77000.00,
+        "mean_threshold": 76750.00,
+        "confluences": [
+          "Order Block 4H no mitigado",
+          "Fibonacci OTE 78.6%",
+          "Piscina SSL en mínimos"
+        ],
+        "status": "active"
+      }
+    ],
+    "structural_scenarios": {
+      "bullish_path": "SI una vela de 1H cierra con cuerpo sobre la EMA 50 ($78,295), el iFVG queda anulado y ENTONCES el precio acelerará a liquidar a los vendedores hacia los $79,500 y el BSL en $80,722.",
+      "bearish_path": "SI el precio continúa siendo rechazado en el rango de la EMA 50 y pierde el VAL ($77,650), ENTONCES buscará el barrido completo de la piscina SSL en la ZAP de $76,500 - $77,000.",
+      "invalidation_level": 78750.00,
+      "invalidation_text": "Cierre de vela de 1H por encima de $78,750 invalida la estructura bajista inmediata."
+    }
+  },
+  "EURUSD": {
+    "symbol": "EURUSD",
+    "display_name": "Euro / Dólar Estadounidense",
+    "category": "FOREX",
+    "current_price": 1.1654,
+    "change_24h_pct": 0.18,
+    "bias": "BULLISH",
+    "bias_score": 62,
+    "session_origin": "EUROPE",
+    "tv_symbol": "OANDA:EURUSD",
+    "diagnosis": "El Euro mantiene estructura de consolidación alcista respetando el Session VWAP (1.1648) tras defender el rango de la sesión asiática. La EMA 50 en 1H actúa como soporte dinámico en 1.1639, con el dPOC institucional concentrado en 1.1650.",
+    "session_levels": {
+      "pdh": 1.1685,
+      "pdl": 1.1615,
+      "asian_high": 1.1660,
+      "asian_low": 1.1635,
+      "current_session": "LONDON",
+      "ema_50_1h": 1.1639,
+      "sma_200_1d": 1.1520,
+      "session_vwap": 1.1648,
+      "vwap_upper_1s": 1.1668,
+      "vwap_lower_1s": 1.1628,
+      "vwap_upper_2s": 1.1688,
+      "vwap_lower_2s": 1.1608,
+      "dpoc_price": 1.1650,
+      "vah_price": 1.1670,
+      "val_price": 1.1630,
+      "volume_spike_alert": null
+    },
+    "liquidity_pools": {
+      "bsl": [
+        {
+          "price": 1.1710,
+          "label": "Máximo Semanal $$$ BSL",
+          "status": "unmitigated",
+          "timeframe": "4H"
+        },
+        {
+          "price": 1.1685,
+          "label": "PDH (Máximo de Ayer)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ],
+      "ssl": [
+        {
+          "price": 1.1635,
+          "label": "Mínimo de Asia $$$",
+          "status": "swept",
+          "timeframe": "15m"
+        },
+        {
+          "price": 1.1615,
+          "label": "PDL (Mínimo de Ayer $$$)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ]
+    },
+    "structural_poi": [
+      {
+        "id": "eur-poi-buy",
+        "type": "BUYSIDE_POI",
+        "zone_label": "ZAP Demanda / Compra (1H)",
+        "range_low": 1.1630,
+        "range_high": 1.1642,
+        "mean_threshold": 1.1636,
+        "confluences": [
+          "EMA 50 (1H) en 1.1639",
+          "VAL de Sesión en 1.1630",
+          "FVG Alcista de Londres"
+        ],
+        "status": "active"
+      },
+      {
+        "id": "eur-poi-sell",
+        "type": "SELLSIDE_POI",
+        "zone_label": "ZAP Oferta / Resistencia (1H)",
+        "range_low": 1.1680,
+        "range_high": 1.1695,
+        "mean_threshold": 1.1688,
+        "confluences": [
+          "PDH en 1.1685",
+          "Banda VWAP +2σ",
+          "Order Block Bajista 4H"
+        ],
+        "status": "active"
+      }
+    ],
+    "structural_scenarios": {
+      "bullish_path": "SI el precio sostiene el soporte en la EMA 50 (1.1639), ENTONCES buscará la expansión hacia el PDH en 1.1685 y la piscina BSL en 1.1710.",
+      "bearish_path": "SI una vela de 1H quiebra el VAL en 1.1630, ENTONCES buscará el barrido del PDL en 1.1615.",
+      "invalidation_level": 1.1620,
+      "invalidation_text": "Cierre de 1H bajo 1.1620 invalida la tesis compradora intradiaria."
+    }
+  },
+  "NAS100": {
+    "symbol": "NAS100",
+    "display_name": "Nasdaq 100 (US Tech)",
+    "category": "INDICES",
+    "current_price": 21450.80,
+    "change_24h_pct": 0.45,
+    "bias": "BULLISH",
+    "bias_score": 70,
+    "session_origin": "US",
+    "tv_symbol": "OANDA:NAS100USD",
+    "diagnosis": "El Nasdaq 100 muestra absorción compradora en la pre-apertura de Nueva York tras barrer la liquidez de mínimos asiáticos. Cotiza por encima de su Session VWAP (21,410) y la EMA 50 en 1H (21,390), perfilando un movimiento hacia el dPOC de 21,520.",
+    "session_levels": {
+      "pdh": 21620.00,
+      "pdl": 21280.00,
+      "asian_high": 21480.00,
+      "asian_low": 21340.00,
+      "current_session": "NEW_YORK",
+      "ema_50_1h": 21390.00,
+      "sma_200_1d": 20450.00,
+      "session_vwap": 21410.00,
+      "vwap_upper_1s": 21490.00,
+      "vwap_lower_1s": 21330.00,
+      "vwap_upper_2s": 21570.00,
+      "vwap_lower_2s": 21250.00,
+      "dpoc_price": 21520.00,
+      "vah_price": 21540.00,
+      "val_price": 21350.00,
+      "volume_spike_alert": null
+    },
+    "liquidity_pools": {
+      "bsl": [
+        {
+          "price": 21680.00,
+          "label": "Máximo Histórico Reciente $$$",
+          "status": "unmitigated",
+          "timeframe": "4H"
+        },
+        {
+          "price": 21620.00,
+          "label": "PDH (Máximo de Ayer)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ],
+      "ssl": [
+        {
+          "price": 21340.00,
+          "label": "Mínimo de Asia $$$",
+          "status": "swept",
+          "timeframe": "15m"
+        },
+        {
+          "price": 21280.00,
+          "label": "PDL (Mínimo de Ayer $$$)",
+          "status": "unmitigated",
+          "timeframe": "1D"
+        }
+      ]
+    },
+    "structural_poi": [
+      {
+        "id": "nas-poi-buy",
+        "type": "BUYSIDE_POI",
+        "zone_label": "ZAP Demanda / Compra (1H)",
+        "range_low": 21350.00,
+        "range_high": 21390.00,
+        "mean_threshold": 21370.00,
+        "confluences": [
+          "EMA 50 (1H) en 21,390",
+          "VAL de Sesión en 21,350",
+          "Order Block Alcista 1H"
+        ],
+        "status": "active"
+      },
+      {
+        "id": "nas-poi-sell",
+        "type": "SELLSIDE_POI",
+        "zone_label": "ZAP Oferta / Techo (1H)",
+        "range_low": 21580.00,
+        "range_high": 21640.00,
+        "mean_threshold": 21610.00,
+        "confluences": [
+          "PDH en 21,620",
+          "Banda VWAP +2σ en 21,570",
+          "FVG Bajista 4H"
+        ],
+        "status": "active"
+      }
+    ],
+    "structural_scenarios": {
+      "bullish_path": "SI el precio consolida sobre el VWAP (21,410), ENTONCES buscará llenar el vacío hacia el dPOC en 21,520 y barrer el PDH en 21,620.",
+      "bearish_path": "SI el precio pierde la EMA 50 (21,390) en apertura de NY, ENTONCES acelerará el barrido hacia el PDL en 21,280.",
+      "invalidation_level": 21320.00,
+      "invalidation_text": "Cierre de 1H bajo 21,320 invalida la tesis alcista intradiaria."
+    }
+  }
+}

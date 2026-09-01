@@ -20,6 +20,7 @@ export function normalizeInstrument(sym = '') {
   if (s === 'SPX500' || s === 'SP500' || s === 'SPX') return 'SPX500_USD';
   if (s === 'NAS100' || s === 'NASDAQ' || s === 'NAS') return 'NAS100_USD';
   if (s === 'US30' || s === 'DOW' || s === 'DJI') return 'US30_USD';
+  if (s === 'BTCUSDT' || s === 'BTC_USD' || s === 'BITCOIN') return 'BTC';
   return s;
 }
 
