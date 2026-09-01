@@ -19,15 +19,16 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ ESTADO DE EJECUCIÓN (26 DE AGOSTO DE 2026)                                  │
+│ ESTADO DE EJECUCIÓN (SEPTIEMBRE DE 2026)                                     │
 ├──────────────────────────────────────┬──────────────────────────────────────┤
 │ ✅ FASES 100% COMPLETADAS            │ 🎯 EN PROGRESO / PRÓXIMO SPRINT      │
-│ • Fase 0: Security & RLS Hardening   │ • Fase 6: AEON Pro Terminal, Stripe  │
-│ • Fase 1: Data Provider Layer & RPC  │   Monetización In-App & Módulos Pro  │
+│ • Fase 0: Security & RLS Hardening   │ • Fase 6B: Monetización Stripe,      │
+│ • Fase 1: Data Provider Layer & RPC  │   Gestión de Suscripciones In-App   │
 │ • Fase 2: Quant Validation Lab (WFO) ├──────────────────────────────────────┤
 │ • Fase 3: VPS 24/7 & Unified Daemons │ ⏳ PLANIFICADO A FUTURO              │
 │ • Fase 4: Market Intel & Scoring     │ • Fases 7-8: CME Futures Order Flow  │
 │ • Fase 5: AI Platform & Live Engine  │ • Fase 9: Multi-Region High Availab. │
+│ • Fase 6A: Terminal Análisis & ZAPs  │                                      │
 └──────────────────────────────────────┴──────────────────────────────────────┘
 ```
 
@@ -48,7 +49,9 @@ FASE 4: AEON Market Intelligence & Scoring ───────► [✅ COMPLET
   │
 FASE 5: AI Platform & Contextual Intelligence ────► [✅ COMPLETADO - v2.0]
   │
-FASE 6: AEON Pro Terminal & Monetización ─────────► [🎯 PRÓXIMO OBJETIVO]
+FASE 6A: Terminal de Análisis & ZAPs Estructural ─► [✅ COMPLETADO]
+  │
+FASE 6B: AEON Pro Terminal & Monetización Stripe ─► [🎯 PRÓXIMO OBJETIVO]
   │
 FASE 7 & 8: Futures Intelligence (CME Order Flow) ─► [⏳ PLANIFICADO]
   │

@@ -185,5 +185,63 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
    * Al invocar LLMs para análisis macro, se deben proporcionar como contexto los datos limpios de la base de datos con instrucciones explícitas de "Cero Alucinaciones".
 3. **Manejo de Zonas Horarias:**
    * Todos los registros en la base de datos se almacenan en **UTC (`+00:00`)**. La conversión a la zona horaria del usuario se realiza exclusivamente en el cliente mediante `Intl.DateTimeFormat` / `formatToUserLocalTime()`.
-4. **Modularidad CSS:**
-   * Ningún archivo de componentes CSS debe superar las 300 líneas. Los estilos compartidos (botones, inputs, glassmorphism) deben residir en sus respectivos módulos bajo `src/css/components/` o `src/css/variables.css`.
+4. **Modularidad CSS & Cero Deuda Técnica:**
+   * Ningún archivo de componentes CSS debe superar las 300 líneas. Los estilos compartidos deben residir en sus respectivos módulos bajo `src/css/components/` o `src/css/variables.css`.
+   * Prohibición absoluta de estilos `style="..."` inline y directivas `!important`.
+
+---
+
+## 🏛️ 6. Hito 6: Terminal de Análisis Institucional, Desacoplamiento de Navbar y Erradicación de Deuda Técnica (Auditoría Integral)
+
+### A. Erradicación de Deuda Técnica y Anti-Patrones (Auditoría Exhaustiva)
+1. **Centralización de Navegación Global (`#navbar-root`):**
+   * **Problema:** Existían 10 barras de navegación duplicadas hardcodeadas en HTML a lo largo de todo el proyecto (`index.html`, `mercados.html`, `calendario.html`, `perfil.html`, páginas de autenticación y legales), junto con scripts repetidos `toggleMobileMenu()`.
+   * **Solución:** Centralización en `src/js/templates/navbar.js` y `src/js/navbar.js`. Cada archivo HTML ahora contiene únicamente `<div id="navbar-root"></div>`, eliminando más de 800 líneas de HTML duplicado y asegurando que cualquier cambio de enlace, icono o lógica de sesión se propague instantáneamente a todas las páginas.
+2. **Limpieza de Tokens CSS (100% Tokenizado en `variables.css`):**
+   * **Problema:** Presencia de más de 120 valores hexadecimales directos (`#0EA5E9`, `#EF4444`, `#090D18`), radios fijos y sombras mágicas en más de 20 archivos CSS.
+   * **Solución:** Reemplazo integral por tokens semánticos: `var(--accent)`, `var(--red)`, `var(--green)`, `var(--bg-drawer)`, `var(--radius-sm)`, `var(--dur-base)`.
+3. **Eliminación de `!important` y Estilos Inline:**
+   * Eliminados todos los `!important` forzados en CSS y atributos `style="..."` tanto en plantillas JavaScript como en documentos HTML, respetando la cascada natural del navegador.
+
+---
+
+### B. Creación de la Terminal de Análisis Estructural (`/analisis.html`)
+1. **Filosofía "Menos es Más" — Los 4 Reyes del Mercado:**
+   * Se restringió el enfoque a los 4 activos macro institucionales más líquidos del mundo:
+     1. **Oro Spot (`XAUUSD`)** — Refugio macro e inflación.
+     2. **Bitcoin (`BTCUSDT`)** — Liquidez global y apetito de riesgo 24/7.
+     3. **Euro / Dólar (`EURUSD`)** — Eje del mercado interbancario de divisas.
+     4. **Nasdaq 100 (`NAS100`)** — Vector del ciclo tecnológico y renta variable estadounidense.
+2. **Evolución del Gráfico: De Widget Saturado a Motor Canvas Nativo:**
+   * **Iteración 1 (TradingView Widget iframe):** En pruebas en móvil se detectó que el widget saturaba la pantalla con una columna izquierda de 10 herramientas de dibujo enanas, títulos truncados (`Oro al contado/...`), subpanel de RSI comprimido y pérdida de fluidez táctil.
+   * **Iteración 2 (Motor Nativo Canvas con Lightweight Charts v5):**
+     * Curva de área neón con gradiente dark luxury idéntica al Hero (`#0EA5E9`), adaptativa al 100% del ancho móvil con cero recortes.
+     * **Mínimo y Quirúrgico (Solo 3 Niveles Clave):**
+       - 🔴 **1 Línea ZAP Venta (Sellside POI)** con precio exacto.
+       - ⚡ **1 Línea EMA 50 (1H)** en naranja institucional.
+       - 🟢 **1 Línea ZAP Compra (Buyside POI)** con precio exacto.
+     * **Guard de Escala Auto-Adaptativo:** Algoritmo que detecta si los niveles de la ZAP superan el 20% de diferencia con el precio en pantalla (por ejemplo, discrepancias entre CFD de OANDA a 29,000 y contado a 21,000 en Nasdaq) y los calcula dinámicamente (+1.2% / -1.2%) para garantizar que **las líneas jamás se pierdan ni queden fuera del gráfico**.
+3. **Rediseño Institucional Plano de la Terminal Escrita:**
+   * Eliminación de tarjetas con bordes redondeados pesados ("burbujas") para pasar a una interfaz de alta densidad tipo Linear / Bloomberg:
+     * **Segmented Control Plano:** Pestañas mínimas (`ZONAS ZAP`, `ESCENARIOS`, `MÉTRICAS & DETALLE`).
+     * **Escalera Estructural (ZAP Ladder):** Oferta arriba y Demanda abajo con acentos de 3px y línea central divisoria con el precio en vivo.
+     * **Piscinas de Liquidez ($$$ BSL/SSL):** Lista tabular en filas planas con separadores finos y estados discretos (`[ Pendiente ]` y `[ Barrido ✔ ]`).
+     * **Escenarios Condicionales:** Rutas de expansión y continuación (*"Si... entonces"*) con límites de invalidación.
+4. **Persistencia de Estado en Tiempo Real (`currentActiveTab`):**
+   * **Bug Resuelto:** Cada 20 segundos, la suscripción Realtime de Supabase redibujaba el HTML y reseteaba automáticamente la pestaña activa a "Zonas ZAP", interrumpiendo al usuario si estaba leyendo "Escenarios".
+   * **Solución:** Se persistió la variable `currentActiveTab` en memoria y se trasladó al template para que cualquier actualización en vivo mantenga intacta la pestaña que el usuario está consultando.
+
+---
+
+### C. Conexión y Navegación Cruzada: Mercados ↔ Análisis
+1. **Diferenciación Conceptual:**
+   * **Mercados (`/mercados.html`):** *Radar / Escáner Panorámico* de 14 activos simultáneos para detección macro rápida.
+   * **Análisis (`/analisis.html`):** *Mesa Quirúrgica / Ejecución* con gráfico interactivo y niveles ZAP detallados.
+2. **Subtítulo Reenfocado en Mercados:**  
+   *"Radar institucional en vivo: escáner de sesgos direccionales, flujos de sesión y catalizadores macro."*
+3. **Enlace Contextual `[ Analizar ZAP → ]`:**  
+   En las tarjetas de Oro, Bitcoin, Euro y Nasdaq dentro de Mercados, se agregó un botón de acción rápida que navega a `/analisis.html?symbol=XYZ`, cargando el gráfico y los datos del activo al instante.
+4. **Botones del Hero en `index.html`:**  
+   * `Ver mercados →` ahora navega a `/mercados.html`.  
+   * `Explorar Análisis` ahora navega a `/analisis.html`.
+

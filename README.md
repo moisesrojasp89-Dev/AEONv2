@@ -47,10 +47,15 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │ AEON TERMINAL WEB (Vite SPA / Vanilla JS / ES Modules)                 │
 │  - Producción en Vercel: https://aeondev.vercel.app                    │
 │  - Entorno Local (Wi-Fi): http://192.168.1.8:5173                      │
-│  - Menú Lateral Minimalista estilo Drawer Nexora con SVG vectoriales   │
-│  - Carrusel Táctil Horizontal en Mercados (0 scroll vertical en móvil) │
+│  - Navbar Global Centralizada: Single source of truth (#navbar-root)   │
+│  - Radar de Mercados Globales: 14 activos, carrusel táctil y badges    │
+│  - Terminal de Análisis Estructural (/analisis.html):                   │
+│      • 4 Reyes del Mercado (Oro XAU, Bitcoin BTC, Euro EUR, Nasdaq NAS)│
+│      • Gráficos nativos Canvas Lightweight Charts v5 (Curva neón fluida│
+│      • Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda) & EMA 50  │
+│      • Piscinas de Liquidez ($$$ BSL/SSL) & Escenarios "Si / Entonces" │
 │  - Calendario Modular (form-controls, sidebar-widget, calendar.css)    │
-│  - Gráficos interactivos TradingView & Lightweight Charts v5           │
+│  - Cero Deuda Técnica: 0 inline styles, 0 !important, tokens CSS puros │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -81,10 +86,12 @@ python scripts/ai/aeon_autonomous_engine.py
 |---|---|:---:|
 | **Motor Autónomo VPS** | Ingesta batch OANDA + Binance, 0 TwelveData calls, Modo Sniper en Calendario. | ✅ **Operativo** |
 | **Cerebro Cuántico 14 Activos** | Microestructura dPOC, VWAP, sesgos deterministas y fórmula ICE DXY. | ✅ **Operativo** |
+| **Terminal de Análisis (`/analisis.html`)** | Gráficos Canvas nativos, ZAPs mínimas, piscinas de liquidez y escenarios en 4 activos. | ✅ **Desplegado** |
+| **Conexión Mercados ↔ Análisis** | Enlace contextual directo `[ Analizar ZAP → ]` con soporte de parámetros URL (`?symbol=`). | ✅ **Desplegado** |
+| **Navbar Centralizada Unificada** | Cero duplicación HTML; inyección única vía `<div id="navbar-root"></div>`. | ✅ **Desplegado** |
+| **Erradicación de Deuda Técnica** | Cero estilos inline, cero `!important`, variables CSS 100% tokenizadas. | ✅ **Auditoría OK** |
 | **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
 | **Modo Weekend Wrap** | Gestión de cierre semanal, síntesis de balance macro y Bitcoin en vivo 24/7. | ✅ **Operativo** |
-| **Arquitectura CSS Modular** | Componentes desacoplados (`form-controls`, `sidebar-widget`, `calendar.css`). | ✅ **Desplegado** |
-| **Menú Móvil Nexora** | Drawer minimalista con iconos SVG vectoriales, píldora cian y tarjeta Pro. | ✅ **Desplegado** |
 | **Mercados Móvil** | Carrusel horizontal táctil `86vw` con cero scroll vertical. | ✅ **Desplegado** |
 | **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
 
