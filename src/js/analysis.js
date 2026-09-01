@@ -12,6 +12,7 @@ import { fetchHistoricalChartData } from './services/marketService.js';
 let currentSymbol = 'XAUUSD';
 let currentData = null;
 let realtimeChannel = null;
+let currentActiveTab = 'zonas';
 
 let chartInstance = null;
 let chartSeries = null;
@@ -211,14 +212,16 @@ async function renderHeroStyleChart(symbol = 'XAUUSD') {
 }
 
 /**
- * Inicializa pestañas de la terminal escrita.
+ * Inicializa pestañas de la terminal escrita conservando la pestaña activa.
  */
 function bindTerminalTabs() {
-  const tabButtons = document.querySelectorAll('.terminal-tab-btn');
+  const tabButtons = document.querySelectorAll('.segmented-btn');
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTab = e.currentTarget.dataset.tab;
       if (!targetTab) return;
+
+      currentActiveTab = targetTab;
 
       tabButtons.forEach((b) => {
         b.classList.remove('active');
@@ -256,23 +259,23 @@ async function loadAssetAnalysis(symbol = 'XAUUSD') {
     console.error('[AEON Analysis] Error cargando datos:', err);
   }
 
-  // Renderizar terminal
+  // Renderizar terminal con la pestaña activa persistida
   if (terminalViewport && currentData) {
-    terminalViewport.innerHTML = renderTerminalCard(currentData);
+    terminalViewport.innerHTML = renderTerminalCard(currentData, currentActiveTab);
     bindTerminalTabs();
   }
 
   // Renderizar gráfico Hero limpio
   await renderHeroStyleChart(symbol);
 
-  // Realtime
+  // Realtime conservando la pestaña seleccionada por el usuario
   if (realtimeChannel) {
     realtimeChannel.unsubscribe();
   }
   realtimeChannel = analysisService.subscribeToLiveUpdates(symbol, (updatedRecord) => {
     if (terminalViewport && updatedRecord) {
       currentData = { ...currentData, ...updatedRecord };
-      terminalViewport.innerHTML = renderTerminalCard(currentData);
+      terminalViewport.innerHTML = renderTerminalCard(currentData, currentActiveTab);
       bindTerminalTabs();
       drawMinimalZAPOverlays();
     }
