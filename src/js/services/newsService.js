@@ -15,7 +15,8 @@ export async function fetchNews(fallbackData = []) {
     const { data: newsItems, error } = await supabase
       .from(DB_TABLES.NEWS)
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(20);
 
     if (error) throw error;
     if (newsItems && newsItems.length > 0) {

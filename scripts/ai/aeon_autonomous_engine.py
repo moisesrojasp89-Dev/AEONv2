@@ -479,54 +479,62 @@ def fetch_rss_headlines() -> list[dict]:
 
 def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: float, dxy_price: float, spx_price: float, gold_bias: str) -> str:
     """Genera la tesis macroeconómica institucional con Gemini o fallback matemático de alta precisión."""
+    gold_supp = round(gold_price * 0.992, 2)
+    gold_res = round(gold_price * 1.008, 2)
+
     if not GEMINI_API_KEY:
         if 'Semanal' in session_name or 'Fin de Semana' in session_name:
             return (
                 f"Cierre semanal de mercados globales. El Oro Spot (${gold_price:,.2f}) y las divisas consolidan tras asimilar la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
                 f"Bitcoin (${btc_price:,.0f}) mantiene negociación activa 24/7 de cara a la apertura del domingo."
             )
-        gold_note = f"sufre fuerte presión bajista quebrando su dPOC hacia soportes en $4,480" if gold_bias == "BEARISH" else f"consolida sobre dPOC con absorción activa"
+        gold_note = f"sufre presión correctiva testeando soportes en ${gold_supp:,.2f}" if gold_bias == "BEARISH" else f"consolida con absorción compradora hacia resistencias en ${gold_res:,.2f}"
         return (
             f"Apertura en {session_name}. El Oro Spot (${gold_price:,.2f}) {gold_note} "
-            f"ante la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
-            f"La renta variable (S&P 500 en {spx_price:,.0f}) y Bitcoin (${btc_price:,.0f}) absorben liquidez en rangos clave."
+            f"ante el posicionamiento del Dólar Index ({dxy_price:.2f}) y rendimientos soberanos. "
+            f"La renta variable (S&P 500 en {spx_price:,.0f}) y Bitcoin (${btc_price:,.0f}) absorben liquidez en rangos operativos clave."
         )
     
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={GEMINI_API_KEY}"
         prompt = (
-            f"Actúa como un estratega macroeconómico cuantitativo sénior para la firma Fintech AEON. "
-            f"Estamos en: {session_name}. Cotizaciones de cierre semanal: Oro Spot en ${gold_price:,.2f} (Sesgo: {gold_bias}), "
-            f"Dólar Index DXY en {dxy_price:.2f}, S&P 500 en {spx_price:,.0f}, Bitcoin (en vivo 24/7) en ${btc_price:,.0f}. "
-            f"Redacta un análisis ejecutivo conciso de 2 oraciones (máximo 45 palabras) explicando el balance semanal de liquidez, "
-            f"la absorción del dólar/Fed y la preparación de apertura para futuros de materias primas e índices."
+            f"Actúa como estratega macroeconómico institucional sénior de AEON. "
+            f"Sesión activa: {session_name}. Datos en vivo: Oro Spot ${gold_price:,.2f} (Sesgo: {gold_bias}), "
+            f"Dólar Index DXY {dxy_price:.2f}, S&P 500 {spx_price:,.0f}, Bitcoin ${btc_price:,.0f}. "
+            f"Escribe una tesis ejecutiva precisa de exactamente 2 oraciones (máximo 45 palabras) "
+            f"analizando el flujo de liquidez, la absorción del dólar y los rangos de materias primas e índices."
         )
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 120}
+            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 600}
         }
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode('utf-8'),
             headers={"Content-Type": "application/json"}
         )
-        with urllib.request.urlopen(req, timeout=6) as resp:
+        with urllib.request.urlopen(req, timeout=5) as resp:
             data = json.loads(resp.read().decode('utf-8'))
-            text = data['candidates'][0]['content']['parts'][0]['text'].strip()
-            log("GEMINI 2.5", "✨", f"Tesis generada por Gemini AI ({len(text)} chars)")
-            return text
-    except Exception as e:
-        if 'Semanal' in session_name or 'Fin de Semana' in session_name:
-            return (
-                f"Cierre semanal de mercados globales. El Oro Spot (${gold_price:,.2f}) y las divisas consolidan tras asimilar la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
-                f"Bitcoin (${btc_price:,.0f}) mantiene negociación activa 24/7 de cara a la apertura del domingo."
-            )
-        gold_note = f"sufre fuerte presión bajista quebrando su dPOC hacia soportes en $4,480" if gold_bias == "BEARISH" else f"consolida sobre dPOC con absorción activa"
+            for part in data['candidates'][0]['content']['parts']:
+                if 'text' in part and not part.get('thought') and len(part['text'].strip()) > 10:
+                    text = part['text'].strip()
+                    log("GEMINI", "✨", f"Tesis generada por Gemini AI ({len(text)} chars)")
+                    return text
+    except Exception:
+        pass
+
+    # Fallback matemático determinista 100% calibrado
+    if 'Semanal' in session_name or 'Fin de Semana' in session_name:
         return (
-            f"Apertura en {session_name}. El Oro Spot (${gold_price:,.2f}) {gold_note} "
-            f"ante la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
-            f"La renta variable (S&P 500 en {spx_price:,.0f}) y Bitcoin (${btc_price:,.0f}) absorben liquidez en rangos clave."
+            f"Cierre semanal de mercados globales. El Oro Spot (${gold_price:,.2f}) y las divisas consolidan tras asimilar la firmeza del Dólar Index ({dxy_price:.2f}) y el tono de la Fed. "
+            f"Bitcoin (${btc_price:,.0f}) mantiene negociación activa 24/7 de cara a la apertura del domingo."
         )
+    gold_note = f"sufre presión correctiva testeando soportes en ${gold_supp:,.2f}" if gold_bias == "BEARISH" else f"consolida con absorción compradora hacia resistencias en ${gold_res:,.2f}"
+    return (
+        f"Apertura en {session_name}. El Oro Spot (${gold_price:,.2f}) {gold_note} "
+        f"ante el posicionamiento del Dólar Index ({dxy_price:.2f}) y rendimientos soberanos. "
+        f"La renta variable (S&P 500 en {spx_price:,.0f}) y Bitcoin (${btc_price:,.0f}) absorben liquidez en rangos operativos clave."
+    )
 
 def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
     """Extrae dinámicamente los 3 catalizadores de mayor impacto de la base de datos de calendario para la sesión activa."""
@@ -564,16 +572,22 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
         try:
             ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
             diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
-            same_day = (ev_time.date() == now_utc.date())
-            curr_match = ev.get('country') in target_currencies
-            impact_score = 300 if str(ev.get('impact', '')).upper() == 'HIGH' else (150 if str(ev.get('impact', '')).upper() == 'MEDIUM' else 50)
             
-            # Prioridad estricta y absoluta: eventos de la divisa de la sesión en el mismo día
-            date_score = 1000 if same_day else 0
-            curr_score = 500 if curr_match else 0
-            time_prox = max(0, 100 - abs(diff_hours) * 2)
+            # Ventana temporal relevante de la sesión:
+            # -3 horas (recién publicados) hasta +12 horas (próximos en esta jornada)
+            if not (-3.0 <= diff_hours <= 12.0):
+                continue
+
+            curr = ev.get('country', '')
+            curr_match = curr in target_currencies
+            impact = str(ev.get('impact', '')).upper()
             
-            total_score = date_score + curr_score + impact_score + time_prox
+            # Prioridad absoluta a la divisa de la sesión activa
+            curr_score = 2000 if curr_match else 0
+            impact_score = 500 if impact == 'HIGH' else (250 if impact == 'MEDIUM' else 50)
+            time_score = max(0, 300 - abs(diff_hours) * 20)
+            
+            total_score = curr_score + impact_score + time_score
             scored_events.append((total_score, ev_time, ev))
         except Exception:
             continue
@@ -668,7 +682,7 @@ def sync_macro_and_news():
             'session_id': 'ny_pre' if session_id == 'weekend_wrap' else session_id,
             'date': now_utc.strftime('%Y-%m-%d'),
             'created_at': now_utc.isoformat(),
-            'title': f"{session_name}: Balance Macro y Perspectiva de Apertura" if session_id == 'weekend_wrap' else f"{session_name}: Apertura Wall Street y Reacción a Datos Macro",
+            'title': f"{session_name}: Balance Macro y Perspectiva de Apertura" if session_id == 'weekend_wrap' else f"{session_name}: Apertura de Mercados y Flujo Institucional",
             'image_url': img_url,
             'macro_sentiment': sentiment,
             'asset_bias': asset_bias,
@@ -691,12 +705,11 @@ def sync_macro_and_news():
         except Exception as e:
             log("BRIEFING", "⚠️", f"Error en briefing: {e}")
 
-    # 3. Sincronizar Noticias Institucionales 100% Dinámicas (Cero Plantillas con Datos Falsos)
-    # Ingesta de los últimos datos económicos reales de la base de datos oficial
+    # 3. Sincronizar Noticias Institucionales 100% Dinámicas y Reales
     cal_events = []
     try:
         req_cal = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/economic_calendar?select=*&order=event_time.desc&limit=10",
+            f"{SUPABASE_URL}/rest/v1/economic_calendar?event_time=lte.{now_utc.isoformat()}&order=event_time.desc&limit=15",
             headers=DB_HEADERS
         )
         with urllib.request.urlopen(req_cal, timeout=4) as resp:
@@ -707,18 +720,34 @@ def sync_macro_and_news():
             with open(cal_path, encoding='utf-8') as f:
                 cal_events = json.load(f)
 
-    # Extraer los eventos publicados más relevantes
-    recent_published = [ev for ev in cal_events if ev.get('actual') and ev.get('actual') not in ('Pendiente', '—', 'None', '')][:3]
-    top_macro_event = recent_published[0] if recent_published else {}
-    top_macro_title = top_macro_event.get('event_name', 'Datos de Empleo e Inflación')
-    top_macro_act = top_macro_event.get('actual', 'Publicado')
-    top_macro_curr = top_macro_event.get('country', 'USD')
+    # Extraer los eventos reales efectivamente publicados con cifras numéricas
+    recent_published = [ev for ev in cal_events if ev.get('actual') and ev.get('actual') not in ('Pendiente', '—', 'None', '', 'Publicado')][:3]
+    
+    if recent_published:
+        top_ev = recent_published[0]
+        ev_title = top_ev.get('event_name', 'Indicador Macroeconómico')
+        ev_curr = top_ev.get('country', 'USD')
+        ev_act = top_ev.get('actual', '')
+        ev_prev = top_ev.get('forecast') or top_ev.get('previous', '')
+        prev_str = f" frente a {ev_prev} esperado" if ev_prev else ""
+        fed_title = f"{ev_curr}: {ev_title} se ubica en {ev_act}{prev_str}"
+        fed_desc = f"La publicación oficial de {ev_title} modula las expectativas de tasas de interés de bancos centrales y los rendimientos de la deuda soberana. ⚡ IMPACTO: 🏛️ {ev_curr}: Catalizador de volatilidad asimilado por el mercado interbancario."
+    else:
+        fed_title = f"Política Monetaria: Bancos Centrales evalúan diferenciales de tasas y liquidez interbancaria"
+        fed_desc = f"Los operadores institucionales monitorean la curva de rendimientos de los bonos del Tesoro y las expectativas de tipos de cara a las próximas reuniones. ⚡ IMPACTO: 🌐 Macro: Expectativas de tipos de interés estables."
+
+    is_weekend = (now_utc.weekday() in (5, 6))
+    btc_desc = f"El mercado cripto absorbe la liquidez del fin de semana con negociación continua 24/7." if is_weekend else f"Bitcoin cotiza con volumen activo y correlación al apetito por riesgo global durante la {session_name}."
+    btc_supp = round(btc_price - 800, 0)
+    gold_supp = round(gold_price * 0.992, 2)
+    gold_res = round(gold_price * 1.008, 2)
+    dxy_supp = round(dxy_price - 0.25, 2)
 
     news_items = [
         {
             "tag": "METALES",
             "title": f"Oro Spot (XAU/USD): Cotización en ${gold_price:,.2f} con sesgo {gold_bias}",
-            "desc": f"El metal precioso consolida tras la publicación de catalizadores clave. ⚡ IMPACTO: 🪙 XAU/USD: Soporte institucional dPOC en ${gold_price:,.2f}.",
+            "desc": f"El metal precioso cotiza en ${gold_price:,.2f} con sesgo {gold_bias} ante el flujo interbancario y rendimientos del Tesoro. ⚡ IMPACTO: 🪙 XAU/USD: Soporte proyectado en ${gold_supp:,.2f} y resistencia en ${gold_res:,.2f}.",
             "link": "#",
             "time": t_str,
             "created_at": now_utc.isoformat()
@@ -726,7 +755,7 @@ def sync_macro_and_news():
         {
             "tag": "FOREX",
             "title": f"Dólar Index (DXY) en {dxy_price:.2f} presiona a EUR/USD ({eur_price:.4f}) y divisas globales",
-            "desc": f"La demanda de liquidez en dólares marca el ritmo del mercado interbancario. ⚡ IMPACTO: 🏛️ DXY: Sesgo {dxy_bias} con soporte en {dxy_price - 0.20:.2f}.",
+            "desc": f"La demanda de liquidez en dólares marca la pauta en cruces mayores frente al Euro y la Libra. ⚡ IMPACTO: 🏛️ DXY: Sesgo {dxy_bias} con soporte clave en {dxy_supp:.2f}.",
             "link": "#",
             "time": t_str,
             "created_at": now_utc.isoformat()
@@ -734,15 +763,15 @@ def sync_macro_and_news():
         {
             "tag": "ÍNDICES",
             "title": f"Renta Variable: S&P 500 cotiza en {spx_price:,.2f} absorbiendo flujo macro",
-            "desc": f"Wall Street y bolsas globales operan en rangos técnicos clave. ⚡ IMPACTO: 📈 SPX500: Nivel de equilibrio en {spx_price:,.2f}.",
+            "desc": f"Wall Street y bolsas globales operan en rangos técnicos clave tras los últimos datos macroeconómicos. ⚡ IMPACTO: 📈 SPX500: Nivel de equilibrio en {spx_price:,.2f}.",
             "link": "#",
             "time": t_str,
             "created_at": now_utc.isoformat()
         },
         {
             "tag": "FED",
-            "title": f"{top_macro_curr}: {top_macro_title} se sitúa en {top_macro_act} e impacta expectativas de tasas",
-            "desc": f"La lectura de catalizadores oficiales modula las expectativas de política monetaria. ⚡ IMPACTO: 🌐 Macro: Reacción asimilada por los mercados.",
+            "title": fed_title,
+            "desc": fed_desc,
             "link": "#",
             "time": t_str,
             "created_at": now_utc.isoformat()
@@ -750,7 +779,7 @@ def sync_macro_and_news():
         {
             "tag": "CRIPTO",
             "title": f"Bitcoin (BTC/USD) en ${btc_price:,.0f} mantiene negociación activa 24/7",
-            "desc": f"El mercado cripto absorbe la liquidez del fin de semana con volumen constante. ⚡ IMPACTO: ₿ BTC/USD: Soporte clave en ${btc_price - 800:,.0f}.",
+            "desc": f"{btc_desc} ⚡ IMPACTO: ₿ BTC/USD: Soporte clave proyectado en ${btc_supp:,.0f}.",
             "link": "#",
             "time": t_str,
             "created_at": now_utc.isoformat()

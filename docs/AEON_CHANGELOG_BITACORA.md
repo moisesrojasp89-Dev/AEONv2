@@ -188,6 +188,20 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
      * Impacto: HIGH `+300`, MEDIUM `+150`.
      * Resultado: Durante la Sesión Americana, los eventos de EE.UU. de hoy (ISM Manufacturing PMI 54.6, JOLTS 7.27M, ISM Prices 71.1) tienen prioridad matemática total frente a cualquier dato de otra región.
 
+### Error 8: Desfase Temporal Trans-Medianoche UTC en Sesión Asiática y Saneamiento Integral del Generador de Noticias
+* **Síntomas:**
+  1. Al abrir la Sesión Asia-Pacífico (21:00 UTC), el briefing mostraba una mezcla anacrónica de catalizadores pasados (AUD de hacía 17h, USD de hacía 7h y GBP de hacía 13h) en lugar de los catalizadores clave programados para la sesión asiática activa (PIB de Australia y Decisión de Tasas de Nueva Zelanda RBNZ).
+  2. En la tesis de respaldo matemático, figuraba un soporte de Oro en \$4,480 mientras el precio cotizaba en \$4,328 (nivel incoherente superior al precio de mercado).
+  3. En la sección de noticias, la noticia macro mostraba la frase rota `"USD: Datos de Empleo e Inflación se sitúa en Publicado"`, y la noticia de Bitcoin decía `"absorbe la liquidez del fin de semana"` un martes.
+* **Causas Raíz:**
+  1. **Desfase UTC Trans-Medianoche:** La sesión asiática inicia a las 21:00 UTC del día $D$ y transcurre hasta las 07:00 UTC del día $D+1$. La comprobación simple `ev_time.date() == now_utc.date()` penalizaba con 0 puntos a los eventos de la madrugada asiática porque ya pertenecían al día siguiente en tiempo universal, dando victoria errónea a eventos viejos del día anterior.
+  2. **Nivel Hardcodeado en Fallback:** La plantilla de la tesis incluía literalmente `"hacia soportes en $4,480"`.
+  3. **Filtro Invertido de Noticias:** El generador de noticias consultaba `order=event_time.desc&limit=10`, trayendo eventos del futuro lejano con campos `actual: null`, forzando el fallback que contenía el texto `"se sitúa en Publicado"`.
+* **Soluciones Implementadas:**
+  1. **Ventana Temporal Relativa de Sesión:** Se implementó una ventana adaptativa de `[-3h, +12h]` respecto al reloj UTC actual, con filtrado estricto por las divisas de la sesión activa (`target_currencies: ['JPY', 'AUD', 'NZD', 'CNY']`). Para la sesión asiática, esto posicionó de inmediato al PIB de Australia y a la Decisión de Tasas de Nueva Zelanda (+4h) en el podio.
+  2. **Cálculo Cuantitativo Dinámico de Soportes:** Se reemplazaron los valores rígidos por proyecciones matemáticas vivas basadas en la cotización real: `gold_supp = round(gold_price * 0.992, 2)` y `gold_res = round(gold_price * 1.008, 2)`.
+  3. **Reescritura del Generador de Noticias:** Ingesta de eventos recién publicados con `event_time=lte.NOW`, redacción periodística institucional con comparativa real vs esperado, y control de día de semana para cripto (`is_weekend = weekday in (5, 6)`).
+  4. **Paginación Defensiva en Frontend:** En `src/js/services/newsService.js` se añadió `.limit(20)` para prevenir descargas masivas de registros.
 
 ---
 
