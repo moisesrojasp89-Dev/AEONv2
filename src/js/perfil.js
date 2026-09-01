@@ -71,7 +71,8 @@ async function initDashboard() {
   const statusVal = document.getElementById('dash-info-status');
   const periodVal = document.getElementById('dash-info-period');
   const ctaBtn = document.getElementById('dash-plan-cta');
-  const logoutBtn = document.getElementById('dash-logout-btn');
+  const logoutBtn = document.getElementById('dash-logout-btn') || document.getElementById('btn-logout');
+  const logoutBtnMobile = document.getElementById('btn-logout-mobile');
 
   // Inicializar Datos del Usuario
   let currentName = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : 'Trader');
@@ -244,12 +245,12 @@ async function initDashboard() {
   }
 
   // 4. Cerrar Sesión
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = '/index.html';
-    });
-  }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/index.html';
+  };
+  if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+  if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
 }
 
 if (document.readyState === 'loading') {

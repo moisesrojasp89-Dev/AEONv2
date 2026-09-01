@@ -81,19 +81,19 @@ export function renderNavbar() {
 
   // Desktop nav actions differ on perfil page (always shows logout)
   const desktopActions = isPerfilPage
-    ? `<div class="desktop-only" style="display: flex; align-items: center; gap: 1rem;">
+    ? `<div class="nav-auth-group">
           <a href="/index.html" class="nav-btn btn-nav-ghost">Ir a Inicio</a>
-          <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none; cursor: pointer;">Cerrar Sesión</button>
+          <button id="btn-logout" class="btn-primary nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>`
     : `<!-- Guest view -->
-        <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
+        <div id="nav-guest-view" class="nav-auth-group">
           <a href="/login.html" class="nav-btn btn-nav-ghost">Iniciar Sesión</a>
-          <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
+          <a href="/registro.html" class="btn-primary nav-btn nav-btn-pro">Acceso Pro</a>
         </div>
         <!-- User view -->
-        <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
+        <div id="nav-user-view" class="nav-auth-group" style="display: none;">
           <a href="/perfil.html" class="nav-btn btn-nav-ghost">Mi Perfil</a>
-          <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none; cursor: pointer;">Cerrar Sesión</button>
+          <button id="btn-logout" class="btn-primary nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>`;
 
   // Mobile drawer guest/user sections
