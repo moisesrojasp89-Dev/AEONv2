@@ -1,26 +1,21 @@
 /* ============================================================
    AEON · analysis.js — Master Controller for /analisis.html
-   Official TradingView Advanced Chart with Pre-configured Studies
+   Native Hero-style Lightweight Charts with Clean Minimal ZAPs
    ============================================================ */
 
+import { createChart, LineStyle, AreaSeries } from 'lightweight-charts';
 import { initNavbar } from './navbar.js';
 import { analysisService } from './services/analysisService.js';
 import { renderTerminalCard } from './templates/analysisCard.js';
+import { fetchHistoricalChartData } from './services/marketService.js';
 
 let currentSymbol = 'XAUUSD';
 let currentData = null;
 let realtimeChannel = null;
-let tvScriptPromise = null;
 
-/**
- * Mapeo de proveedores oficiales de TradingView para el Core 4.
- */
-const TV_SYMBOLS = {
-  XAUUSD: 'OANDA:XAUUSD',
-  BTCUSDT: 'BINANCE:BTCUSDT',
-  EURUSD: 'OANDA:EURUSD',
-  NAS100: 'OANDA:NAS100USD',
-};
+let chartInstance = null;
+let chartSeries = null;
+let activePriceLines = [];
 
 const TV_EXTERNAL_LINKS = {
   XAUUSD: 'https://es.tradingview.com/chart/?symbol=OANDA%3AXAUUSD',
@@ -30,100 +25,193 @@ const TV_EXTERNAL_LINKS = {
 };
 
 /**
- * Carga el script oficial tv.js de TradingView de forma asíncrona una sola vez.
+ * Limpia las líneas de precio anteriores.
  */
-function ensureTradingViewScript() {
-  if (window.TradingView) return Promise.resolve(window.TradingView);
-  if (tvScriptPromise) return tvScriptPromise;
-
-  tvScriptPromise = new Promise((resolve) => {
-    const existing = document.getElementById('tv-script-tag');
-    if (existing) {
-      existing.addEventListener('load', () => resolve(window.TradingView));
-      return;
-    }
-    const script = document.createElement('script');
-    script.id = 'tv-script-tag';
-    script.type = 'text/javascript';
-    script.src = 'https://s3.tradingview.com/tv.js';
-    script.async = true;
-    script.onload = () => resolve(window.TradingView);
-    document.head.appendChild(script);
+function clearPriceLines() {
+  if (!chartSeries) return;
+  activePriceLines.forEach((line) => {
+    try {
+      chartSeries.removePriceLine(line);
+    } catch (_) {}
   });
-
-  return tvScriptPromise;
+  activePriceLines = [];
 }
 
 /**
- * Monta el widget oficial de TradingView con los indicadores institucionales pre-cargados.
- * @param {string} symbol - Símbolo activo (ej. 'XAUUSD')
+ * Dibuja EXCLUSIVAMENTE las zonas ZAP esenciales (Compra y Venta) y la EMA 50.
+ * Cero saturación visual.
  */
-async function renderTradingViewWidget(symbol = 'XAUUSD') {
+function drawMinimalZAPOverlays() {
+  if (!chartSeries || !currentData) return;
+  clearPriceLines();
+
+  const isForex = currentSymbol === 'EURUSD';
+  const fmt = (p) => (isForex ? Number(p).toFixed(4) : Number(p).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+  // 1. ZAP Venta (Oferta) - 1 Sola Línea Clave
+  const pois = Array.isArray(currentData.structural_poi) ? currentData.structural_poi : [];
+  const sellPoi = pois.find((p) => String(p.type || '').toUpperCase().includes('SELL'));
+  if (sellPoi) {
+    const targetPrice = sellPoi.mean_threshold || sellPoi.range_high;
+    if (targetPrice) {
+      activePriceLines.push(
+        chartSeries.createPriceLine({
+          price: Number(targetPrice),
+          color: '#EF4444',
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true,
+          title: `🔴 ZAP VENTA ($${fmt(targetPrice)})`,
+        })
+      );
+    }
+  }
+
+  // 2. EMA 50 (1H) - Nivel Dinámico
+  if (currentData.session_levels && currentData.session_levels.ema_50_1h) {
+    const emaVal = currentData.session_levels.ema_50_1h;
+    activePriceLines.push(
+      chartSeries.createPriceLine({
+        price: Number(emaVal),
+        color: '#F97316',
+        lineWidth: 1,
+        lineStyle: LineStyle.Solid,
+        axisLabelVisible: true,
+        title: `⚡ EMA 50 ($${fmt(emaVal)})`,
+      })
+    );
+  }
+
+  // 3. ZAP Compra (Demanda) - 1 Sola Línea Clave
+  const buyPoi = pois.find((p) => String(p.type || '').toUpperCase().includes('BUY'));
+  if (buyPoi) {
+    const targetPrice = buyPoi.mean_threshold || buyPoi.range_low;
+    if (targetPrice) {
+      activePriceLines.push(
+        chartSeries.createPriceLine({
+          price: Number(targetPrice),
+          color: '#22C55E',
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true,
+          title: `🟢 ZAP COMPRA ($${fmt(targetPrice)})`,
+        })
+      );
+    }
+  }
+}
+
+/**
+ * Renderiza el gráfico estilo Hero (fluido, limpio, adaptado a móviles).
+ */
+async function renderHeroStyleChart(symbol = 'XAUUSD') {
   const chartViewport = document.getElementById('chart-viewport');
   if (!chartViewport) return;
 
-  const tvSymbol = TV_SYMBOLS[symbol] || TV_SYMBOLS.XAUUSD;
   const tvLink = TV_EXTERNAL_LINKS[symbol] || TV_EXTERNAL_LINKS.XAUUSD;
+  const extBtn = document.getElementById('btn-open-tv-ext');
+  if (extBtn) extBtn.href = tvLink;
 
-  // Actualizar enlace externo en el header
-  const extLinkBtn = document.getElementById('btn-open-tv-ext');
-  if (extLinkBtn) extLinkBtn.href = tvLink;
+  // Contenedor canvas nativo limpio
+  chartViewport.innerHTML = `
+    <div class="chart-header-bar" style="position: absolute; top: 0.75rem; left: 0.85rem; right: 0.85rem; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10;">
+      <span class="chart-header-tag" style="pointer-events: auto; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-bright); background: rgba(11, 13, 17, 0.85); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+        ⚡ Curva Institucional · ZAPs Activas
+      </span>
+      <a href="${tvLink}" target="_blank" rel="noopener noreferrer" class="chart-ext-btn" style="pointer-events: auto; font-family: var(--font-head); font-size: 0.72rem; font-weight: 600; color: var(--muted); background: rgba(11, 13, 17, 0.85); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border); text-decoration: none;">
+        TradingView ↗
+      </a>
+    </div>
+    <div id="hero-chart-canvas-root" style="width: 100%; height: 100%;"></div>
+  `;
 
-  // Gráfico a pantalla completa limpia sin barras flotantes que tapen la barra de herramientas nativa
-  chartViewport.innerHTML = '<div id="tv-chart-root" style="width: 100%; height: 100%;"></div>';
+  const canvasRoot = document.getElementById('hero-chart-canvas-root');
+  if (!canvasRoot) return;
 
-  await ensureTradingViewScript();
-
-  if (!window.TradingView) {
-    console.error('[AEON Analysis] No se pudo cargar TradingView SDK');
-    return;
+  if (chartInstance) {
+    try {
+      chartInstance.remove();
+    } catch (_) {}
+    chartInstance = null;
   }
 
-  // Instanciar widget avanzado con fondo negro puro y sin cuadrículas
-  new window.TradingView.widget({
-    autosize: true,
-    symbol: tvSymbol,
-    interval: '60',
-    timezone: 'Etc/UTC',
-    theme: 'dark',
-    style: '1',
-    locale: 'es',
-    toolbar_bg: '#000000',
-    enable_publishing: false,
-    withdateranges: true,
-    hide_side_toolbar: false, // Barra de herramientas activa para trazar rectángulos y líneas
-    allow_symbol_change: false,
-    save_image: false,
-    container_id: 'tv-chart-root',
-    overrides: {
-      'paneProperties.background': '#000000',
-      'paneProperties.backgroundType': 'solid',
-      'paneProperties.vertGridProperties.color': '#000000',
-      'paneProperties.horzGridProperties.color': '#000000',
-      'paneProperties.vertGridProperties.style': 0,
-      'paneProperties.horzGridProperties.style': 0,
-      'scalesProperties.backgroundColor': '#000000',
-      'scalesProperties.lineColor': '#1e293b',
-      'scalesProperties.textColor': '#94A3B8',
+  // Gráfico fluido idéntico al Hero de AEON
+  chartInstance = createChart(canvasRoot, {
+    width: canvasRoot.clientWidth || 400,
+    height: canvasRoot.clientHeight || 460,
+    layout: {
+      background: { color: 'transparent' },
+      textColor: 'rgba(228, 228, 231, 0.55)',
+      fontFamily: "'JetBrains Mono', monospace",
+      fontSize: 11,
     },
-    studies: [
-      'MAExp@tv-basicstudies',
-      'VWAP@tv-basicstudies',
-      'RSI@tv-basicstudies',
-    ],
-    studies_overrides: {
-      'moving average exponential.length': 50,
-      'moving average exponential.plot.color': '#F97316',
-      'moving average exponential.plot.linewidth': 2,
-      'volume weighted average price.plot.color': '#0EA5E9',
-      'volume weighted average price.plot.linewidth': 2,
-      'relative strength index.plot.color': '#8B5CF6',
+    grid: {
+      vertLines: { color: 'rgba(255, 255, 255, 0.025)' },
+      horzLines: { color: 'rgba(255, 255, 255, 0.025)' },
+    },
+    rightPriceScale: {
+      borderColor: 'rgba(255, 255, 255, 0.06)',
+      scaleMargins: { top: 0.15, bottom: 0.15 },
+      alignLabels: true,
+      borderVisible: false,
+    },
+    timeScale: {
+      borderColor: 'rgba(255, 255, 255, 0.06)',
+      timeVisible: true,
+      secondsVisible: false,
+      fixLeftEdge: true,
+      fixRightEdge: true,
+    },
+    crosshair: {
+      vertLine: { color: 'rgba(14, 165, 233, 0.4)', labelBackgroundColor: '#0EA5E9' },
+      horzLine: { color: 'rgba(14, 165, 233, 0.4)', labelBackgroundColor: '#0EA5E9' },
+    },
+    handleScroll: true,
+    handleScale: true,
+  });
+
+  // Serie de área neón elegante
+  const isForex = symbol === 'EURUSD';
+  chartSeries = chartInstance.addSeries(AreaSeries, {
+    lineColor: '#0EA5E9',
+    topColor: 'rgba(14, 165, 233, 0.28)',
+    bottomColor: 'rgba(14, 165, 233, 0.01)',
+    lineWidth: 2,
+    priceFormat: {
+      type: 'price',
+      precision: isForex ? 4 : 2,
+      minMove: isForex ? 0.0001 : 0.01,
     },
   });
+
+  // Cargar datos históricos
+  const historicalData = await fetchHistoricalChartData(symbol, 45);
+  if (historicalData && historicalData.length > 0) {
+    if (currentData && currentData.current_price) {
+      const lastIndex = historicalData.length - 1;
+      historicalData[lastIndex] = {
+        ...historicalData[lastIndex],
+        value: Number(currentData.current_price),
+      };
+    }
+    chartSeries.setData(historicalData);
+    chartInstance.timeScale().fitContent();
+  }
+
+  // Dibujar las 2 ZAPs limpias y la EMA 50
+  drawMinimalZAPOverlays();
+
+  // ResizeObserver para fluidez táctil y responsive
+  const ro = new ResizeObserver((entries) => {
+    if (!entries || !entries.length || !chartInstance) return;
+    const { width, height } = entries[0].contentRect;
+    chartInstance.applyOptions({ width, height });
+  });
+  ro.observe(chartViewport);
 }
 
 /**
- * Inicializa la lógica de pestañas de la terminal (Zonas / Escenarios / Detalle).
+ * Inicializa pestañas de la terminal escrita.
  */
 function bindTerminalTabs() {
   const tabButtons = document.querySelectorAll('.terminal-tab-btn');
@@ -149,40 +237,35 @@ function bindTerminalTabs() {
 }
 
 /**
- * Carga y renderiza el activo seleccionado en la terminal y el gráfico.
- * @param {string} symbol - Activo a cargar (ej. 'XAUUSD')
+ * Carga el activo seleccionado en la terminal y el gráfico Hero.
  */
 async function loadAssetAnalysis(symbol = 'XAUUSD') {
   currentSymbol = symbol;
   const terminalViewport = document.getElementById('terminal-viewport');
 
-  // 1. Actualizar estado activo en los botones de navegación de activos
+  // Actualizar pastillas activas
   const assetButtons = document.querySelectorAll('.asset-pill-btn');
   assetButtons.forEach((btn) => {
-    if (btn.dataset.symbol === symbol) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    btn.classList.toggle('active', btn.dataset.symbol === symbol);
   });
 
-  // 2. Obtener datos con failover garantizado
+  // Cargar datos
   try {
     currentData = await analysisService.getAnalysisBySymbol(symbol);
   } catch (err) {
-    console.error('[AEON Analysis] Error cargando datos de análisis:', err);
+    console.error('[AEON Analysis] Error cargando datos:', err);
   }
 
-  // 3. Renderizar la ficha técnica en el terminal viewport
+  // Renderizar terminal
   if (terminalViewport && currentData) {
     terminalViewport.innerHTML = renderTerminalCard(currentData);
     bindTerminalTabs();
   }
 
-  // 4. Montar el gráfico oficial de TradingView con los estudios pre-cargados
-  await renderTradingViewWidget(symbol);
+  // Renderizar gráfico Hero limpio
+  await renderHeroStyleChart(symbol);
 
-  // 5. Reconectar canal de Realtime para este activo
+  // Realtime
   if (realtimeChannel) {
     realtimeChannel.unsubscribe();
   }
@@ -191,12 +274,13 @@ async function loadAssetAnalysis(symbol = 'XAUUSD') {
       currentData = { ...currentData, ...updatedRecord };
       terminalViewport.innerHTML = renderTerminalCard(currentData);
       bindTerminalTabs();
+      drawMinimalZAPOverlays();
     }
   });
 }
 
 /**
- * Inicialización de eventos principales de la página.
+ * Inicialización de la página.
  */
 export function initAnalysisPage() {
   initNavbar();
