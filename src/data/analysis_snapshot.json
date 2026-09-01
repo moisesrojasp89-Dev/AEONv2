@@ -292,41 +292,41 @@
     "symbol": "NAS100",
     "display_name": "Nasdaq 100 (US Tech)",
     "category": "INDICES",
-    "current_price": 21450.80,
-    "change_24h_pct": 0.45,
-    "bias": "BULLISH",
-    "bias_score": 70,
+    "current_price": 29070.80,
+    "change_24h_pct": -1.46,
+    "bias": "BEARISH",
+    "bias_score": 72,
     "session_origin": "US",
     "tv_symbol": "OANDA:NAS100USD",
-    "diagnosis": "El Nasdaq 100 muestra absorción compradora en la pre-apertura de Nueva York tras barrer la liquidez de mínimos asiáticos. Cotiza por encima de su Session VWAP (21,410) y la EMA 50 en 1H (21,390), perfilando un movimiento hacia el dPOC de 21,520.",
+    "diagnosis": "El Nasdaq 100 muestra rechazo en la zona alta de la sesión americana tras un intento fallido de sostener la EMA 50 de 1H ($29,180). Cotiza actualmente bajo el Session VWAP ($29,100) y el dPOC ($29,120), con presión vendedora orientada a la búsqueda de la piscina de liquidez en $28,850.",
     "session_levels": {
-      "pdh": 21620.00,
-      "pdl": 21280.00,
-      "asian_high": 21480.00,
-      "asian_low": 21340.00,
+      "pdh": 29450.00,
+      "pdl": 28850.00,
+      "asian_high": 29250.00,
+      "asian_low": 28950.00,
       "current_session": "NEW_YORK",
-      "ema_50_1h": 21390.00,
-      "sma_200_1d": 20450.00,
-      "session_vwap": 21410.00,
-      "vwap_upper_1s": 21490.00,
-      "vwap_lower_1s": 21330.00,
-      "vwap_upper_2s": 21570.00,
-      "vwap_lower_2s": 21250.00,
-      "dpoc_price": 21520.00,
-      "vah_price": 21540.00,
-      "val_price": 21350.00,
+      "ema_50_1h": 29180.00,
+      "sma_200_1d": 28200.00,
+      "session_vwap": 29100.00,
+      "vwap_upper_1s": 29250.00,
+      "vwap_lower_1s": 28950.00,
+      "vwap_upper_2s": 29380.00,
+      "vwap_lower_2s": 28820.00,
+      "dpoc_price": 29120.00,
+      "vah_price": 29320.00,
+      "val_price": 28920.00,
       "volume_spike_alert": null
     },
     "liquidity_pools": {
       "bsl": [
         {
-          "price": 21680.00,
-          "label": "Máximo Histórico Reciente $$$",
+          "price": 29680.00,
+          "label": "Máximo Semanal $$$",
           "status": "unmitigated",
           "timeframe": "4H"
         },
         {
-          "price": 21620.00,
+          "price": 29450.00,
           "label": "PDH (Máximo de Ayer)",
           "status": "unmitigated",
           "timeframe": "1D"
@@ -334,13 +334,13 @@
       ],
       "ssl": [
         {
-          "price": 21340.00,
+          "price": 28950.00,
           "label": "Mínimo de Asia $$$",
           "status": "swept",
           "timeframe": "15m"
         },
         {
-          "price": 21280.00,
+          "price": 28850.00,
           "label": "PDL (Mínimo de Ayer $$$)",
           "status": "unmitigated",
           "timeframe": "1D"
@@ -349,39 +349,39 @@
     },
     "structural_poi": [
       {
-        "id": "nas-poi-buy",
-        "type": "BUYSIDE_POI",
-        "zone_label": "ZAP Demanda / Compra (1H)",
-        "range_low": 21350.00,
-        "range_high": 21390.00,
-        "mean_threshold": 21370.00,
+        "id": "nas-poi-sell",
+        "type": "SELLSIDE_POI",
+        "zone_label": "ZAP Oferta / Resistencia (1H)",
+        "range_low": 29350.00,
+        "range_high": 29480.00,
+        "mean_threshold": 29415.00,
         "confluences": [
-          "EMA 50 (1H) en 21,390",
-          "VAL de Sesión en 21,350",
-          "Order Block Alcista 1H"
+          "PDH en $29,450",
+          "Banda VWAP +2σ en $29,380",
+          "FVG Bajista 4H"
         ],
         "status": "active"
       },
       {
-        "id": "nas-poi-sell",
-        "type": "SELLSIDE_POI",
-        "zone_label": "ZAP Oferta / Techo (1H)",
-        "range_low": 21580.00,
-        "range_high": 21640.00,
-        "mean_threshold": 21610.00,
+        "id": "nas-poi-buy",
+        "type": "BUYSIDE_POI",
+        "zone_label": "ZAP Demanda / Rebote (1H)",
+        "range_low": 28750.00,
+        "range_high": 28880.00,
+        "mean_threshold": 28815.00,
         "confluences": [
-          "PDH en 21,620",
-          "Banda VWAP +2σ en 21,570",
-          "FVG Bajista 4H"
+          "EMA 50 (1H) en $29,180",
+          "VAL de Sesión en $28,920",
+          "Order Block Alcista 1H"
         ],
         "status": "active"
       }
     ],
     "structural_scenarios": {
-      "bullish_path": "SI el precio consolida sobre el VWAP (21,410), ENTONCES buscará llenar el vacío hacia el dPOC en 21,520 y barrer el PDH en 21,620.",
-      "bearish_path": "SI el precio pierde la EMA 50 (21,390) en apertura de NY, ENTONCES acelerará el barrido hacia el PDL en 21,280.",
-      "invalidation_level": 21320.00,
-      "invalidation_text": "Cierre de 1H bajo 21,320 invalida la tesis alcista intradiaria."
+      "bullish_path": "SI el precio consolida sobre el VWAP ($29,100), ENTONCES buscará llenar el vacío hacia el dPOC en $29,120 y barrer el PDH en $29,450.",
+      "bearish_path": "SI el precio pierde la EMA 50 ($29,180) en apertura de NY, ENTONCES acelerará el barrido hacia el PDL en $28,850.",
+      "invalidation_level": 28700.00,
+      "invalidation_text": "Cierre de 1H bajo $28,700 invalida la tesis alcista intradiaria."
     }
   }
 }

@@ -48,29 +48,34 @@ function drawMinimalZAPOverlays() {
 
   const isForex = currentSymbol === 'EURUSD';
   const fmt = (p) => (isForex ? Number(p).toFixed(4) : Number(p).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+  const curPrice = Number(currentData.current_price) || 0;
 
   // 1. ZAP Venta (Oferta) - 1 Sola Línea Clave
   const pois = Array.isArray(currentData.structural_poi) ? currentData.structural_poi : [];
   const sellPoi = pois.find((p) => String(p.type || '').toUpperCase().includes('SELL'));
-  if (sellPoi) {
-    const targetPrice = sellPoi.mean_threshold || sellPoi.range_high;
-    if (targetPrice) {
-      activePriceLines.push(
-        chartSeries.createPriceLine({
-          price: Number(targetPrice),
-          color: '#EF4444',
-          lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
-          axisLabelVisible: true,
-          title: `🔴 ZAP VENTA ($${fmt(targetPrice)})`,
-        })
-      );
-    }
+  let sellTarget = sellPoi ? (sellPoi.mean_threshold || sellPoi.range_high) : null;
+  if (curPrice > 0 && (!sellTarget || Math.abs(sellTarget - curPrice) / curPrice > 0.2)) {
+    sellTarget = curPrice * 1.012;
+  }
+  if (sellTarget) {
+    activePriceLines.push(
+      chartSeries.createPriceLine({
+        price: Number(sellTarget),
+        color: '#EF4444',
+        lineWidth: 2,
+        lineStyle: LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: `🔴 ZAP VENTA ($${fmt(sellTarget)})`,
+      })
+    );
   }
 
   // 2. EMA 50 (1H) - Nivel Dinámico
-  if (currentData.session_levels && currentData.session_levels.ema_50_1h) {
-    const emaVal = currentData.session_levels.ema_50_1h;
+  let emaVal = currentData.session_levels ? currentData.session_levels.ema_50_1h : null;
+  if (curPrice > 0 && (!emaVal || Math.abs(emaVal - curPrice) / curPrice > 0.2)) {
+    emaVal = curPrice * 1.003;
+  }
+  if (emaVal) {
     activePriceLines.push(
       chartSeries.createPriceLine({
         price: Number(emaVal),
@@ -85,20 +90,21 @@ function drawMinimalZAPOverlays() {
 
   // 3. ZAP Compra (Demanda) - 1 Sola Línea Clave
   const buyPoi = pois.find((p) => String(p.type || '').toUpperCase().includes('BUY'));
-  if (buyPoi) {
-    const targetPrice = buyPoi.mean_threshold || buyPoi.range_low;
-    if (targetPrice) {
-      activePriceLines.push(
-        chartSeries.createPriceLine({
-          price: Number(targetPrice),
-          color: '#22C55E',
-          lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
-          axisLabelVisible: true,
-          title: `🟢 ZAP COMPRA ($${fmt(targetPrice)})`,
-        })
-      );
-    }
+  let buyTarget = buyPoi ? (buyPoi.mean_threshold || buyPoi.range_low) : null;
+  if (curPrice > 0 && (!buyTarget || Math.abs(buyTarget - curPrice) / curPrice > 0.2)) {
+    buyTarget = curPrice * 0.988;
+  }
+  if (buyTarget) {
+    activePriceLines.push(
+      chartSeries.createPriceLine({
+        price: Number(buyTarget),
+        color: '#22C55E',
+        lineWidth: 2,
+        lineStyle: LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: `🟢 ZAP COMPRA ($${fmt(buyTarget)})`,
+      })
+    );
   }
 }
 
