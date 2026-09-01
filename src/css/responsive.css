@@ -2,10 +2,8 @@
    AEON · responsive.css
    ============================================================ */
 
-/* Mobile defaults */
-@media (max-width: 899px) {
-  .desktop-only { display: none !important; }
-}
+/* Mobile-first: hidden by default, shown on desktop */
+.desktop-only { display: none; }
 
 .section-header {
   flex-direction: column;
@@ -37,6 +35,7 @@ html, body { overflow-x: hidden; }
 
 /* Desktop ≥ 900px */
 @media (min-width: 900px) {
+  .desktop-only { display: revert; }
   :root { --header-h: 65px; }
 
   .hero-chart { height: 420px; }

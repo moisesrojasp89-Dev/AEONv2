@@ -192,7 +192,7 @@ export const calendarRow = (evt, index) => {
           <div class="macro-header-row">
             <div class="macro-title-group">
               <span class="macro-icon">⚡</span>
-              <h4 class="macro-title">${escapeHTML(evt.event_name || evt.event || '')} · <span style="color:var(--accent)">${escapeHTML(currency)}</span></h4>
+              <h4 class="macro-title">${escapeHTML(evt.event_name || evt.event || '')} · <span class="macro-currency">${escapeHTML(currency)}</span></h4>
             </div>
             <span class="macro-volatility-badge">~${escapeHTML(macro.volatilityPips)}</span>
           </div>

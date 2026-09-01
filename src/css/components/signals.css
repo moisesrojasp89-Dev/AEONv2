@@ -4,7 +4,7 @@
 
 .signals-section {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   padding: 4.5rem 0 3.5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
@@ -28,7 +28,7 @@
   background: rgba(34, 197, 94, 0.08);
   border: 1px solid rgba(34, 197, 94, 0.22);
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   width: fit-content;
   letter-spacing: 0.04em;
 }
@@ -37,7 +37,7 @@
   width: 7px;
   height: 7px;
   background-color: var(--green);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   box-shadow: 0 0 8px var(--green);
   animation: pulse-dot 2s infinite;
 }
@@ -48,7 +48,7 @@
   background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.09);
   padding: 0.25rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   gap: 0.25rem;
   margin-bottom: 1.5rem;
 }
@@ -61,7 +61,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   padding: 0.45rem 1.1rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--dur-fast) var(--ease);
   display: inline-flex;
@@ -121,6 +121,12 @@
 
 .kpi-val.green {
   color: var(--green);
+}
+
+.kpi-detail {
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  font-weight: normal;
 }
 
 /* Tabs de Filtrado por Activo */
@@ -196,15 +202,15 @@
 }
 
 .signal-card.closed-won {
-  border-left: 3px solid #EAB308;
+  border-left: 3px solid var(--yellow);
 }
 
 .signal-card.closed-be {
-  border-left: 3px solid #60A5FA;
+  border-left: 3px solid var(--accent);
 }
 
 .signal-card.closed-lost {
-  border-left: 3px solid #EF4444;
+  border-left: 3px solid var(--red);
 }
 
 .signal-card:hover {
@@ -235,9 +241,9 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: rgba(255, 255, 255, 0.06);
-  color: #E2E8F0;
+  color: var(--slate-200);
   padding: 0.25rem 0.55rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
@@ -247,7 +253,7 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 0.25rem 0.55rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .badge-regime.regime-bull {
@@ -264,7 +270,7 @@
 
 .badge-regime.regime-range {
   background: rgba(234, 179, 8, 0.12);
-  color: #EAB308;
+  color: var(--yellow);
   border: 1px solid rgba(234, 179, 8, 0.25);
 }
 
@@ -282,7 +288,7 @@
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
   padding: 0.22rem 0.55rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .badge-realized-r {
@@ -290,7 +296,7 @@
   font-size: 0.72rem;
   font-weight: 800;
   padding: 0.22rem 0.55rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .badge-realized-r.pill-tp {
@@ -301,7 +307,7 @@
 
 .badge-realized-r.pill-be {
   background: rgba(96, 165, 250, 0.15);
-  color: #60A5FA;
+  color: var(--accent);
   border: 1px solid rgba(96, 165, 250, 0.3);
 }
 
@@ -322,11 +328,11 @@
   font-family: var(--font-head);
   font-size: 0.68rem;
   font-weight: 700;
-  color: #60A5FA;
+  color: var(--accent);
   background: rgba(96, 165, 250, 0.12);
   border: 1px solid rgba(96, 165, 250, 0.25);
   padding: 0.22rem 0.55rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 /* Header con Activo y Dirección */
@@ -348,7 +354,7 @@
   font-size: 1.08rem;
   margin-bottom: 0.1rem;
   letter-spacing: -0.01em;
-  color: #F8FAFC;
+  color: var(--text-bright);
 }
 
 .signal-time {
@@ -361,7 +367,7 @@
   font-size: 0.75rem;
   font-weight: 800;
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   letter-spacing: 0.06em;
 }
 
@@ -387,18 +393,18 @@
 .chip-tag {
   font-size: 0.68rem;
   font-weight: 600;
-  color: #94A3B8;
+  color: var(--slate-400);
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.07);
   padding: 0.22rem 0.52rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 /* Tesis Contextual */
 .signal-thesis {
   font-size: 0.82rem;
   line-height: 1.45;
-  color: #CBD5E1;
+  color: var(--slate-200);
   margin: 0;
   padding: 0.65rem 0.85rem;
   background: rgba(0, 0, 0, 0.25);
@@ -409,7 +415,7 @@
 /* Niveles de Entrada, Stop y Target (Alineación Horizontal Perfecta) */
 .signal-levels-wrapper {
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -422,7 +428,7 @@
 .slevel {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.6rem 0.7rem;
   display: flex;
   flex-direction: column;
@@ -435,7 +441,7 @@
 .slevel-title {
   font-size: 0.62rem;
   font-weight: 700;
-  color: #94A3B8;
+  color: var(--slate-400);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -450,16 +456,16 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  color: #F8FAFC;
+  color: var(--text-bright);
   display: block;
 }
 
 .slevel-val.stop {
-  color: #F87171;
+  color: var(--red-bright);
 }
 
 .slevel-val.target {
-  color: #4ADE80;
+  color: var(--green-bright);
 }
 
 /* Caja de Salida en Tarjeta de Historial */
@@ -469,7 +475,7 @@
   gap: 0.5rem;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.6rem 0.75rem;
 }
 
@@ -491,12 +497,12 @@
   font-family: var(--font-head);
   font-size: 0.92rem;
   font-weight: 700;
-  color: #F8FAFC;
+  color: var(--text-bright);
   font-variant-numeric: tabular-nums;
 }
 
 .hexit-val.pill-tp { color: var(--green); }
-.hexit-val.pill-be { color: #60A5FA; }
+.hexit-val.pill-be { color: var(--accent); }
 .hexit-val.pill-sl { color: var(--red); }
 
 /* Estado del Trade */
@@ -505,7 +511,7 @@
   font-weight: 700;
   letter-spacing: 0.03em;
   padding: 0.22rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   white-space: nowrap;
 }
 
@@ -517,13 +523,13 @@
 
 .signal-status.closed-won {
   background: rgba(234, 179, 8, 0.12);
-  color: #EAB308;
+  color: var(--yellow);
   border: 1px solid rgba(234, 179, 8, 0.25);
 }
 
 .signal-status.closed-be {
   background: rgba(96, 165, 250, 0.12);
-  color: #60A5FA;
+  color: var(--accent);
   border: 1px solid rgba(96, 165, 250, 0.25);
 }
 
@@ -540,8 +546,8 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   background: rgba(10, 14, 23, 0.78);
-  border-radius: 8px;
-  z-index: 10;
+  border-radius: var(--radius-sm);
+  z-index: var(--z-sticky);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -560,7 +566,7 @@
 
 .blur-title {
   font-size: 0.75rem;
-  color: #E2E8F0;
+  color: var(--slate-200);
   font-weight: 600;
 }
 
@@ -570,7 +576,7 @@
   font-weight: 700;
   font-size: 0.75rem;
   padding: 0.35rem 0.85rem;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   text-decoration: none;
   transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
 }
@@ -621,7 +627,7 @@
   color: var(--green);
   border: 1px solid rgba(34, 197, 94, 0.25);
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.78rem;
   font-weight: 600;
 }
@@ -632,7 +638,7 @@
   width: 6px;
   height: 6px;
   background-color: var(--green);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   animation: pulse-dot 2s infinite;
 }
 
@@ -682,7 +688,7 @@
   .signals-header-top .section-header p {
     font-size: 0.8rem;
     line-height: 1.4;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
   }
 
   /* Selector de Vista: 100% Ancho con 2 Pestañas Equilibradas */
@@ -702,7 +708,7 @@
 
   /* Ocultar Barra de KPIs Estática en Móvil para dar paso inmediato a las Señales */
   .signals-kpi-bar {
-    display: none !important;
+    display: none;
   }
 
   /* Filtros de Activos: Fila Horizontal Deslizable con Pastillas Elegantes */
@@ -744,7 +750,7 @@
     width: 100%;
     max-width: 100%;
     flex: none;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 1.15rem;
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(10, 15, 29, 0.95) 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);

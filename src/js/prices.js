@@ -180,8 +180,10 @@ async function refresh() {
 
     const timeStr = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     setTimestamp(timeStr);
-    cachePayload.time = timeStr;
-    setStoredPricesCache(cachePayload);
+    // Re-read cache right before writing to avoid overwriting concurrent refresh updates
+    const freshCache = getStoredPricesCache() || {};
+    Object.assign(freshCache, cachePayload, { time: timeStr });
+    setStoredPricesCache(freshCache);
 
   } catch (err) {
     console.warn('[AEON] Error actualizando precios:', err.message);

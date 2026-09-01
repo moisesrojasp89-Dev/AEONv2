@@ -5,40 +5,52 @@
 import { createChart, AreaSeries } from 'lightweight-charts';
 import { fetchHistoricalChartData } from './services/marketService.js';
 
-const ASSET_CONFIG = {
-  XAU_USD: {
-    name: 'Oro (XAU/USD)',
-    precision: 2,
-    minMove: 0.01,
-    lineColor: '#0EA5E9',
-    topColor: 'rgba(14,165,233,0.28)',
-    bottomColor: 'rgba(14,165,233,0.01)',
-  },
-  EUR_USD: {
-    name: 'EUR/USD (Euro)',
-    precision: 4,
-    minMove: 0.0001,
-    lineColor: '#38BDF8',
-    topColor: 'rgba(56,189,248,0.28)',
-    bottomColor: 'rgba(56,189,248,0.01)',
-  },
-  SPX500_USD: {
-    name: 'S&P 500 (US500)',
-    precision: 1,
-    minMove: 0.1,
-    lineColor: '#22C55E',
-    topColor: 'rgba(34,197,94,0.28)',
-    bottomColor: 'rgba(34,197,94,0.01)',
-  },
-  BTC: {
-    name: 'Bitcoin (BTC/USD)',
-    precision: 0,
-    minMove: 1,
-    lineColor: '#F59E0B',
-    topColor: 'rgba(245,158,11,0.28)',
-    bottomColor: 'rgba(245,158,11,0.01)',
-  },
-};
+/** Reads a CSS custom property value from :root at runtime */
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/** Generates gradient colors from a base hex for area charts */
+function areaColors(hex) {
+  // Parse hex to RGB for rgba() generation
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return {
+    lineColor: hex,
+    topColor: `rgba(${r},${g},${b},0.28)`,
+    bottomColor: `rgba(${r},${g},${b},0.01)`,
+  };
+}
+
+function getAssetConfig() {
+  return {
+    XAU_USD: {
+      name: 'Oro (XAU/USD)',
+      precision: 2,
+      minMove: 0.01,
+      ...areaColors(cssVar('--accent')),
+    },
+    EUR_USD: {
+      name: 'EUR/USD (Euro)',
+      precision: 4,
+      minMove: 0.0001,
+      ...areaColors(cssVar('--accent-hover')),
+    },
+    SPX500_USD: {
+      name: 'S&P 500 (US500)',
+      precision: 1,
+      minMove: 0.1,
+      ...areaColors(cssVar('--green')),
+    },
+    BTC: {
+      name: 'Bitcoin (BTC/USD)',
+      precision: 0,
+      minMove: 1,
+      ...areaColors(cssVar('--yellow')),
+    },
+  };
+}
 
 const SERIES_CACHE = {};
 let currentChart = null;
@@ -50,7 +62,7 @@ function updateHeaderBadge(instrument, seriesData) {
   const priceBadgeEl = document.getElementById('hero-chart-price');
   if (!symbolEl || !priceBadgeEl) return;
 
-  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
+  const cfg = getAssetConfig()[instrument] || getAssetConfig().XAU_USD;
   symbolEl.textContent = cfg.name;
 
   if (seriesData && seriesData.length > 0) {
@@ -75,7 +87,7 @@ function updateHeaderBadge(instrument, seriesData) {
 }
 
 function applyAssetSeries(instrument, seriesData) {
-  const cfg = ASSET_CONFIG[instrument] || ASSET_CONFIG.XAU_USD;
+  const cfg = getAssetConfig()[instrument] || getAssetConfig().XAU_USD;
   if (!currentSeries || !currentChart || !seriesData || seriesData.length === 0) return;
 
   currentSeries.applyOptions({
@@ -168,7 +180,7 @@ export async function initChart() {
     handleScale: false,
   });
 
-  const cfg = ASSET_CONFIG.XAU_USD;
+  const cfg = getAssetConfig().XAU_USD;
   currentSeries = currentChart.addSeries(AreaSeries, {
     topColor: cfg.topColor,
     bottomColor: cfg.bottomColor,

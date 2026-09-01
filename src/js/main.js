@@ -177,15 +177,19 @@ function initRealtime() {
       }
     },
     onReconnect: () => {
-      console.log('[AEON] Realtime reconectado. Resincronizando señales...');
+      console.debug('[AEON] Realtime reconectado. Resincronizando señales...');
       loadSignals();
     },
   });
 }
 
 async function loadDynamicNews() {
-  allNewsCache = await fetchNews(data.news);
-  renderNews(allNewsCache);
+  try {
+    allNewsCache = await fetchNews(data.news);
+    renderNews(allNewsCache);
+  } catch (err) {
+    console.error('[AEON] Error cargando noticias:', err);
+  }
 }
 
 function initNewsFilters() {
@@ -222,8 +226,8 @@ function initNewsFilters() {
         const container = document.getElementById('news-list');
         if (container) {
           container.innerHTML = `
-            <div style="text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 0.9rem;">
-              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">🔍</span>
+            <div class="news-empty-state">
+              <span class="news-empty-icon">🔍</span>
               No hay noticias activas en la categoría seleccionada en este momento.
             </div>
           `;
@@ -245,14 +249,18 @@ function initNewsFilters() {
 }
 
 async function loadDynamicBriefing() {
-  const briefing = await fetchLatestBriefing((updated) => {
-    renderBriefing(updated);
-  });
-  renderBriefing(briefing);
+  try {
+    const briefing = await fetchLatestBriefing((updated) => {
+      renderBriefing(updated);
+    });
+    renderBriefing(briefing);
+  } catch (err) {
+    console.error('[AEON] Error cargando briefing:', err);
+  }
   
   // Suscripción a nuevos briefings publicados en tiempo real
   subscribeToBriefings((newBriefing) => {
-    console.log('[AEON] Nuevo Daily Macro Briefing recibido en tiempo real:', newBriefing);
+    console.debug('[AEON] Nuevo Daily Macro Briefing recibido en tiempo real:', newBriefing);
     renderBriefing(newBriefing);
   });
 }

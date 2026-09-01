@@ -5,6 +5,7 @@
 :root {
   /* Brand */
   --accent:             #0EA5E9;
+  --accent-hover:       #38BDF8;
   --accent-wash:        rgba(14,165,233,0.04);
   --accent-dim:         rgba(14,165,233,0.10);
   --accent-border:      rgba(14,165,233,0.20);
@@ -13,14 +14,24 @@
 
   /* Semantic */
   --green:         #22C55E;
+  --green-bright:  #4ADE80;
   --green-dim:     rgba(34,197,94,0.12);
   --red:           #EF4444;
+  --red-bright:    #F87171;
   --red-dim:       rgba(239,68,68,0.12);
+  --red-hover-bg:  rgba(239,68,68,0.15);
+  --red-hover-border: rgba(239,68,68,0.3);
   --yellow:        #F59E0B;
   --yellow-dim:    rgba(245,158,11,0.12);
   --yellow-border: rgba(245,158,11,0.35);
   --purple:        #A855F7;
   --purple-dim:    rgba(168,85,247,0.12);
+
+  /* Neutral slate palette (used in nav, drawers, labels) */
+  --slate-500:     #64748B;
+  --slate-400:     #94A3B8;
+  --slate-200:     #E2E8F0;
+  --slate-50:      #F8FAFC;
 
   /* Asset brand colors */
   --btc:        #F7931A;
@@ -30,14 +41,14 @@
   /* Impact */
   --impact-high:   #FF3366;
   --impact-med:    #FFAA00;
-  --impact-low:    #64748B;
+  --impact-low:    var(--slate-500);
 
   /* Stat comparison (actual vs. forecast) */
-  --stat-better:        #4ADE80;
+  --stat-better:        var(--green-bright);
   --stat-better-bg:     rgba(74, 222, 128, 0.08);
   --stat-better-border: rgba(74, 222, 128, 0.22);
   --stat-better-text:   #D1FAE5;
-  --stat-worse:         #F87171;
+  --stat-worse:         var(--red-bright);
   --stat-worse-bg:      rgba(248, 113, 113, 0.08);
   --stat-worse-border:  rgba(248, 113, 113, 0.22);
   --stat-worse-text:    #FEE2E2;
@@ -54,25 +65,31 @@
 
   /* Surfaces */
   --bg:            #0B0D11;
+  --bg-deep:       #070b12;
+  --bg-drawer:     #090D18;
   --surface:       rgba(255,255,255,0.04);
   --surface-2:     rgba(255,255,255,0.07);
   --overlay:       rgba(0,0,0,0.25);
+  --overlay-heavy: rgba(3, 7, 18, 0.78);
   --border:        rgba(255,255,255,0.07);
   --border-2:      rgba(255,255,255,0.12);
 
   /* Text */
   --text:          #E4E4E7;
   --text-main:     var(--text);
-  --text-bright:   #F8FAFC;
+  --text-bright:   var(--slate-50);
   --muted:         rgba(228,228,231,0.55);
   --muted-2:       rgba(228,228,231,0.32);
 
   /* Radii */
   --radius:        12px;
+  --radius-xs:     4px;
   --radius-sm:     8px;
   --radius-md:     12px;
   --radius-lg:     20px;
   --radius-xl:     28px;
+  --radius-pill:   999px;
+  --radius-circle: 50%;
 
   /* Typography */
   --font-head:     'Space Grotesk', system-ui, sans-serif;
@@ -81,18 +98,27 @@
 
   /* Easing */
   --ease:          cubic-bezier(.25,.46,.45,.94);
+  --ease-spring:   cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Durations */
   --dur-fast:      150ms;
   --dur-base:      250ms;
+  --dur-slow:      320ms;
 
   /* Shadows */
   --shadow:        rgba(0,0,0,0.4);
   --shadow-strong: rgba(0,0,0,0.5);
+  --shadow-heavy:  rgba(0,0,0,0.85);
 
-  /* Z-index */
-  --z-base:  1;
-  --z-toast: 1000;
+  /* Z-index scale */
+  --z-behind: -1;
+  --z-base:   1;
+  --z-above:  2;
+  --z-sticky: 10;
+  --z-nav:    900;
+  --z-overlay: 998;
+  --z-drawer: 999;
+  --z-toast:  1000;
 
   /* Layout */
   --header-h:   57px;

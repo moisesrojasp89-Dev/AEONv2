@@ -1,7 +1,9 @@
 /* ============================================================
    AEON · navbar.js — Robust Mobile Drawer Controller
-   Minimalist Nexora Architecture • 100% Cross-Page Compatibility
+   Centralized Architecture • 100% Cross-Page Compatibility
    ============================================================ */
+
+import { renderNavbar } from './templates/navbar.js';
 
 export function toggleMobileMenu(forceClose = false) {
   const overlay = document.querySelector('.mobile-overlay');
@@ -36,13 +38,17 @@ if (typeof window !== 'undefined') {
   window.toggleMobileMenu = (forceClose) => toggleMobileMenu(forceClose);
 }
 
-export function initNavbar() {
+/**
+ * Binds all event handlers for the navbar and mobile drawer.
+ * Must be called AFTER renderNavbar() has injected the HTML.
+ */
+function bindNavbarEvents() {
   const toggleButtons = document.querySelectorAll('.menu-toggle, #menu-toggle');
   const overlay = document.querySelector('.mobile-overlay');
   const closeButtons = document.querySelectorAll('.drawer-close');
   const mobileLinks = document.querySelectorAll('.mobile-link');
 
-  // 1. Vincular botones de hamburguesa
+  // 1. Bind hamburger buttons
   toggleButtons.forEach(btn => {
     btn.onclick = (e) => {
       e.preventDefault();
@@ -51,12 +57,12 @@ export function initNavbar() {
     };
   });
 
-  // 2. Vincular overlay de fondo
+  // 2. Bind background overlay
   if (overlay) {
     overlay.onclick = () => toggleMobileMenu(true);
   }
 
-  // 3. Vincular botones de cerrar
+  // 3. Bind close buttons
   closeButtons.forEach(btn => {
     btn.onclick = (e) => {
       e.preventDefault();
@@ -64,39 +70,26 @@ export function initNavbar() {
     };
   });
 
-  // 4. Vincular enlaces del menú
+  // 4. Bind drawer links (auto-close on navigation)
   mobileLinks.forEach(link => {
     link.onclick = () => toggleMobileMenu(true);
   });
 
-  // 5. Cerrar con tecla Escape
+  // 5. Close with Escape key
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') toggleMobileMenu(true);
   });
-
-  // 6. Activar estrictamente una sola píldora según la URL y hash
-  const currentPath = window.location.pathname;
-  const currentHash = window.location.hash || '#briefing';
-
-  mobileLinks.forEach(link => {
-    link.classList.remove('active');
-    const href = link.getAttribute('href') || '';
-    
-    if (currentPath.includes('mercados.html') && href.includes('mercados.html')) {
-      link.classList.add('active');
-    } else if (currentPath.includes('calendario.html') && href.includes('calendario.html')) {
-      link.classList.add('active');
-    } else if (currentPath.includes('perfil.html') && href.includes('perfil.html')) {
-      link.classList.add('active');
-    } else if (currentPath === '/' || currentPath.endsWith('index.html') || currentPath === '') {
-      if (href.includes(currentHash)) {
-        link.classList.add('active');
-      }
-    }
-  });
 }
 
-// Auto-inicializar al cargar el DOM
+export function initNavbar() {
+  // 1. Render the navbar from the centralized template (if #navbar-root exists)
+  renderNavbar();
+
+  // 2. Bind all interactive events
+  bindNavbarEvents();
+}
+
+// Auto-initialize on DOM load
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initNavbar);

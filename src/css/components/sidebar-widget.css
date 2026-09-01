@@ -77,7 +77,7 @@
   width: 6px;
   height: 6px;
   background-color: var(--accent);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   animation: pulse-dot 2s infinite;
 }
 

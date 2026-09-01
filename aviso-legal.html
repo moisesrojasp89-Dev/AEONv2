@@ -15,26 +15,13 @@
   <link rel="stylesheet" href="/src/css/components/navbar.css" />
   <link rel="stylesheet" href="/src/css/components/legal.css" />
   <link rel="stylesheet" href="/src/css/components/footer.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
 </head>
 <body>
   <div class="bg-mesh" aria-hidden="true"></div>
 
-  <header class="header" role="banner">
-    <nav class="navbar container" aria-label="Navegación principal">
-      <a href="/index.html" class="logo" aria-label="AEON inicio">
-        <img src="/AEON.png" alt="AEON" class="logo-img" />
-      </a>
-      <ul class="nav-links" role="list">
-        <li><a href="/index.html#briefing">Briefing</a></li>
-        <li><a href="/index.html#mercados">Mercados</a></li>
-        <li><a href="/index.html#senales">Señales</a></li>
-        <li><a href="/calendario.html">Calendario</a></li>
-        <li><a href="/index.html#educacion">Educación</a></li>
-      </ul>
-      <a href="/login.html" class="nav-btn btn-nav-ghost">Iniciar Sesión</a>
-      <a href="/registro.html" class="nav-btn">Acceso Pro</a>
-    </nav>
-  </header>
+  <div id="navbar-root"></div>
 
   <main class="legal-content container">
     <h1>Aviso Legal</h1>
@@ -80,5 +67,6 @@
       <p class="risk-warning">⚠ El trading implica riesgo significativo de pérdida. El contenido publicado en esta plataforma es estrictamente educativo y no constituye asesoramiento financiero regulado.</p>
     </div>
   </footer>
+  <script type="module">import '/src/js/navbar.js';</script>
 </body>
 </html>

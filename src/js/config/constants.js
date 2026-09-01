@@ -27,6 +27,15 @@ export const TIMING = {
 };
 
 /**
+ * External API Endpoints (centralized from marketService.js)
+ */
+export const API_ENDPOINTS = {
+  COINGECKO_PRICE: 'https://api.coingecko.com/api/v3/simple/price',
+  COINBASE_BTC_CANDLES: 'https://api.exchange.coinbase.com/products/BTC-USD/candles',
+  KRAKEN_BTC_OHLC: 'https://api.kraken.com/0/public/OHLC',
+};
+
+/**
  * Supported Assets & Universal Mapping
  */
 export const ASSETS = {

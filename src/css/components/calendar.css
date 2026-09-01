@@ -38,6 +38,14 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  /* Accent highlight (previously hardcoded inline with !important) */
+  &.calendar-panel--highlighted {
+    border-color: var(--accent-glow-strong);
+    box-shadow: 0 0 20px var(--accent-glow);
+    background: var(--accent-wash);
+    transform: translateZ(0);
+  }
 }
 
 /* --- Panel Header --- */
@@ -98,7 +106,7 @@
 .impact-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   display: inline-block;
   flex-shrink: 0;
 }
@@ -422,7 +430,7 @@
   line-height: 1.55;
   margin: 0;
 }
-.macro-what strong { color: #E2E8F0; }
+.macro-what strong { color: var(--slate-200); }
 
 /* Affected assets row */
 .macro-assets-row {
@@ -481,4 +489,8 @@
 @media (max-width: 480px) {
   .detail-stats-strip { flex-direction: row; }
   .macro-volatility-badge { font-size: 0.62rem; }
+}
+
+.macro-currency {
+  color: var(--accent);
 }

@@ -4,7 +4,7 @@
 
 .dashboard-section {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   padding: 3.5rem 1rem 5rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -36,9 +36,9 @@
 .dash-avatar {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0EA5E9, #2563EB);
-  color: #FFFFFF;
+  border-radius: var(--radius-circle);
+  background: linear-gradient(135deg, var(--accent), #2563EB);
+  color: var(--text-bright);
   font-family: var(--font-head);
   font-size: 1.4rem;
   font-weight: 700;
@@ -184,8 +184,8 @@
 }
 
 .dash-select option {
-  background-color: #0c1322;
-  color: #E4E4E7;
+  background-color: var(--input-bg-solid);
+  color: var(--text);
   padding: 0.75rem;
 }
 
@@ -207,7 +207,7 @@
   right: 0.75rem;
   font-size: 0.72rem;
   font-weight: 600;
-  color: #22C55E;
+  color: var(--green);
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.25);
   padding: 0.15rem 0.45rem;
@@ -227,14 +227,14 @@
   display: block;
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #4ADE80;
+  color: var(--green-bright);
 }
 
 .dash-alert.error {
   display: block;
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #F87171;
+  color: var(--red-bright);
 }
 
 /* ---- Plan Badges ---- */
@@ -246,7 +246,7 @@
   font-size: 0.85rem;
   font-weight: 800;
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   width: fit-content;

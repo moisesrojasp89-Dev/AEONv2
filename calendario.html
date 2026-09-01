@@ -45,41 +45,11 @@
 
   <div class="bg-mesh"></div>
 
-  <header class="header" role="banner">
-    <nav class="navbar container" aria-label="Navegación principal">
-      <a href="/index.html" class="logo" aria-label="AEON inicio">
-        <img src="/AEON.png" alt="AEON" class="logo-img" />
-      </a>
-      <ul class="nav-links" role="list">
-        <li><a href="/index.html#briefing">Briefing</a></li>
-        <li><a href="/mercados.html" class="nav-link">Mercados</a></li>
-        <li><a href="/calendario.html" class="nav-link active" style="color: var(--accent); font-weight: 700;">Calendario</a></li>
-        <li><a href="/index.html#educacion" class="nav-link">Educación</a></li>
-      </ul>
-
-      <div class="nav-actions">
-        <!-- Vistas para visitantes (no logueados) -->
-        <div id="nav-guest-view" class="desktop-only" style="display: flex; gap: 1rem; align-items: center;">
-          <a href="/login.html" class="nav-btn btn-ghost">Iniciar Sesión</a>
-          <a href="/registro.html" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px;">Acceso Pro</a>
-        </div>
-        
-        <!-- Vistas para usuarios logueados -->
-        <div id="nav-user-view" class="desktop-only" style="display: none; align-items: center; gap: 1rem;">
-          <a href="/perfil.html" class="nav-btn btn-ghost">Mi Perfil</a>
-          <button id="btn-logout" class="btn-primary nav-btn" style="padding: 0.55rem 1.1rem; border-radius: 8px; border: none;">Cerrar Sesión</button>
-        </div>
-      </div>
-      <button class="menu-toggle" aria-label="Abrir menú" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </nav>
-    
-  </header>
+  <div id="navbar-root"></div>
 
   <main class="container calendar-layout" style="padding-top: 6rem; padding-bottom: 4rem;">
     <!-- Columna Izquierda: Calendario -->
-    <div class="calendar-panel" style="border: 1px solid rgba(14, 165, 233, 0.8) !important; box-shadow: 0 0 20px rgba(14, 165, 233, 0.3) !important; min-height: 500px !important; transform: translateZ(0); background: rgba(14, 165, 233, 0.03);">
+    <div class="calendar-panel calendar-panel--highlighted">
       <!-- Radar Terminal Header -->
       <div class="eco-head-header">
         <div class="eco-head-title-group">
@@ -173,69 +143,8 @@
   <!-- JS Scripts -->
   <script type="module" src="/src/js/supabaseClient.js"></script>
   <script type="module" src="/src/js/calendar.js"></script>
-  <script>
-    function toggleMobileMenu() {
-      document.body.classList.toggle('no-scroll');
-      document.querySelector('.mobile-overlay').classList.toggle('active');
-      document.querySelector('.mobile-drawer').classList.toggle('active');
-    }
-  </script>
 
-  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-  <aside class="mobile-drawer" id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Menú de navegación móvil">
-    <div class="drawer-header">
-      <img src="/AEON.png" alt="AEON" class="logo-img" style="height: 26px;" />
-      <button class="drawer-close" onclick="toggleMobileMenu()" aria-label="Cerrar menú">✕</button>
-    </div>
-    <div class="drawer-content">
-      <div class="drawer-section">
-        <p class="drawer-label">PLATAFORMA</p>
-        <a href="/index.html#briefing" class="mobile-link" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
-          <span>Radar & Briefing</span>
-        </a>
-        <a href="/mercados.html" class="mobile-link" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-          <span>Mercados en Vivo</span>
-        </a>
-        <a href="/calendario.html" class="mobile-link active" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-          <span>Calendario Económico</span>
-        </a>
-        <a href="/index.html#educacion" class="mobile-link" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          <span>Academia & Macro</span>
-        </a>
-      </div>
-      
-      <div class="drawer-section" id="mobile-nav-guest">
-        <p class="drawer-label">CUENTA</p>
-        <a href="/login.html" class="mobile-link" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-          <span>Iniciar Sesión</span>
-        </a>
-      </div>
-      
-      <div class="drawer-section" id="mobile-nav-user" style="display: none;">
-        <p class="drawer-label">MI CUENTA</p>
-        <a href="/perfil.html" class="mobile-link" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Mi Perfil</span>
-        </a>
-        <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;" onclick="toggleMobileMenu()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-          <span>Cerrar Sesión</span>
-        </button>
-      </div>
 
-      <!-- Tarjeta Pro Estilo Nexora -->
-      <div class="drawer-pro-card">
-        <div class="drawer-pro-icon">✦</div>
-        <div class="drawer-pro-title">AEON Pro Terminal</div>
-        <div class="drawer-pro-desc">Accede a señales cuantitativas y análisis macro con IA.</div>
-        <a href="/registro.html" class="drawer-pro-btn">Desbloquear Acceso Pro →</a>
-      </div>
-    </div>
-  </aside>
+
 </body>
 </html>

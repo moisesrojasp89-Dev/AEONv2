@@ -4,7 +4,7 @@
 
 .premium-section {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   padding: 3rem 0 4rem;
 }
 

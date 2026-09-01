@@ -83,7 +83,7 @@ export function renderKPIBar(mode = 'live', metrics = {}) {
     container.innerHTML = `
       <div class="kpi-item">
         <span class="kpi-lbl">Tasa de Acierto (Win Rate)</span>
-        <span class="kpi-val green">${escapeHTML(winRate)} <small style="font-size: 0.68rem; color: var(--muted-2); font-weight: normal;">(${wonCount}W / ${lostCount}L / ${beCount}BE)</small></span>
+        <span class="kpi-val green">${escapeHTML(winRate)} <small class="kpi-detail">(${wonCount}W / ${lostCount}L / ${beCount}BE)</small></span>
       </div>
       <div class="kpi-item">
         <span class="kpi-lbl">Profit Factor Auditado</span>

@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { supabase } from '../supabaseClient.js';
-import { TIMING, ASSETS } from '../config/constants.js';
+import { TIMING, ASSETS, API_ENDPOINTS } from '../config/constants.js';
 
 const CACHE_KEY = 'AEON_PRICES_CACHE_V1';
 const CHART_CACHE_PREFIX = 'AEON_CHART_CACHE_';
@@ -29,7 +29,7 @@ export function normalizeInstrument(sym = '') {
  */
 export async function fetchCryptoPrices() {
   const ids = Object.values(ASSETS.CRYPTO).join(',');
-  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+  const url = `${API_ENDPOINTS.COINGECKO_PRICE}?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
   const res = await fetch(url, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
   return res.json();
@@ -129,7 +129,7 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
   // 1. Caso Crypto (Bitcoin) — Consultamos Coinbase con fallback a Kraken
   if (normSym === 'BTC' || normSym === 'BTC_USD') {
     try {
-      const cbUrl = 'https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400';
+      const cbUrl = `${API_ENDPOINTS.COINBASE_BTC_CANDLES}?granularity=86400`;
       const cbRes = await fetch(cbUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
       if (cbRes.ok) {
         const data = await cbRes.json();
@@ -153,7 +153,7 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
 
     // Fallback a Kraken
     try {
-      const krUrl = 'https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1440';
+      const krUrl = `${API_ENDPOINTS.KRAKEN_BTC_OHLC}?pair=XBTUSD&interval=1440`;
       const krRes = await fetch(krUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
       if (krRes.ok) {
         const data = await krRes.json();
