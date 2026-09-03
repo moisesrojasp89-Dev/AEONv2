@@ -29,24 +29,73 @@ const ASSET_LABELS = {
 };
 
 /**
- * Convierte una hora UTC (ej. "12:30" o "12:30 UTC") a la hora local del dispositivo del usuario.
- * @param {string} utcTimeStr
- * @returns {string} Hora local formateada (ej. "08:30")
+ * Detecta la zona horaria del usuario y retorna una etiqueta legible para la terminal.
+ * @returns {string} Ej. "Hora Local (GMT-04 · Caracas)"
  */
-function formatToUserLocalTime(utcTimeStr) {
-  if (!utcTimeStr || utcTimeStr === '--:--') return '--:--';
+function getUserTimezoneLabel() {
   try {
-    const cleanTime = String(utcTimeStr).replace(/UTC/gi, '').trim();
-    const parts = cleanTime.split(':');
-    if (parts.length >= 2) {
-      const d = new Date();
-      d.setUTCHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
-      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+    const offsetMin = -new Date().getTimezoneOffset();
+    const sign = offsetMin >= 0 ? '+' : '-';
+    const hours = String(Math.floor(Math.abs(offsetMin) / 60)).padStart(2, '0');
+    const mins = String(Math.abs(offsetMin) % 60).padStart(2, '0');
+    const offsetStr = `GMT${sign}${hours}${mins !== '00' ? ':' + mins : ''}`;
+    const city = tz.split('/').pop()?.replace(/_/g, ' ') || tz;
+    return `Hora Local (${offsetStr} · ${city})`;
   } catch {
-    return utcTimeStr;
+    return 'Hora Local';
   }
-  return utcTimeStr;
+}
+
+/**
+ * Convierte un catalizador a la hora local del usuario con etiqueta relativa (Hoy / Mañana).
+ * @param {Object} c - Objeto catalizador
+ * @returns {{ timeStr: string, dayLabel: string }}
+ */
+function formatCatalystTime(c) {
+  let evDate = null;
+  if (c.event_time) {
+    try {
+      const parsed = new Date(c.event_time);
+      if (!isNaN(parsed.getTime())) evDate = parsed;
+    } catch (_) {}
+  }
+
+  if (!evDate && c.time && c.time.includes(':')) {
+    try {
+      const parts = String(c.time).replace(/UTC/gi, '').trim().split(':');
+      if (parts.length >= 2) {
+        const d = new Date();
+        d.setUTCHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+        evDate = d;
+      }
+    } catch (_) {}
+  }
+
+  if (!evDate || isNaN(evDate.getTime())) {
+    return { timeStr: c.time || '--:--', dayLabel: '' };
+  }
+
+  const timeStr = evDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  
+  // Detección precisa de Hoy vs Mañana en la fecha local del navegador
+  const now = new Date();
+  const nowDateStr = now.toLocaleDateString('sv'); // Formato ISO "YYYY-MM-DD"
+  const evDateStr = evDate.toLocaleDateString('sv');
+
+  let dayLabel = '';
+  if (nowDateStr === evDateStr) {
+    dayLabel = 'Hoy';
+  } else {
+    const d1 = new Date(nowDateStr);
+    const d2 = new Date(evDateStr);
+    const diffDays = Math.round((d2 - d1) / 86400000);
+    if (diffDays === 1) dayLabel = 'Mañana';
+    else if (diffDays === -1) dayLabel = 'Ayer';
+    else dayLabel = evDate.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
+  }
+
+  return { timeStr, dayLabel };
 }
 
 /**
@@ -111,7 +160,7 @@ export function renderBriefingCard(briefing) {
     const statusKey = String(c.status || (c.actual ? 'live' : 'upcoming')).toLowerCase();
     const statusCfg = CATALYST_STATUS_CONFIG[statusKey] || CATALYST_STATUS_CONFIG.upcoming;
     const impactClass = `impact-${(c.impact || 'MED').toLowerCase()}`;
-    const localTime = formatToUserLocalTime(c.time || '--:--');
+    const { timeStr, dayLabel } = formatCatalystTime(c);
     
     let dataPillHtml = '';
     if (c.actual) {
@@ -126,7 +175,8 @@ export function renderBriefingCard(briefing) {
     return `
       <div class="catalyst-strip-row ${escapeHTML(statusCfg.badgeClass)}">
         <div class="c-col-time">
-          <span class="c-time">${escapeHTML(localTime)}</span>
+          <span class="c-time">${escapeHTML(timeStr)}</span>
+          ${dayLabel ? `<span class="c-day-tag day-${escapeHTML(dayLabel.toLowerCase())}">${escapeHTML(dayLabel)}</span>` : ''}
           <span class="c-currency">${escapeHTML(c.currency || 'USD')}</span>
         </div>
         <div class="c-col-main">
@@ -181,7 +231,10 @@ export function renderBriefingCard(briefing) {
         <!-- Catalizadores de la Jornada en Tira Terminal -->
         ${catalysts.length > 0 ? `
           <section class="briefing-catalysts-section" aria-label="Catalizadores de la Sesión">
-            <span class="briefing-section-label">🚨 CATALIZADORES CLAVE DE LA SESIÓN</span>
+            <div class="briefing-section-header-row">
+              <span class="briefing-section-label">🚨 CATALIZADORES CLAVE DE LA SESIÓN</span>
+              <span class="briefing-tz-pill">🕒 ${escapeHTML(getUserTimezoneLabel())}</span>
+            </div>
             <div class="catalyst-strip-table">
               ${catalystsHtml}
             </div>

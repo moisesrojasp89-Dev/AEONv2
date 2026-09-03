@@ -440,6 +440,56 @@
   font-weight: 700;
 }
 
+.briefing-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.briefing-tz-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent-hover);
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono, monospace);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.c-day-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.08rem 0.32rem;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.c-day-tag.day-hoy {
+  background: rgba(56, 189, 248, 0.16);
+  color: var(--accent-hover);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.c-day-tag.day-mañana, .c-day-tag.day-manana {
+  background: rgba(192, 132, 252, 0.16);
+  color: var(--purple);
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+.c-day-tag.day-ayer {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--slate-400);
+}
+
 /* Tira Terminal de Catalizadores Institucionales */
 .catalyst-strip-table {
   display: flex;

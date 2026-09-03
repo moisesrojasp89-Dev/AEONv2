@@ -590,6 +590,8 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
 
     scored_events.sort(key=lambda x: (x[0], -abs((x[1] - now_utc).total_seconds())), reverse=True)
     top_events = [x[2] for x in scored_events[:3]]
+    # Ordenar los eventos estrictamente por orden cronológico de ocurrencia
+    top_events.sort(key=lambda ev: ev.get('event_time', ''))
 
     catalysts_payload = []
     for ev in top_events:
@@ -608,6 +610,7 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
             
             catalysts_payload.append({
                 'time': ev_time.strftime('%H:%M'), # UTC estandarizado
+                'event_time': ev.get('event_time') or ev_time.isoformat(), # Timestamp completo ISO UTC para conversión perfecta
                 'currency': ev.get('country', 'USD'),
                 'title': ev.get('event_name', ''),
                 'impact': str(ev.get('impact', 'HIGH')).upper(),
