@@ -108,13 +108,26 @@ Deno.serve(async (req: Request) => {
     // --------------------------------------------------------------------------
     const { data: profile } = await supabaseAdmin
       .from("profiles")
-      .select("plan_tier, is_pro, subscription_status")
+      .select("tier")
       .eq("id", verifiedUserId)
       .maybeSingle();
 
-    const isPro = profile?.is_pro === true || 
-                  profile?.plan_tier === "pro" || 
-                  profile?.subscription_status === "active";
+    let isPro = profile?.tier === "pro" || profile?.tier === "institutional";
+
+    if (!isPro) {
+      // Fallback a subscriptions con periodo vigente
+      const { data: sub } = await supabaseAdmin
+        .from("subscriptions")
+        .select("status, plan, current_period_end")
+        .eq("user_id", verifiedUserId)
+        .eq("status", "active")
+        .maybeSingle();
+
+      if (sub && (sub.plan === "pro" || sub.plan === "institutional")) {
+        const isPeriodValid = !sub.current_period_end || new Date(sub.current_period_end) >= new Date();
+        if (isPeriodValid) isPro = true;
+      }
+    }
 
     if (!isPro) {
       return new Response(
