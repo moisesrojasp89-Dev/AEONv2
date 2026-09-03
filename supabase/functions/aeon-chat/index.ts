@@ -272,45 +272,56 @@ ${marketFreshnessNotice}
 ${marketContextSummary}
 `;
 
-    // [ARQUITECTO]: responseSchema estricto a nivel de API de Gemini
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${aiApiKey}`;
-    
-    const aiResponse = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemInstruction }] },
-        contents: contents,
-        generationConfig: {
-          maxOutputTokens: 500,
-          temperature: 0.2,
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              categoria: {
-                type: "STRING",
-                enum: ["MACRO", "TECNICO_ORDERFLOW", "CATALIZADOR", "GESTION_RIESGO", "FUERA_DE_AMBITO"]
-              },
-              analisis: { type: "STRING" },
-              niveles_clave: {
-                type: "ARRAY",
-                items: { type: "STRING" }
-              },
-              advertencia_riesgo: { type: "STRING" }
-            },
-            required: ["categoria", "analisis", "niveles_clave", "advertencia_riesgo"]
-          }
-        }
-      })
-    });
+    // [ARQUITECTO]: Invocación con responseSchema estricto y fallback de modelos
+    const models = ["gemini-3.7-flash", "gemini-3.6-flash"];
+    let rawAiText = "";
 
-    if (!aiResponse.ok) {
-      throw new Error(`Gemini Error HTTP ${aiResponse.status}`);
+    for (const model of models) {
+      try {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${aiApiKey}`;
+        const res = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemInstruction }] },
+            contents: contents,
+            generationConfig: {
+              maxOutputTokens: 600,
+              temperature: 0.2,
+              responseMimeType: "application/json",
+              responseSchema: {
+                type: "OBJECT",
+                properties: {
+                  categoria: {
+                    type: "STRING",
+                    enum: ["MACRO", "TECNICO_ORDERFLOW", "CATALIZADOR", "GESTION_RIESGO", "FUERA_DE_AMBITO"]
+                  },
+                  analisis: { type: "STRING" },
+                  niveles_clave: {
+                    type: "ARRAY",
+                    items: { type: "STRING" }
+                  },
+                  advertencia_riesgo: { type: "STRING" }
+                },
+                required: ["categoria", "analisis", "niveles_clave", "advertencia_riesgo"]
+              }
+            }
+          })
+        });
+
+        if (res.ok) {
+          const aiJson = await res.json();
+          rawAiText = aiJson.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          if (rawAiText) break;
+        }
+      } catch (_) {
+        // Continuar con el siguiente modelo de respaldo
+      }
     }
 
-    const aiJson = await aiResponse.json();
-    const rawAiText = aiJson.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    if (!rawAiText) {
+      throw new Error("No se pudo obtener respuesta de los modelos de IA.");
+    }
 
     // --------------------------------------------------------------------------
     // CAPA 8: Guardrail Post-Generación Exhaustivo [ARQUITECTO]
@@ -364,11 +375,13 @@ ${marketContextSummary}
     );
 
   } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
     console.error("[AEON Chat Error]:", err);
     return new Response(
       JSON.stringify({ 
         error: "ai_service_unavailable", 
-        message: "El asistente cuántico no pudo procesar la solicitud en este momento. Inténtalo de nuevo en unos instantes." 
+        message: errorMsg,
+        details: err instanceof Error ? err.stack : null
       }),
       { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
