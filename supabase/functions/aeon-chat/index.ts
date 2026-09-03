@@ -1,15 +1,17 @@
 // ==============================================================================
 // AEON · Supabase Edge Function: aeon-chat (Fase B)
-// Versión: 2.0 - Auditada por Arquitectura de Seguridad (Opus/Sonnet)
-// Blindajes:
-//  [x] 1. user_id extraído 100% de auth.getUser(token), nunca del body.
-//  [x] 2. Suscripción Pro activa requerida antes de invocar el LLM (fail fast).
-//  [x] 3. Conteo atómico anti-race conditions con rollback si la IA falla.
-//  [x] 4. Freshness check con Math.min() de todos los símbolos (umbral 8 min).
+// Versión: 2.1 — Producción Definitiva (Auditada Línea por Línea por el Arquitecto)
+// ==============================================================================
+// Blindajes Implementados:
+//  [x] 1. user_id extraído 100% de auth.getUser(token), NUNCA del body.
+//  [x] 2. Suscripción Pro activa requerida antes de tocar la IA (fail fast).
+//  [x] 3. Conteo atómico estrictamente monótono (fail-closed, sin rollback explotable).
+//  [x] 4. Freshness check con Math.min() sobre TODOS los activos (umbral 8 min).
 //  [x] 5. responseSchema nativo en Gemini con enum cerrado de categorías.
-//  [x] 6. Fallback de JSON.parse trata el error como FUERA_DE_AMBITO (cero fuga de texto).
-//  [x] 7. Historial sanitizado (empieza en 'user' y alterna estrictamente).
-//  [x] 8. Deno.serve() nativo y CORS con defensa en profundidad.
+//  [x] 6. Validación exhaustiva post-generación: enum en backend + tipos primitivos.
+//  [x] 7. Fallback total de seguridad: ante cualquier anomalía, STANDARD_REFUSAL.
+//  [x] 8. Historial sanitizado: inicia en 'user' y alterna estrictamente roles.
+//  [x] 9. Deno.serve() nativo y CORS con defensa en profundidad.
 // ==============================================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -34,6 +36,22 @@ function getCorsHeaders(req: Request) {
   };
 }
 
+// Categorías financieras legítimas aceptadas por el backend
+const VALID_FINANCIAL_CATEGORIES = [
+  "MACRO",
+  "TECNICO_ORDERFLOW",
+  "CATALIZADOR",
+  "GESTION_RIESGO"
+] as const;
+
+// Respuesta canónica segura para jailbreaks, fuera de ámbito o JSON inválido
+const STANDARD_REFUSAL_PAYLOAD = {
+  categoria: "FUERA_DE_AMBITO",
+  analisis: "Solo estoy autorizado para asistir en análisis macroeconómico, Order Flow y gestión de riesgo institucional de AEON.",
+  niveles_clave: [],
+  advertencia_riesgo: "Consulta no clasificada dentro del ámbito financiero de AEON."
+};
+
 interface ChatRequestBody {
   message: string;
   history?: Array<{ role: "user" | "assistant"; content: string }>;
@@ -43,12 +61,12 @@ interface ChatRequestBody {
 Deno.serve(async (req: Request) => {
   const corsHeaders = getCorsHeaders(req);
 
-  // Manejo de preflight OPTIONS
+  // 1. Manejo de preflight OPTIONS
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  // Solo permitir método POST
+  // 2. Solo permitir método POST
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "method_not_allowed" }), {
       status: 405,
@@ -61,14 +79,10 @@ Deno.serve(async (req: Request) => {
   const aiApiKey = Deno.env.get("GEMINI_API_KEY") ?? "";
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
-  let verifiedUserId: string | null = null;
-  let quotaConsumed = false;
-  let currentRequestsToday = 0;
-
   try {
     // --------------------------------------------------------------------------
     // CAPA 1: Zero-Trust & Autenticación Server-Side
-    // [REGLA DE ORO]: user_id extraído del JWT, NUNCA del body
+    // [REGLA DE ORO]: user_id extraído del JWT verificado, NUNCA del body
     // --------------------------------------------------------------------------
     const authHeader = req.headers.get("Authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -87,7 +101,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    verifiedUserId = user.id;
+    const verifiedUserId = user.id;
 
     // --------------------------------------------------------------------------
     // CAPA 2: Validación de Suscripción PRO Activa (Fail Fast, Cero Tokens)
@@ -135,6 +149,7 @@ Deno.serve(async (req: Request) => {
 
     // --------------------------------------------------------------------------
     // CAPA 4: Conteo Atómico en Postgres (Anti-Spam 10s + Cuota Diaria 50)
+    // Política Fail-Closed: estrictamente monótona, sin rollback explotable.
     // --------------------------------------------------------------------------
     const { data: quotaResult, error: quotaError } = await supabaseAdmin.rpc(
       "check_and_increment_ai_quota",
@@ -157,9 +172,6 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    quotaConsumed = true; // Marcado para posible rollback si Gemini falla
-    currentRequestsToday = quotaResult?.requests_today ?? 1;
-
     // --------------------------------------------------------------------------
     // CAPA 5: Live Market Grounding & Freshness Check Robusto (Math.min)
     // --------------------------------------------------------------------------
@@ -168,7 +180,7 @@ Deno.serve(async (req: Request) => {
       .select("symbol, price, bias, dpoc, vwap, zap_buy_min, zap_buy_max, zap_sell_min, zap_sell_max, updated_at")
       .in("symbol", ["XAUUSD", "EURUSD", "GBPUSD", "DXY", "SPX500", "BTCUSDT"]);
 
-    // [FIX ARQUITECTO]: Calcular el mínimo entre todos los updated_at para detectar activos congelados
+    // [ARQUITECTO]: Calcular el mínimo absoluto entre todos los timestamps del batch
     const nowMs = Date.now();
     let marketFreshnessNotice = "ESTADO: TIEMPO REAL (Latencia normal <8m)";
     if (marketData && marketData.length > 0) {
@@ -185,8 +197,8 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    // Filtrar o priorizar si el usuario mencionó un activo específico
-    const requestedAsset = (body.asset || "").toUpperCase().replace(/[^A-Z]/g, "");
+    // Priorizar activo en la cabecera del prompt si el usuario lo especificó
+    const requestedAsset = (body.asset || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
     let sortedMarketData = marketData || [];
     if (requestedAsset) {
       sortedMarketData = [...sortedMarketData].sort((a, b) => 
@@ -199,12 +211,12 @@ Deno.serve(async (req: Request) => {
     ).join("\n");
 
     // --------------------------------------------------------------------------
-    // CAPA 6: Sanitización de Historial (Regla de Gemini: empieza en 'user' y alterna)
+    // CAPA 6: Sanitización de Historial (Gemini exige: inicia en 'user' y alterna)
     // --------------------------------------------------------------------------
     const rawHistory = body.history || [];
     const sanitizedHistory: Array<{ role: "user" | "model"; parts: [{ text: string }] }> = [];
     
-    // Tomar máximo los últimos 4 mensajes
+    // Tomar máximo los últimos 4 mensajes del historial previo
     const candidateHistory = rawHistory.slice(-4);
     let expectedRole: "user" | "assistant" = "user";
 
@@ -218,7 +230,7 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    // Asegurar que el último elemento del historial previo sea 'model' para que el nuevo sea 'user'
+    // Si el último mensaje del historial recortado era 'user', descartarlo para que el nuevo sea 'user'
     if (sanitizedHistory.length > 0 && sanitizedHistory[sanitizedHistory.length - 1].role === "user") {
       sanitizedHistory.pop();
     }
@@ -229,7 +241,7 @@ Deno.serve(async (req: Request) => {
     ];
 
     // --------------------------------------------------------------------------
-    // CAPA 7: System Prompt & Invocación a Gemini con responseSchema Nativo
+    // CAPA 7: System Prompt & Invocación con responseSchema Nativo en Gemini
     // --------------------------------------------------------------------------
     const systemInstruction = `
 Eres AEON Terminal AI, copiloto de Order Flow institucional y macroeconomía para la plataforma AEON.
@@ -245,7 +257,7 @@ ${marketFreshnessNotice}
 ${marketContextSummary}
 `;
 
-    // [FIX ARQUITECTO]: responseSchema formal a nivel de API de Gemini
+    // [ARQUITECTO]: responseSchema estricto a nivel de API de Gemini
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${aiApiKey}`;
     
     const aiResponse = await fetch(geminiUrl, {
@@ -286,42 +298,48 @@ ${marketContextSummary}
     const rawAiText = aiJson.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     // --------------------------------------------------------------------------
-    // CAPA 8: Guardrail Post-Generación [FIX CRÍTICO ARQUITECTO]
-    // Si falla el parseo o no cumple el esquema, se trata como FUERA_DE_AMBITO.
-    // NUNCA se muestra el texto crudo del modelo.
+    // CAPA 8: Guardrail Post-Generación Exhaustivo [ARQUITECTO]
+    // Validamos en backend: JSON parseable + enum legítimo + tipos primitivos.
+    // NUNCA se expone texto no validado; ante cualquier discrepancia -> STANDARD_REFUSAL.
     // --------------------------------------------------------------------------
-    let parsedResult: {
-      categoria: string;
-      analisis: string;
-      niveles_clave: string[];
-      advertencia_riesgo: string;
-    };
+    let finalPayload = STANDARD_REFUSAL_PAYLOAD;
 
     try {
-      parsedResult = JSON.parse(rawAiText);
-      if (!parsedResult.categoria || !parsedResult.analisis) {
-        throw new Error("Estructura JSON incompleta");
+      const jsonCandidate = JSON.parse(rawAiText);
+
+      // Verificación estricta de campos y tipos primitivos
+      const isValidCategory = typeof jsonCandidate.categoria === "string" &&
+        VALID_FINANCIAL_CATEGORIES.includes(jsonCandidate.categoria as any);
+
+      const isValidAnalysis = typeof jsonCandidate.analisis === "string" &&
+        jsonCandidate.analisis.trim().length > 0;
+
+      const isValidLevels = Array.isArray(jsonCandidate.niveles_clave) &&
+        jsonCandidate.niveles_clave.every((item: unknown) => typeof item === "string");
+
+      const isValidRisk = typeof jsonCandidate.advertencia_riesgo === "string";
+
+      // Solo si pasa TODAS las validaciones de contrato y tipo, se acepta
+      if (isValidCategory && isValidAnalysis && isValidLevels && isValidRisk) {
+        finalPayload = {
+          categoria: jsonCandidate.categoria,
+          analisis: jsonCandidate.analisis.slice(0, 1000).trim(),
+          niveles_clave: jsonCandidate.niveles_clave.slice(0, 5),
+          advertencia_riesgo: jsonCandidate.advertencia_riesgo.slice(0, 300).trim()
+        };
+      } else {
+        // Fuera de ámbito, jailbreak capturado o enum no legítimo
+        finalPayload = STANDARD_REFUSAL_PAYLOAD;
       }
     } catch {
-      // Fallback seguro: bloqueo total de jailbreak en prosa
-      parsedResult = {
-        categoria: "FUERA_DE_AMBITO",
-        analisis: "Solo estoy autorizado para asistir en análisis macroeconómico y Order Flow de AEON.",
-        niveles_clave: [],
-        advertencia_riesgo: "Respuesta no autorizada por seguridad."
-      };
-    }
-
-    // Si el modelo clasificó fuera de ámbito
-    if (parsedResult.categoria === "FUERA_DE_AMBITO") {
-      parsedResult.analisis = "Solo estoy autorizado para asistir en análisis macroeconómico y Order Flow de AEON.";
-      parsedResult.niveles_clave = [];
+      // Si JSON.parse explotó (jailbreak en prosa), rechazo total
+      finalPayload = STANDARD_REFUSAL_PAYLOAD;
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        data: parsedResult,
+        data: finalPayload,
         meta: {
           remaining_quota: quotaResult.remaining,
           requests_today: quotaResult.requests_today
@@ -330,23 +348,11 @@ ${marketContextSummary}
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (err: any) {
-    // [FIX ARQUITECTO]: Rollback de cuota si la IA falló para no perjudicar al usuario
-    if (verifiedUserId && quotaConsumed) {
-      try {
-        await supabaseAdmin
-          .from("user_ai_usage")
-          .update({ daily_requests: Math.max(0, currentRequestsToday - 1) })
-          .eq("user_id", verifiedUserId);
-      } catch (_) {
-        // Fallo silencioso en rollback secundario
-      }
-    }
-
+  } catch (_err: unknown) {
     return new Response(
       JSON.stringify({ 
         error: "ai_service_unavailable", 
-        message: "El motor de inteligencia no está disponible en este momento. Tu cuota no ha sido descontada." 
+        message: "El asistente cuántico no pudo procesar la solicitud en este momento. Inténtalo de nuevo en unos instantes." 
       }),
       { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
