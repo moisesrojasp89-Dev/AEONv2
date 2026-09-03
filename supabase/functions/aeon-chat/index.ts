@@ -180,9 +180,9 @@ Deno.serve(async (req: Request) => {
       .select("symbol, price, bias, dpoc, vwap, zap_buy_min, zap_buy_max, zap_sell_min, zap_sell_max, updated_at")
       .in("symbol", ["XAUUSD", "EURUSD", "GBPUSD", "DXY", "SPX500", "BTCUSDT"]);
 
-    // [ARQUITECTO]: Calcular el mínimo absoluto entre todos los timestamps del batch
+    // [ARQUITECTO]: Calcular el mínimo absoluto entre todos los timestamps del batch (fail-closed por defecto)
     const nowMs = Date.now();
-    let marketFreshnessNotice = "ESTADO: TIEMPO REAL (Latencia normal <8m)";
+    let marketFreshnessNotice = "ALERTA: Sin datos de mercado en vivo disponibles en la base de datos.";
     if (marketData && marketData.length > 0) {
       const timestamps = marketData
         .map(m => m.updated_at ? new Date(m.updated_at).getTime() : 0)
@@ -193,6 +193,8 @@ Deno.serve(async (req: Request) => {
         const diffMinutes = Math.round((nowMs - oldestTimestamp) / 60000);
         if (diffMinutes > 8) {
           marketFreshnessNotice = `ALERTA DE LATENCIA: El dato más antiguo del lote tiene ${diffMinutes} minutos. ES OBLIGATORIO advertir al usuario en 'advertencia_riesgo' que las cotizaciones pueden haber variado.`;
+        } else {
+          marketFreshnessNotice = "ESTADO: TIEMPO REAL (Latencia normal <8m)";
         }
       }
     }
@@ -348,7 +350,8 @@ ${marketContextSummary}
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (_err: unknown) {
+  } catch (err: unknown) {
+    console.error("[AEON Chat Error]:", err);
     return new Response(
       JSON.stringify({ 
         error: "ai_service_unavailable", 
