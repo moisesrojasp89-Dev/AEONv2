@@ -259,7 +259,7 @@ async function refreshChatView() {
         <p class="chat-paywall-desc">El copiloto de IA con dPOC en tiempo real y cálculo de lotaje está reservado para miembros Pro.</p>
         <div class="chat-paywall-features">
           <div>✔ Cálculo matemático de lotaje y riesgo institucional</div>
-          <div>✔ Sesgo, dPOC y VWAP en vivo para 14 activos</div>
+          <div>✔ Sesgo institucional, dPOC y VWAP en tiempo real</div>
           <div>✔ 50 consultas diarias sin esperas</div>
         </div>
         <a href="/perfil.html" class="btn-primary btn-large" style="width: 100%; justify-content: center; text-decoration: none;">Desbloquear AEON Pro →</a>
