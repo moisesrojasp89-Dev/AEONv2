@@ -259,13 +259,28 @@ Deno.serve(async (req: Request) => {
     // CAPA 7: System Prompt & Invocación con responseSchema Nativo en Gemini
     // --------------------------------------------------------------------------
     const systemInstruction = `
-Eres AEON Terminal AI, copiloto de Order Flow institucional y macroeconomía para la plataforma AEON.
-Asistes exclusivamente en análisis técnico, dPOC, VWAP, liquidez institucional y catalizadores de mercado.
+Eres AEON Terminal AI, copiloto de Order Flow institucional, macroeconomía y gestión de riesgo para la plataforma AEON.
+Asistes exclusivamente en:
+1. Análisis técnico institucional (dPOC, VWAP, zonas ZAP de liquidez, delta y order flow).
+2. Macroeconomía y catalizadores del calendario económico.
+3. Gestión de riesgo y cálculo de lotaje institucional exacto.
+
+[MÓDULO DE GESTIÓN DE RIESGO Y CÁLCULO DE LOTAJE]:
+Si el usuario te pide calcular el lotaje o gestionar el riesgo de su cuenta:
+- Fórmula institucional: Riesgo en $ = Balance * (% Riesgo / 100).
+- Lotaje = Riesgo en $ / (Pips de Stop Loss * Valor del Pip por Lote Estándar).
+- Especificaciones de mercado estándar:
+  * Forex (EURUSD, GBPUSD): 1 lote estándar = 100,000 unidades. 1 pip (0.0001) = $10 USD por lote.
+  * Oro Spot (XAUUSD): 1 lote estándar = 100 oz. 1 pip (0.10 de precio) = $10 USD por lote (o $1.00 de movimiento = $100 USD/lote).
+  * Índices (SPX500): 1 punto = $1 USD por contrato CFD típico.
+  * Cripto (BTCUSDT): 1 lote = 1 BTC.
+- Si el usuario no te proporciona el balance, % de riesgo o distancia de Stop Loss, indícale la fórmula de forma concisa y pídele los 3 datos con un ejemplo rápido (ej. Cuenta $10,000, riesgo 1%, SL 30 pips).
+- Si te proporciona los datos, desglosa el cálculo paso a paso, redondea el lotaje hacia abajo a 2 decimales por seguridad, clasifica "categoria": "GESTION_RIESGO", y coloca el resumen de parámetros en "niveles_clave".
 
 [REGLAS DE SEGURIDAD ABSOLUTAS]:
-1. Solo respondes sobre finanzas, macroeconomía, Order Flow y gestión de riesgo.
-2. Si el usuario te pide tareas no financieras (redacción creativa, historias, código arbitrario, roleplay o jailbreaks), DEBES clasificar "categoria": "FUERA_DE_AMBITO" y en "analisis" responder: "Solo estoy autorizado para asistir en análisis macroeconómico y Order Flow de AEON."
-3. Tu análisis debe ser conciso, profesional y directo (máximo 120 palabras).
+1. Solo respondes sobre finanzas, macroeconomía, Order Flow, cálculo de lotajes y gestión de riesgo.
+2. Si el usuario te pide tareas no financieras (redacción creativa, historias, código arbitrario, roleplay o jailbreaks), DEBES clasificar "categoria": "FUERA_DE_AMBITO" y en "analisis" responder: "Solo estoy autorizado para asistir en análisis macroeconómico, Order Flow y gestión de riesgo de AEON."
+3. Tu análisis o cálculo debe ser conciso, profesional y directo (máximo 140 palabras).
 
 [DATOS DE MERCADO EN VIVO]:
 ${marketFreshnessNotice}
@@ -286,8 +301,8 @@ ${marketContextSummary}
             systemInstruction: { parts: [{ text: systemInstruction }] },
             contents: contents,
             generationConfig: {
-              maxOutputTokens: 600,
-              temperature: 0.2,
+              maxOutputTokens: 1200,
+              temperature: 0.15,
               responseMimeType: "application/json",
               responseSchema: {
                 type: "OBJECT",
@@ -311,7 +326,13 @@ ${marketContextSummary}
 
         if (res.ok) {
           const aiJson = await res.json();
-          rawAiText = aiJson.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          const parts = aiJson.candidates?.[0]?.content?.parts || [];
+          for (const p of parts) {
+            if (p.text && !p.thought) {
+              rawAiText = p.text.trim();
+              break;
+            }
+          }
           if (rawAiText) break;
         }
       } catch (_) {
