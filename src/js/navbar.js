@@ -4,6 +4,7 @@
    ============================================================ */
 
 import { renderNavbar } from './templates/navbar.js';
+import { initChatWidget } from './components/chatWidget.js';
 
 export function toggleMobileMenu(forceClose = false) {
   const overlay = document.querySelector('.mobile-overlay');
@@ -87,6 +88,9 @@ export function initNavbar() {
 
   // 2. Bind all interactive events
   bindNavbarEvents();
+
+  // 3. Mount Institutional Chatbot & Risk Copilot
+  initChatWidget();
 }
 
 // Auto-initialize on DOM load

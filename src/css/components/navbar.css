@@ -2,6 +2,8 @@
    AEON · navbar.css — Modern Institutional Navbar & Minimalist Nexora Drawer
    ============================================================ */
 
+@import './chat.css';
+
 .header {
   position: sticky;
   top: 0;
