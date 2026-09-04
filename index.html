@@ -80,20 +80,38 @@
           <a href="/analisis.html" class="btn-secondary">Explorar Análisis</a>
         </div>
       </div>
-      <div class="hero-chart-card">
-        <div class="hero-chart-header">
-          <div class="hero-chart-info">
-            <span class="hero-chart-symbol" id="hero-chart-symbol">Oro · Spot Gold</span>
-            <span class="hero-chart-price-badge" id="hero-chart-price">Cargando...</span>
+      <div class="hero-visual-card" aria-label="AEON Macro Intelligence Core">
+        <div class="hero-visual-glow" aria-hidden="true"></div>
+        <div class="hero-visual-frame">
+          <img 
+            src="/aeon-intelligence.jpg" 
+            alt="AEON Macro Intelligence — Núcleo Cuántico y Topografía de Liquidez" 
+            class="hero-visual-img"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <div class="hero-visual-overlay" aria-hidden="true"></div>
+
+          <!-- Top HUD Badges -->
+          <div class="hero-hud-top">
+            <div class="hero-hud-badge">
+              <span class="hero-hud-pulse" aria-hidden="true"></span>
+              <span class="hero-hud-title">AEON INTELLIGENCE</span>
+            </div>
+            <span class="hero-hud-pill">MACRO REGIME</span>
           </div>
-          <div class="hero-chart-tabs" role="tablist" aria-label="Seleccionar activo para gráfico">
-            <button class="hero-chart-tab active" data-asset="XAU_USD">Oro (XAU)</button>
-            <button class="hero-chart-tab" data-asset="EUR_USD">EUR/USD</button>
-            <button class="hero-chart-tab" data-asset="SPX500_USD">S&P 500</button>
-            <button class="hero-chart-tab" data-asset="BTC">Bitcoin</button>
+
+          <!-- Bottom HUD Panel -->
+          <div class="hero-hud-bottom">
+            <div class="hero-hud-stat">
+              <span class="hero-hud-label">ESTADO DE LIQUIDEZ</span>
+              <span class="hero-hud-val">Expansión Global <span class="hero-hud-indicator">Risk-On</span></span>
+            </div>
+            <div class="hero-hud-quote">
+              "El contexto que necesitas antes de operar."
+            </div>
           </div>
         </div>
-        <div class="hero-chart" id="hero-chart-canvas" aria-label="Gráfico interactivo de mercado"></div>
       </div>
     </section>
 
