@@ -38,7 +38,7 @@
         <div class="dash-profile-info">
           <div class="dash-status-pill">
             <span class="pulse-indicator"></span>
-            <span>Online · Terminal v3.2</span>
+            <span class="dash-status-text">Online · v3.2</span>
           </div>
           <h1 class="dash-welcome-name" id="dash-user-display-name">Cargando perfil...</h1>
           <div class="dash-meta-row">
@@ -65,7 +65,8 @@
         tabindex="0"
       >
         <span class="tab-icon">💎</span>
-        <span>Membresía & Cuotas</span>
+        <span class="tab-label-full">Membresía & Cuotas</span>
+        <span class="tab-label-short">Membresía</span>
       </button>
 
       <button 
@@ -78,7 +79,8 @@
         tabindex="-1"
       >
         <span class="tab-icon">⚙</span>
-        <span>Perfil & Preferencias</span>
+        <span class="tab-label-full">Perfil & Preferencias</span>
+        <span class="tab-label-short">Preferencias</span>
       </button>
 
       <button 
@@ -91,7 +93,8 @@
         tabindex="-1"
       >
         <span class="tab-icon">🔒</span>
-        <span>Seguridad & Acceso</span>
+        <span class="tab-label-full">Seguridad & Acceso</span>
+        <span class="tab-label-short">Seguridad</span>
       </button>
     </nav>
 
@@ -151,13 +154,13 @@
             </div>
           </div>
 
-          <!-- Medidor de Cuota Cuantitativa IA & Beneficios -->
           <div class="dashboard-card quota-hub-card">
             <div class="quota-header">
-              <div>
-                <h2 class="dashboard-card-title" style="margin-bottom: 0.25rem;">
+              <div class="quota-header-text">
+                <h2 class="dashboard-card-title">
                   <span class="card-title-icon">⚡</span>
-                  Cuota del Copiloto Cuantitativo IA
+                  <span class="quota-title-full">Cuota del Copiloto Cuantitativo IA</span>
+                  <span class="quota-title-short">Copiloto Cuantitativo IA</span>
                 </h2>
                 <p class="quota-subtitle">Asignación diaria exclusiva de inferencias para miembros Pro.</p>
               </div>
@@ -169,14 +172,20 @@
             <!-- Barra de Progreso de la Cuota -->
             <div class="quota-meter-box">
               <div class="quota-meter-meta">
-                <span class="quota-stat-label">Consultas Disponibles Hoy</span>
+                <span class="quota-stat-label">
+                  <span class="quota-label-full">Consultas Disponibles Hoy</span>
+                  <span class="quota-label-short">Disponibles Hoy</span>
+                </span>
                 <span class="quota-stat-counter font-mono" id="dash-quota-counter">50 / 50 hoy</span>
               </div>
               <div class="quota-progress-track">
                 <div class="quota-progress-fill" id="dash-quota-progress" style="width: 100%;"></div>
               </div>
               <div class="quota-meter-footer">
-                <span class="quota-reset-note">Se restablece diariamente a las 00:00 UTC</span>
+                <span class="quota-reset-note">
+                  <span class="quota-note-full">Se restablece diariamente a las 00:00 UTC</span>
+                  <span class="quota-note-short">Reseteo: 00:00 UTC</span>
+                </span>
                 <span class="quota-reset-pct font-mono" id="dash-quota-pct">100% libre</span>
               </div>
             </div>

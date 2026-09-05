@@ -1,12 +1,13 @@
 /* ============================================================
    AEON · perfil.css — Institutional Trader Command Center
    0 Hardcoded Hex Colors · 0 !important · Full Token Usage
+   Refined Elite Fintech Aesthetic: Sleek, Crisp, De-bubbled
    ============================================================ */
 
 .dashboard-section {
   position: relative;
   z-index: var(--z-base);
-  padding: 3rem 1.5rem 5rem;
+  padding: 2.5rem 1.5rem 5rem;
   max-width: 1240px;
   margin: 0 auto;
   min-height: calc(100dvh - var(--header-h) - 200px);
@@ -18,16 +19,16 @@
 .dash-profile-banner {
   background: var(--surface);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem 2.25rem;
+  border-radius: var(--radius-md);
+  padding: 1.5rem 2rem;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 16px 40px var(--shadow-heavy);
+  margin-bottom: 1.75rem;
+  box-shadow: 0 12px 32px var(--shadow-heavy);
   position: relative;
   overflow: hidden;
 }
@@ -45,7 +46,7 @@
 .dash-profile-main {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .dash-avatar-wrapper {
@@ -54,59 +55,60 @@
 }
 
 .dash-avatar {
-  width: 68px;
-  height: 68px;
+  width: 62px;
+  height: 62px;
   border-radius: var(--radius-circle);
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: var(--text-bright);
   font-family: var(--font-head);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 24px var(--accent-glow);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .dash-status-dot {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 14px;
-  height: 14px;
+  bottom: 1px;
+  right: 1px;
+  width: 13px;
+  height: 13px;
   background: var(--green-bright);
-  border: 2.5px solid var(--bg-deep);
+  border: 2px solid var(--bg-deep);
   border-radius: var(--radius-circle);
-  box-shadow: 0 0 8px var(--green);
+  box-shadow: 0 0 6px var(--green);
 }
 
 .dash-profile-info {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .dash-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--green-bright);
   background: var(--green-dim);
   border: 1px solid rgba(74, 222, 128, 0.25);
-  padding: 0.2rem 0.65rem;
-  border-radius: var(--radius-pill);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-xs);
   width: fit-content;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .dash-status-pill .pulse-indicator {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--green-bright);
   border-radius: var(--radius-circle);
   animation: pulseGreen 2s infinite var(--ease);
@@ -118,8 +120,8 @@
     box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
   }
   70% {
-    transform: scale(1.1);
-    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(74, 222, 128, 0);
   }
   100% {
     transform: scale(0.95);
@@ -129,18 +131,18 @@
 
 .dash-welcome-name {
   font-family: var(--font-head);
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--text-bright);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .dash-meta-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.88rem;
+  gap: 0.65rem;
+  font-size: 0.85rem;
   color: var(--muted);
   flex-wrap: wrap;
 }
@@ -151,33 +153,34 @@
 
 .dash-terminal-id {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
-  padding: 0.15rem 0.6rem;
-  border-radius: var(--radius-sm);
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-xs);
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .dash-header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .plan-badge-display {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   font-family: var(--font-head);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-xs);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
 }
 
@@ -185,7 +188,7 @@
   background: var(--accent-dim);
   color: var(--accent);
   border: 1px solid var(--accent-border);
-  box-shadow: 0 0 16px var(--accent-glow);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .plan-badge-display.free {
@@ -195,24 +198,19 @@
 }
 
 /* ============================================================
-   2. WAI-ARIA Navigation Tabs
+   2. WAI-ARIA Navigation Tabs (Segmented Control Style)
    ============================================================ */
 .dash-tabs-nav {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.4rem;
   background: var(--glass-bg);
   border: 1px solid var(--border);
-  padding: 0.4rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 24px var(--shadow);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.dash-tabs-nav::-webkit-scrollbar {
-  display: none;
+  padding: 0.35rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.75rem;
+  box-shadow: 0 6px 20px var(--shadow);
+  width: 100%;
 }
 
 .dash-tab-btn {
@@ -220,14 +218,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  padding: 0.75rem 1.25rem;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   color: var(--muted);
   font-family: var(--font-head);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--dur-base) var(--ease);
@@ -236,9 +234,17 @@
 }
 
 .dash-tab-btn .tab-icon {
-  font-size: 1.1rem;
+  font-size: 1rem;
   opacity: 0.8;
   transition: transform var(--dur-fast) var(--ease);
+}
+
+.tab-label-short {
+  display: none;
+}
+
+.tab-label-full {
+  display: inline;
 }
 
 .dash-tab-btn:hover {
@@ -247,26 +253,26 @@
 }
 
 .dash-tab-btn:hover .tab-icon {
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
 .dash-tab-btn.active {
   color: var(--text-bright);
   background: var(--surface-2);
   border-color: var(--accent-border);
-  box-shadow: 0 4px 16px var(--accent-glow);
+  box-shadow: 0 2px 10px var(--accent-glow);
 }
 
 .dash-tab-btn:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
 /* ============================================================
    3. Tab Panels Container
    ============================================================ */
 .dash-panels-container {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .dash-tabpanel {
@@ -281,14 +287,14 @@
 
 .dash-tabpanel:focus-visible {
   outline: 2px solid var(--accent-border);
-  outline-offset: 4px;
-  border-radius: var(--radius-lg);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
 }
 
 @keyframes tabFadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -300,68 +306,77 @@
 .dashboard-card {
   background: var(--glass-bg);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: 0 12px 36px var(--shadow);
+  box-shadow: 0 10px 30px var(--shadow);
 }
 
 .dashboard-card-title {
   font-family: var(--font-head);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-bright);
   letter-spacing: -0.015em;
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
+  margin: 0;
 }
 
 .card-title-icon {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+}
+
+.quota-title-short {
+  display: none;
+}
+
+.quota-title-full {
+  display: inline;
 }
 
 /* ============================================================
-   4. PANEL 1: Membresía & Cuotas (Titanium Card + AI Quota)
+   4. PANEL 1: Membresía & Cuotas (Digital Card + Quota Inset)
    ============================================================ */
 .membership-hub-grid {
   display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 1.75rem;
+  grid-template-columns: 400px 1fr;
+  gap: 1.5rem;
   align-items: start;
 }
 
-/* Titanium Digital Membership Card */
+/* Digital Titanium Card */
 .titanium-card-wrap {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .titanium-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), var(--bg-deep);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%), var(--bg-deep);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius-xl);
-  padding: 1.85rem;
+  border-radius: var(--radius-md);
+  padding: 1.65rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 250px;
+  min-height: 230px;
   overflow: hidden;
-  box-shadow: 0 20px 48px var(--shadow-heavy);
+  box-shadow: 0 16px 40px var(--shadow-heavy);
   transition: transform var(--dur-slow) var(--ease), box-shadow var(--dur-slow) var(--ease), border-color var(--dur-slow) var(--ease);
 }
 
 .titanium-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 24px 54px var(--shadow-heavy);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 45px var(--shadow-heavy);
 }
 
 .titanium-card.pro {
   border-color: var(--accent-border);
-  box-shadow: 0 20px 48px var(--shadow-heavy), 0 0 28px var(--accent-glow);
+  box-shadow: 0 16px 40px var(--shadow-heavy), 0 0 24px var(--accent-glow);
 }
 
 .card-glow-layer {
@@ -377,7 +392,7 @@
 }
 
 .titanium-card.pro .card-glow-layer {
-  opacity: 0.65;
+  opacity: 0.6;
 }
 
 .card-top-row {
@@ -396,9 +411,9 @@
 .card-brand-logo {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   font-family: var(--font-head);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--muted);
   letter-spacing: 0.12em;
@@ -406,25 +421,25 @@
 
 .card-brand-symbol {
   color: var(--accent);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .card-middle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 1.75rem 0;
+  margin: 1.5rem 0 1.25rem;
   position: relative;
   z-index: var(--z-base);
 }
 
 .card-tier-label {
   font-family: var(--font-head);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-bright);
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .titanium-card.pro .card-tier-label {
@@ -433,15 +448,15 @@
 
 .card-status-pill {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 0.2rem 0.65rem;
-  border-radius: var(--radius-pill);
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-xs);
   background: var(--surface-2);
   color: var(--muted);
   border: 1px solid var(--border);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .titanium-card.pro .card-status-pill {
@@ -463,43 +478,50 @@
 .card-expiry-group {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.15rem;
 }
 
 .card-sub-label {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--muted);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .card-holder-name {
   font-family: var(--font-head);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-bright);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 170px;
+  max-width: 160px;
 }
 
 .card-expiry-val {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--accent);
+  white-space: nowrap;
 }
 
 .card-actions-area {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.55rem;
+}
+
+.card-actions-area .btn {
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
 }
 
 .card-policy-note {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: var(--muted-2);
   text-align: center;
   line-height: 1.4;
@@ -510,27 +532,33 @@
 .quota-hub-card {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .quota-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.quota-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .quota-subtitle {
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   color: var(--muted);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .btn-refresh-quota {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
   background: var(--surface-2);
   border: 1px solid var(--border-2);
   color: var(--text-bright);
@@ -554,7 +582,7 @@
 }
 
 .refresh-icon {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   line-height: 1;
   display: inline-block;
   transition: transform var(--dur-slow) var(--ease);
@@ -569,41 +597,52 @@
   to { transform: rotate(360deg); }
 }
 
-/* Meter Box */
+/* Inset Meter Box (Flat & Integrated) */
 .quota-meter-box {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.35rem;
+  border-radius: var(--radius-sm);
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .quota-meter-meta {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  font-size: 0.88rem;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.quota-label-short {
+  display: none;
+}
+
+.quota-label-full {
+  display: inline;
 }
 
 .quota-stat-label {
   color: var(--muted);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .quota-stat-counter {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-bright);
+  white-space: nowrap;
 }
 
 .quota-progress-track {
   width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-pill);
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   border: 1px solid var(--border);
 }
@@ -611,55 +650,71 @@
 .quota-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent-hover));
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   transition: width var(--dur-slow) var(--ease), background var(--dur-base) var(--ease);
-  box-shadow: 0 0 12px var(--accent-glow);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .quota-progress-fill.warning {
   background: linear-gradient(90deg, var(--yellow), #FBBF24);
-  box-shadow: 0 0 12px var(--yellow-border);
+  box-shadow: 0 0 10px var(--yellow-border);
 }
 
 .quota-progress-fill.danger {
   background: linear-gradient(90deg, var(--red), var(--red-bright));
-  box-shadow: 0 0 12px var(--red-dim);
+  box-shadow: 0 0 10px var(--red-dim);
 }
 
 .quota-meter-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--muted-2);
+}
+
+.quota-reset-note {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quota-note-short {
+  display: none;
+}
+
+.quota-note-full {
+  display: inline;
 }
 
 .quota-reset-pct {
   font-family: var(--font-mono);
   font-weight: 600;
   color: var(--accent);
+  white-space: nowrap;
 }
 
 /* Benefits Unlocked List */
 .benefits-unlocked-box {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  padding-top: 0.5rem;
+  gap: 0.65rem;
+  padding-top: 0.25rem;
 }
 
 .benefits-title {
   font-family: var(--font-head);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-bright);
   letter-spacing: 0.02em;
+  margin: 0;
 }
 
 .benefits-list {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.65rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -668,10 +723,10 @@
 .benefit-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.85rem;
+  gap: 0.65rem;
+  font-size: 0.82rem;
   color: var(--text);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .benefit-item strong {
@@ -680,7 +735,7 @@
 
 .benefit-item code {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   background: var(--surface-2);
   border: 1px solid var(--border);
   padding: 0.1rem 0.35rem;
@@ -692,13 +747,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-circle);
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-xs);
   background: var(--green-dim);
   border: 1px solid rgba(74, 222, 128, 0.3);
   color: var(--green-bright);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   flex-shrink: 0;
   margin-top: 0.1rem;
@@ -708,33 +763,33 @@
    5. PANEL 2: Perfil & Preferencias del Trader
    ============================================================ */
 .settings-subtitle {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  margin: 0.35rem 0 1.75rem 0;
-  line-height: 1.45;
+  margin: 0.35rem 0 1.5rem 0;
+  line-height: 1.4;
 }
 
 .dash-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-col {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .form-section-title {
   font-family: var(--font-head);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-bright);
   border-bottom: 1px solid var(--border);
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.25rem;
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.2rem;
 }
 
 .dash-form {
@@ -745,11 +800,11 @@
 .dash-field {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .dash-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--muted);
   text-transform: uppercase;
@@ -767,11 +822,11 @@
   width: 100%;
   background: var(--input-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius-xs);
+  padding: 0.7rem 0.85rem;
   color: var(--text-bright);
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   outline: none;
   transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
 }
@@ -784,22 +839,22 @@
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230EA5E9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 0.95rem center;
-  background-size: 1rem;
+  background-position: right 0.85rem center;
+  background-size: 0.95rem;
   cursor: pointer;
-  padding-right: 2.5rem;
+  padding-right: 2.25rem;
 }
 
 .dash-select option {
   background-color: var(--input-bg-solid);
   color: var(--text-bright);
-  padding: 0.75rem;
+  padding: 0.65rem;
 }
 
 .dash-input:focus,
 .dash-select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  box-shadow: 0 0 0 2px var(--accent-dim);
   background: var(--input-bg-solid);
 }
 
@@ -807,57 +862,61 @@
   background: rgba(255, 255, 255, 0.02);
   color: var(--muted);
   cursor: not-allowed;
-  padding-right: 6.5rem;
+  padding-right: 6rem;
 }
 
 .verified-tag {
   position: absolute;
-  right: 0.75rem;
-  font-size: 0.72rem;
+  right: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--green-bright);
   background: var(--green-dim);
   border: 1px solid rgba(74, 222, 128, 0.25);
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-sm);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
   pointer-events: none;
 }
 
 .form-submit-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.form-submit-row .btn {
+  border-radius: var(--radius-xs);
 }
 
 /* ============================================================
    6. PANEL 3: Seguridad & Acceso (Strength Meter + Logout)
    ============================================================ */
 .security-form {
-  max-width: 620px;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.15rem;
 }
 
 /* Password Strength Meter */
 .password-strength-box {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-top: 0.4rem;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
 }
 
 .strength-bars {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.35rem;
   width: 100%;
 }
 
 .strength-bar {
   flex: 1;
-  height: 4px;
+  height: 3px;
   background: var(--surface-2);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   transition: background var(--dur-base) var(--ease);
 }
 
@@ -875,7 +934,7 @@
 
 .strength-text {
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: var(--muted);
   transition: color var(--dur-base) var(--ease);
 }
@@ -895,35 +954,39 @@
 .security-btn-row {
   display: flex;
   justify-content: flex-start;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.security-btn-row .btn {
+  border-radius: var(--radius-xs);
 }
 
 /* Logout Zone */
 .logout-zone {
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .logout-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .logout-title {
   font-family: var(--font-head);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-bright);
 }
 
 .logout-desc {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--muted);
   margin: 0;
 }
@@ -932,10 +995,10 @@
   background: var(--red-dim);
   border: 1px solid var(--red-hover-border);
   color: var(--red-bright);
-  padding: 0.65rem 1.35rem;
-  border-radius: var(--radius-md);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-xs);
   font-family: var(--font-head);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all var(--dur-fast) var(--ease);
@@ -954,36 +1017,36 @@
 .dash-quick-dock {
   background: var(--glass-bg);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.75rem;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: 0 12px 36px var(--shadow);
+  box-shadow: 0 10px 30px var(--shadow);
 }
 
 .dock-title {
   font-family: var(--font-head);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-bright);
   letter-spacing: -0.015em;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.1rem;
 }
 
 .dock-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .dock-item {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius-xs);
+  padding: 1rem 1.15rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
   text-decoration: none;
   color: var(--text-bright);
   transition: all var(--dur-base) var(--ease);
@@ -996,25 +1059,25 @@
   background: var(--surface-2);
   border-color: var(--accent-border);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--accent-glow);
+  box-shadow: 0 6px 20px var(--accent-glow);
 }
 
 .dock-icon {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   flex-shrink: 0;
 }
 
 .dock-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.15rem;
   flex: 1;
   min-width: 0;
 }
 
 .dock-name {
   font-family: var(--font-head);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-bright);
   white-space: nowrap;
@@ -1023,7 +1086,7 @@
 }
 
 .dock-desc {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
@@ -1032,7 +1095,7 @@
 
 .dock-arrow {
   color: var(--muted-2);
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: transform var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
@@ -1054,7 +1117,7 @@
 }
 
 /* ============================================================
-   8. Responsive Breakpoints Verification
+   8. Responsive Breakpoints Verification & Mobile Streamlining
    (375px, 768px, 1024px, 1440px)
    ============================================================ */
 
@@ -1062,11 +1125,11 @@
 @media (max-width: 1024px) {
   .membership-hub-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .titanium-card-wrap {
-    max-width: 480px;
+    max-width: 460px;
     margin: 0 auto;
     width: 100%;
   }
@@ -1076,114 +1139,397 @@
   }
 }
 
-/* 768px: Tablet / Móvil Grande */
+/* 768px: Tablet / Móvil Grande (Eliminación de Clutter y Burbujas) */
 @media (max-width: 768px) {
   .dashboard-section {
-    padding: 2rem 1rem 4rem;
+    padding: 1.5rem 1rem 6.5rem; /* Espacio inferior generoso para evitar solape con FAB Copilot */
   }
 
+  /* Header HUD Limpio, Institucional y Compacto */
   .dash-profile-banner {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 1.5rem;
-    gap: 1.25rem;
+    align-items: stretch;
+    padding: 1.15rem 1rem;
+    gap: 0.85rem;
+    border-radius: var(--radius-sm);
   }
 
-  .dash-header-actions {
+  .dash-profile-main {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
     width: 100%;
-    justify-content: flex-start;
-  }
-
-  .dash-welcome-name {
-    font-size: 1.45rem;
-  }
-
-  .dash-form-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .dock-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .logout-zone {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .btn-logout {
-    width: 100%;
-    text-align: center;
-  }
-
-  .form-submit-row {
-    justify-content: stretch;
-  }
-
-  .form-submit-row .btn {
-    width: 100%;
-  }
-
-  .security-btn-row .btn {
-    width: 100%;
-  }
-}
-
-/* 375px: Móvil Ultra Compacto */
-@media (max-width: 375px) {
-  .dashboard-section {
-    padding: 1.5rem 0.75rem 3rem;
-  }
-
-  .dash-profile-banner {
-    padding: 1.25rem 1rem;
+    min-width: 0;
   }
 
   .dash-avatar {
-    width: 54px;
-    height: 54px;
-    font-size: 1.2rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .dash-profile-info {
+    flex: 1;
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  .dash-status-pill {
+    font-size: 0.66rem;
+    padding: 0.12rem 0.45rem;
   }
 
   .dash-welcome-name {
     font-size: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .dash-tabs-nav {
+  .dash-meta-row {
+    font-size: 0.78rem;
     gap: 0.35rem;
-    padding: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dash-terminal-id {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  .dash-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .plan-badge-display {
+    font-size: 0.74rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  /* Segmented Tabs Bar: 3 pestañas limpias distribuidas uniformemente sin desborde */
+  .dash-tabs-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3px;
+    gap: 3px;
+    border-radius: var(--radius-xs);
   }
 
   .dash-tab-btn {
-    padding: 0.65rem 0.85rem;
-    font-size: 0.82rem;
+    width: 100%;
+    min-width: 0;
+    padding: 0.55rem 0.2rem;
+    font-size: 0.78rem;
+    gap: 0.3rem;
+    text-align: center;
+    justify-content: center;
+    overflow: hidden;
   }
 
-  .dashboard-card {
-    padding: 1.25rem 1rem;
+  .dash-tab-btn .tab-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .tab-label-full {
+    display: none;
+  }
+
+  .tab-label-short {
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Membership Hub Grid & Titanium Card: Cero desbordamiento */
+  .membership-hub-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    gap: 1.25rem;
+  }
+
+  .titanium-card-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .titanium-card {
-    padding: 1.35rem 1.15rem;
-    min-height: 220px;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow: hidden;
+    padding: 1.25rem 1.15rem;
+    border-radius: var(--radius-sm);
+    min-height: 200px;
+  }
+
+  .card-top-row,
+  .card-middle-row,
+  .card-bottom-row {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card-brand-logo {
+    font-size: 0.68rem;
+  }
+
+  .card-brand-text {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .card-middle-row {
+    margin: 1.15rem 0 0.95rem;
   }
 
   .card-tier-label {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
+  }
+
+  .card-status-pill {
+    font-size: 0.68rem;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .card-bottom-row {
+    gap: 0.5rem;
   }
 
   .card-holder-name {
-    max-width: 120px;
+    max-width: 130px;
     font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-sub-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .card-expiry-group {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .card-expiry-val {
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .card-actions-area {
+    width: 100%;
+  }
+
+  .card-policy-note {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  /* Quota Hub Card & Inset Meter */
+  .dashboard-card {
+    padding: 1.25rem 1.1rem;
+    border-radius: var(--radius-sm);
+    min-width: 0;
+  }
+
+  .quota-title-full {
+    display: none;
+  }
+
+  .quota-title-short {
+    display: inline;
+  }
+
+  .quota-note-full {
+    display: none;
+  }
+
+  .quota-note-short {
+    display: inline;
+  }
+
+  .quota-label-full {
+    display: none;
+  }
+
+  .quota-label-short {
+    display: inline;
+  }
+
+  .quota-meter-box {
+    padding: 1rem 0.9rem;
+    border-radius: var(--radius-xs);
+  }
+
+  .quota-meter-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .quota-stat-counter {
     font-size: 0.92rem;
   }
 
+  /* Forms */
+  .dash-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .form-submit-row,
+  .security-btn-row {
+    justify-content: stretch;
+  }
+
+  .form-submit-row .btn,
+  .security-btn-row .btn {
+    width: 100%;
+  }
+
+  .logout-zone {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    margin-top: 2rem;
+    padding-top: 1.35rem;
+  }
+
+  .btn-logout {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Quick Dock: Lista Unificada en lugar de 4 cards burbuja */
+  .dash-quick-dock {
+    padding: 1.25rem 1.1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .dock-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+  }
+
+  .dock-item {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 0.9rem 1rem;
+  }
+
+  .dock-item:last-child {
+    border-bottom: none;
+  }
+
+  .dock-item:hover {
+    background: var(--surface-2);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .dock-icon {
+    font-size: 1.2rem;
+  }
+
+  .dock-name {
+    font-size: 0.86rem;
+  }
+
+  .dock-desc {
+    font-size: 0.74rem;
+  }
+}
+
+/* 375px: Móvil Ultra Compacto (Refinamiento Extremo para Pantallas Pequeñas) */
+@media (max-width: 375px) {
+  .dashboard-section {
+    padding: 1.15rem 0.65rem 6.5rem;
+  }
+
+  .dash-profile-banner {
+    padding: 1rem 0.8rem;
+    gap: 0.75rem;
+  }
+
+  .dash-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 1.05rem;
+  }
+
+  .dash-welcome-name {
+    font-size: 1.15rem;
+  }
+
+  .dash-tab-btn {
+    padding: 0.5rem 0.15rem;
+    font-size: 0.74rem;
+    gap: 0.2rem;
+  }
+
+  .dash-tab-btn .tab-icon {
+    font-size: 0.8rem;
+  }
+
+  .dashboard-card {
+    padding: 1.1rem 0.8rem;
+  }
+
+  .titanium-card {
+    padding: 1.1rem 0.85rem;
+    min-height: 190px;
+  }
+
+  .card-tier-label {
+    font-size: 1.02rem;
+  }
+
+  .card-holder-name {
+    max-width: 105px;
+    font-size: 0.8rem;
+  }
+
+  .card-expiry-val {
+    font-size: 0.78rem;
+  }
+
+  .quota-stat-counter {
+    font-size: 0.88rem;
+  }
+
   .quota-meter-box {
-    padding: 1rem 0.85rem;
+    padding: 0.8rem;
+  }
+
+  .dock-item {
+    padding: 0.8rem 0.85rem;
   }
 }
