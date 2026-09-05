@@ -12,6 +12,7 @@ import {
   saveHistory,
   clearStoredHistory,
   abortActiveRequest,
+  fetchUserAiQuota,
 } from '../services/chatService.js';
 
 let isChatOpen = false;
@@ -180,7 +181,7 @@ export async function initChatWidget() {
           <span class="chat-header-title">AEON Copilot</span>
         </div>
         <div class="chat-header-actions">
-          <span class="chat-quota-badge" id="chat-quota-display">50/50 hoy</span>
+          <span class="chat-quota-badge" id="chat-quota-display">--/50 hoy</span>
           <button class="chat-btn-header" id="chat-btn-clear" aria-label="Limpiar conversación" title="Limpiar historial">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
@@ -357,11 +358,32 @@ export function toggleChatPanel(forceState) {
     panel.setAttribute('aria-hidden', 'false');
     const textarea = document.getElementById('chat-textarea-input');
     setTimeout(() => textarea?.focus(), 150);
+    syncQuotaBadge();
   } else {
     panel.classList.remove('active');
     panel.setAttribute('aria-hidden', 'true');
     abortActiveRequest();
   }
+}
+
+/**
+ * Sincroniza el badge de cuota visual directamente con el contador atómico en Postgres.
+ */
+async function syncQuotaBadge() {
+  const quotaBadge = document.getElementById('chat-quota-display');
+  if (!quotaBadge) return;
+
+  try {
+    const quota = await fetchUserAiQuota();
+    currentQuota.remaining = quota.remaining;
+    currentQuota.total = quota.total;
+    quotaBadge.textContent = `${quota.remaining}/${quota.total} hoy`;
+
+    const sendBtn = document.getElementById('chat-btn-send');
+    if (quota.remaining <= 0) {
+      if (sendBtn) sendBtn.disabled = true;
+    }
+  } catch (_) {}
 }
 
 /**
@@ -419,6 +441,7 @@ async function refreshChatView() {
 
   // 3. ESTADO PRO (Acceso Total Desbloqueado)
   if (footerArea) footerArea.style.display = 'flex';
+  syncQuotaBadge();
   renderConversationHistory();
 }
 

@@ -13,12 +13,12 @@ const MAX_STORED_MESSAGES = 6;
 let activeAbortController = null;
 
 /**
- * Obtiene el historial reciente guardado en la sesión del navegador.
+ * Obtiene el historial reciente guardado en el navegador (persiste al recargar o reabrir).
  * @returns {Array<{ role: 'user' | 'assistant', content: string, data?: object }>}
  */
 export function getStoredHistory() {
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.slice(-MAX_STORED_MESSAGES) : [];
@@ -28,13 +28,13 @@ export function getStoredHistory() {
 }
 
 /**
- * Guarda el historial en sessionStorage.
+ * Guarda el historial en localStorage para persistencia intradiaria.
  * @param {Array} history
  */
 export function saveHistory(history) {
   try {
     const trimmed = history.slice(-MAX_STORED_MESSAGES);
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
   } catch (_) {}
 }
 
@@ -43,8 +43,43 @@ export function saveHistory(history) {
  */
 export function clearStoredHistory() {
   try {
-    sessionStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY);
   } catch (_) {}
+}
+
+/**
+ * Consulta la cuota diaria real y atómica del usuario directamente desde Supabase.
+ * @returns {Promise<{ remaining: number, used: number, total: number }>}
+ */
+export async function fetchUserAiQuota() {
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
+    if (!user) return { remaining: 50, used: 0, total: 50 };
+
+    const todayUTC = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('user_ai_usage')
+      .select('daily_requests, reset_date')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      return { remaining: 50, used: 0, total: 50 };
+    }
+
+    // Si reset_date es de una fecha previa (UTC), hoy no ha consumido cuota
+    if (data.reset_date < todayUTC) {
+      return { remaining: 50, used: 0, total: 50 };
+    }
+
+    const used = Number(data.daily_requests) || 0;
+    const remaining = Math.max(0, 50 - used);
+    return { remaining, used, total: 50 };
+  } catch (err) {
+    console.warn('[AEON Chat] Error al consultar cuota desde Postgres:', err);
+    return { remaining: 50, used: 0, total: 50 };
+  }
 }
 
 /**
