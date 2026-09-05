@@ -322,6 +322,18 @@ async function initApp() {
       
       const userEmail = document.getElementById('nav-user-email');
       if (userEmail) userEmail.textContent = currentUser.email;
+
+      const proSection = document.getElementById('pro');
+      if (proSection) {
+        proSection.style.display = isPro ? 'none' : '';
+      }
+      const drawerProCard = document.querySelector('.drawer-pro-card');
+      if (drawerProCard) {
+        drawerProCard.style.display = isPro ? 'none' : '';
+      }
+    } else {
+      const proSection = document.getElementById('pro');
+      if (proSection) proSection.style.display = '';
     }
   } catch (err) {
     console.error('[AEON] Falla en resolución de sesión:', err);

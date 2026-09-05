@@ -86,6 +86,16 @@ export async function checkSession() {
     if (userView) userView.style.display = 'none';
   }
 
+  // Ocultar sección promocional de upgrade a PRO si el usuario ya tiene rango PRO activo
+  const proSection = document.getElementById('pro');
+  if (proSection) {
+    proSection.style.display = isPro ? 'none' : '';
+  }
+  const drawerProCard = document.querySelector('.drawer-pro-card');
+  if (drawerProCard) {
+    drawerProCard.style.display = isPro ? 'none' : '';
+  }
+
   return { session, isPro };
 }
 
