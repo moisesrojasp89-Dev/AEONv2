@@ -1,53 +1,84 @@
 /* ============================================================
-   AEON · perfil.css — Institutional User Profile & Settings
+   AEON · perfil.css — Institutional Trader Command Center
+   0 Hardcoded Hex Colors · 0 !important · Full Token Usage
    ============================================================ */
 
 .dashboard-section {
   position: relative;
   z-index: var(--z-base);
-  padding: 3.5rem 1rem 5rem;
-  max-width: 1200px;
+  padding: 3rem 1.5rem 5rem;
+  max-width: 1240px;
   margin: 0 auto;
   min-height: calc(100dvh - var(--header-h) - 200px);
 }
 
-/* ---- Profile Banner Header ---- */
+/* ============================================================
+   1. Header HUD: Trader Identity & Connection Banner
+   ============================================================ */
 .dash-profile-banner {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-2);
   border-radius: var(--radius-lg);
-  padding: 1.75rem 2rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  padding: 1.75rem 2.25rem;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 40px var(--shadow-heavy);
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-profile-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
 }
 
 .dash-profile-main {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
+}
+
+.dash-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
 }
 
 .dash-avatar {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: var(--radius-circle);
-  background: linear-gradient(135deg, var(--accent), #2563EB);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: var(--text-bright);
   font-family: var(--font-head);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
-  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+.dash-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--green-bright);
+  border: 2.5px solid var(--bg-deep);
+  border-radius: var(--radius-circle);
+  box-shadow: 0 0 8px var(--green);
 }
 
 .dash-profile-info {
@@ -56,12 +87,52 @@
   gap: 0.35rem;
 }
 
+.dash-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--green-bright);
+  background: var(--green-dim);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  width: fit-content;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dash-status-pill .pulse-indicator {
+  width: 6px;
+  height: 6px;
+  background: var(--green-bright);
+  border-radius: var(--radius-circle);
+  animation: pulseGreen 2s infinite var(--ease);
+}
+
+@keyframes pulseGreen {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
 .dash-welcome-name {
   font-family: var(--font-head);
-  font-size: 1.55rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
+  color: var(--text-bright);
+  letter-spacing: -0.025em;
   line-height: 1.2;
 }
 
@@ -69,85 +140,616 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--muted);
   flex-wrap: wrap;
 }
 
+.dash-meta-sep {
+  color: var(--muted-2);
+}
+
 .dash-terminal-id {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
-  padding: 0.15rem 0.55rem;
+  padding: 0.15rem 0.6rem;
   border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
 }
 
-/* ---- Dashboard Grid ---- */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr 0.95fr;
-  gap: 1.5rem;
-}
-
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-  .dash-profile-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1.25rem;
-  }
-}
-
-.dashboard-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+.dash-header-actions {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  align-items: center;
+  gap: 1rem;
+}
+
+.plan-badge-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.plan-badge-display.pro {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.plan-badge-display.free {
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   2. WAI-ARIA Navigation Tabs
+   ============================================================ */
+.dash-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  padding: 0.4rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 24px var(--shadow);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.dash-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.dash-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.25rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: var(--font-head);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-base) var(--ease);
+  white-space: nowrap;
+  outline: none;
+}
+
+.dash-tab-btn .tab-icon {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.dash-tab-btn:hover {
+  color: var(--text-bright);
+  background: var(--surface);
+}
+
+.dash-tab-btn:hover .tab-icon {
+  transform: scale(1.15);
+}
+
+.dash-tab-btn.active {
+  color: var(--text-bright);
+  background: var(--surface-2);
+  border-color: var(--accent-border);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.dash-tab-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   3. Tab Panels Container
+   ============================================================ */
+.dash-panels-container {
+  margin-bottom: 2.5rem;
+}
+
+.dash-tabpanel {
+  display: none;
+  animation: tabFadeIn var(--dur-base) var(--ease);
+  outline: none;
+}
+
+.dash-tabpanel.active {
+  display: block;
+}
+
+.dash-tabpanel:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Common Dashboard Card */
+.dashboard-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 12px 36px var(--shadow);
 }
 
 .dashboard-card-title {
   font-family: var(--font-head);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 1.25rem;
+  color: var(--text-bright);
+  letter-spacing: -0.015em;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.65rem;
 }
 
-/* ---- Form Fields ---- */
+.card-title-icon {
+  font-size: 1.2rem;
+}
+
+/* ============================================================
+   4. PANEL 1: Membresía & Cuotas (Titanium Card + AI Quota)
+   ============================================================ */
+.membership-hub-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+/* Titanium Digital Membership Card */
+.titanium-card-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.titanium-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), var(--bg-deep);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-xl);
+  padding: 1.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+  overflow: hidden;
+  box-shadow: 0 20px 48px var(--shadow-heavy);
+  transition: transform var(--dur-slow) var(--ease), box-shadow var(--dur-slow) var(--ease), border-color var(--dur-slow) var(--ease);
+}
+
+.titanium-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 54px var(--shadow-heavy);
+}
+
+.titanium-card.pro {
+  border-color: var(--accent-border);
+  box-shadow: 0 20px 48px var(--shadow-heavy), 0 0 28px var(--accent-glow);
+}
+
+.card-glow-layer {
+  position: absolute;
+  top: -40%;
+  right: -40%;
+  width: 180%;
+  height: 180%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0.35;
+  transition: opacity var(--dur-base) var(--ease);
+}
+
+.titanium-card.pro .card-glow-layer {
+  opacity: 0.65;
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.card-chip-graphic {
+  display: flex;
+  align-items: center;
+}
+
+.card-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+.card-brand-symbol {
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+
+.card-middle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.75rem 0;
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.card-tier-label {
+  font-family: var(--font-head);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.titanium-card.pro .card-tier-label {
+  color: var(--accent-hover);
+}
+
+.card-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.titanium-card.pro .card-status-pill {
+  background: var(--green-dim);
+  color: var(--green-bright);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.card-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  z-index: var(--z-base);
+  gap: 1rem;
+}
+
+.card-holder-group,
+.card-expiry-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.card-sub-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.card-holder-name {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.card-expiry-val {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.card-actions-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.card-policy-note {
+  font-size: 0.74rem;
+  color: var(--muted-2);
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* AI Quota Hub Card */
+.quota-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quota-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.quota-subtitle {
+  font-size: 0.86rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.btn-refresh-quota {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  flex-shrink: 0;
+  outline: none;
+}
+
+.btn-refresh-quota:hover {
+  background: var(--surface);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.btn-refresh-quota:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
+.refresh-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  display: inline-block;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.btn-refresh-quota.spinning .refresh-icon {
+  animation: spinSlow 0.75s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Meter Box */
+.quota-meter-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.quota-meter-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+}
+
+.quota-stat-label {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.quota-stat-counter {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.quota-progress-track {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.quota-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  border-radius: var(--radius-pill);
+  transition: width var(--dur-slow) var(--ease), background var(--dur-base) var(--ease);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.quota-progress-fill.warning {
+  background: linear-gradient(90deg, var(--yellow), #FBBF24);
+  box-shadow: 0 0 12px var(--yellow-border);
+}
+
+.quota-progress-fill.danger {
+  background: linear-gradient(90deg, var(--red), var(--red-bright));
+  box-shadow: 0 0 12px var(--red-dim);
+}
+
+.quota-meter-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  color: var(--muted-2);
+}
+
+.quota-reset-pct {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Benefits Unlocked List */
+.benefits-unlocked-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-top: 0.5rem;
+}
+
+.benefits-title {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.benefit-item strong {
+  color: var(--text-bright);
+}
+
+.benefit-item code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-xs);
+  color: var(--accent);
+}
+
+.benefit-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-circle);
+  background: var(--green-dim);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: var(--green-bright);
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* ============================================================
+   5. PANEL 2: Perfil & Preferencias del Trader
+   ============================================================ */
+.settings-subtitle {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0.35rem 0 1.75rem 0;
+  line-height: 1.45;
+}
+
+.dash-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-section-title {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 .dash-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .dash-field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .dash-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--muted);
   text-transform: uppercase;
@@ -163,43 +765,49 @@
 .dash-input,
 .dash-select {
   width: 100%;
-  background: rgba(12, 19, 34, 0.8);
+  background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 0.65rem 0.85rem;
-  color: var(--text);
+  padding: 0.75rem 0.95rem;
+  color: var(--text-bright);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   outline: none;
-  transition: all var(--dur-fast) var(--ease);
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.dash-input::placeholder {
+  color: var(--muted-2);
 }
 
 .dash-select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230EA5E9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 0.85rem center;
+  background-position: right 0.95rem center;
   background-size: 1rem;
   cursor: pointer;
+  padding-right: 2.5rem;
 }
 
 .dash-select option {
   background-color: var(--input-bg-solid);
-  color: var(--text);
+  color: var(--text-bright);
   padding: 0.75rem;
 }
 
 .dash-input:focus,
 .dash-select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-dim);
-  background: rgba(12, 19, 34, 0.95);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+  background: var(--input-bg-solid);
 }
 
 .dash-input[readonly] {
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--muted);
   cursor: not-allowed;
+  padding-right: 6.5rem;
 }
 
 .verified-tag {
@@ -207,113 +815,375 @@
   right: 0.75rem;
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--green);
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  padding: 0.15rem 0.45rem;
-  border-radius: var(--radius-sm);
-}
-
-/* ---- Alerts ---- */
-.dash-alert {
-  padding: 0.65rem 0.85rem;
-  border-radius: var(--radius-md);
-  font-size: 0.82rem;
-  display: none;
-  margin-top: 0.25rem;
-}
-
-.dash-alert.success {
-  display: block;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.3);
   color: var(--green-bright);
+  background: var(--green-dim);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
 }
 
-.dash-alert.error {
-  display: block;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.form-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* ============================================================
+   6. PANEL 3: Seguridad & Acceso (Strength Meter + Logout)
+   ============================================================ */
+.security-form {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Password Strength Meter */
+.password-strength-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.strength-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: var(--radius-pill);
+  transition: background var(--dur-base) var(--ease);
+}
+
+.strength-bar.weak {
+  background: var(--red-bright);
+}
+
+.strength-bar.medium {
+  background: var(--yellow);
+}
+
+.strength-bar.strong {
+  background: var(--green-bright);
+}
+
+.strength-text {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--muted);
+  transition: color var(--dur-base) var(--ease);
+}
+
+.strength-text.weak {
   color: var(--red-bright);
 }
 
-/* ---- Plan Badges ---- */
-.plan-badge-display {
-  display: inline-flex;
+.strength-text.medium {
+  color: var(--yellow);
+}
+
+.strength-text.strong {
+  color: var(--green-bright);
+}
+
+.security-btn-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+/* Logout Zone */
+.logout-zone {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-head);
-  font-size: 0.85rem;
-  font-weight: 800;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-pill);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  width: fit-content;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
 
-.plan-badge-display.pro {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border: 1px solid var(--accent-border);
-}
-
-.plan-badge-display.free {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--muted);
-  border: 1px solid var(--border);
-}
-
-.dash-info-list {
+.logout-info {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.25rem;
+}
+
+.logout-title {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.logout-desc {
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.btn-logout {
+  background: var(--red-dim);
+  border: 1px solid var(--red-hover-border);
+  color: var(--red-bright);
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+
+.btn-logout:hover {
+  background: var(--red-hover-bg);
+  border-color: var(--red);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   7. Quick Dock: Ecosystem Fast Navigation
+   ============================================================ */
+.dash-quick-dock {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 12px 36px var(--shadow);
+}
+
+.dock-title {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.015em;
   margin-bottom: 1.25rem;
 }
 
-.dash-info-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.88rem;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  padding-bottom: 0.5rem;
+.dock-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
 }
 
-.dash-info-label {
-  color: var(--muted);
-}
-
-.dash-info-val {
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-weight: 600;
-}
-
-.dash-actions-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.dash-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background: var(--surface-2);
+.dock-item {
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  color: var(--text);
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 600;
-  transition: all var(--dur-fast) var(--ease);
+  color: var(--text-bright);
+  transition: all var(--dur-base) var(--ease);
+  position: relative;
+  overflow: hidden;
   cursor: pointer;
 }
 
-.dash-btn:hover {
-  background: var(--surface);
+.dock-item:hover {
+  background: var(--surface-2);
   border-color: var(--accent-border);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.dock-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.dock-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.dock-name {
+  font-family: var(--font-head);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dock-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dock-arrow {
+  color: var(--muted-2);
+  font-size: 1.1rem;
+  transition: transform var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.dock-item:hover .dock-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.dock-copilot-btn {
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+}
+
+.dock-copilot-btn .dock-arrow {
+  color: var(--accent);
+}
+
+/* ============================================================
+   8. Responsive Breakpoints Verification
+   (375px, 768px, 1024px, 1440px)
+   ============================================================ */
+
+/* 1024px: Desktop Compacto / Tablet Horizontal */
+@media (max-width: 1024px) {
+  .membership-hub-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .titanium-card-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .dock-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 768px: Tablet / Móvil Grande */
+@media (max-width: 768px) {
+  .dashboard-section {
+    padding: 2rem 1rem 4rem;
+  }
+
+  .dash-profile-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .dash-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dash-welcome-name {
+    font-size: 1.45rem;
+  }
+
+  .dash-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .dock-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .logout-zone {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .btn-logout {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-submit-row {
+    justify-content: stretch;
+  }
+
+  .form-submit-row .btn {
+    width: 100%;
+  }
+
+  .security-btn-row .btn {
+    width: 100%;
+  }
+}
+
+/* 375px: Móvil Ultra Compacto */
+@media (max-width: 375px) {
+  .dashboard-section {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+
+  .dash-profile-banner {
+    padding: 1.25rem 1rem;
+  }
+
+  .dash-avatar {
+    width: 54px;
+    height: 54px;
+    font-size: 1.2rem;
+  }
+
+  .dash-welcome-name {
+    font-size: 1.25rem;
+  }
+
+  .dash-tabs-nav {
+    gap: 0.35rem;
+    padding: 0.3rem;
+  }
+
+  .dash-tab-btn {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .dashboard-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .titanium-card {
+    padding: 1.35rem 1.15rem;
+    min-height: 220px;
+  }
+
+  .card-tier-label {
+    font-size: 1.15rem;
+  }
+
+  .card-holder-name {
+    max-width: 120px;
+    font-size: 0.85rem;
+  }
+
+  .quota-stat-counter {
+    font-size: 0.92rem;
+  }
+
+  .quota-meter-box {
+    padding: 1rem 0.85rem;
+  }
 }

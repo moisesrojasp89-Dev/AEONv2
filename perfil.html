@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AEON | Mi Perfil</title>
+  <title>AEON | Trader Command Center</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>✦</text></svg>" />
 
@@ -20,15 +20,6 @@
   <link rel="stylesheet" href="/src/css/components/perfil.css" />
   <link rel="stylesheet" href="/src/css/components/footer.css" />
   <link rel="stylesheet" href="/src/css/responsive.css" />
-  <style>
-    body {
-      background-color: #070b12;
-      color: #E4E4E7;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
 </head>
 <body>
 
@@ -37,146 +28,406 @@
   <div id="navbar-root"></div>
 
   <main class="dashboard-section container">
-    <!-- Header: Banner de Identidad del Trader -->
-    <div class="dash-profile-banner">
+    <!-- Header HUD: Identidad del Trader y Estatus de Conexión -->
+    <header class="dash-profile-banner">
       <div class="dash-profile-main">
-        <div class="dash-avatar" id="dash-avatar-initials">--</div>
+        <div class="dash-avatar-wrapper">
+          <div class="dash-avatar" id="dash-avatar-initials">--</div>
+          <span class="dash-status-dot" title="Terminal Activo"></span>
+        </div>
         <div class="dash-profile-info">
-          <h1 class="dash-welcome-name" id="dash-user-display-name">Cargando...</h1>
+          <div class="dash-status-pill">
+            <span class="pulse-indicator"></span>
+            <span>Online · Terminal v3.2</span>
+          </div>
+          <h1 class="dash-welcome-name" id="dash-user-display-name">Cargando perfil...</h1>
           <div class="dash-meta-row">
             <span id="dash-user-email-meta">—</span>
-            <span>·</span>
+            <span class="dash-meta-sep">·</span>
             <span class="dash-terminal-id" id="dash-terminal-id">AEON-ID: #----</span>
           </div>
         </div>
       </div>
-      <div id="dash-profile-badge-top" class="plan-badge-display free" style="margin-bottom: 0;">Plan Gratuito</div>
-    </div>
+      <div class="dash-header-actions">
+        <div id="dash-profile-badge-top" class="plan-badge-display free">Plan Gratuito</div>
+      </div>
+    </header>
 
-    <!-- Grid Modular del Dashboard -->
-    <div class="dashboard-grid">
-      
-      <!-- Card 1: Perfil y Datos Personales -->
-      <div class="dashboard-card">
-        <div>
-          <h2 class="dashboard-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            Perfil del Trader
-          </h2>
+    <!-- Navigation Tabs WAI-ARIA (Navegación Accesible por Teclado) -->
+    <nav class="dash-tabs-nav" role="tablist" aria-label="Secciones del Command Center">
+      <button 
+        type="button" 
+        class="dash-tab-btn active" 
+        id="tab-membership" 
+        role="tab" 
+        aria-selected="true" 
+        aria-controls="panel-membership" 
+        tabindex="0"
+      >
+        <span class="tab-icon">💎</span>
+        <span>Membresía & Cuotas</span>
+      </button>
 
-          <form id="form-profile" class="dash-form">
-            <div class="dash-field">
-              <label for="dash-input-name" class="dash-label">Nombre Completo</label>
-              <input type="text" id="dash-input-name" class="dash-input" placeholder="Ej. Moisés Alejandro" required />
-            </div>
+      <button 
+        type="button" 
+        class="dash-tab-btn" 
+        id="tab-profile" 
+        role="tab" 
+        aria-selected="false" 
+        aria-controls="panel-profile" 
+        tabindex="-1"
+      >
+        <span class="tab-icon">⚙</span>
+        <span>Perfil & Preferencias</span>
+      </button>
 
-            <div class="dash-field">
-              <label for="dash-input-email" class="dash-label">Correo Principal</label>
-              <div class="dash-input-wrapper">
-                <input type="email" id="dash-input-email" class="dash-input" readonly />
-                <span class="verified-tag">✓ Verificado</span>
+      <button 
+        type="button" 
+        class="dash-tab-btn" 
+        id="tab-security" 
+        role="tab" 
+        aria-selected="false" 
+        aria-controls="panel-security" 
+        tabindex="-1"
+      >
+        <span class="tab-icon">🔒</span>
+        <span>Seguridad & Acceso</span>
+      </button>
+    </nav>
+
+    <!-- Tab Panels Container -->
+    <div class="dash-panels-container">
+
+      <!-- ============================================================
+           PANEL 1: Membresía & Cuotas (Billing & AI Hub)
+           ============================================================ -->
+      <section 
+        class="dash-tabpanel active" 
+        id="panel-membership" 
+        role="tabpanel" 
+        aria-labelledby="tab-membership" 
+        tabindex="0"
+      >
+        <div class="membership-hub-grid">
+          
+          <!-- Tarjeta de Membresía Digital (Titanio Oscuro & Holograma) -->
+          <div class="titanium-card-wrap">
+            <div class="titanium-card" id="dash-titanium-card">
+              <div class="card-glow-layer" aria-hidden="true"></div>
+              
+              <div class="card-top-row">
+                <div class="card-chip-graphic">
+                  <svg width="34" height="26" viewBox="0 0 34 26" fill="none">
+                    <rect width="34" height="26" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                    <path d="M0 9H12M0 17H12M22 9H34M22 17H34M12 13H22M12 0V26M22 0V26" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                  </svg>
+                </div>
+                <div class="card-brand-logo">
+                  <span class="card-brand-symbol">✦</span>
+                  <span class="card-brand-text">AEON TERMINAL</span>
+                </div>
+              </div>
+
+              <div class="card-middle-row">
+                <span class="card-tier-label" id="card-tier-display">PLAN GRATUITO</span>
+                <span class="card-status-pill" id="card-status-pill">Estándar</span>
+              </div>
+
+              <div class="card-bottom-row">
+                <div class="card-holder-group">
+                  <span class="card-sub-label">TITULAR DE CUENTA</span>
+                  <span class="card-holder-name" id="card-holder-name">Trader</span>
+                </div>
+                <div class="card-expiry-group">
+                  <span class="card-sub-label" id="card-renewal-label">ESTADO DE CUENTA</span>
+                  <span class="card-expiry-val font-mono" id="card-renewal-date">—</span>
+                </div>
               </div>
             </div>
 
-            <div class="dash-field">
-              <label for="dash-input-backup-email" class="dash-label">Correo de Respaldo</label>
-              <input type="email" id="dash-input-backup-email" class="dash-input" placeholder="correo_secundario@gmail.com" />
+            <div class="card-actions-area">
+              <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block">Mejorar a PRO →</a>
+              <p class="card-policy-note">Facturación segura cifrada. Cancelación con un clic en cualquier momento.</p>
+            </div>
+          </div>
+
+          <!-- Medidor de Cuota Cuantitativa IA & Beneficios -->
+          <div class="dashboard-card quota-hub-card">
+            <div class="quota-header">
+              <div>
+                <h2 class="dashboard-card-title" style="margin-bottom: 0.25rem;">
+                  <span class="card-title-icon">⚡</span>
+                  Cuota del Copiloto Cuantitativo IA
+                </h2>
+                <p class="quota-subtitle">Asignación diaria exclusiva de inferencias para miembros Pro.</p>
+              </div>
+              <button type="button" class="btn-refresh-quota" id="dash-btn-refresh-quota" title="Actualizar cuota en tiempo real">
+                <span class="refresh-icon">↻</span>
+              </button>
             </div>
 
-            <div class="dash-field">
-              <label for="dash-select-timezone" class="dash-label">Zona Horaria de Trading</label>
-              <select id="dash-select-timezone" class="dash-select">
-                <option value="America/Caracas">UTC-4 (Caracas / Santiago / NY Invierno)</option>
-                <option value="America/New_York">UTC-5 (Nueva York / Bogotá / Lima)</option>
-                <option value="America/Argentina/Buenos_Aires">UTC-3 (Buenos Aires / São Paulo)</option>
-                <option value="Europe/Madrid">UTC+1 / UTC+2 (Madrid / París / Roma)</option>
-                <option value="UTC">UTC+0 (Londres / Tiempo Universal)</option>
-              </select>
+            <!-- Barra de Progreso de la Cuota -->
+            <div class="quota-meter-box">
+              <div class="quota-meter-meta">
+                <span class="quota-stat-label">Consultas Disponibles Hoy</span>
+                <span class="quota-stat-counter font-mono" id="dash-quota-counter">50 / 50 hoy</span>
+              </div>
+              <div class="quota-progress-track">
+                <div class="quota-progress-fill" id="dash-quota-progress" style="width: 100%;"></div>
+              </div>
+              <div class="quota-meter-footer">
+                <span class="quota-reset-note">Se restablece diariamente a las 00:00 UTC</span>
+                <span class="quota-reset-pct font-mono" id="dash-quota-pct">100% libre</span>
+              </div>
             </div>
 
-            <div class="dash-field">
-              <label for="dash-select-language" class="dash-label">Idioma del Terminal</label>
-              <select id="dash-select-language" class="dash-select">
-                <option value="es">Español (Latinoamérica)</option>
-                <option value="en">English (Global)</option>
-              </select>
+            <!-- Lista de Beneficios Desbloqueados -->
+            <div class="benefits-unlocked-box">
+              <h3 class="benefits-title">Capacidades del Motor Cuantitativo</h3>
+              <ul class="benefits-list" id="dash-benefits-list">
+                <li class="benefit-item">
+                  <span class="benefit-check">✓</span>
+                  <span><strong>Cotizaciones en Vivo de Wall Street:</strong> Consulta de precios, rangos 52s y catalizadores de cualquier acción global vía Twelve Data en &lt;350ms.</span>
+                </li>
+                <li class="benefit-item">
+                  <span class="benefit-check">✓</span>
+                  <span><strong>Auditoría Multimodal de Gráficos:</strong> Pega capturas con <code>Ctrl + V</code> para validar Order Blocks, FVGs y zonas marcadas.</span>
+                </li>
+                <li class="benefit-item">
+                  <span class="benefit-check">✓</span>
+                  <span><strong>Grounding Institucional Real:</strong> Niveles dPOC, Session VWAP y Zonas ZAP calculados por el motor de alta frecuencia.</span>
+                </li>
+                <li class="benefit-item">
+                  <span class="benefit-check">✓</span>
+                  <span><strong>Calculadora Cuantitativa de Lote:</strong> Determinación matemática exacta del tamaño de posición según el Stop Loss.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           PANEL 2: Perfil & Preferencias del Trader
+           ============================================================ -->
+      <section 
+        class="dash-tabpanel" 
+        id="panel-profile" 
+        role="tabpanel" 
+        aria-labelledby="tab-profile" 
+        tabindex="0"
+      >
+        <div class="dashboard-card profile-settings-card">
+          <h2 class="dashboard-card-title">
+            <span class="card-title-icon">⚙</span>
+            Configuración del Trader & Terminal
+          </h2>
+          <p class="settings-subtitle">Personaliza tu identidad y tus parámetros operativos para optimizar los análisis del terminal.</p>
+
+          <form id="form-profile" class="dash-form">
+            <div class="dash-form-grid">
+              
+              <!-- Columna 1: Datos Personales -->
+              <div class="form-col">
+                <h3 class="form-section-title">Datos Personales</h3>
+                
+                <div class="dash-field">
+                  <label for="dash-input-name" class="dash-label">Nombre Completo</label>
+                  <input type="text" id="dash-input-name" class="dash-input" placeholder="Ej. Moisés Alejandro" required />
+                </div>
+
+                <div class="dash-field">
+                  <label for="dash-input-email" class="dash-label">Correo Principal (Cuenta)</label>
+                  <div class="dash-input-wrapper">
+                    <input type="email" id="dash-input-email" class="dash-input" readonly />
+                    <span class="verified-tag">✓ Verificado</span>
+                  </div>
+                </div>
+
+                <div class="dash-field">
+                  <label for="dash-input-backup-email" class="dash-label">Correo de Respaldo / Notificaciones</label>
+                  <input type="email" id="dash-input-backup-email" class="dash-input" placeholder="correo_secundario@gmail.com" />
+                </div>
+              </div>
+
+              <!-- Columna 2: Parámetros Operativos del Trader -->
+              <div class="form-col">
+                <h3 class="form-section-title">Preferencias Operativas</h3>
+
+                <div class="dash-field">
+                  <label for="dash-select-timezone" class="dash-label">Zona Horaria de Trading</label>
+                  <select id="dash-select-timezone" class="dash-select">
+                    <option value="America/Caracas">UTC-4 (Caracas / Santiago / NY Invierno)</option>
+                    <option value="America/New_York">UTC-5 (Nueva York / Bogotá / Lima)</option>
+                    <option value="America/Argentina/Buenos_Aires">UTC-3 (Buenos Aires / São Paulo)</option>
+                    <option value="Europe/Madrid">UTC+1 / UTC+2 (Madrid / París / Roma)</option>
+                    <option value="UTC">UTC+0 (Londres / Tiempo Universal)</option>
+                  </select>
+                </div>
+
+                <div class="dash-field">
+                  <label for="dash-select-session" class="dash-label">Sesión Operativa Principal (Killzone)</label>
+                  <select id="dash-select-session" class="dash-select">
+                    <option value="NEW_YORK">Sesión New York (08:00 – 11:30 EST)</option>
+                    <option value="LONDON">Sesión Londres (03:00 – 06:00 EST)</option>
+                    <option value="OVERLAP">Solape Londres & New York (08:00 – 11:00 EST)</option>
+                    <option value="GLOBAL">Operativa Global / Todas las Sesiones</option>
+                  </select>
+                </div>
+
+                <div class="dash-field">
+                  <label for="dash-select-asset" class="dash-label">Activo de Mayor Enfoque</label>
+                  <select id="dash-select-asset" class="dash-select">
+                    <option value="XAUUSD">🟡 Oro Spot (XAU/USD)</option>
+                    <option value="EURUSD">🇪🇺 Euro / Dólar (EUR/USD)</option>
+                    <option value="GBPUSD">🇬🇧 Libra / Dólar (GBP/USD)</option>
+                    <option value="SPX500">🇺🇸 S&P 500 (SPX500)</option>
+                    <option value="NAS100">💻 Nasdaq 100 (NAS100)</option>
+                    <option value="BTCUSD">₿ Bitcoin (BTC/USD)</option>
+                    <option value="USOIL">🛢 Petróleo WTI (USOIL)</option>
+                  </select>
+                </div>
+              </div>
+
             </div>
 
             <div id="dash-profile-alert" class="dash-alert" role="alert"></div>
 
-            <button type="submit" id="btn-save-profile" class="btn btn-primary btn-block" style="margin-top: 0.5rem; border: none; cursor: pointer;">Guardar Cambios</button>
+            <div class="form-submit-row">
+              <button type="submit" id="btn-save-profile" class="btn btn-primary">Guardar Preferencias</button>
+            </div>
           </form>
         </div>
-      </div>
+      </section>
 
-      <!-- Card 2: Seguridad y Credenciales -->
-      <div class="dashboard-card">
-        <div>
+      <!-- ============================================================
+           PANEL 3: Seguridad & Acceso
+           ============================================================ -->
+      <section 
+        class="dash-tabpanel" 
+        id="panel-security" 
+        role="tabpanel" 
+        aria-labelledby="tab-security" 
+        tabindex="0"
+      >
+        <div class="dashboard-card security-card">
           <h2 class="dashboard-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            Seguridad y Acceso
+            <span class="card-title-icon">🔒</span>
+            Seguridad de Credenciales & Acceso
           </h2>
+          <p class="settings-subtitle">Protege tu acceso institucional. Revalida tu contraseña vigente para autorizar cualquier cambio.</p>
 
-          <form id="form-password" class="dash-form">
+          <form id="form-password" class="dash-form security-form">
             <div class="dash-field">
-              <label for="dash-input-new-pass" class="dash-label">Nueva Contraseña</label>
-              <input type="password" id="dash-input-new-pass" class="dash-input" placeholder="Mínimo 8 caracteres" minlength="8" required />
+              <label for="dash-input-current-pass" class="dash-label">Contraseña Actual (Revalidación de Seguridad)</label>
+              <input 
+                type="password" 
+                id="dash-input-current-pass" 
+                class="dash-input" 
+                placeholder="Introduce tu contraseña vigente" 
+                required 
+                autocomplete="current-password"
+              />
             </div>
 
             <div class="dash-field">
-              <label for="dash-input-confirm-pass" class="dash-label">Confirmar Contraseña</label>
-              <input type="password" id="dash-input-confirm-pass" class="dash-input" placeholder="Repite la nueva contraseña" minlength="8" required />
+              <label for="dash-input-new-pass" class="dash-label">Nueva Contraseña Institucional</label>
+              <input 
+                type="password" 
+                id="dash-input-new-pass" 
+                class="dash-input" 
+                placeholder="Mínimo 8 caracteres (mayúscula, número y símbolo)" 
+                minlength="8" 
+                required 
+                autocomplete="new-password"
+              />
+              <!-- Medidor de Fortaleza de Contraseña -->
+              <div class="password-strength-box" id="dash-pass-strength-box">
+                <div class="strength-bars">
+                  <span class="strength-bar" id="str-bar-1"></span>
+                  <span class="strength-bar" id="str-bar-2"></span>
+                  <span class="strength-bar" id="str-bar-3"></span>
+                </div>
+                <span class="strength-text" id="dash-pass-strength-text">Introduce tu contraseña</span>
+              </div>
+            </div>
+
+            <div class="dash-field">
+              <label for="dash-input-confirm-pass" class="dash-label">Confirmar Nueva Contraseña</label>
+              <input 
+                type="password" 
+                id="dash-input-confirm-pass" 
+                class="dash-input" 
+                placeholder="Repite la nueva contraseña" 
+                minlength="8" 
+                required 
+                autocomplete="new-password"
+              />
             </div>
 
             <div id="dash-password-alert" class="dash-alert" role="alert"></div>
 
-            <button type="submit" id="btn-update-password" class="btn btn-secondary btn-block" style="margin-top: 0.5rem; cursor: pointer;">Actualizar Contraseña</button>
+            <div class="security-btn-row">
+              <button type="submit" id="btn-update-password" class="btn btn-secondary">Actualizar Contraseña</button>
+            </div>
           </form>
-        </div>
-      </div>
 
-      <!-- Card 3: Estado de Membresía & Terminal -->
-      <div class="dashboard-card">
-        <div>
-          <h2 class="dashboard-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            Terminal & Membresía
-          </h2>
-          
-          <div id="dash-plan-badge" class="plan-badge-display free">Cargando Plan...</div>
-          
-          <div class="dash-info-list">
-            <div class="dash-info-item">
-              <span class="dash-info-label">Estado</span>
-              <span id="dash-info-status" class="dash-info-val">Verificando...</span>
+          <!-- Zona de Desconexión / Logout -->
+          <div class="logout-zone">
+            <div class="logout-info">
+              <h3 class="logout-title">Cerrar Sesión en este Dispositivo</h3>
+              <p class="logout-desc">Finaliza la sesión activa del terminal de forma segura.</p>
             </div>
-            <div class="dash-info-item">
-              <span class="dash-info-label">Vigencia</span>
-              <span id="dash-info-period" class="dash-info-val">—</span>
-            </div>
-          </div>
-
-          <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block" style="margin-bottom: 1.25rem; text-decoration: none; text-align: center;">Mejorar a PRO →</a>
-
-          <h3 class="dash-label" style="margin-bottom: 0.5rem;">Accesos Rápidos</h3>
-          <div class="dash-actions-group">
-            <a href="/mercados.html" class="dash-btn">
-              <span>📊 Terminal de Mercados</span>
-              <span>→</span>
-            </a>
-            <a href="/calendario.html" class="dash-btn">
-              <span>📅 Calendario Económico</span>
-              <span>→</span>
-            </a>
-            <a href="/index.html#briefing" class="dash-btn">
-              <span>📡 Radar Macro & Briefing</span>
-              <span>→</span>
-            </a>
+            <button type="button" id="btn-logout" class="btn btn-logout">Cerrar Sesión</button>
           </div>
         </div>
-      </div>
+      </section>
 
     </div>
+
+    <!-- Quick Dock: Accesos Rápidos al Ecosistema -->
+    <aside class="dash-quick-dock" aria-label="Accesos Rápidos del Terminal">
+      <h2 class="dock-title">Accesos Rápidos al Ecosistema</h2>
+      <div class="dock-grid">
+        <a href="/mercados.html" class="dock-item">
+          <span class="dock-icon">📊</span>
+          <div class="dock-meta">
+            <span class="dock-name">Terminal de Mercados</span>
+            <span class="dock-desc">14 activos en tiempo real</span>
+          </div>
+          <span class="dock-arrow">→</span>
+        </a>
+
+        <a href="/calendario.html" class="dock-item">
+          <span class="dock-icon">📅</span>
+          <div class="dock-meta">
+            <span class="dock-name">Calendario Sniper</span>
+            <span class="dock-desc">Noticias macro de alto impacto</span>
+          </div>
+          <span class="dock-arrow">→</span>
+        </a>
+
+        <a href="/index.html#educacion" class="dock-item">
+          <span class="dock-icon">📖</span>
+          <div class="dock-meta">
+            <span class="dock-name">Playbooks Operativos</span>
+            <span class="dock-desc">Manuales institucionales</span>
+          </div>
+          <span class="dock-arrow">→</span>
+        </a>
+
+        <button type="button" class="dock-item dock-copilot-btn" id="dash-quick-copilot">
+          <span class="dock-icon">🤖</span>
+          <div class="dock-meta">
+            <span class="dock-name">Copiloto Cuantitativo IA</span>
+            <span class="dock-desc">Auditoría y Order Flow en vivo</span>
+          </div>
+          <span class="dock-arrow">✦</span>
+        </button>
+      </div>
+    </aside>
+
   </main>
 
   <footer class="footer" role="contentinfo">
@@ -207,8 +458,5 @@
   </footer>
 
   <script type="module" src="/src/js/perfil.js"></script>
-
-
-
 </body>
 </html>
