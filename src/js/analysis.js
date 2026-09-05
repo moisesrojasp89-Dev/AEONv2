@@ -286,6 +286,23 @@ async function loadAssetAnalysis(symbol = 'XAUUSD') {
       drawMinimalZAPOverlays();
     }
   });
+
+  // Respaldo de seguridad: Polling pasivo cada 25s por si el WebSocket cae o se duerme
+  if (window._aeonAnalysisHeartbeat) {
+    clearInterval(window._aeonAnalysisHeartbeat);
+  }
+  window._aeonAnalysisHeartbeat = setInterval(async () => {
+    if (document.hidden) return;
+    try {
+      const fresh = await analysisService.getAnalysisBySymbol(symbol);
+      if (fresh && terminalViewport) {
+        currentData = { ...currentData, ...fresh };
+        terminalViewport.innerHTML = renderTerminalCard(currentData, currentActiveTab);
+        bindTerminalTabs();
+        drawMinimalZAPOverlays();
+      }
+    } catch (_) {}
+  }, 25000);
 }
 
 /**
