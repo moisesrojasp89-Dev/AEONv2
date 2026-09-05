@@ -193,8 +193,16 @@ async function initDashboard() {
     });
   }
 
-  // 3. Consultar Suscripción
+  // 3. Consultar Suscripción y Rango
   try {
+    const { data: profData } = await supabase
+      .from(DB_TABLES.PROFILES)
+      .select('tier')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    const isProTier = profData && (profData.tier === 'pro' || profData.tier === 'institutional');
+
     const { data: subData } = await supabase
       .from(DB_TABLES.SUBSCRIPTIONS)
       .select('plan, status, current_period_end')
@@ -204,7 +212,7 @@ async function initDashboard() {
       .gte('current_period_end', new Date().toISOString())
       .maybeSingle();
 
-    if (subData) {
+    if (isProTier || subData) {
       const proText = '★ Rango PRO Activo';
       if (planBadge) {
         planBadge.className = 'plan-badge-display pro';
@@ -215,9 +223,13 @@ async function initDashboard() {
         profileBadgeTop.textContent = 'PRO Trader';
       }
       if (statusVal) statusVal.textContent = 'Activo';
-      if (periodVal && subData.current_period_end) {
-        const d = new Date(subData.current_period_end);
-        periodVal.textContent = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+      if (periodVal) {
+        if (subData?.current_period_end) {
+          const d = new Date(subData.current_period_end);
+          periodVal.textContent = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+        } else {
+          periodVal.textContent = 'Permanente';
+        }
       }
       if (ctaBtn) {
         ctaBtn.textContent = 'Acceder a Señales PRO →';
