@@ -1,0 +1,136 @@
+[
+  {
+    "id": "macro-bias",
+    "level": "Base",
+    "badgeClass": "badge-base",
+    "title": "Macro & Sesgo Diario",
+    "readTime": "3 min",
+    "summary": "Cómo leer el Régimen de Mercado (Risk-On vs Risk-Off), datos digeridos y alinear tu trade con el sesgo diario sin operar contra la corriente.",
+    "subtitle": "Manual de Alineación con el Régimen de Mercado",
+    "sections": [
+      {
+        "heading": "1. El Régimen de Mercado: Risk-On vs. Risk-Off",
+        "retailError": "El trader retail intenta operar patrones de velas en gráficos de 1 o 5 minutos ignorando qué tipo de día macroeconómico está en curso, vendiendo activos de riesgo en pleno rally de liquidez global o comprando en días de contracción monetaria.",
+        "institutionalMethod": [
+          "En la terminal AEON, el encabezado muestra el 'MACRO REGIME' y el 'ESTADO DE LIQUIDEZ' antes de cada sesión.",
+          "Régimen Risk-On (Expansión): Los grandes fondos institucionales rotan capital hacia la renta variable (S&P 500, Nasdaq 100) y criptoactivos. El Dólar estadounidense (DXY) tiende a debilitarse.",
+          "Régimen Risk-Off (Contracción / Refugio): La incertidumbre geopolítica o subidas de tipos provocan liquidación de activos de riesgo y búsqueda de refugio en Dólar, Bonos del Tesoro y Oro físico."
+        ],
+        "keyRule": "Si el régimen macro del Daily Briefing es Risk-Off, se prohíbe buscar compras en índices o activos de alta beta sin una confluencia de absorción extrema."
+      },
+      {
+        "heading": "2. Dato Económico Digerido vs. Sorpresa Macro",
+        "retailError": "Esperar a que salga una noticia de alto impacto (como NFP o CPI) y entrar al mercado en el primer segundo, sufriendo deslizamientos (slippage), spreads abiertos y falsos quiebres provocados por algoritmos de alta frecuencia.",
+        "institutionalMethod": [
+          "En el Calendario Económico y Daily Briefings de AEON, los eventos se clasifican como 'Digerido / Ya Publicado' o 'Próximo'.",
+          "Cuando un dato sale alineado con las proyecciones institucionales, se considera 'digerido' (priced in): el precio ya lo había descontado en las 48 horas previas.",
+          "Solo una desviación drástica respecto al pronóstico genera una verdadera revalorización estructural que rompe rangos diarios."
+        ],
+        "keyRule": "Nunca dispares una orden en los primeros 3 minutos posteriores a una noticia de alto impacto. Permite que los algoritmos barran la liquidez de ambos lados y espera la confirmación del sesgo en M5/M15."
+      }
+    ],
+    "aiPrompt": "¿Cuál es el sesgo macroeconómico actual y cómo afecta a los índices y al oro hoy?"
+  },
+  {
+    "id": "liquidity-zap-poi",
+    "level": "Intermedio",
+    "badgeClass": "badge-intermedio",
+    "title": "Liquidez, ZAP & POI",
+    "readTime": "4 min",
+    "summary": "Qué son las Zonas ZAP, cómo identificar un POI de Oferta o Demanda y cómo interpretar los máximos y mínimos barridos vs pendientes.",
+    "subtitle": "Manual Operativo de la Ficha Técnica de Análisis",
+    "sections": [
+      {
+        "heading": "1. Definición de Zonas ZAP y Puntos de Interés (POI)",
+        "retailError": "Trazar líneas de soporte y resistencia arbitrarias en cualquier precio redondo, sin saber dónde están acumuladas las órdenes de los market makers.",
+        "institutionalMethod": [
+          "Zona ZAP (Zona de Alta Probabilidad): Es un rango de cotización calculado algorítmicamente por AEON donde coinciden órdenes de bloque (Order Blocks) e ineficiencias de volumen (FVG).",
+          "🔴 Sellside POI (Punto de Interés de Oferta): Rango superior donde los algoritmos institucionales distribuyen contratos vendedores.",
+          "🟢 Buyside POI (Punto de Interés de Demanda): Rango inferior donde el dinero inteligente acumula posiciones compradoras a precio de descuento."
+        ],
+        "keyRule": "Una Zona ZAP no es para colocar órdenes a ciegas; es un área de radar donde buscamos confirmación de desaceleración y absorción de volumen."
+      },
+      {
+        "heading": "2. Piscinas de Liquidez: BSL vs. SSL y Barridos",
+        "retailError": "Poner el Stop Loss justo por encima del máximo anterior o por debajo del mínimo de la sesión asiática, convirtiéndose en el combustible de liquidez de los creadores de mercado.",
+        "institutionalMethod": [
+          "BSL (Buy-Side Liquidity): Acumulación de órdenes Stop de compra por encima de máximos relativos.",
+          "SSL (Sell-Side Liquidity): Acumulación de órdenes Stop de venta por debajo de mínimos relativos.",
+          "Estado 'Barrido ✔': Significa que el algoritmo ya cazó esa liquidez, absorbió las órdenes y el camino queda despejado para una reversión o continuación.",
+          "Estado 'Pendiente': La piscina de liquidez sigue intacta y actúa como un imán magnético hacia donde el precio se dirigirá para buscar contrapartida."
+        ],
+        "keyRule": "Si una piscina de liquidez mayor (BSL o SSL) figura como 'Pendiente' en el panel de Análisis, espera que el precio vaya a testearla antes de buscar movimientos en sentido contrario."
+      }
+    ],
+    "aiPrompt": "¿Dónde están las principales piscinas de liquidez BSL y SSL en XAUUSD y cuáles han sido barridas hoy?"
+  },
+  {
+    "id": "confluences-indicators",
+    "level": "Confluencia",
+    "badgeClass": "badge-confluencia",
+    "title": "Order Flow & Indicadores",
+    "readTime": "4 min",
+    "summary": "El uso institucional de dPOC, Session VWAP y VAH/VAL en confluencia con Fibonacci OTE, EMAs de régimen y Divergencias RSI.",
+    "subtitle": "Cómo Combinar Herramientas Cuantitativas con Análisis Técnico",
+    "sections": [
+      {
+        "heading": "1. dPOC, Session VWAP y el Área de Valor (VAH / VAL)",
+        "retailError": "Considerar todos los precios iguales en el gráfico de velas sin distinguir qué niveles concentraron el verdadero volumen transaccional de la sesión.",
+        "institutionalMethod": [
+          "dPOC (Developing Point of Control): Es el nivel de precio exacto donde se negoció el mayor número de contratos durante el día. Funciona como soporte o resistencia magnético supremo.",
+          "Session VWAP (Volume Weighted Average Price): El precio medio ponderado por volumen. Si el precio cotiza sobre el VWAP con pendiente alcista, los compradores institucionales dominan la subasta.",
+          "VAH / VAL (Value Area High / Low): Delimitan el 70% del volumen negociado en la sesión. Rupturas y aceptaciones fuera de esta zona marcan desequilibrios direccionales."
+        ],
+        "keyRule": "Si el precio cotiza por encima del dPOC y el VWAP tiene pendiente positiva, no busques ventas. Los institucionales están comprando en retrocesos."
+      },
+      {
+        "heading": "2. Confluencia con Fibonacci OTE, EMAs y RSI",
+        "retailError": "Usar indicadores clásicos de forma aislada (comprar en RSI < 30 o cuando dos medias móviles se cruzan), lo que produce constantes señales falsas en mercados en rango.",
+        "institutionalMethod": [
+          "Fibonacci OTE (Optimal Trade Entry 61.8% – 78.6%): Se traza en el impulso que rompió estructura. La entrada se valida si el rango OTE coincide con el dPOC o una Zona ZAP de AEON.",
+          "EMA 200 y EMA 50: La EMA 200 en H1 define el régimen direccional mayor. La EMA 50 actúa como soporte dinámico en expansiones de New York.",
+          "Divergencias RSI: Descartamos la sobrecompra básica (70/30). Buscamos exclusivamente divergencias regulares (precio marcando un nuevo máximo, pero RSI marcando un máximo más bajo) justo al testear un Sellside POI."
+        ],
+        "keyRule": "El setup de mayor probabilidad ocurre cuando coinciden al menos 3 factores: Zona ZAP + dPOC de sesión + Retroceso Fibonacci 61.8% OTE."
+      }
+    ],
+    "aiPrompt": "Tengo un retroceso de Fibonacci y una EMA 200 en XAUUSD. ¿Qué confluencias ves con el dPOC y las zonas ZAP de hoy?"
+  },
+  {
+    "id": "risk-management",
+    "level": "Esencial",
+    "badgeClass": "badge-esencial",
+    "title": "Gestión de Riesgo & Asimetría",
+    "readTime": "3 min",
+    "summary": "La matemática de la supervivencia: ratio R:R mínimo 1:2, la regla del 1.5% máximo, cálculo exacto de lotaje y el freno de emergencia por drawdown.",
+    "subtitle": "Protocolo Cuantitativo de Protección de Capital",
+    "sections": [
+      {
+        "heading": "1. La Matemática de la Asimetría (Ratio R:R)",
+        "retailError": "Buscar una tasa de acierto del 90% arriesgando 100 dólares para ganar 20. Una sola operación perdedora borra las ganancias de una semana entera.",
+        "institutionalMethod": [
+          "Los traders rentables no ganan todas las operaciones; ganan de forma asimétrica.",
+          "Con un ratio Riesgo-Beneficio (R:R) de 1:2.5, acertando solo 4 de cada 10 operaciones (40% de win rate), la cuenta crece sólidamente:",
+          "  • 4 operaciones ganadas (+2.5R cada una) = +10R",
+          "  • 6 operaciones perdidas (-1.0R cada una) = -6R",
+          "  • Rendimiento Neto = +4R (+6% neto arriesgando 1.5% por trade)."
+        ],
+        "keyRule": "Nunca tomes un trade que ofrezca menos de 1:2 de ratio R:R hasta la siguiente piscina de liquidez o nivel ZAP opuesto."
+      },
+      {
+        "heading": "2. Fórmula Institucional de Lotaje y Freno de Drawdown",
+        "retailError": "Operar siempre con lotaje fijo (ej. 0.10 o 0.50 lotes) sin importar la distancia en dólares o pips del Stop Loss, sobreapalancando la cuenta.",
+        "institutionalMethod": [
+          "Fórmula Universal de Lote = Riesgo Monetario ($) / (Distancia SL * Valor de Contrato).",
+          "Ejemplo Oro Spot (XAUUSD): Balance de $500 USD, riesgo 2.5% ($12.50 USD), Stop Loss de $8.00 de recorrido.",
+          "  • Pérdida por lote estándar de 100 oz = $8.00 * 100 = $800 USD.",
+          "  • Lote exacto = $12.50 / $800 = 0.0156 lotes.",
+          "  • Redondeo prudencial obligatorio: 0.01 micro-lotes (arriesga $8.00 USD = 1.6%, protegiendo estrictamente el límite).",
+          "Freno de Drawdown Diario: Si acumulas 2 pérdidas consecutivas en la misma sesión, la plataforma exige apagar pantallas hasta la siguiente sesión."
+        ],
+        "keyRule": "El tamaño de tu lote debe ajustarse al Stop Loss, nunca el Stop Loss al lote. Puedes pedirle al Copiloto IA que te calcule el lotaje en segundos."
+      }
+    ],
+    "aiPrompt": "Tengo una cuenta de 500 USD y quiero arriesgar 2% con un Stop Loss de 7.50 dólares en el Oro. ¿Cuál debe ser mi lotaje exacto?"
+  }
+]

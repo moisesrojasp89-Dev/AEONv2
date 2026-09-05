@@ -367,6 +367,28 @@ export function toggleChatPanel(forceState) {
 }
 
 /**
+ * Abre el panel del chat y precarga un mensaje sugerido.
+ * Si el usuario es Free o Guest, el chat se abre mostrando su estado nativo institucional.
+ * @param {string} promptText
+ */
+export function openWithPrompt(promptText) {
+  toggleChatPanel(true);
+  const textarea = document.getElementById('chat-textarea-input');
+  if (textarea && promptText) {
+    textarea.value = promptText;
+    textarea.dispatchEvent(new Event('input'));
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    }, 200);
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.openAeonChatWithPrompt = openWithPrompt;
+}
+
+/**
  * Sincroniza el badge de cuota visual directamente con el contador atómico en Postgres.
  */
 async function syncQuotaBadge() {

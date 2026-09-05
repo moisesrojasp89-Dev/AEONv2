@@ -42,7 +42,7 @@ html, body { overflow-x: hidden; }
 
   .market-grid { grid-template-columns: repeat(3, 1fr); }
   .news-list { grid-template-columns: repeat(2, 1fr); }
-  .education-grid { grid-template-columns: repeat(3, 1fr); }
+  .education-grid { grid-template-columns: repeat(4, 1fr); }
 
   .footer-inner  { flex-direction: row; justify-content: space-between; }
   .footer-bottom { flex-direction: row; justify-content: space-between; align-items: flex-start; }

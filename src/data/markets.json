@@ -48,22 +48,36 @@
   ],
   "education": [
     {
-      "id": "macro-basics",
+      "id": "macro-bias",
       "level": "Base",
-      "title": "Macro en 15 minutos",
-      "summary": "Cómo leer CPI, NFP y decisiones de la Fed sin ruido, y qué implica para tu sesgo diario."
+      "badgeClass": "badge-base",
+      "title": "Macro & Sesgo Diario",
+      "readTime": "3 min",
+      "summary": "Cómo leer el Régimen de Mercado (Risk-On vs Risk-Off), datos digeridos y alinear tu trade con el sesgo diario sin operar contra la corriente."
     },
     {
-      "id": "sessions",
+      "id": "liquidity-zap-poi",
       "level": "Intermedio",
-      "title": "Sesiones y liquidez",
-      "summary": "Londres, NY y solapes: dónde se mueve el precio de verdad y cómo evitar operar en vacío."
+      "badgeClass": "badge-intermedio",
+      "title": "Liquidez, ZAP & POI",
+      "readTime": "4 min",
+      "summary": "Qué son las Zonas ZAP, cómo identificar un POI de Oferta o Demanda y cómo interpretar los máximos y mínimos barridos vs pendientes."
     },
     {
-      "id": "risk",
+      "id": "confluences-indicators",
+      "level": "Confluencia",
+      "badgeClass": "badge-confluencia",
+      "title": "Order Flow & Indicadores",
+      "readTime": "4 min",
+      "summary": "El uso institucional de dPOC, Session VWAP y VAH/VAL en confluencia con Fibonacci OTE, EMAs de régimen y Divergencias RSI."
+    },
+    {
+      "id": "risk-management",
       "level": "Esencial",
-      "title": "Gestión de riesgo",
-      "summary": "Tamaño de posición, R:R y reglas simples para sobrevivir drawdowns y operar con estructura."
+      "badgeClass": "badge-esencial",
+      "title": "Gestión de Riesgo & Asimetría",
+      "readTime": "3 min",
+      "summary": "La matemática de la supervivencia: ratio R:R mínimo 1:2, la regla del 1.5% máximo, cálculo exacto de lotaje y el freno de emergencia por drawdown."
     }
   ],
   "premiumFeatures": [

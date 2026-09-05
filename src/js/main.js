@@ -298,12 +298,53 @@ async function loadDynamicBriefing() {
   });
 }
 
+function initEducationInteractions() {
+  const container = document.getElementById('education-grid');
+  if (!container) return;
+
+  let fullEducationData = null;
+
+  async function openModule(eduId) {
+    try {
+      if (!fullEducationData) {
+        const { default: eduData } = await import('../data/education.json');
+        fullEducationData = eduData;
+      }
+      const { openEducationModal } = await import('./components/educationModal.js');
+      const selected = fullEducationData.find(m => m.id === eduId);
+      if (selected) {
+        openEducationModal(selected);
+      }
+    } catch (err) {
+      console.error('[AEON Education] Error cargando módulo:', err);
+    }
+  }
+
+  container.addEventListener('click', (e) => {
+    const card = e.target.closest('.edu-card');
+    if (card && card.dataset.eduId) {
+      openModule(card.dataset.eduId);
+    }
+  });
+
+  container.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('.edu-card');
+      if (card && card.dataset.eduId) {
+        e.preventDefault();
+        openModule(card.dataset.eduId);
+      }
+    }
+  });
+}
+
 async function initApp() {
   // Render de elementos iniciales
   renderEducation(data.education);
   renderPremiumFeatures(data.premiumFeatures);
   renderTickerBar(data.ticker);
 
+  initEducationInteractions();
   loadDynamicBriefing();
   loadDynamicNews();
   initNewsFilters();
