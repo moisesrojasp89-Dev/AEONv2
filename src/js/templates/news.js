@@ -46,6 +46,8 @@ export const newsCard = (n) => {
   const summary = escapeHTML(rawDesc);
   const escapedImpact = escapeHTML(tacticalImpact);
 
+  const isExternal = link.startsWith('http://') || link.startsWith('https://');
+
   return `
     <article class="news-row" aria-label="${title}" data-tag="${tag}">
       <div class="news-meta">
@@ -54,7 +56,7 @@ export const newsCard = (n) => {
       </div>
       <div class="news-content">
         <h3 class="news-title">
-          ${link !== '#' ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="news-link">${title}</a>` : title}
+          ${isExternal ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="news-link">${title}</a>` : title}
         </h3>
         <p class="news-summary">${summary}</p>
         ${escapedImpact ? `
