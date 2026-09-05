@@ -83,6 +83,9 @@ Deno.serve(async (req: Request) => {
   const aiApiKey = Deno.env.get("GEMINI_API_KEY") ?? "";
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
+  let verifiedUserId = "";
+  let quotaIncremented = false;
+
   try {
     // --------------------------------------------------------------------------
     // CAPA 1: Zero-Trust & Autenticación Server-Side
@@ -104,7 +107,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const verifiedUserId = user.id;
+    verifiedUserId = user.id;
 
     // --------------------------------------------------------------------------
     // CAPA 2: Validación de Suscripción PRO Activa (Fail Fast)
@@ -213,6 +216,8 @@ Deno.serve(async (req: Request) => {
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    quotaIncremented = true;
 
     // --------------------------------------------------------------------------
     // CAPA 5: Live Market Grounding REAL (Columnas Exactas de la Base de Datos)
@@ -516,6 +521,26 @@ ${calendarContextSummary}
     );
 
   } catch (err: unknown) {
+    // Si la cuota se incrementó pero ocurrió un fallo del servicio, reembolsar la pregunta
+    if (quotaIncremented && verifiedUserId) {
+      try {
+        const { data: usage } = await supabaseAdmin
+          .from("user_ai_usage")
+          .select("daily_requests")
+          .eq("user_id", verifiedUserId)
+          .maybeSingle();
+
+        if (usage && usage.daily_requests > 0) {
+          await supabaseAdmin
+            .from("user_ai_usage")
+            .update({ daily_requests: usage.daily_requests - 1 })
+            .eq("user_id", verifiedUserId);
+        }
+      } catch (_) {
+        // Rollback silencioso de respaldo
+      }
+    }
+
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error("[AEON Chat Error]:", err);
     return new Response(

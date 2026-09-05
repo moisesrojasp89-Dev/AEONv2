@@ -100,41 +100,41 @@
     "symbol": "BTCUSDT",
     "display_name": "Bitcoin / TetherUS",
     "category": "CRYPTO",
-    "current_price": 79999.98,
-    "change_24h_pct": 1.91,
+    "current_price": 79951.72,
+    "change_24h_pct": 1.85,
     "bias": "BULLISH",
-    "bias_score": 93,
+    "bias_score": 92,
     "session_origin": "US",
     "tv_symbol": "BINANCE:BTCUSDT",
-    "diagnosis": "Bitcoin cotiza en $79,999.98 bajo estructura bullish (93/100). Flujo comprador institucional activo por encima del dPOC (79743.98) y Session VWAP (79871.98). Estructura alcista con soporte clave en 79039.98. La absorción compradora proyecta expansión hacia la resistencia 80959.98 con RSI en 74.9.",
+    "diagnosis": "Bitcoin cotiza en $79,951.72 bajo estructura bullish (92/100). Flujo comprador institucional activo por encima del dPOC (79695.87) y Session VWAP (79823.8). Estructura alcista con soporte clave en 78992.3. La absorción compradora proyecta expansión hacia la resistencia 80911.14 con RSI en 74.2.",
     "session_levels": {
-      "pdh": 81283.82,
-      "pdl": 78723.82,
-      "asian_high": 80447.98,
-      "asian_low": 79551.98,
+      "pdh": 81234.78,
+      "pdl": 78676.33,
+      "asian_high": 80399.45,
+      "asian_low": 79503.99,
       "current_session": "NEW_YORK",
-      "ema_50_1h": 79859.18,
-      "sma_200_1d": 74799.98,
-      "session_vwap": 79871.98,
-      "vwap_upper_1s": 80319.26,
-      "vwap_lower_1s": 79424.7,
-      "vwap_upper_2s": 80830.44,
-      "vwap_lower_2s": 78913.52,
-      "dpoc_price": 79743.98,
-      "vah_price": 80959.98,
-      "val_price": 79039.98,
-      "volume_spike_alert": "Absorción institucional detectada en 79039.98"
+      "ema_50_1h": 79811.0,
+      "sma_200_1d": 74754.86,
+      "session_vwap": 79823.8,
+      "vwap_upper_1s": 80270.81,
+      "vwap_lower_1s": 79376.79,
+      "vwap_upper_2s": 80781.69,
+      "vwap_lower_2s": 78865.91,
+      "dpoc_price": 79695.87,
+      "vah_price": 80911.14,
+      "val_price": 78992.3,
+      "volume_spike_alert": "Absorción institucional detectada en 78992.3"
     },
     "liquidity_pools": {
       "bsl": [
         {
-          "price": 81934.09,
+          "price": 81884.66,
           "label": "Máximo Semanal / Trendline Liquidity $$$",
           "status": "unmitigated",
           "timeframe": "1H"
         },
         {
-          "price": 81283.82,
+          "price": 81234.78,
           "label": "PDH (Máximo Sesión Previa)",
           "status": "unmitigated",
           "timeframe": "1D"
@@ -142,13 +142,13 @@
       ],
       "ssl": [
         {
-          "price": 79039.98,
+          "price": 78992.3,
           "label": "Soporte de Directriz $$$",
           "status": "unmitigated",
           "timeframe": "1H"
         },
         {
-          "price": 78094.03,
+          "price": 78046.92,
           "label": "Mínimo Estructural Mayor $$$",
           "status": "unmitigated",
           "timeframe": "4H"
@@ -160,14 +160,14 @@
         "id": "btcusd-poi-sell",
         "type": "SELLSIDE_POI",
         "zone_label": "ZAP Oferta / Venta (1H)",
-        "range_low": 80959.98,
-        "range_high": 81791.98,
-        "mean_threshold": 81375.98,
+        "range_low": 80911.14,
+        "range_high": 81742.64,
+        "mean_threshold": 81326.89,
         "confluences": [
           "EMA 50 (1H) en resistencia",
           "iFVG (Inversion Fair Value Gap)",
           "dPOC + Banda VWAP +1σ",
-          "Resistencia R1 ($80,960)"
+          "Resistencia R1 ($80,911)"
         ],
         "status": "active"
       },
@@ -175,11 +175,11 @@
         "id": "btcusd-poi-buy",
         "type": "BUYSIDE_POI",
         "zone_label": "ZAP Demanda / Rebote (1H)",
-        "range_low": 78207.98,
-        "range_high": 79039.98,
-        "mean_threshold": 78623.98,
+        "range_low": 78160.8,
+        "range_high": 78992.3,
+        "mean_threshold": 78576.55,
         "confluences": [
-          "Order Block 4H mitigado en $79,040",
+          "Order Block 4H mitigado en $78,992",
           "Fibonacci OTE 78.6%",
           "Piscina SSL en mínimos"
         ],
@@ -187,10 +187,10 @@
       }
     ],
     "structural_scenarios": {
-      "bullish_path": "SI el precio sostiene el soporte en 79039.98 y consolida sobre el dPOC (79743.98), ENTONCES proyecta expansión hacia la ZAP de Oferta en 80959.98 buscando la liquidez BSL en 81283.82.",
-      "bearish_path": "SI el precio pierde el soporte 79039.98 y quiebra el nivel VAL (78207.98), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 78094.03.",
-      "invalidation_level": 77957.71,
-      "invalidation_text": "Cierre de vela de 1H bajo 77957.71 invalida la estructura de rebote intradiario."
+      "bullish_path": "SI el precio sostiene el soporte en 78992.3 y consolida sobre el dPOC (79695.87), ENTONCES proyecta expansión hacia la ZAP de Oferta en 80911.14 buscando la liquidez BSL en 81234.78.",
+      "bearish_path": "SI el precio pierde el soporte 78992.3 y quiebra el nivel VAL (78160.8), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 78046.92.",
+      "invalidation_level": 77910.69,
+      "invalidation_text": "Cierre de vela de 1H bajo 77910.69 invalida la estructura de rebote intradiario."
     }
   },
   "EURUSD": {
