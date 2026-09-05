@@ -305,10 +305,23 @@ ${catSummary}`;
     const rawHistory = body.history || [];
     const sanitizedHistory: Array<{ role: "user" | "model"; parts: any[] }> = [];
     
-    const candidateHistory = rawHistory.slice(-4);
-    let expectedRole: "user" | "assistant" = "user";
+    const candidateHistory = rawHistory.slice(-6);
+    const filteredHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
 
-    for (const h of candidateHistory) {
+    // Descartar mensajes de rechazo previo para evitar contaminación de contexto
+    for (let i = 0; i < candidateHistory.length; i++) {
+      const item = candidateHistory[i];
+      if (item.role === "assistant" && (item.content.includes("Solo estoy autorizado") || item.content.includes("ÁMBITO INSTITUCIONAL"))) {
+        if (filteredHistory.length > 0 && filteredHistory[filteredHistory.length - 1].role === "user") {
+          filteredHistory.pop();
+        }
+        continue;
+      }
+      filteredHistory.push(item);
+    }
+
+    let expectedRole: "user" | "assistant" = "user";
+    for (const h of filteredHistory) {
       if (h.role === expectedRole && h.content && h.content.trim()) {
         sanitizedHistory.push({
           role: h.role === "assistant" ? "model" : "user",
@@ -353,21 +366,31 @@ Asistes a traders profesionales con análisis cuantitativo riguroso, directo y f
 2. ESTÁ TERMINANTEMENTE PROHIBIDO INVENTAR COTIZACIONES PASADAS DE TU ENTRENAMIENTO ANTIGUO (por ejemplo, Oro en $2700 es un precio antiguo; en la plataforma real cotiza en el rango de los $4400s provisto en los datos).
 3. SI EL USUARIO CONSULTA POR UN ACTIVO (ej. XAUUSD, EURUSD, BTCUSD, SPX500), TUS NIVELES (Precio, dPOC, VWAP, ZAP Oferta, ZAP Demanda) DEBEN COINCIDIR EXACTAMENTE CON LOS NIVELES REALES INYECTADOS.
 4. CATALIZADORES MACRO: Si un dato (como NFP o Nóminas no Agrícolas) figura como "DIGERIDO / YA PUBLICADO", NUNCA digas que está "por salir" ni lo trates como evento futuro. Explica con claridad cómo el mercado ya asimiló ese dato específico y qué reacción técnica provocó en el precio.
-5. SÉ CONCISO Y DIRECTO: Máximo 130 palabras en 'analisis'. Formatea con claridad institucional.
+5. SÉ CONCISO Y DIRECTO: Máximo 140 palabras en 'analisis'. Formatea con claridad y rigor institucional.
+
+[MÓDULO DE GESTIÓN DE RIESGO Y CÁLCULO DE LOTAJE - PRIORIDAD INSTITUCIONAL]:
+- La gestión de riesgo es el núcleo de AEON. Toda pregunta que mencione balance, capital, % de riesgo, dólares de riesgo, stop loss (SL), pips, puntos, lotaje o tamaño de posición ES UNA CONSULTA FINANCIERA LEGÍTIMA.
+- CLASIFICACIÓN OBLIGATORIA: "categoria": "GESTION_RIESGO". NUNCA la clasifiques como FUERA_DE_AMBITO.
+- Fórmulas Institucionales y Especificaciones de Contrato:
+  * Oro Spot (XAUUSD): 1 lote estándar = 100 onzas troy. Una variación de $1.00 en el precio equivale a $100 USD por cada 1.00 lote estándar ($1.00 USD por cada micro-lote de 0.01).
+    - Riesgo monetario ($) = Balance * (% Riesgo / 100).
+    - Pérdida por lote estándar = Distancia de Stop Loss en $ * 100.
+    - Lotaje matemático = Riesgo monetario / (Distancia SL en $ * 100).
+    - Regla de ejecución prudencial: Redondear siempre hacia abajo al micro-lote (0.01) para no sobrepasar el presupuesto de riesgo máximo autorizado.
+    - Ejemplo canónico: Balance $500 USD, riesgo 2.5% ($12.50 USD), SL de $8.00 en Oro -> Pérdida por lote estándar = $800 USD ($8.00 * 100). Lotaje exacto = $12.50 / $800 = 0.0156 lotes. Redondeo ejecutable: 0.01 lotes (arriesga $8.00 USD, es decir 1.6% del capital, dentro del límite de 2.5%).
+  * Forex: 1 lote estándar = 100,000 unidades ($10 USD/pip en pares con USD de divisa cotizada). Lotaje = Riesgo ($) / (Pips SL * 10).
+  * Índices (SPX, NAS, US30): 1 lote estándar = $1/pto (o según especificación típica de CFD del broker).
+- Estructura requerida:
+  * 'analisis': Explicación cuantitativa paso a paso con las fórmulas aplicadas, el riesgo en dólares resultante y la recomendación clara del lote ejecutable en plataforma.
+  * 'niveles_clave': Array con las métricas del cálculo, ej: ["Balance: $500 USD", "Riesgo (2.5%): $12.50 USD", "Distancia SL: $8.00 en precio", "Pérdida por 0.01 lote: $8.00 USD", "Lote sugerido: 0.01 lotes"].
+  * 'advertencia_riesgo': Nota institucional sobre apalancamiento, spread y control estricto de drawdown.
 
 [MÓDULO DE AUDITORÍA DE GRÁFICOS Y CAPTURAS DE PANTALLA]:
 Si el usuario envía una imagen de un gráfico técnico (TradingView, MT4/MT5):
 - Identifica activo, temporalidad visible y estructura (tendencia, consolidación, liquidez).
 - Evalúa las zonas marcadas por el trader (Zonas ZAP, Order Blocks, FVGs, piscinas BSL/SSL).
 - Valida o invalida la hipótesis del trader con base en Order Flow y confluencias objetivas.
-- Si la imagen NO es un gráfico financiero, clasifica "categoria": "FUERA_DE_AMBITO".
-
-[MÓDULO DE CÁLCULO DE LOTAJE]:
-Si el usuario solicita calcular su lotaje:
-- Fórmula: Riesgo en $ = Balance * (% Riesgo / 100). Lotaje = Riesgo en $ / (Pips SL * Valor Pip Lote Estándar).
-- Forex: 1 lote = $10/pip. Oro Spot: 1 lote = 100 oz ($10/pip de 0.10). Índices: 1 lote = $1/pto.
-- Si faltan datos (balance, % riesgo, pips SL), solicítalos con un ejemplo conciso.
-- Clasifica "categoria": "GESTION_RIESGO" y desglosa el cálculo.
+- Si la imagen NO es un gráfico financiero ni captura de trading, clasifica "categoria": "FUERA_DE_AMBITO".
 
 [DATOS DE MERCADO EN VIVO]:
 ${marketFreshnessNotice}
@@ -380,7 +403,12 @@ ${calendarContextSummary}
 `;
 
     // Invocación con modelos actualizados de Google Gemini y responseSchema nativo
-    const models = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"];
+    const models = [
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+      "gemini-3-flash-preview",
+      "gemini-3.7-flash"
+    ];
     let rawAiText = "";
 
     for (const model of models) {
@@ -389,6 +417,7 @@ ${calendarContextSummary}
         const res = await fetch(geminiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(10000),
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: systemInstruction }] },
             contents: contents,
