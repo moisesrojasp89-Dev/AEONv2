@@ -22,13 +22,14 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 │ ESTADO DE EJECUCIÓN (SEPTIEMBRE DE 2026)                                     │
 ├──────────────────────────────────────┬──────────────────────────────────────┤
 │ ✅ FASES 100% COMPLETADAS            │ 🎯 EN PROGRESO / PRÓXIMO SPRINT      │
-│ • Fase 0: Security & RLS Hardening   │ • Fase 6B: Monetización Stripe,      │
+│ • Fase 0: Security & RLS Hardening   │ • Fase 6C: Monetización Stripe,      │
 │ • Fase 1: Data Provider Layer & RPC  │   Gestión de Suscripciones In-App   │
 │ • Fase 2: Quant Validation Lab (WFO) ├──────────────────────────────────────┤
 │ • Fase 3: VPS 24/7 & Unified Daemons │ ⏳ PLANIFICADO A FUTURO              │
 │ • Fase 4: Market Intel & Scoring     │ • Fases 7-8: CME Futures Order Flow  │
 │ • Fase 5: AI Platform & Live Engine  │ • Fase 9: Multi-Region High Availab. │
 │ • Fase 6A: Terminal Análisis & ZAPs  │                                      │
+│ • Fase 6B: AEON Copilot Chatbot IA   │                                      │
 └──────────────────────────────────────┴──────────────────────────────────────┘
 ```
 
@@ -51,7 +52,9 @@ FASE 5: AI Platform & Contextual Intelligence ────► [✅ COMPLETADO - 
   │
 FASE 6A: Terminal de Análisis & ZAPs Estructural ─► [✅ COMPLETADO]
   │
-FASE 6B: AEON Pro Terminal & Monetización Stripe ─► [🎯 PRÓXIMO OBJETIVO]
+FASE 6B: AEON Copilot (Chatbot IA Institucional) ─► [✅ COMPLETADO]
+  │
+FASE 6C: AEON Pro Terminal & Monetización Stripe ─► [🎯 PRÓXIMO OBJETIVO]
   │
 FASE 7 & 8: Futures Intelligence (CME Order Flow) ─► [⏳ PLANIFICADO]
   │
@@ -102,8 +105,8 @@ FASE 9: High Reliability & Global Scale ──────────► [⏳ P
 | **6.1** | **Integración Stripe Checkout & Webhooks Idempotentes** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK |
 | **6.2** | **Aprovisionamiento de Suscripción (`public.subscriptions`)** | 🎯 Próximo | Esquema relacional, triggers y control de expiración |
 | **6.3** | **Blindaje RLS de Módulos Pro (`signals_pro_data`, Macro AI)** | 🎯 Próximo | Políticas de seguridad Zero-Trust en PostgreSQL |
-| **6.4** | **Chatbot IA Institucional In-App (Asistente Macro & Trading)** | 🎯 Próximo | Módulo interactivo de inteligencia macro en la web |
-| **6.5** | **Terminal de Mercados & Order Flow Pro en la Web** | 🎯 Próximo | `src/js/chart.js`, terminal de liquidez multi-activo |
+| **6.4** | **Chatbot IA Institucional In-App (AEON Copilot)** | ✅ **Completado** | `supabase/functions/aeon-chat`, `src/js/components/chatWidget.js`, `src/js/services/chatService.js`, `src/css/components/chat.css` |
+| **6.5** | **Terminal de Análisis & Order Flow en Vivo (`/analisis.html`)** | ✅ **Completado** | `analisis.html`, `src/js/analysis.js`, `analysisService.js`, `analysisCard.js`, `compute_structural_analysis` |
 | **6.6** | **Portal de Gestión de Suscripción en el Perfil** | 🎯 Próximo | `src/js/perfil.js`, Stripe Customer Portal |
 
 ---

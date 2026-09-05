@@ -273,3 +273,88 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
    * `Ver mercados →` ahora navega a `/mercados.html`.  
    * `Explorar Análisis` ahora navega a `/analisis.html`.
 
+---
+
+## 🏛️ 7. Hito 7: Auditoría Forense y Reingeniería del Motor de Briefing y Noticias (`aeon_autonomous_engine.py`)
+
+### A. Diagnóstico de Causas Raíz en Producción
+1. **Agotamiento de Cuotas en Modelos LLM:**
+   * Al invocar modelos pesados en bucles cortos, la cuota gratuita de la API de Gemini se saturaba con errores HTTP 429 (`RESOURCE_EXHAUSTED`).
+2. **Generación de Noticias Duplicadas e Idénticas:**
+   * En cierres de mercado (ej. viernes por la tarde), el generador de noticias producía réplicas exactas cada pocos minutos, saturando la base de datos con titulares repetidos.
+3. **Salto Prematuro de Catalizadores Macro (Bug del Fin de Semana):**
+   * El algoritmo de selección de eventos descartaba los datos del viernes por la tarde (`diff_hours < 0`) e inflaba eventos distantes del jueves siguiente (como el IPC de EE.UU.) con 17,500 puntos por su etiqueta Tier-1A. Esto hacía que el viernes por la noche la terminal mostrara eventos a 6 días vista, ignorando por completo el balance semanal y los datos clave de lunes a miércoles.
+4. **Falta de Diversificación Multiactivo por Categoría:**
+   * En la sección de Noticias, la categoría "Metales" solo mostraba Oro (omitiendo Plata), "Índices" solo cubría S&P 500 (omitiendo Nasdaq y Dow Jones), y "Live Feed" duplicaba la lista completa en lugar de aislar los eventos de alto impacto (*Breaking News*).
+
+### B. Solución Arquitectónica Implementada
+1. **Migración Unificada a `gemini-3.1-flash-lite`:**
+   * Tiempos de respuesta ultrarrápidos (400–800ms) y consumo mínimo de tokens con cero llamadas a TwelveData (100% OANDA batch + Binance directo).
+2. **Deduplicación Algorítmica con Hashing MD5:**
+   * Generación de huella digital única (`headline_hash = md5(title + date)`) antes del guardado en Supabase, con limpieza atómica que erradica duplicados.
+3. **Lógica Bifurcada: Modo `weekend_wrap` y Horizontes Escalonados:**
+   * **Franja Fin de Semana (Vie 17:00 NY a Dom 17:00 NY):** El motor entra en `weekend_wrap` y genera una síntesis de balance semanal digiriendo los datos macro de cierre (NFP, Desempleo, Salarios) con sus valores reales publicados (`actual: 162K`, `4.1%`, `0.3%`) y marcados como `digested`.
+   * **Apertura de Asia & Sesiones Semanales (Dom 17:00 NY en adelante):** Se activa la **Ventana de Inmediatez Estricta** en 3 horizontes cronológicos no saltables:
+     - *Horizonte 1 (0h a 36h):* Eventos inmediatos de lunes y martes (China, Japón, Europa).
+     - *Horizonte 2 (36h a 72h):* Miércoles.
+     - *Horizonte 3 (72h a 120h):* Jueves y viernes.
+4. **Expansión Multiactivo y Filtrado en Live Feed:**
+   * Cobertura explícita de Oro (`XAUUSD`) y Plata (`XAGUSD`); Nasdaq (`NAS100`), Dow Jones (`US30`) y S&P 500 (`SPX500`); Petróleo WTI (`USOIL`); y divisas macro clave (JPY, EUR, GBP, USD).
+   * La pestaña "Live Feed" ahora filtra estrictamente noticias destacadas (`is_breaking = true`), mientras que las categorías organizan el flujo sectorial.
+
+---
+
+## 🎨 8. Hito 8: Rediseño Visual del Hero y Optimización Responsive de Grids
+
+### A. Renovación Visual Institucional
+1. **Asset Gráfico de Alta Fidelidad (`hero-preview.webp`):**
+   * Reemplazo de imágenes genéricas por una captura estilizada de la terminal financiera con iluminación dark luxury, adaptada al branding Linear/Bloomberg de AEON.
+   * Optimización de peso en formato WebP para tiempos de carga inferiores a 200ms.
+2. **Resolución de Colapso en Grid de Noticias Destacadas (`news.css` & `news.js`):**
+   * **Problema:** En ciertas resoluciones de escritorio, las tarjetas destacadas del feed colapsaban horizontalmente, aplastando los titulares y metadatos.
+   * **Solución:** Reestructuración de la cuadrícula CSS con `grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))` y contención rígida de overflow, garantizando legibilidad perfecta tanto en monitores Ultra-Wide como en tablets y smartphones.
+
+---
+
+## ⚡ 9. Hito 9: Auditoría Forense y Conexión Cuántica en Vivo de `/analisis.html`
+
+### A. Diagnóstico de Causas Raíz del Congelamiento
+* **Causa 1 (Falta de Columnas DDL):** La tabla `public.market_intelligence` carecía de columnas para `structural_poi`, `liquidity_pools` y `session_levels`.
+* **Causa 2 (Omisión en Backend):** `aeon_autonomous_engine.py` solo actualizaba precios de mercados, sin generar niveles ZAP ni escenarios condicionales.
+* **Causa 3 (Discrepancia de Símbolo):** Frontend consultaba `BTCUSDT` mientras la base de datos indexaba `BTCUSD`, provocando respuesta `null` y congelamiento permanente de Bitcoin en `$77,881.32`.
+* **Causa 4 (Fallback Permanente):** Al faltar datos en la respuesta, `analysisService.js` caía siempre en el archivo estático inicial.
+
+### B. Solución Arquitectónica Implementada (Zero-DDL)
+1. **Aprovechamiento de `cited_key_levels JSONB`:**
+   * Sin alterar el esquema de base de datos ni requerir migraciones complejas, se inyecta el payload estructural completo (`session_levels`, `structural_poi`, `liquidity_pools`, `structural_scenarios`, `diagnosis`) dentro de `cited_key_levels`.
+2. **Motor Cuantitativo Dinámico ([`compute_structural_analysis`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/scripts/ai/aeon_autonomous_engine.py)):**
+   * Para los 4 reyes (`XAUUSD`, `BTCUSD`, `EURUSD`, `NAS100`), recalcula cada 20 segundos las zonas ZAP (Oferta/Demanda 1H), piscinas BSL/SSL con estado `swept` vs `unmitigated` y escenarios *"SI... ENTONCES"* con niveles reales de invalidación.
+3. **Mapeo Transparente en Frontend ([`analysisService.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/services/analysisService.js)):**
+   * Normalización bidireccional `BTCUSDT` <-> `BTCUSD` y desempaquetado reactivo de `cited_key_levels`.
+4. **Heartbeat Polling de Seguridad ([`analysis.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/analysis.js)):**
+   * Incorporación de un sondeo pasivo cada 25 segundos como respaldo del canal WebSocket de Supabase, asegurando que si un navegador móvil entra en reposo o se interrumpe la conexión, la terminal nunca quede congelada.
+5. **Formateo Numérico de Alta Precisión ([`analysisCard.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/templates/analysisCard.js)):**
+   * Resolución de redondeos en Forex (`EURUSD` a 4 decimales exactos: `1.1614`) eliminando símbolos `$` inapropiados en pares de divisas.
+
+---
+
+## 🤖 10. Hito 10: Asistente y Copiloto IA Institucional (AEON Copilot)
+
+### A. Arquitectura Server-Side (Edge Function: `aeon-chat`)
+* **Ubicación:** `supabase/functions/aeon-chat/index.ts`
+* **Blindajes de Seguridad Institucional:**
+  1. **Autenticación Zero-Trust:** El `user_id` se extrae estrictamente de `auth.getUser(token)` verificado en servidor, nunca del cuerpo de la petición.
+  2. **Validación de Tier (Fail Fast):** Verificación server-side en `public.profiles` (`tier in ('pro', 'institutional')`) y `public.subscriptions` antes de consumir cómputo de IA.
+  3. **Freshness Check Estricto:** Monitoreo con `Math.min()` de los timestamps de todos los activos en `public.market_intelligence`; si los datos superan los 8 minutos de antigüedad, la función advierte o fuerza actualización.
+  4. **Structured Output (Gemini Schema):** Inferencia obligada a un esquema JSON cerrado con categorías financieras explícitas (`MACRO`, `TECNICO_ORDERFLOW`, `CATALIZADOR`, `GESTION_RIESGO`).
+  5. **Escudo Anti-Jailbreak (`STANDARD_REFUSAL`):** Cualquier consulta no financiera, intento de manipulación de instrucciones o inyección de prompt activa un rechazo canónico seguro.
+  6. **Historial Sanitizado:** Estructura alternada estricta (`user` -> `assistant`) comenzando siempre con el mensaje del usuario.
+
+### B. Widget de Usuario en Frontend (`chatWidget.js` & `chat.css`)
+* **Ubicación:** `src/js/components/chatWidget.js` y `src/css/components/chat.css`.
+* **Integración Global:** Invocado automáticamente por la Navbar unificada ([`src/js/navbar.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/navbar.js)) mediante el botón flotante institucional (`.aeon-chat-fab`).
+* **Experiencia de Usuario Multiestado:**
+  - **Guest:** Banner explicativo que invita a iniciar sesión para interactuar con la inteligencia macro.
+  - **Free:** Modal interactivo con comparativa de beneficios y botón de actualización a Pro.
+  - **Pro / Institucional:** Acceso completo al Copiloto con indicador de cuota diaria (50 consultas/día), historial local persistente (`localStorage`), sanitización XSS y renderizado estructurado de confluencias de mercado.
+
