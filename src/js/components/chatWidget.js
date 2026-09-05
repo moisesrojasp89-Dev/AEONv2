@@ -29,6 +29,13 @@ async function getUserAccessState() {
     const session = data?.session;
     if (!session?.user) return { state: 'guest' };
 
+    // Validar si el usuario aún existe en el servidor Supabase
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !userData?.user) {
+      await supabase.auth.signOut();
+      return { state: 'guest' };
+    }
+
     // Consultar tabla profiles para tier
     const { data: profile } = await supabase
       .from(DB_TABLES.PROFILES)

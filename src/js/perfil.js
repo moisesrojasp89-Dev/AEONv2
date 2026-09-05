@@ -44,7 +44,15 @@ async function initDashboard() {
     return;
   }
 
-  const user = session.user;
+  // Validar si el usuario aún existe en el servidor Supabase (evita sesiones huérfanas en localStorage)
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError || !userData?.user) {
+    await supabase.auth.signOut();
+    window.location.href = '/login.html';
+    return;
+  }
+
+  const user = userData.user;
   const meta = user.user_metadata || {};
 
   // Elementos DOM

@@ -18,6 +18,15 @@ export async function checkSession() {
     session = data?.session || null;
 
     if (session) {
+      // Validar si el usuario aún existe en el backend de Supabase
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userData?.user) {
+        await supabase.auth.signOut();
+        session = null;
+      }
+    }
+
+    if (session) {
       // 1. Determinar estado PRO exclusivamente vía tabla profiles (seguridad server-side en DB)
       const { data: profData } = await supabase
         .from(DB_TABLES.PROFILES)
