@@ -176,6 +176,16 @@
   align-items: center;
   gap: 0.2rem;
   white-space: nowrap;
+  vertical-align: 2px;
+  margin-right: 0.45rem;
+}
+
+.news-row.is-featured {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.035) 0%, transparent 100%);
+}
+
+.news-row.is-featured:hover {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
 .news-meta {
@@ -193,6 +203,14 @@
 
 .news-content {
   flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .news-content {
+    grid-column: 3;
+    width: 100%;
+  }
 }
 
 .news-tag {

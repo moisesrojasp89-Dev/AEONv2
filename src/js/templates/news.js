@@ -50,14 +50,14 @@ export const newsCard = (n) => {
   const isFeatured = String(n.link || '').includes('#featured') || Boolean(n.is_featured);
 
   return `
-    <article class="news-row" aria-label="${title}" data-tag="${tag}">
+    <article class="news-row ${isFeatured ? 'is-featured' : ''}" aria-label="${title}" data-tag="${tag}">
       <div class="news-meta">
         <span class="news-tag ${tagClass}">${tag}</span>
-        ${isFeatured ? '<span class="news-featured-pill">⚡ DESTACADO</span>' : ''}
         <time class="news-time">${time}</time>
       </div>
       <div class="news-content">
         <h3 class="news-title">
+          ${isFeatured ? '<span class="news-featured-pill">⚡ DESTACADO</span>' : ''}
           ${isExternal ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="news-link">${title}</a>` : title}
         </h3>
         <p class="news-summary">${summary}</p>
