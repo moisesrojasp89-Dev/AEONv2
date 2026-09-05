@@ -16,8 +16,18 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
 
   const symbol = escapeHTML(data.symbol || '');
   const displayName = escapeHTML(data.display_name || symbol);
+  const isForex = data.symbol === 'EURUSD';
+  const fmt = (val) => {
+    if (val === null || val === undefined || isNaN(Number(val))) return '—';
+    const num = Number(val);
+    return isForex
+      ? num.toFixed(4)
+      : (num >= 100 ? num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : num.toFixed(2));
+  };
+  const curPrefix = isForex ? '' : '$';
+
   const price = typeof data.current_price === 'number'
-    ? (data.current_price >= 100 ? data.current_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : data.current_price.toFixed(4))
+    ? fmt(data.current_price)
     : escapeHTML(String(data.current_price || '—'));
 
   const changePct = Number(data.change_24h_pct || 0);
@@ -30,13 +40,13 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
 
   const sessionLevels = data.session_levels || {};
   const currentSession = escapeHTML(sessionLevels.current_session || 'GLOBAL');
-  const ema50 = sessionLevels.ema_50_1h ? Number(sessionLevels.ema_50_1h).toLocaleString('en-US') : '—';
-  const vwap = sessionLevels.session_vwap ? Number(sessionLevels.session_vwap).toLocaleString('en-US') : '—';
-  const dpoc = sessionLevels.dpoc_price ? Number(sessionLevels.dpoc_price).toLocaleString('en-US') : '—';
-  const vah = sessionLevels.vah_price ? Number(sessionLevels.vah_price).toLocaleString('en-US') : '—';
-  const val = sessionLevels.val_price ? Number(sessionLevels.val_price).toLocaleString('en-US') : '—';
-  const pdh = sessionLevels.pdh ? Number(sessionLevels.pdh).toLocaleString('en-US') : '—';
-  const pdl = sessionLevels.pdl ? Number(sessionLevels.pdl).toLocaleString('en-US') : '—';
+  const ema50 = fmt(sessionLevels.ema_50_1h);
+  const vwap = fmt(sessionLevels.session_vwap);
+  const dpoc = fmt(sessionLevels.dpoc_price);
+  const vah = fmt(sessionLevels.vah_price);
+  const val = fmt(sessionLevels.val_price);
+  const pdh = fmt(sessionLevels.pdh);
+  const pdl = fmt(sessionLevels.pdl);
 
   // 1. Zonas ZAP Estructuradas (Ladder institucional)
   const pois = Array.isArray(data.structural_poi) ? data.structural_poi : [];
@@ -47,15 +57,15 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
     if (!poi) return '';
     const isSell = type === 'sell';
     const title = isSell ? '🔴 OFERTA (SELLSIDE POI)' : '🟢 DEMANDA (BUYSIDE POI)';
-    const rLow = Number(poi.range_low || 0).toLocaleString('en-US');
-    const rHigh = Number(poi.range_high || 0).toLocaleString('en-US');
+    const rLow = fmt(poi.range_low);
+    const rHigh = fmt(poi.range_high);
     const confluences = Array.isArray(poi.confluences) ? poi.confluences.join('  ·  ') : '';
 
     return `
       <div class="zap-tier ${isSell ? 'tier-sell' : 'tier-buy'}">
         <div class="zap-tier-header">
           <span class="zap-tier-title">${title}</span>
-          <span class="zap-tier-range font-mono">$${rLow} – $${rHigh}</span>
+          <span class="zap-tier-range font-mono">${curPrefix}${rLow} – ${curPrefix}${rHigh}</span>
         </div>
         <div class="zap-tier-confluences font-mono">${escapeHTML(confluences)}</div>
       </div>
@@ -76,7 +86,7 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
     const isSwept = item.status === 'swept';
     const tagClass = isSwept ? 'swept' : 'pending';
     const tagLabel = isSwept ? 'Barrido ✔' : 'Pendiente';
-    const priceFormatted = Number(item.price || 0).toLocaleString('en-US');
+    const priceFormatted = fmt(item.price);
 
     return `
       <div class="liq-row">
@@ -86,7 +96,7 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
           <span class="liq-label">${escapeHTML(item.label || '')}</span>
         </div>
         <div class="liq-values">
-          <span class="liq-price font-mono">$${priceFormatted}</span>
+          <span class="liq-price font-mono">${curPrefix}${priceFormatted}</span>
           <span class="liq-badge ${tagClass}">${tagLabel}</span>
         </div>
       </div>
@@ -97,7 +107,7 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
   const scenarios = data.structural_scenarios || {};
   const bullPath = escapeHTML(scenarios.bullish_path || 'Evaluando confluencias alcistas...');
   const bearPath = escapeHTML(scenarios.bearish_path || 'Evaluando confluencias bajistas...');
-  const invalidation = escapeHTML(scenarios.invalidation_text || `Nivel clave en $${Number(scenarios.invalidation_level || 0).toLocaleString('en-US')}`);
+  const invalidation = escapeHTML(scenarios.invalidation_text || `Nivel clave en ${curPrefix}${fmt(scenarios.invalidation_level)}`);
 
   // 4. Diagnóstico
   const diagnosis = escapeHTML(data.diagnosis || data.macro_driver || 'Analizando estructura institucional...');
@@ -114,7 +124,7 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
         <div class="terminal-asset-info">
           <h2 class="terminal-asset-name">${displayName}</h2>
           <div class="terminal-price-row">
-            <span class="terminal-price font-mono">$${price}</span>
+            <span class="terminal-price font-mono">${curPrefix}${price}</span>
             <span class="terminal-change font-mono ${changeClass}">${changeStr}</span>
           </div>
         </div>
@@ -144,7 +154,7 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
 
           <div class="zap-price-divider">
             <span class="zap-divider-line"></span>
-            <span class="zap-divider-badge font-mono">PRECIO: $${price}</span>
+            <span class="zap-divider-badge font-mono">PRECIO: ${curPrefix}${price}</span>
             <span class="zap-divider-line"></span>
           </div>
 
@@ -186,27 +196,27 @@ export function renderTerminalCard(data = {}, activeTab = 'zonas') {
         <div class="metrics-flat-list">
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">EMA 50 (1H)</span>
-            <span class="metric-flat-val font-mono">$${ema50}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${ema50}</span>
           </div>
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">Session VWAP</span>
-            <span class="metric-flat-val font-mono">$${vwap}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${vwap}</span>
           </div>
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">dPOC Diario</span>
-            <span class="metric-flat-val font-mono">$${dpoc}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${dpoc}</span>
           </div>
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">Área de Valor (VAH / VAL)</span>
-            <span class="metric-flat-val font-mono">$${vah} / $${val}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${vah} / ${curPrefix}${val}</span>
           </div>
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">Máx. Ayer (PDH)</span>
-            <span class="metric-flat-val font-mono">$${pdh}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${pdh}</span>
           </div>
           <div class="metric-flat-row">
             <span class="metric-flat-name font-mono">Mín. Ayer (PDL)</span>
-            <span class="metric-flat-val font-mono">$${pdl}</span>
+            <span class="metric-flat-val font-mono">${curPrefix}${pdl}</span>
           </div>
         </div>
       </div>

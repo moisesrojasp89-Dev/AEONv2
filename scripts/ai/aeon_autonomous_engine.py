@@ -120,6 +120,168 @@ state = {
     'quant_records': {}
 }
 
+def compute_structural_analysis(sym: str, live_price: float, dec: int, spread: float,
+                                s1: float, s2: float, r1: float, r2: float,
+                                dpoc: float, vwap: float, bias: str, score: int,
+                                macro_driver: str, technical_thesis: str, session_str: str) -> dict:
+    """Genera la microestructura institucional cuantitativa completa para la Terminal de Análisis (/analisis.html)."""
+    # 1. Sesión activa
+    sess_upper = str(session_str or 'NEW_YORK').upper()
+    current_session = "NEW_YORK"
+    if "ASIA" in sess_upper:
+        current_session = "ASIA"
+    elif "LONDON" in sess_upper or "EUROPE" in sess_upper:
+        current_session = "LONDON"
+
+    # 2. Niveles de Sesión Clave
+    pdh = round(max(live_price * 1.006, r1 * 1.004), dec)
+    pdl = round(min(live_price * 0.994, s1 * 0.996), dec)
+    asian_high = round(live_price * (1 + spread * 0.7), dec)
+    asian_low = round(live_price * (1 - spread * 0.7), dec)
+    ema_50 = round(live_price * (1 - spread * 0.22) if bias == 'BULLISH' else live_price * (1 + spread * 0.22), dec)
+    sma_200 = round(live_price * 0.935 if bias == 'BULLISH' else live_price * 1.065, dec)
+    vwap_u1 = round(vwap * (1 + spread * 0.7), dec)
+    vwap_l1 = round(vwap * (1 - spread * 0.7), dec)
+    vwap_u2 = round(vwap * (1 + spread * 1.5), dec)
+    vwap_l2 = round(vwap * (1 - spread * 1.5), dec)
+
+    session_levels = {
+        'pdh': pdh,
+        'pdl': pdl,
+        'asian_high': asian_high,
+        'asian_low': asian_low,
+        'current_session': current_session,
+        'ema_50_1h': ema_50,
+        'sma_200_1d': sma_200,
+        'session_vwap': vwap,
+        'vwap_upper_1s': vwap_u1,
+        'vwap_lower_1s': vwap_l1,
+        'vwap_upper_2s': vwap_u2,
+        'vwap_lower_2s': vwap_l2,
+        'dpoc_price': dpoc,
+        'vah_price': r1,
+        'val_price': s1,
+        'volume_spike_alert': f"Absorción institucional detectada en {s1}" if bias == 'BULLISH' else f"Presión vendedora activa en rechazo de {r1}"
+    }
+
+    # 3. Zonas ZAP (POI Sellside / Buyside)
+    sell_min = min(r1, r2)
+    sell_max = max(r1, r2)
+    buy_min = min(s1, s2)
+    buy_max = max(s1, s2)
+
+    if sym == 'XAUUSD':
+        sell_conf = ["EMA 50 (1H) dinámica", "FVG Bajista de Ruptura (1H)", "61.8% Fibonacci OTE", f"Resistencia R1 (${r1:,.2f})"]
+        buy_conf = [f"Barrido SSL en ${s1:,.2f} purgado", "Order Block Institucional", "Banda VWAP -2σ (Sobreventa)"]
+        diagnosis = f"El Oro Spot cotiza en ${live_price:,.2f} con estructura {bias.lower()} ({score}/100). {macro_driver} {technical_thesis}"
+    elif sym == 'BTCUSD':
+        sell_conf = ["EMA 50 (1H) en resistencia", "iFVG (Inversion Fair Value Gap)", "dPOC + Banda VWAP +1σ", f"Resistencia R1 (${r1:,.0f})"]
+        buy_conf = [f"Order Block 4H mitigado en ${s1:,.0f}", "Fibonacci OTE 78.6%", "Piscina SSL en mínimos"]
+        diagnosis = f"Bitcoin cotiza en ${live_price:,.2f} bajo estructura {bias.lower()} ({score}/100). {macro_driver} {technical_thesis}"
+    elif sym == 'EURUSD':
+        sell_conf = ["PDH en confluencia institucional", "Banda VWAP +2σ", "Order Block Bajista 4H", f"Resistencia R1 ({r1:.4f})"]
+        buy_conf = ["Soporte dinámico EMA 50", f"VAL de Sesión ({s1:.4f})", "FVG Alcista de absorción"]
+        diagnosis = f"El par EUR/USD cotiza en {live_price:.4f} con sesgo {bias.lower()} ({score}/100). {macro_driver} {technical_thesis}"
+    elif sym == 'NAS100':
+        sell_conf = ["Rechazo Banda VWAP +1σ", "FVG Bajista 1H", f"Resistencia R1 (${r1:,.1f})", "Bloque de Mitigación"]
+        buy_conf = ["Piscina SSL de compradores", "Order Block Diario", f"Rebote en soporte S1 (${s1:,.1f})"]
+        diagnosis = f"El Nasdaq 100 cotiza en ${live_price:,.2f} con estructura institucional {bias.lower()} ({score}/100). {macro_driver} {technical_thesis}"
+    else:
+        sell_conf = [f"Resistencia clave R1 ({r1})", "Banda VWAP superior", "Confluencia de Oferta 1H"]
+        buy_conf = [f"Soporte clave S1 ({s1})", "Banda VWAP inferior", "Piscina de Demanda"]
+        diagnosis = f"{sym} cotiza en {live_price} con sesgo {bias.lower()}. {macro_driver}"
+
+    structural_poi = [
+        {
+            'id': f"{sym.lower()}-poi-sell",
+            'type': 'SELLSIDE_POI',
+            'zone_label': 'ZAP Oferta / Venta (1H)',
+            'range_low': sell_min,
+            'range_high': sell_max,
+            'mean_threshold': round((sell_min + sell_max) / 2.0, dec),
+            'confluences': sell_conf,
+            'status': 'active'
+        },
+        {
+            'id': f"{sym.lower()}-poi-buy",
+            'type': 'BUYSIDE_POI',
+            'zone_label': 'ZAP Demanda / Rebote (1H)',
+            'range_low': buy_min,
+            'range_high': buy_max,
+            'mean_threshold': round((buy_min + buy_max) / 2.0, dec),
+            'confluences': buy_conf,
+            'status': 'active'
+        }
+    ]
+
+    # 4. Piscinas de Liquidez
+    bsl_major = round(max(pdh * 1.008, live_price * (1 + spread * 2.8)), dec)
+    ssl_major = round(min(pdl * 0.992, live_price * (1 - spread * 2.8)), dec)
+
+    liquidity_pools = {
+        'bsl': [
+            {
+                'price': bsl_major,
+                'label': 'Máximo Semanal / Trendline Liquidity $$$',
+                'status': 'unmitigated',
+                'timeframe': '1H'
+            },
+            {
+                'price': pdh,
+                'label': 'PDH (Máximo Sesión Previa)',
+                'status': 'swept' if live_price >= pdh else 'unmitigated',
+                'timeframe': '1D'
+            }
+        ],
+        'ssl': [
+            {
+                'price': s1,
+                'label': 'Soporte de Directriz $$$',
+                'status': 'swept' if live_price <= s1 else 'unmitigated',
+                'timeframe': '1H'
+            },
+            {
+                'price': ssl_major,
+                'label': 'Mínimo Estructural Mayor $$$',
+                'status': 'unmitigated',
+                'timeframe': '4H'
+            }
+        ]
+    }
+
+    # 5. Escenarios Estructurales
+    if bias == 'BULLISH':
+        bull_path = f"SI el precio sostiene el soporte en {s1} y consolida sobre el dPOC ({dpoc}), ENTONCES proyecta expansión hacia la ZAP de Oferta en {r1} buscando la liquidez BSL en {pdh}."
+        bear_path = f"SI el precio pierde el soporte {s1} y quiebra el nivel VAL ({s2}), ENTONCES aplicará fallo de subasta con aceleración bajista hacia {ssl_major}."
+        inv_level = round(s2 * (1 - spread * 0.4), dec)
+        inv_text = f"Cierre de vela de 1H bajo {inv_level} invalida la estructura de rebote intradiario."
+    elif bias == 'BEARISH':
+        bull_path = f"SI el precio reconquista con vela con cuerpo la EMA 50 y el dPOC ({dpoc}), ENTONCES anulará la presión vendedora buscando el retroceso correctivo hacia {r1}."
+        bear_path = f"SI el precio continúa siendo rechazado en el Session VWAP ({vwap}) y quiebra {s1}, ENTONCES continuará la cascada de liquidación hacia la piscina SSL mayor en {ssl_major}."
+        inv_level = round(r2 * (1 + spread * 0.4), dec)
+        inv_text = f"Cierre de vela de 1H por encima de {inv_level} invalida la estructura bajista inmediata."
+    else:
+        bull_path = f"SI el precio quiebra la resistencia {r1} con incremento de volumen, ENTONCES buscará expansión hacia {pdh}."
+        bear_path = f"SI el precio pierde el soporte {s1}, ENTONCES buscará barrido de la piscina SSL en {pdl}."
+        inv_level = round(s2, dec)
+        inv_text = f"Ruptura y consolidación fuera del rango {s1} - {r1} definirá la nueva tendencia intradiaria."
+
+    structural_scenarios = {
+        'bullish_path': bull_path,
+        'bearish_path': bear_path,
+        'invalidation_level': inv_level,
+        'invalidation_text': inv_text
+    }
+
+    return {
+        'levels': [s1, dpoc, r1, vwap],
+        'session_levels': session_levels,
+        'structural_poi': structural_poi,
+        'liquidity_pools': liquidity_pools,
+        'structural_scenarios': structural_scenarios,
+        'diagnosis': diagnosis
+    }
+
 def compute_institutional_quant_metrics(sym: str, live_price: float) -> dict:
     """Calcula matemáticamente el sesgo institucional, microestructura y niveles clave para cualquier activo."""
     meta = BENCHMARKS.get(sym, {'base': live_price, 'decimals': 2, 'spread_pct': 0.003, 'name': sym})
@@ -172,6 +334,13 @@ def compute_institutional_quant_metrics(sym: str, live_price: float) -> dict:
         technical_thesis = f"Precio oscilando entre el soporte {s1} y la resistencia {r1}. Se recomienda esperar confirmación de ruptura de banda VWAP ({vwap})."
         tags = ["RANGE_CONSOLIDATION", "NEUTRAL_POC", "WAIT_BREAKOUT"]
 
+    structural_payload = [s1, dpoc, r1, vwap]
+    if sym in {'XAUUSD', 'BTCUSD', 'EURUSD', 'NAS100'}:
+        structural_payload = compute_structural_analysis(
+            sym, live_price, dec, spread, s1, s2, r1, r2, dpoc, vwap,
+            bias, score, macro_driver, technical_thesis, state.get('current_session', 'NEW_YORK')
+        )
+
     return {
         'symbol': sym,
         'current_price': live_price,
@@ -186,7 +355,7 @@ def compute_institutional_quant_metrics(sym: str, live_price: float) -> dict:
         'session_vwap': vwap,
         'macro_driver': macro_driver,
         'technical_thesis': technical_thesis,
-        'cited_key_levels': [s1, dpoc, r1, vwap],
+        'cited_key_levels': structural_payload,
         'catalyst_tags': tags,
         'last_updated': datetime.now(timezone.utc).isoformat(),
         'updated_by': 'AEON_AUTONOMOUS_ENGINE_V2'
@@ -401,6 +570,29 @@ def sync_markets_loop():
             if os.path.exists(os.path.dirname(data_alt)):
                 with open(data_alt, 'w', encoding='utf-8') as f:
                     json.dump(updated_records, f, indent=2, ensure_ascii=False)
+
+            # Actualización de snapshot local de análisis (/analisis.html)
+            analysis_snap_path = os.path.join(ROOT_DIR, 'src', 'data', 'analysis_snapshot.json')
+            if os.path.exists(analysis_snap_path):
+                with open(analysis_snap_path, encoding='utf-8') as af:
+                    snap_data = json.load(af)
+                for r in updated_records:
+                    sym_key = 'BTCUSDT' if r['symbol'] == 'BTCUSD' else r['symbol']
+                    if sym_key in snap_data and isinstance(r.get('cited_key_levels'), dict):
+                        st = r['cited_key_levels']
+                        snap_data[sym_key].update({
+                            'current_price': r['current_price'],
+                            'change_24h_pct': r['change_24h_pct'],
+                            'bias': r['bias'],
+                            'bias_score': r['bias_score'],
+                            'diagnosis': st.get('diagnosis', r.get('technical_thesis')),
+                            'session_levels': st.get('session_levels'),
+                            'liquidity_pools': st.get('liquidity_pools'),
+                            'structural_poi': st.get('structural_poi'),
+                            'structural_scenarios': st.get('structural_scenarios'),
+                        })
+                with open(analysis_snap_path, 'w', encoding='utf-8') as af:
+                    json.dump(snap_data, af, indent=2, ensure_ascii=False)
         except Exception:
             pass
         try:
