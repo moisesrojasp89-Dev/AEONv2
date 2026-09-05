@@ -62,6 +62,153 @@ interface ChatRequestBody {
   };
 }
 
+// Mapeo inteligente de nombres comunes y empresas a tickers bursátiles
+const ASSET_ALIASES: Record<string, string> = {
+  "nvidia": "NVDA",
+  "nvda": "NVDA",
+  "apple": "AAPL",
+  "aapl": "AAPL",
+  "coca cola": "KO",
+  "cocacola": "KO",
+  "coke": "KO",
+  "ko": "KO",
+  "tesla": "TSLA",
+  "tsla": "TSLA",
+  "microsoft": "MSFT",
+  "msft": "MSFT",
+  "amazon": "AMZN",
+  "amzn": "AMZN",
+  "google": "GOOGL",
+  "alphabet": "GOOGL",
+  "googl": "GOOGL",
+  "goog": "GOOGL",
+  "meta": "META",
+  "facebook": "META",
+  "netflix": "NFLX",
+  "nflx": "NFLX",
+  "amd": "AMD",
+  "intel": "INTC",
+  "intc": "INTC",
+  "palantir": "PLTR",
+  "pltr": "PLTR",
+  "coinbase": "COIN",
+  "coin": "COIN",
+  "microstrategy": "MSTR",
+  "mstr": "MSTR",
+  "berkshire": "BRK.B",
+  "jpmorgan": "JPM",
+  "jp morgan": "JPM",
+  "jpm": "JPM",
+  "visa": "V",
+  "walmart": "WMT",
+  "wmt": "WMT",
+  "disney": "DIS",
+  "dis": "DIS",
+  "broadcom": "AVGO",
+  "qualcomm": "QCOM",
+  "costco": "COST",
+  "spotify": "SPOT",
+  "uber": "UBER",
+  "airbnb": "ABNB",
+  "alibaba": "BABA",
+  "baba": "BABA",
+  "exxon": "XOM",
+  "chevron": "CVX",
+  "eli lilly": "LLY",
+  "lilly": "LLY",
+  "novo nordisk": "NVO",
+  "tsmc": "TSM",
+  "taiwan semi": "TSM",
+  "asml": "ASML",
+  "crowdstrike": "CRWD",
+  "arm": "ARM",
+  "robinhood": "HOOD"
+};
+
+function detectExternalTicker(text: string, assetParam?: string): string | null {
+  const nativeAssets = ["XAUUSD", "EURUSD", "GBPUSD", "USDJPY", "DXY", "SPX500", "NAS100", "US30", "BTCUSD", "USOIL"];
+  if (assetParam && !nativeAssets.includes(assetParam.toUpperCase())) {
+    return assetParam.toUpperCase();
+  }
+
+  const lower = text.toLowerCase();
+  for (const [alias, ticker] of Object.entries(ASSET_ALIASES)) {
+    const safeAlias = alias.replace(".", "\\.");
+    const regex = new RegExp(`\\b${safeAlias}\\b`, "i");
+    if (regex.test(lower)) {
+      return ticker;
+    }
+  }
+
+  // Detectar $TICKER (ej: $NVDA, $AAPL, $KO, $PLTR)
+  const dollarMatch = text.match(/\$([A-Za-z]{1,5})\b/);
+  if (dollarMatch && !nativeAssets.includes(dollarMatch[1].toUpperCase())) {
+    return dollarMatch[1].toUpperCase();
+  }
+
+  // Detectar palabras clave como "accion de X", "precio de X", "reseña de X", etc.
+  const keywordMatch = text.match(/(?:accion|acción|ticker|precio de|cotizacion de|cotización de|analiza|revisa|reseña de|reseña)\s+([A-Za-z]{1,5})\b/i);
+  if (keywordMatch && !nativeAssets.includes(keywordMatch[1].toUpperCase())) {
+    return keywordMatch[1].toUpperCase();
+  }
+
+  // Detectar pares forex de 6 letras (ej: GBPJPY, EURGBP, AUDCAD, etc.)
+  const forexMatch = text.match(/\b(EUR|GBP|USD|JPY|CHF|AUD|CAD|NZD)(EUR|GBP|USD|JPY|CHF|AUD|CAD|NZD)\b/i);
+  if (forexMatch && !nativeAssets.includes(forexMatch[0].toUpperCase())) {
+    return forexMatch[0].toUpperCase();
+  }
+
+  return null;
+}
+
+// Consulta de alta velocidad a Twelve Data (<400ms) para acciones y forex fuera del panel nativo
+async function fetchTwelveDataQuote(rawTicker: string, apiKey: string): Promise<string | null> {
+  if (!rawTicker || !apiKey) return null;
+  try {
+    let symbol = rawTicker.toUpperCase().trim();
+    // Normalizar pares forex de 6 caracteres (ej: GBPJPY -> GBP/JPY)
+    const forexCurrencies = ["USD", "EUR", "GBP", "JPY", "CHF", "AUD", "CAD", "NZD"];
+    if (symbol.length === 6) {
+      const c1 = symbol.slice(0, 3);
+      const c2 = symbol.slice(3, 6);
+      if (forexCurrencies.includes(c1) && forexCurrencies.includes(c2)) {
+        symbol = `${c1}/${c2}`;
+      }
+    }
+
+    const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${apiKey}`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": "AEON-Terminal/1.0" },
+      signal: AbortSignal.timeout(3500)
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.code || data.status === "error" || !data.symbol) return null;
+
+    const name = data.name || data.symbol;
+    const sym = data.symbol;
+    const rawPrice = data.close || data.price;
+    if (!rawPrice) return null;
+
+    const price = Number(rawPrice).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 5 });
+    const rawPct = Number(data.percent_change);
+    const changePct = !isNaN(rawPct) ? `${rawPct > 0 ? '+' : ''}${rawPct.toFixed(2)}%` : 'N/A';
+    const currency = data.currency || 'USD';
+    const exchange = data.exchange ? ` [${data.exchange}]` : '';
+    const dayHigh = data.high ? `$${Number(data.high).toFixed(2)}` : 'N/A';
+    const dayLow = data.low ? `$${Number(data.low).toFixed(2)}` : 'N/A';
+    const fiftyTwoHigh = data.fifty_two_week?.high ? `$${Number(data.fifty_two_week.high).toFixed(2)}` : 'N/A';
+    const fiftyTwoLow = data.fifty_two_week?.low ? `$${Number(data.fifty_two_week.low).toFixed(2)}` : 'N/A';
+    const volume = data.volume ? Number(data.volume).toLocaleString('en-US') : 'N/A';
+
+    return `• ${sym} (${name}${exchange}): Cotización Actual: $${price} ${currency} | Variación 24h: ${changePct} | Rango Intradiario: ${dayLow} - ${dayHigh} | Rango 52 Semanas: ${fiftyTwoLow} - ${fiftyTwoHigh} | Volumen: ${volume}`;
+  } catch (err) {
+    console.warn("[TwelveData] Error fetching quote:", err);
+    return null;
+  }
+}
+
 Deno.serve(async (req: Request) => {
   const corsHeaders = getCorsHeaders(req);
 
@@ -81,6 +228,7 @@ Deno.serve(async (req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const aiApiKey = Deno.env.get("GEMINI_API_KEY") ?? "";
+  const twelveDataApiKey = Deno.env.get("TWELVE_DATA_API_KEY") ?? "";
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
   let verifiedUserId = "";
@@ -220,9 +368,11 @@ Deno.serve(async (req: Request) => {
     quotaIncremented = true;
 
     // --------------------------------------------------------------------------
-    // CAPA 5: Live Market Grounding REAL (Columnas Exactas de la Base de Datos)
+    // CAPA 5: Live Market Grounding REAL (Supabase + Twelve Data en Paralelo)
     // --------------------------------------------------------------------------
-    const [marketRes, briefingRes, calendarRes] = await Promise.all([
+    const detectedTicker = detectExternalTicker(userMessage, body.asset);
+
+    const [marketRes, briefingRes, calendarRes, externalAssetSummary] = await Promise.all([
       supabaseAdmin
         .from("market_intelligence")
         .select("symbol, display_name, current_price, change_24h_pct, bias, bias_score, support_1, support_2, resistance_1, resistance_2, dpoc_price, session_vwap, macro_driver, technical_thesis, cited_key_levels, last_updated")
@@ -237,7 +387,10 @@ Deno.serve(async (req: Request) => {
         .from("economic_calendar")
         .select("country, event_name, impact, actual, forecast, previous, event_time")
         .order("event_time", { ascending: false })
-        .limit(6)
+        .limit(6),
+      detectedTicker && twelveDataApiKey
+        ? fetchTwelveDataQuote(detectedTicker, twelveDataApiKey)
+        : Promise.resolve(null)
     ]);
 
     const marketData = marketRes.data || [];
@@ -356,6 +509,12 @@ ${catSummary}`;
       { role: "user", parts: currentUserParts }
     ];
 
+    let externalAssetBlock = "";
+    if (externalAssetSummary) {
+      externalAssetBlock = `[COTIZACIÓN EN TIEMPO REAL VÍA TWELVE DATA (ACTIVO EXTERNO SOLICITADO)]:
+${externalAssetSummary}`;
+    }
+
     // --------------------------------------------------------------------------
     // CAPA 7: System Prompt Estricto & Anti-Alucinación
     // --------------------------------------------------------------------------
@@ -365,7 +524,7 @@ Asistes a traders profesionales con análisis cuantitativo riguroso, directo y f
 
 [REGLAS CARDINALES DE EXACTITUD Y COBERTURA UNIVERSAL]:
 1. TIENES COBERTURA TOTAL DEL MERCADO GLOBAL: Tu capacidad no está limitada a los activos del panel. Abarcas todo el universo financiero del trader:
-   - Acciones globales y Big Tech (ej. NVDA, AAPL, MSFT, TSLA, sector semiconductores, etc.).
+   - Acciones globales y Big Tech (ej. NVDA, AAPL, MSFT, TSLA, KO, sector semiconductores, etc.).
    - Divisas Forex Mayores, Menores y Exóticas (USD, EUR, GBP, JPY, AUD, CAD, CHF, etc.).
    - Materias Primas / Commodities (Oro, Plata, Petróleo WTI y Brent, Gas Natural, Cobre, etc.).
    - Criptoactivos (BTC, ETH, altcoins líderes, dominancia, flujos ETF institucionales).
@@ -374,9 +533,18 @@ Asistes a traders profesionales con análisis cuantitativo riguroso, directo y f
    - Análisis Técnico Cuantitativo e Institucional (Order Blocks, Fair Value Gaps, liquidez BSL/SSL, Volume Profile, Wyckoff, imbalances).
    - Gestión de Riesgo y Psicotrading institucional.
 2. ACTIVOS NATIVOS DE AEON (Grounding en Tiempo Real): Si el usuario consulta por los activos monitorizados por AEON inyectados abajo en [DATOS DE MERCADO EN VIVO] (ej. XAUUSD, EURUSD, BTCUSD, SPX500), tus niveles de Precio, dPOC, VWAP y Zonas ZAP deben coincidir exactamente con los datos inyectados.
-3. OTROS ACTIVOS O TEMAS GLOBALES FUERA DEL PANEL: Si el usuario consulta sobre cualquier otra acción, divisa, commodity, catalizador o concepto de trading, responde con tu conocimiento profundo de analista institucional sénior, proporcionando tesis fundamental, estructura de mercado, niveles de referencia y catalizadores.
-4. CATALIZADORES MACRO: Si un dato (como NFP o Nóminas no Agrícolas) figura como "DIGERIDO / YA PUBLICADO", NUNCA digas que está "por salir" ni lo trates como evento futuro. Explica con claridad cómo el mercado ya asimiló ese dato específico y qué reacción técnica provocó en el precio.
-5. SÉ CONCISO Y DIRECTO: Máximo 150 palabras en 'analisis'. Formatea con claridad y rigor institucional.
+3. ACTIVOS EXTERNOS Y ACCIONES GLOBALES (Grounding en Tiempo Real vía Twelve Data):
+   - Si se inyecta la sección [COTIZACIÓN EN TIEMPO REAL VÍA TWELVE DATA (ACTIVO EXTERNO SOLICITADO)], es OBLIGATORIO que uses exactamente el precio de cotización en vivo, la variación porcentual 24h y los rangos (intradiario y 52 semanas) proporcionados.
+   - Proporciona una reseña institucional concisa pero de alto valor para el trader:
+     * Modelo de negocio, ventajas competitivas (moat) y posición en el sector.
+     * Catalizadores operativos o corporativos actuales (demanda, márgenes, resultados).
+     * Estructura técnica relevante y niveles de precio a vigilar.
+     * Factores de riesgo principales (tasas de interés, múltiplos de valoración, competencia).
+   - En 'niveles_clave', incluye métricas concretas basadas en los datos en vivo, por ejemplo: ["Precio Vivo: $X.XX USD", "Variación 24h: +/-X.XX%", "Rango Intradiario: $X - $Y", "Rango 52 Semanas: $X - $Y", "Soporte Clave: $X", "Resistencia Clave: $X"].
+   - Clasifica la respuesta como "CATALIZADOR" o "TECNICO_ORDERFLOW". NUNCA como "FUERA_DE_AMBITO".
+4. OTROS ACTIVOS O TEMAS GLOBALES SIN COTIZACIÓN EN VIVO: Si el usuario consulta sobre cualquier otro activo, catalizador o concepto de trading sin cotización inyectada, responde con tu conocimiento profundo de analista institucional sénior, proporcionando tesis fundamental, estructura de mercado y niveles de referencia.
+5. CATALIZADORES MACRO: Si un dato (como NFP o Nóminas no Agrícolas) figura como "DIGERIDO / YA PUBLICADO", NUNCA digas que está "por salir" ni lo trates como evento futuro. Explica con claridad cómo el mercado ya asimiló ese dato específico y qué reacción técnica provocó en el precio.
+6. SÉ CONCISO Y DIRECTO: Máximo 150 palabras en 'analisis'. Formatea con claridad y rigor institucional.
 
 [MÓDULO DE GESTIÓN DE RIESGO Y CÁLCULO DE LOTAJE - PRIORIDAD INSTITUCIONAL]:
 - La gestión de riesgo es el núcleo de AEON. Toda pregunta que mencione balance, capital, % de riesgo, dólares de riesgo, stop loss (SL), pips, puntos, lotaje o tamaño de posición ES UNA CONSULTA FINANCIERA LEGÍTIMA.
@@ -402,7 +570,7 @@ Si el usuario envía una imagen de un gráfico técnico (TradingView, MT4/MT5):
 - Valida o invalida la hipótesis del trader con base en Order Flow y confluencias objetivas.
 - Si la imagen NO es un gráfico financiero ni captura de trading, clasifica "categoria": "FUERA_DE_AMBITO".
 
-[DATOS DE MERCADO EN VIVO]:
+${externalAssetBlock ? `${externalAssetBlock}\n\n` : ""}[DATOS DE MERCADO EN VIVO]:
 ${marketFreshnessNotice}
 ${marketContextSummary}
 
