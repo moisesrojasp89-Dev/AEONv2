@@ -32,11 +32,11 @@ async function getUserAccessState() {
     // Consultar tabla profiles para tier
     const { data: profile } = await supabase
       .from(DB_TABLES.PROFILES)
-      .select('tier, role')
+      .select('tier')
       .eq('id', session.user.id)
       .maybeSingle();
 
-    if (profile?.tier === 'pro' || profile?.tier === 'institutional' || profile?.role === 'admin') {
+    if (profile?.tier === 'pro' || profile?.tier === 'institutional') {
       return { state: 'pro', email: session.user.email };
     }
 

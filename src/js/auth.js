@@ -21,11 +21,11 @@ export async function checkSession() {
       // 1. Determinar estado PRO exclusivamente vía tabla profiles (seguridad server-side en DB)
       const { data: profData } = await supabase
         .from(DB_TABLES.PROFILES)
-        .select('tier, role')
+        .select('tier')
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (profData && (profData.tier === 'pro' || profData.tier === 'institutional' || profData.role === 'admin')) {
+      if (profData && (profData.tier === 'pro' || profData.tier === 'institutional')) {
         isPro = true;
       } else {
         // 2. Fallback vía tabla subscriptions activa con periodo vigente
