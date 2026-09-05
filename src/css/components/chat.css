@@ -290,40 +290,6 @@
   gap: 0.4rem;
 }
 
-/* ── Quick Prompts Suggestions Bar ── */
-.chat-quick-prompts {
-  display: flex;
-  gap: 0.4rem;
-  padding: 0.5rem 0.8rem;
-  background: rgba(10, 15, 28, 0.9);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.chat-quick-prompts::-webkit-scrollbar {
-  display: none;
-}
-
-.chat-prompt-chip {
-  flex-shrink: 0;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.3rem 0.65rem;
-  border-radius: var(--radius-pill, 999px);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--slate-200, #e2e8f0);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: all var(--dur-fast, 0.15s) ease;
-  white-space: nowrap;
-}
-
-.chat-prompt-chip:hover {
-  background: rgba(56, 189, 248, 0.12);
-  color: var(--accent-hover, #38bdf8);
-  border-color: rgba(56, 189, 248, 0.3);
-}
 
 /* ── Input Footer ── */
 .chat-footer {

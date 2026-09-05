@@ -199,14 +199,6 @@ export async function initChatWidget() {
       <!-- Dynamic Content Area -->
       <div class="chat-body" id="chat-body-area"></div>
 
-      <!-- Quick Prompt Suggestions Bar -->
-      <div class="chat-quick-prompts" id="chat-quick-prompts">
-        <button class="chat-prompt-chip" data-prompt="Calcula mi lotaje para cuenta de $10,000, riesgo 1% y Stop Loss de 25 pips en XAUUSD">📊 Calcular Lote</button>
-        <button class="chat-prompt-chip" data-prompt="¿Cuál es el sesgo intradiario, dPOC y VWAP actual de XAUUSD?">🧭 Sesgo XAUUSD</button>
-        <button class="chat-prompt-chip" data-prompt="¿Cuáles son las zonas de liquidez y volumen institucional en EURUSD?">🌊 Liquidez EURUSD</button>
-        <button class="chat-prompt-chip" data-prompt="¿Cómo aplico la regla institucional de riesgo del 1% para proteger mi drawdown?">🛡️ Gestión de Riesgo</button>
-      </div>
-
       <!-- Input Footer -->
       <footer class="chat-footer" id="chat-footer-area">
         <!-- Floating Image Preview Bar -->
@@ -266,7 +258,6 @@ function bindChatEvents() {
   const clearBtn = document.getElementById('chat-btn-clear');
   const form = document.getElementById('chat-input-form');
   const textarea = document.getElementById('chat-textarea-input');
-  const quickPrompts = document.getElementById('chat-quick-prompts');
   const attachBtn = document.getElementById('chat-btn-attach');
   const fileInput = document.getElementById('chat-file-input');
   const removeImgBtn = document.getElementById('chat-preview-remove');
@@ -338,15 +329,6 @@ function bindChatEvents() {
   // Enviar formulario
   form?.addEventListener('submit', handleSendMessage);
 
-  // Chips de sugerencia rápida
-  quickPrompts?.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chat-prompt-chip');
-    if (!chip || !textarea) return;
-    textarea.value = chip.getAttribute('data-prompt') || '';
-    textarea.dispatchEvent(new Event('input'));
-    textarea.focus();
-  });
-
   // Cerrar con tecla Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isChatOpen) {
@@ -387,7 +369,6 @@ export function toggleChatPanel(forceState) {
  */
 async function refreshChatView() {
   const bodyArea = document.getElementById('chat-body-area');
-  const quickPrompts = document.getElementById('chat-quick-prompts');
   const footerArea = document.getElementById('chat-footer-area');
   const quotaBadge = document.getElementById('chat-quota-display');
   if (!bodyArea) return;
@@ -396,7 +377,6 @@ async function refreshChatView() {
 
   // 1. ESTADO GUEST (No autenticado)
   if (access.state === 'guest') {
-    if (quickPrompts) quickPrompts.style.display = 'none';
     if (footerArea) footerArea.style.display = 'none';
     if (quotaBadge) quotaBadge.textContent = 'Requiere Login';
 
@@ -413,7 +393,6 @@ async function refreshChatView() {
 
   // 2. ESTADO FREE (Paywall Pro)
   if (access.state === 'free') {
-    if (quickPrompts) quickPrompts.style.display = 'none';
     if (footerArea) footerArea.style.display = 'none';
     if (quotaBadge) quotaBadge.textContent = 'Plan Free';
 
@@ -439,7 +418,6 @@ async function refreshChatView() {
   }
 
   // 3. ESTADO PRO (Acceso Total Desbloqueado)
-  if (quickPrompts) quickPrompts.style.display = 'flex';
   if (footerArea) footerArea.style.display = 'flex';
   renderConversationHistory();
 }
