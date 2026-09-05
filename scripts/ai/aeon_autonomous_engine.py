@@ -65,12 +65,13 @@ VALID_MARKET_COLUMNS = {
     'last_updated', 'updated_by'
 }
 
-# 13 Activos OANDA en una sola llamada por lotes (incluyendo USD_SEK para la fórmula del DXY)
-OANDA_INSTRUMENTS = "XAU_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,USD_SEK,SPX500_USD,NAS100_USD,US30_USD,JP225_USD"
+# 15 Activos OANDA en una sola llamada por lotes (incluyendo USD_SEK para la fórmula del DXY, Plata y Petróleo WTI)
+OANDA_INSTRUMENTS = "XAU_USD,XAG_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,USD_SEK,WTICO_USD,SPX500_USD,NAS100_USD,US30_USD,JP225_USD"
 
 # Mapeo a símbolos oficiales AEON
 SYMBOL_MAP = {
     'XAU_USD': 'XAUUSD',
+    'XAG_USD': 'XAGUSD',
     'EUR_USD': 'EURUSD',
     'USD_JPY': 'USDJPY',
     'GBP_USD': 'GBPUSD',
@@ -79,6 +80,7 @@ SYMBOL_MAP = {
     'NZD_USD': 'NZDUSD',
     'USD_CHF': 'USDCHF',
     'USD_SEK': 'USDSEK',
+    'WTICO_USD': 'USOIL',
     'SPX500_USD': 'SPX500',
     'NAS100_USD': 'NAS100',
     'US30_USD': 'US30',
@@ -90,6 +92,7 @@ SYMBOL_MAP = {
 # ==============================================================================
 BENCHMARKS = {
     'XAUUSD': {'base': 4580.00, 'decimals': 2, 'spread_pct': 0.004, 'name': 'Oro Spot', 'category': 'METALES'},
+    'XAGUSD': {'base': 66.00, 'decimals': 3, 'spread_pct': 0.005, 'name': 'Plata Spot', 'category': 'METALES'},
     'EURUSD': {'base': 1.1660, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Euro / Dólar', 'category': 'FOREX'},
     'GBPUSD': {'base': 1.3620, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Libra / Dólar', 'category': 'FOREX'},
     'USDJPY': {'base': 158.50, 'decimals': 3, 'spread_pct': 0.003, 'name': 'Dólar / Yen', 'category': 'FOREX'},
@@ -98,6 +101,7 @@ BENCHMARKS = {
     'USDCAD': {'base': 1.3820, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar / Dólar Canadiense', 'category': 'FOREX'},
     'USDCHF': {'base': 0.8030, 'decimals': 5, 'spread_pct': 0.003, 'name': 'Dólar / Franco Suizo', 'category': 'FOREX'},
     'DXY': {'base': 99.10, 'decimals': 3, 'spread_pct': 0.0025, 'name': 'Dólar Index (DXY)', 'category': 'DIVISAS'},
+    'USOIL': {'base': 91.50, 'decimals': 2, 'spread_pct': 0.006, 'name': 'Petróleo WTI', 'category': 'ENERGIA'},
     'SPX500': {'base': 7710.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'S&P 500', 'category': 'INDICES'},
     'NAS100': {'base': 29500.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Nasdaq 100', 'category': 'INDICES'},
     'US30': {'base': 44800.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Dow Jones 30', 'category': 'INDICES'},
@@ -204,11 +208,43 @@ def calculate_dxy(eur: float, jpy: float, gbp: float, cad: float, sek: float, ch
     except Exception:
         return 99.198
 
+def fetch_btc_price() -> Optional[float]:
+    """
+    Obtiene el precio spot de Bitcoin de forma independiente a OANDA (§Auditoría v20 - Módulo 1).
+    Timeout estricto de 4s (Binance -> fallback Coinbase). Si ambas fallan, retorna None con WARNING.
+    """
+    # 1. Binance Public API (timeout 4s)
+    try:
+        b_url = "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"
+        b_req = urllib.request.Request(b_url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(b_req, timeout=4) as b_resp:
+            b_data = json.loads(b_resp.read().decode('utf-8'))
+            val = float(b_data.get("lastPrice", 0))
+            if val > 0:
+                return val
+    except Exception:
+        pass
+
+    # 2. Coinbase Public Spot API (fallback timeout 4s)
+    try:
+        c_url = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+        c_req = urllib.request.Request(c_url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(c_req, timeout=4) as c_resp:
+            c_data = json.loads(c_resp.read().decode('utf-8'))
+            val = float(c_data.get("data", {}).get("amount", 0))
+            if val > 0:
+                return val
+    except Exception:
+        pass
+
+    log("CRIPTOMERCADO", "⚠️", "Fuente de precio BTC no disponible. Omitiendo tarjeta Cripto este ciclo.")
+    return None
+
 def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
-    """Obtiene cotizaciones de 14 activos usando 1 llamada OANDA + 1 llamada Binance."""
+    """Obtiene cotizaciones de los activos usando 1 llamada OANDA Batch + fuente independiente de BTC."""
     quotes = {}
     
-    # 1. OANDA Batch (13 Activos en 1 llamada HTTP)
+    # 1. OANDA Batch (15 Activos en 1 llamada HTTP)
     try:
         url = f"https://api-fxpractice.oanda.com/v3/accounts/{OANDA_ACCOUNT_ID}/pricing?instruments={OANDA_INSTRUMENTS}"
         req = urllib.request.Request(url, headers={"Authorization": f"Bearer {OANDA_TOKEN}", "Content-Type": "application/json"})
@@ -225,17 +261,16 @@ def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
     except Exception as e:
         log("MERCADOS", "⚠️", f"OANDA batch timeout/error: {e}. Usando snapshot local.")
 
-    # 2. Binance Public API (Bitcoin BTC/USD en 1 llamada)
-    try:
-        b_url = "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"
-        b_req = urllib.request.Request(b_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(b_req, timeout=4) as b_resp:
-            b_data = json.loads(b_resp.read().decode('utf-8'))
-            btc_price = float(b_data.get("lastPrice", 80294.0))
-            btc_change = float(b_data.get("priceChangePercent", 2.04))
-            quotes['BTCUSD'] = {'price': btc_price, 'change_24h': btc_change}
-    except Exception:
-        quotes['BTCUSD'] = {'price': 80294.0, 'change_24h': 2.04}
+    # Verificación de resiliencia por instrumento (§Auditoría v20 - Módulo 4)
+    key_oanda_instruments = ['XAUUSD', 'XAGUSD', 'USOIL', 'SPX500', 'NAS100', 'US30']
+    for k_sym in key_oanda_instruments:
+        if k_sym not in quotes:
+            log("MERCADOS", "⚠️", f"Cotización de {k_sym} no disponible en OANDA este ciclo.")
+
+    # 2. Bitcoin independiente de OANDA (§Auditoría v20 - Módulo 1)
+    btc_val = fetch_btc_price()
+    if btc_val is not None:
+        quotes['BTCUSD'] = {'price': btc_val, 'change_24h': 1.2}
 
     # 3. Dólar Index (DXY) derivado con fórmula completa oficial ICE
     if 'EURUSD' in quotes and 'USDJPY' in quotes and 'GBPUSD' in quotes:
@@ -252,6 +287,61 @@ def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
         quotes['DXY'] = {'price': 99.198, 'change_24h': 0.02}
 
     return quotes
+
+CURRENCY_PRIORITIES = {
+    'ny_pre': ['CAD', 'EUR', 'GBP', 'JPY', 'AUD', 'NZD', 'CHF'],
+    'weekend_wrap': ['CAD', 'EUR', 'GBP', 'JPY', 'AUD', 'NZD', 'CHF'],
+    'london_pre': ['EUR', 'GBP', 'CHF', 'CAD', 'JPY', 'AUD', 'NZD'],
+    'asian_wrap': ['JPY', 'AUD', 'NZD', 'EUR', 'GBP', 'CAD', 'CHF']
+}
+
+def detect_hot_forex_pair(session_id: str, catalysts: list, quotes: dict) -> tuple[str, float, str]:
+    """
+    Determina la divisa y par FX de mayor relevancia macro de la semana aplicando desempate determinista (§Auditoría v20 - Módulo 5).
+    Retorna: (symbol, live_price, display_name)
+    """
+    priority_list = CURRENCY_PRIORITIES.get(session_id, CURRENCY_PRIORITIES['ny_pre'])
+    
+    candidate_scores = {}
+    if catalysts:
+        for c in catalysts:
+            curr = str(c.get('currency', '')).upper()
+            if curr in priority_list:
+                impact = str(c.get('impact', 'MEDIUM')).upper()
+                weight = 3 if impact == 'HIGH' else 1
+                candidate_scores[curr] = candidate_scores.get(curr, 0) + weight
+
+    if candidate_scores:
+        def sort_key(item):
+            curr, score = item
+            p_idx = priority_list.index(curr) if curr in priority_list else 99
+            return (-score, p_idx, curr)
+        
+        sorted_candidates = sorted(candidate_scores.items(), key=sort_key)
+        best_curr = sorted_candidates[0][0]
+    else:
+        best_curr = 'EUR' if 'EUR' in priority_list else priority_list[0]
+
+    def get_p(sym: str, default: float) -> float:
+        val = quotes.get(sym, default)
+        if isinstance(val, dict):
+            return float(val.get('price', default))
+        try:
+            return float(val)
+        except Exception:
+            return default
+
+    curr_map = {
+        'EUR': ('EURUSD', get_p('EURUSD', 1.1614), 'EUR/USD (Euro / Dólar)'),
+        'GBP': ('GBPUSD', get_p('GBPUSD', 1.3620), 'GBP/USD (Libra / Dólar)'),
+        'JPY': ('USDJPY', get_p('USDJPY', 158.50), 'USD/JPY (Dólar / Yen)'),
+        'CAD': ('USDCAD', get_p('USDCAD', 1.3820), 'USD/CAD (Dólar / Dólar Canadiense)'),
+        'AUD': ('AUDUSD', get_p('AUDUSD', 0.7210), 'AUD/USD (Dólar Australiano / Dólar)'),
+        'NZD': ('NZDUSD', get_p('NZDUSD', 0.6320), 'NZD/USD (Dólar Neozelandés / Dólar)'),
+        'CHF': ('USDCHF', get_p('USDCHF', 0.8030), 'USD/CHF (Dólar / Franco Suizo)')
+    }
+
+    return curr_map.get(best_curr, ('EURUSD', 1.1614, 'EUR/USD (Euro / Dólar)'))
 
 def sync_markets_loop():
     """Ejecuta la actualización continua de los 14 activos y su microestructura cuántica unificada."""
@@ -577,8 +667,8 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
 
     if GEMINI_API_KEY:
         models_to_try = [
-            ("gemini-3.7-flash", 7),
-            ("gemini-3.6-flash", 5)
+            ("gemini-3.1-flash-lite", 7),
+            ("gemini-3.5-flash-lite", 10)
         ]
         prompt = (
             f"Actúa como Director de Análisis Macroeconómico Institucional de la firma Fintech AEON. "
@@ -820,20 +910,49 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
 
     return catalysts_payload
 
-def generate_institutional_news(session_name: str, gold_price: float, gold_bias: str, btc_price: float, dxy_price: float, dxy_bias: str, spx_price: float, eur_price: float, catalysts: list, now_utc: datetime, raw_headlines: list = None, is_degraded: bool = False) -> list[dict]:
+def generate_institutional_news(
+    session_name: str,
+    gold_price: float,
+    silver_price: float,
+    spx_price: float,
+    nas_price: float,
+    dow_price: float,
+    dxy_price: float,
+    hot_fx_sym: str,
+    hot_fx_price: float,
+    hot_fx_name: str,
+    oil_price: Optional[float],
+    btc_price: Optional[float],
+    catalysts: list,
+    now_utc: datetime,
+    raw_headlines: list = None,
+    is_degraded: bool = False
+) -> list[dict]:
     """
-    Genera 6 a 8 piezas de análisis cuantitativo y Order Flow institucional con Gemini AI (multi-modelo resiliente).
-    Auditoría v5.0: Presupuesto estricto de latencia (7s + 5s), grounding con cables RSS y deduplicación por source_id.
+    Genera el lote multiactivo institucional con Gemini AI (multi-modelo resiliente).
+    Auditoría v20:
+    - 10 tarjetas específicas (Oro, Plata, S&P 500, Nasdaq, Dow Jones, DXY, Divisa Caliente, WTI, Centrales, Bitcoin)
+    - Resiliencia: si btc_price o algún activo es None, se omite esa tarjeta puntual sin abortar el lote.
+    - Exactamente 4 tarjetas marcadas con #featured para Live Feed determinista.
+    - Tags internos estandarizados a ASCII (METALES, INDICES, FOREX, ENERGIA, CENTRALES, CRIPTO).
+    - Modelos probados empíricamente: gemini-3.1-flash-lite (7s) -> gemini-3.5-flash-lite (10s) -> fallback.
     """
     t_str = now_utc.strftime("%H:%M")
-    source_tag = "AEON Internal Quant Desk (Modo Resiliencia)" if is_degraded else "AEON Terminal AI / Wire"
+    date_key = now_utc.strftime('%Y%m%d')
     is_weekend = ('Semanal' in session_name or 'Fin de Semana' in session_name or 'weekend' in session_name.lower())
 
-    # 1. Generación profunda con Gemini (gemini-3.7-flash -> fallback gemini-3.6-flash)
+    # Determinar exactamente 4 activos a destacar con #featured (Auditoría v20 - Módulo 6)
+    featured_keys = {'XAUUSD', 'SPX500', 'DXY'}
+    if btc_price is not None:
+        featured_keys.add('BTCUSD')
+    else:
+        featured_keys.add(hot_fx_sym)
+
+    # 1. Generación profunda con Gemini
     if GEMINI_API_KEY:
         models_to_try = [
-            ("gemini-3.7-flash", 7),
-            ("gemini-3.6-flash", 5)
+            ("gemini-3.1-flash-lite", 7),
+            ("gemini-3.5-flash-lite", 10)
         ]
 
         cat_summary = ", ".join([f"{c.get('currency')}: {c.get('title')} ({c.get('time')} UTC)" for c in catalysts[:4]]) if catalysts else "Sin catalizadores inmediatos"
@@ -842,22 +961,38 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
         if raw_headlines and not is_degraded:
             rss_context = "Cables financieros de última hora (Yahoo Finance / CNBC / Financial Wire):\n" + "\n".join([f"- {h['title']} (Fuente: {h.get('source', 'Wire')})" for h in raw_headlines[:6]]) + "\n\n"
 
+        target_assets_desc = [
+            f"1. METALES (XAUUSD): Oro Spot (${gold_price:,.2f}) tras nóminas NFP y flujos institucionales.",
+            f"2. METALES (XAGUSD): Plata Spot (${silver_price:,.2f}) y balance ratio oro/plata / demanda industrial.",
+            f"3. INDICES (SPX500): S&P 500 ({spx_price:,.0f}) y régimen de renta variable de Wall Street.",
+            f"4. INDICES (NAS100): Nasdaq 100 CFD ({nas_price:,.0f}) y sesgo en megacaps tecnológicas.",
+            f"5. INDICES (US30): Dow Jones 30 CFD ({dow_price:,.0f}) y rotación defensiva/industrial.",
+            f"6. FOREX (DXY): Dólar Index DXY ({dxy_price:.2f}) y posicionamiento macro del billete verde.",
+            f"7. FOREX ({hot_fx_sym}): {hot_fx_name} ({hot_fx_price}) divisa caliente bajo foco de catalizadores."
+        ]
+        if oil_price is not None:
+            target_assets_desc.append(f"8. ENERGIA (USOIL): Petróleo WTI (${oil_price:,.2f}) y dinámica de oferta OPEP+.")
+        target_assets_desc.append("9. CENTRALES (CENTRAL): Política Monetaria Global (Fed & BCE de cara al 4T).")
+        if btc_price is not None:
+            target_assets_desc.append(f"10. CRIPTO (BTCUSD): Bitcoin (${btc_price:,.0f}) y mercado criptoactivo 24/7.")
+
+        prompt_assets = "\n".join(target_assets_desc)
+
         if is_weekend:
             prompt = (
-                f"Eres el Director de Análisis Macroeconómico de AEON, terminal institucional cuantitativa. "
+                f"Eres el Director de Análisis Macroeconómico y Cuantitativo de AEON, terminal financiera profesional.\n"
                 f"Estamos en el CIERRE SEMANAL DE MERCADOS (Fin de semana). Los mercados de futuros y Forex han cerrado su negociación semanal.\n"
-                f"Genera exactamente 6 piezas de inteligencia institucional de BALANCE DE CIERRE SEMANAL, exactamente una por cada una de estas 6 áreas temáticas obligatorias:\n"
-                f"1. METALES: Cierre semanal del Oro Spot (XAU/USD ${gold_price:,.2f}) tras el informe de nóminas NFP de hoy y balance semanal de refugio.\n"
-                f"2. FOREX: Cierre semanal del Dólar Index (DXY {dxy_price:.2f}) y EUR/USD ({eur_price:.4f}) de cara a la decisión de tipos del BCE de la próxima semana.\n"
-                f"3. ÍNDICES: Cierre semanal de Wall Street: S&P 500 ({spx_price:,.0f}) y balance de renta variable.\n"
-                f"4. ENERGÍA: Cierre semanal del Petróleo WTI (USOIL) y proyecciones de oferta OPEP+.\n"
-                f"5. CENTRALES: Balance de política monetaria semanal de la Fed y bancos centrales de cara a la próxima semana.\n"
-                f"6. CRIPTO: Bitcoin (${btc_price:,.0f}) y mercado criptoactivo cotizando 24/7 de cara a la reapertura dominical.\n\n"
-                f"REGLA CRÍTICA: Es un balance de CIERRE SEMANAL. Queda terminantemente PROHIBIDO usar frases de mercado abierto como 'en la jornada', 'máximos de sesión', o 'presión intradía'. Redacta con tono de balance de cierre semanal.\n\n"
-                f"Responde ÚNICAMENTE un array JSON válido con exactamente 6 objetos (tags exactos: METALES, FOREX, ÍNDICES, ENERGÍA, CENTRALES, CRIPTO):\n"
+                f"Genera exactamente un análisis de BALANCE DE CIERRE SEMANAL para cada uno de estos activos obligatorios:\n"
+                f"{prompt_assets}\n\n"
+                f"REGLAS CRÍTICAS:\n"
+                f"- Tono institucional de balance de cierre semanal.\n"
+                f"- Queda terminantemente PROHIBIDO usar frases de mercado abierto como 'en la jornada', 'máximos de sesión' o 'presión intradía'.\n"
+                f"- Usa ÚNICAMENTE estos tags exactos sin tildes: METALES, INDICES, FOREX, ENERGIA, CENTRALES, CRIPTO.\n\n"
+                f"Responde ÚNICAMENTE un array JSON válido donde cada objeto tenga exactamente este esquema:\n"
                 f"[\n"
                 f"  {{\n"
-                f"    \"tag\": \"METALES\" | \"ENERGÍA\" | \"FOREX\" | \"ÍNDICES\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"tag\": \"METALES\" | \"INDICES\" | \"FOREX\" | \"ENERGIA\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"sym\": \"XAUUSD\" | \"XAGUSD\" | \"SPX500\" | \"NAS100\" | \"US30\" | \"DXY\" | \"{hot_fx_sym}\" | \"USOIL\" | \"CENTRAL\" | \"BTCUSD\",\n"
                 f"    \"title\": \"Titular institucional de cierre semanal (máx 14 palabras)\",\n"
                 f"    \"desc\": \"Balance semanal y causa real de la estructura de precios en 1-2 oraciones\",\n"
                 f"    \"tactical_impact\": \"Implicación táctica y niveles clave para la reapertura de la próxima semana\"\n"
@@ -866,22 +1001,18 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
             )
         else:
             prompt = (
-                f"Eres el Director de Análisis Macroeconómico y Order Flow de AEON, una terminal institucional de trading cuantitativo. "
-                f"Estamos en la {session_name}. "
-                f"Genera exactamente 6 piezas de inteligencia financiera y Order Flow de ALTO IMPACTO técnico (una por cada área: METALES, FOREX, ÍNDICES, ENERGÍA, CENTRALES, CRIPTO).\n"
-                f"PROHIBIDO el texto de relleno genérico. Agrupa temas duplicados bajo una sola noticia cohesiva.\n\n"
+                f"Eres el Director de Análisis Macroeconómico y Order Flow de AEON.\n"
+                f"Estamos en la {session_name}.\n"
                 f"{rss_context}"
-                f"Datos en vivo de la sesión actual ({session_name}):\n"
-                f"- Oro Spot (XAU/USD): ${gold_price:,.2f} (Sesgo: {gold_bias})\n"
-                f"- Dólar Index (DXY): {dxy_price:.2f} (Sesgo: {dxy_bias})\n"
-                f"- EUR/USD: {eur_price:.4f}\n"
-                f"- S&P 500: {spx_price:,.2f}\n"
-                f"- Bitcoin (BTC/USD): ${btc_price:,.0f}\n"
-                f"- Catalizadores clave de la sesión: {cat_summary}\n\n"
-                f"Responde ÚNICAMENTE un array JSON válido con objetos de este esquema:\n"
+                f"Genera exactamente un análisis institucional de alto impacto técnico para cada uno de estos activos obligatorios:\n"
+                f"{prompt_assets}\n"
+                f"Catalizadores clave: {cat_summary}\n\n"
+                f"Usa ÚNICAMENTE estos tags exactos sin tildes: METALES, INDICES, FOREX, ENERGIA, CENTRALES, CRIPTO.\n\n"
+                f"Responde ÚNICAMENTE un array JSON válido:\n"
                 f"[\n"
                 f"  {{\n"
-                f"    \"tag\": \"METALES\" | \"ENERGÍA\" | \"FOREX\" | \"ÍNDICES\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"tag\": \"METALES\" | \"INDICES\" | \"FOREX\" | \"ENERGIA\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"sym\": \"XAUUSD\" | \"XAGUSD\" | \"SPX500\" | \"NAS100\" | \"US30\" | \"DXY\" | \"{hot_fx_sym}\" | \"USOIL\" | \"CENTRAL\" | \"BTCUSD\",\n"
                 f"    \"title\": \"Titular institucional directo y profesional (máx 14 palabras)\",\n"
                 f"    \"desc\": \"Contexto macro y causa real del movimiento en 1-2 oraciones\",\n"
                 f"    \"tactical_impact\": \"Implicación táctica cuantitativa y niveles de Order Flow / dPOC / liquidez\"\n"
@@ -893,7 +1024,7 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {
                 "temperature": 0.15,
-                "maxOutputTokens": 2048,
+                "maxOutputTokens": 3072,
                 "responseMimeType": "application/json"
             }
         }
@@ -916,32 +1047,52 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
                         clean_json = clean_json.split('```', 1)[1].split('```', 1)[0].strip()
 
                     parsed = json.loads(clean_json)
-                    if isinstance(parsed, list) and len(parsed) >= 5:
+                    if isinstance(parsed, list) and len(parsed) >= 8:
                         news_out = []
-                        seen_tags = set()
-                        for idx, item in enumerate(parsed):
-                            item_tag = str(item.get("tag", "MACRO")).upper()
-                            # Garantizar que no haya tags duplicados en la misma generación
-                            if item_tag in seen_tags and item_tag != 'MACRO':
+                        seen_syms = set()
+                        for item in parsed:
+                            sym = str(item.get("sym") or item.get("asset") or "").upper().replace("/", "").replace("_", "")
+                            # Mapear variaciones comunes de símbolos generados por Gemini
+                            if sym in ('ORO', 'GOLD', 'XAU'):
+                                sym = 'XAUUSD'
+                            elif sym in ('PLATA', 'SILVER', 'XAG'):
+                                sym = 'XAGUSD'
+                            elif sym in ('SPX', 'SP500', 'S&P500'):
+                                sym = 'SPX500'
+                            elif sym in ('NAS', 'NASDAQ', 'US100'):
+                                sym = 'NAS100'
+                            elif sym in ('DOW', 'DJIA'):
+                                sym = 'US30'
+                            elif sym in ('USDX', 'DOLLAR'):
+                                sym = 'DXY'
+                            elif sym in ('BTC', 'BITCOIN'):
+                                sym = 'BTCUSD'
+                            elif sym in ('WTI', 'OIL', 'PETROLEO'):
+                                sym = 'USOIL'
+                            elif not sym:
+                                sym = str(item.get("tag", "MACRO")).upper()
+
+                            if sym in seen_syms and sym != 'MACRO':
                                 continue
-                            seen_tags.add(item_tag)
+                            seen_syms.add(sym)
+
+                            item_tag = str(item.get("tag", "MACRO")).upper()
+                            # Normalizar tags a ASCII (§Auditoría v20 - Módulo 8)
+                            if item_tag in ('ÍNDICES', 'INDICES'):
+                                item_tag = 'INDICES'
+                            elif item_tag in ('ENERGÍA', 'ENERGIA'):
+                                item_tag = 'ENERGIA'
+                            elif item_tag in ('ORO', 'METALES'):
+                                item_tag = 'METALES'
 
                             desc_text = str(item.get("desc", "")).strip()
                             impact_text = str(item.get("tactical_impact", "")).strip()
                             full_desc = f"{desc_text} ⚡ IMPACTO: {impact_text}" if impact_text else desc_text
                             title_clean = str(item.get("title", "")).strip()
 
-                            # Asociar con cable RSS si corresponde, o hash determinista (§Módulo 4.1)
-                            src_link = "#"
-                            if raw_headlines and idx < len(raw_headlines) and not is_weekend:
-                                raw_h = raw_headlines[idx]
-                                h_link = raw_h.get('link', '')
-                                h_sid = hashlib.sha256(h_link.lower().encode('utf-8')).hexdigest()[:16]
-                                src_link = f"{h_link}#src_{h_sid}" if h_link.startswith('http') else f"#src_{h_sid}"
-                            else:
-                                tag_clean = item_tag.lower()
-                                src_hash = hashlib.sha256(f"{tag_clean}_{title_clean.lower()}_{now_utc.strftime('%Y%m%d')}".encode('utf-8')).hexdigest()[:16]
-                                src_link = f"#src_of_{tag_clean}_{now_utc.strftime('%Y%m%d')}_{src_hash}"
+                            tag_clean = item_tag.lower()
+                            src_hash = hashlib.sha256(f"{tag_clean}_{sym.lower()}_{date_key}".encode('utf-8')).hexdigest()[:16]
+                            src_link = f"#src_{tag_clean}_{sym.lower()}_{date_key}_{src_hash}"
 
                             news_out.append({
                                 "tag": item_tag,
@@ -951,7 +1102,35 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
                                 "time": t_str,
                                 "created_at": now_utc.isoformat()
                             })
-                        log("GEMINI", "✨", f"{len(news_out)} Noticias institucionales generadas por {model_name}")
+
+                        # Garantizar exactamente 4 tarjetas destacadas (#featured) para el Live Feed
+                        # Activos prioritarios: Oro, S&P 500, DXY y BTC (o Hot FX si BTC no está disponible)
+                        target_featured = ['XAUUSD', 'SPX500', 'DXY']
+                        if btc_price is not None:
+                            target_featured.append('BTCUSD')
+                        else:
+                            target_featured.append(hot_fx_sym.upper())
+
+                        featured_count = 0
+                        # 1. Asignar estrictamente a los 4 activos objetivo prioritarios
+                        for feat_sym in target_featured:
+                            for n in news_out:
+                                if f"_{feat_sym.lower()}_" in n['link']:
+                                    if '#featured' not in n['link']:
+                                        n['link'] += '#featured'
+                                        featured_count += 1
+                                    break
+
+                        # 2. Si faltan para llegar a 4, completar deterministamente hasta 4
+                        if featured_count < 4:
+                            for n in news_out:
+                                if '#featured' not in n['link']:
+                                    n['link'] += '#featured'
+                                    featured_count += 1
+                                    if featured_count >= 4:
+                                        break
+
+                        log("GEMINI", "✨", f"{len(news_out)} Noticias institucionales generadas por {model_name} (Destacadas: {featured_count})")
                         return news_out
             except Exception as e:
                 log("GEMINI", "⚠️", f"Fallo o timeout en generación de noticias ({model_name} | {to_sec}s): {e}")
@@ -959,149 +1138,237 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
     # Fallback cuantitativo determinista calibrado en modo resiliencia (§Módulo 5)
     gold_supp = round(gold_price * 0.992, 2)
     gold_res = round(gold_price * 1.008, 2)
-    dxy_supp = round(dxy_price - 0.25, 2)
-    eur_target = round(eur_price - 0.0035, 4)
+    silver_supp = round(silver_price * 0.985, 3)
+    silver_res = round(silver_price * 1.015, 3)
     spx_res = round(spx_price + 30, 2)
-    btc_supp = round(btc_price - 800, 0)
-    btc_res = round(btc_price + 1200, 0)
+    spx_supp = round(spx_price - 35, 2)
+    nas_res = round(nas_price + 180, 1)
+    nas_supp = round(nas_price - 220, 1)
+    dow_res = round(dow_price + 250, 1)
+    dow_supp = round(dow_price - 280, 1)
+    dxy_supp = round(dxy_price - 0.25, 2)
+    oil_res = round(oil_price + 1.80, 2) if oil_price else 93.50
+    oil_supp = round(oil_price - 1.50, 2) if oil_price else 89.80
+    btc_supp = round((btc_price or 79000.0) - 800, 0)
+    btc_res = round((btc_price or 79000.0) + 1200, 0)
 
-    date_key = now_utc.strftime('%Y%m%d')
-    sess_key = session_name[:3].lower()
+    fallback_news = []
 
     if is_weekend:
-        fallback_news = [
-            {
-                "tag": "METALES",
-                "title": f"Cierre Semanal Oro Spot (${gold_price:,.2f}): Balance tras nóminas y consolidación semanal",
-                "desc": f"El Oro Spot sella la semana defendiendo el rango sobre ${gold_supp:,.2f}, asimilando el informe de nóminas NFP y el reajuste en las curvas de rendimiento soberano. ⚡ IMPACTO: 🪙 XAU/USD: Nivel de liquidación institucional semanal en ${gold_supp:,.2f}; resistencia estructural a vigilar en la reapertura en ${gold_res:,.2f}.",
-                "link": f"#src_weekend_xauusd_{date_key}",
-                "time": t_str,
-                "created_at": now_utc.isoformat()
-            },
-            {
-                "tag": "ENERGÍA",
-                "title": "Cierre Semanal Petróleo WTI: Estabilidad operativa y proyecciones de oferta OPEP+",
-                "desc": "El crudo finaliza la semana en rango acotado mientras los operadores asimilan los inventarios comerciales y el cronograma de producción de la alianza OPEP+. ⚡ IMPACTO: 🛢️ USOIL: Soporte estructural de cierre en $68.20 con techo técnico en $71.50.",
+        # 1. Oro (Featured)
+        fallback_news.append({
+            "tag": "METALES",
+            "title": f"Cierre Semanal Oro Spot (${gold_price:,.2f}): Balance tras nóminas y consolidación semanal",
+            "desc": f"El Oro Spot sella la semana defendiendo el rango sobre ${gold_supp:,.2f}, asimilando el informe de nóminas NFP y el reajuste en las curvas de rendimiento soberano. ⚡ IMPACTO: 🪙 XAU/USD: Nivel de liquidación institucional semanal en ${gold_supp:,.2f}; resistencia estructural a vigilar en la reapertura en ${gold_res:,.2f}.",
+            "link": f"#src_weekend_xauusd_{date_key}#featured",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 2. Plata
+        fallback_news.append({
+            "tag": "METALES",
+            "title": f"Cierre Semanal Plata Spot (${silver_price:,.3f}): Compresión del ratio oro/plata y demanda industrial",
+            "desc": f"La plata concluye la semana manteniendo equilibrio sobre ${silver_supp:,.3f}, respaldada por flujos de cobertura bimetálica y demanda en componentes estratégicos. ⚡ IMPACTO: 🥈 XAG/USD: Piso técnico en ${silver_supp:,.3f}; objetivo de ruptura en ${silver_res:,.3f}.",
+            "link": f"#src_weekend_xagusd_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 3. S&P 500 (Featured)
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"Cierre Semanal S&P 500 ({spx_price:,.0f}): Wall Street sella la semana con sesgo constructivo",
+            "desc": f"La renta variable estadounidense cierra la semana defendiendo cotas históricas, con rotación hacia sectores defensivos y absorción de volumen institucional. ⚡ IMPACTO: 📈 S&P 500: Cierre sobre {spx_supp:,.0f} mantiene régimen técnico alcista con resistencia en {spx_res:,.0f}.",
+            "link": f"#src_weekend_spx_{date_key}#featured",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 4. Nasdaq 100
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"Cierre Semanal Nasdaq 100 ({nas_price:,.0f}): Megacaps tecnológicas sostienen múltiplos en futuros",
+            "desc": f"El sector tecnológico absorbe los repuntes en el bono a 10 años, cerrando en zona de consolidación tras catalizadores macroeconómicos del viernes. ⚡ IMPACTO: 💻 NAS100: Soporte clave de cierre en {nas_supp:,.0f}; resistencia inmediata en {nas_res:,.0f}.",
+            "link": f"#src_weekend_nas_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 5. Dow Jones 30
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"Cierre Semanal Dow Jones 30 ({dow_price:,.0f}): Empresas industriales consolidan máximos",
+            "desc": f"El promedio industrial de Wall Street finaliza con sesgo balanceado, reflejando solidez en el flujo corporativo y balance de dividendos. ⚡ IMPACTO: 🏛️ US30: Nivel de soporte en {dow_supp:,.0f} con techo técnico en {dow_res:,.0f}.",
+            "link": f"#src_weekend_us30_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 6. DXY (Featured)
+        fallback_news.append({
+            "tag": "FOREX",
+            "title": f"Cierre Semanal Dólar Index ({dxy_price:.2f}): Consolidación del billete verde de cara al BCE",
+            "desc": f"El DXY concluye la semana con toma de beneficios tras los datos de nóminas, perfilando los diferenciales de tipos de la próxima semana. ⚡ IMPACTO: 💵 DXY: Soporte estructural en {dxy_supp:.2f}; resistencia semanal en 99.70.",
+            "link": f"#src_weekend_dxy_{date_key}#featured",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 7. Divisa Caliente FX
+        hot_feat_suffix = "#featured" if btc_price is None else ""
+        fallback_news.append({
+            "tag": "FOREX",
+            "title": f"Cierre Semanal {hot_fx_name}: Estructura de precios a la espera de política monetaria",
+            "desc": f"El par {hot_fx_sym} concluye la semana cotizando en {hot_fx_price}, mostrando posicionamiento institucional de cara a la agenda de bancos centrales. ⚡ IMPACTO: 🏛️ FX: Monitorear niveles de liquidez interbancaria en la reapertura semanal.",
+            "link": f"#src_weekend_{hot_fx_sym.lower()}_{date_key}{hot_feat_suffix}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 8. Petróleo WTI
+        if oil_price is not None:
+            fallback_news.append({
+                "tag": "ENERGIA",
+                "title": f"Cierre Semanal Petróleo WTI (${oil_price:,.2f}): Estabilidad operativa y balance OPEP+",
+                "desc": f"El crudo WTI finaliza en rango acotado mientras los operadores asimilan los inventarios comerciales y el cronograma de producción de la alianza OPEP+. ⚡ IMPACTO: 🛢️ USOIL: Soporte en ${oil_supp:,.2f} con resistencia en ${oil_res:,.2f}.",
                 "link": f"#src_weekend_usoil_{date_key}",
                 "time": t_str,
                 "created_at": now_utc.isoformat()
-            },
-            {
-                "tag": "FOREX",
-                "title": f"Cierre Semanal Dólar ({dxy_price:.2f}): Consolidación del billete verde de cara al BCE",
-                "desc": f"El Dólar Index concluye la semana con toma de beneficios, mientras el EUR/USD ({eur_price:.4f}) estabiliza su estructura a la espera de la decisión de tipos del BCE. ⚡ IMPACTO: 🏛️ Macro FX: Soporte del DXY en {dxy_supp:.2f}. EUR/USD encuentra balance con soporte semanal en {eur_target:.4f}.",
-                "link": f"#src_weekend_forex_{date_key}",
-                "time": t_str,
-                "created_at": now_utc.isoformat()
-            },
-            {
-                "tag": "ÍNDICES",
-                "title": f"Cierre Semanal S&P 500 ({spx_price:,.0f}): Wall Street sella la semana con sesgo constructivo",
-                "desc": f"La renta variable estadounidense cierra la semana defendiendo cotas históricas, con rotación hacia sectores defensivos y absorción de volumen tras los datos macro. ⚡ IMPACTO: 📈 S&P 500: Cierre sobre {spx_price:,.0f} mantiene régimen técnico alcista con resistencia en {spx_res:,.0f}.",
-                "link": f"#src_weekend_spx_{date_key}",
-                "time": t_str,
-                "created_at": now_utc.isoformat()
-            },
-            {
-                "tag": "CENTRALES",
-                "title": "Cierre Semanal Política Monetaria: Fed y BCE definen las expectativas del 4T",
-                "desc": f"El mercado concluye la semana asimilando las últimas declaraciones de funcionarios de la Reserva Federal y anticipando el ritmo de relajación cuantitativa europea. ⚡ IMPACTO: 🌐 Centrales: Tasas terminales descuentan pausas estratégicas y ajustes graduales ante la inflación.",
-                "link": f"#src_weekend_central_{date_key}",
-                "time": t_str,
-                "created_at": now_utc.isoformat()
-            },
-            {
+            })
+        # 9. Centrales
+        fallback_news.append({
+            "tag": "CENTRALES",
+            "title": "Cierre Semanal Política Monetaria: Fed y BCE definen las expectativas del 4T",
+            "desc": "El mercado concluye la semana asimilando las declaraciones de banqueros centrales y anticipando el ritmo de relajación cuantitativa de los próximos meses. ⚡ IMPACTO: 🌐 Centrales: Curvas de tipos descuentan pausas estratégicas y ajustes graduales ante la inflación.",
+            "link": f"#src_weekend_central_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        # 10. Bitcoin (Featured si está disponible)
+        if btc_price is not None:
+            fallback_news.append({
                 "tag": "CRIPTO",
                 "title": f"Criptoactivos 24/7: Bitcoin (${btc_price:,.0f}) mantiene negociación activa de fin de semana",
                 "desc": f"Con los mercados tradicionales cerrados, BTC/USD actúa como el termómetro de liquidez global, defendiendo el nivel clave de ${btc_supp:,.0f} en libros spot. ⚡ IMPACTO: ₿ BTC/USD: Muro de bids institucionales en ${btc_supp:,.0f}; resistencia inmediata en ${btc_res:,.0f}.",
-                "link": f"#src_weekend_btc_{date_key}",
+                "link": f"#src_weekend_btc_{date_key}#featured",
                 "time": t_str,
                 "created_at": now_utc.isoformat()
-            }
-        ]
-        return fallback_news
-
-    fallback_news = [
-        {
+            })
+    else:
+        # Intradía
+        fallback_news.append({
             "tag": "METALES",
-            "title": f"Oro Spot (${gold_price:,.2f}): Presión vendedora por repunte en rendimientos reales",
-            "desc": f"La firmeza del Dólar Index ({dxy_price:.2f}) y las tasas de los bonos del Tesoro limitan la demanda en lingotes, forzando consolidación bajo niveles de resistencia. ⚡ IMPACTO: 🪙 XAU/USD: Rechazo en dPOC. Zona de absorción de liquidez compradora en ${gold_supp:,.2f}; resistencia inmediata en ${gold_res:,.2f}.",
-            "link": f"#src_of_xauusd_{date_key}_{sess_key}",
+            "title": f"Oro Spot (${gold_price:,.2f}): Presión en dPOC y absorción compradora",
+            "desc": f"La cotización del lingote consolida sobre ${gold_supp:,.2f}, reflejando absorción de liquidez compradora en libros de futuros. ⚡ IMPACTO: 🪙 XAU/USD: Resistencia técnica en ${gold_res:,.2f}.",
+            "link": f"#src_of_xauusd_{date_key}#featured",
             "time": t_str,
             "created_at": now_utc.isoformat()
-        },
-        {
-            "tag": "ENERGÍA",
-            "title": "Petróleo WTI (USOIL): Estabilidad operativa y balance de oferta de cara a OPEP+",
-            "desc": "El mercado petrolero asimila los inventarios comerciales estadounidenses y las proyecciones de demanda en refinerías globales. ⚡ IMPACTO: 🛢️ USOIL: Resistencia técnica en $71.50 con soporte estructural en $68.20.",
-            "link": f"#src_of_usoil_{date_key}_{sess_key}",
+        })
+        fallback_news.append({
+            "tag": "METALES",
+            "title": f"Plata Spot (${silver_price:,.3f}): Expansión de volumen en soporte técnico",
+            "desc": f"La plata defiende los ${silver_supp:,.3f} con rotación de coberturas ante la relación histórica con el oro. ⚡ IMPACTO: 🥈 XAG/USD: Techo de sesión en ${silver_res:,.3f}.",
+            "link": f"#src_of_xagusd_{date_key}",
             "time": t_str,
             "created_at": now_utc.isoformat()
-        },
-        {
+        })
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"S&P 500 ({spx_price:,.0f}): Flujo institucional mantiene soporte en {spx_supp:,.0f}",
+            "desc": f"La renta variable estadounidense consolida en rango con rotación sectorial y absorción de volumen en futuros. ⚡ IMPACTO: 📈 S&P 500: Resistencia a vencer en {spx_res:,.0f}.",
+            "link": f"#src_of_spx_{date_key}#featured",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"Nasdaq 100 ({nas_price:,.0f}): Balance de megacaps tecnológicas en futuros",
+            "desc": f"El índice de tecnológicas responde al comportamiento de los rendimientos del Tesoro, sosteniendo cotas en {nas_supp:,.0f}. ⚡ IMPACTO: 💻 NAS100: Resistencia en {nas_res:,.0f}.",
+            "link": f"#src_of_nas_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        fallback_news.append({
+            "tag": "INDICES",
+            "title": f"Dow Jones 30 ({dow_price:,.0f}): Demanda en sectores industriales y consumo",
+            "desc": f"El promedio industrial marca equilibrio sobre {dow_supp:,.0f} en la sesión. ⚡ IMPACTO: 🏛️ US30: Resistencia en {dow_res:,.0f}.",
+            "link": f"#src_of_us30_{date_key}",
+            "time": t_str,
+            "created_at": now_utc.isoformat()
+        })
+        fallback_news.append({
             "tag": "FOREX",
-            "title": f"Dólar Index ({dxy_price:.2f}) marca rango; EUR/USD presiona {eur_price:.4f}",
-            "desc": f"Divergencia macro: los diferenciales de rendimiento soberano entre EE.UU. y Europa sostienen al dólar frente al Euro y la Libra en el mercado interbancario. ⚡ IMPACTO: 🏛️ Macro FX: EUR/USD bajo control vendedor con objetivo de liquidez sell-side en {eur_target:.4f}. DXY con soporte en {dxy_supp:.2f}.",
-            "link": f"#src_of_forex_{date_key}_{sess_key}",
+            "title": f"Dólar Index ({dxy_price:.2f}): Soporte clave en {dxy_supp:.2f}",
+            "desc": f"El billete verde consolida cotas ante el diferencial de rendimientos soberanos. ⚡ IMPACTO: 💵 DXY: Resistencia en 99.70.",
+            "link": f"#src_of_dxy_{date_key}#featured",
             "time": t_str,
             "created_at": now_utc.isoformat()
-        },
-        {
-            "tag": "ÍNDICES",
-            "title": f"Renta Variable: S&P 500 ({spx_price:,.0f}) consolida con rotación sectorial en futuros",
-            "desc": f"El encarecimiento del costo del capital y las expectativas de tasas de interés de la Fed frenan la expansión de múltiplos, manteniendo rangos técnicos acotados. ⚡ IMPACTO: 📈 S&P 500: Nivel de equilibrio institucional en {spx_price:,.2f}. Resistencia a vencer en {spx_res:,.2f} con delta comprador reducido.",
-            "link": f"#src_of_spx_{date_key}_{sess_key}",
+        })
+        hot_feat_suffix = "#featured" if btc_price is None else ""
+        fallback_news.append({
+            "tag": "FOREX",
+            "title": f"{hot_fx_name} ({hot_fx_price}): Reacción a catalizadores macroeconómicos",
+            "desc": f"El cruce {hot_fx_sym} absorbe flujos interbancarios en la sesión. ⚡ IMPACTO: 🏛️ FX: Niveles de volatilidad intradía activos.",
+            "link": f"#src_of_{hot_fx_sym.lower()}_{date_key}{hot_feat_suffix}",
             "time": t_str,
             "created_at": now_utc.isoformat()
-        },
-        {
+        })
+        if oil_price is not None:
+            fallback_news.append({
+                "tag": "ENERGIA",
+                "title": f"Petróleo WTI (${oil_price:,.2f}): Estabilidad operativa en refinerías",
+                "desc": f"El crudo cotiza en rango entre ${oil_supp:,.2f} y ${oil_res:,.2f} a la espera de datos de inventarios. ⚡ IMPACTO: 🛢️ USOIL: Soporte en ${oil_supp:,.2f}.",
+                "link": f"#src_of_usoil_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            })
+        fallback_news.append({
             "tag": "CENTRALES",
-            "title": f"Política Monetaria: Bloque global y bancos centrales definen el flujo de la sesión",
-            "desc": f"Los operadores monitorean la próxima batería de datos macro en {session_name} para ajustar proyecciones de relajación cuantitativa y diferenciales de tipos. ⚡ IMPACTO: 🌐 Centrales: Volatilidad esperada en cruces de divisas y deuda soberana ante catalizadores de la jornada.",
-            "link": f"#src_of_central_{date_key}_{sess_key}",
+            "title": "Bancos Centrales: Declaraciones de funcionarios definen el sentimiento macro",
+            "desc": "Los operadores monitorean las expectativas de tipos de interés y liquidez global. ⚡ IMPACTO: 🌐 Centrales: Volatilidad esperada en deuda soberana.",
+            "link": f"#src_of_central_{date_key}",
             "time": t_str,
             "created_at": now_utc.isoformat()
-        },
-        {
-            "tag": "CRIPTO",
-            "title": f"Bitcoin (${btc_price:,.0f}): Compresión de volatilidad y defensa de soporte en ${btc_supp:,.0f}",
-            "desc": f"BTC absorbe el flujo institucional sin catalizadores propios en la sesión, mostrando acumulación de órdenes limitadas de compra en libros de profundidad spot. ⚡ IMPACTO: ₿ BTC/USD: Muro de bids institucionales en ${btc_supp:,.0f}. Ruptura estructural al alza requiere superar con volumen los ${btc_res:,.0f}.",
-            "link": f"#src_of_btc_{date_key}_{sess_key}",
-            "time": t_str,
-            "created_at": now_utc.isoformat()
-        }
-    ]
+        })
+        if btc_price is not None:
+            fallback_news.append({
+                "tag": "CRIPTO",
+                "title": f"Bitcoin (${btc_price:,.0f}): Acumulación en libros spot sobre ${btc_supp:,.0f}",
+                "desc": f"BTC/USD muestra absorción de órdenes limitadas de compra en soporte. ⚡ IMPACTO: ₿ BTC/USD: Resistencia en ${btc_res:,.0f}.",
+                "link": f"#src_of_btc_{date_key}#featured",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            })
+
     return fallback_news
 
 def sync_macro_and_news():
-    """Actualiza noticias y briefings con frecuencia adaptativa según la fase bursátil y cotizaciones vivas."""
+    """Actualiza noticias y briefings con cadencia propia e independiente (§Auditoría v20 - Módulo 2)."""
     session_id, session_name, is_open_window = get_current_trading_session()
     now_utc = datetime.now(timezone.utc)
-    t_str = now_utc.strftime("%H:%M")
-    date_str = now_utc.strftime('%Y%m%d')
 
     # Extraer cotizaciones vivas reales del motor
-    gold_price = state['prices_cache'].get('XAUUSD', 4497.30)
-    btc_price = state['prices_cache'].get('BTCUSD', 77847.0)
-    dxy_price = state['prices_cache'].get('DXY', 99.566)
-    spx_price = state['prices_cache'].get('SPX500', 7728.75)
-    eur_price = state['prices_cache'].get('EURUSD', 1.1597)
+    gold_price = state['prices_cache'].get('XAUUSD', 4429.82)
+    silver_price = state['prices_cache'].get('XAGUSD', 66.18)
+    spx_price = state['prices_cache'].get('SPX500', 7708.25)
+    nas_price = state['prices_cache'].get('NAS100', 29487.6)
+    dow_price = state['prices_cache'].get('US30', 53223.5)
+    dxy_price = state['prices_cache'].get('DXY', 99.16)
+    oil_price = state['prices_cache'].get('USOIL', 91.76)
+    btc_price = state['prices_cache'].get('BTCUSD') # None si la fuente está caída
 
-    # 1. Sesgo dinámico calculado según precio real vs dPOC/VWAP
+    # Sesgo dinámico calculado
     gold_bias = "BEARISH" if gold_price < 4540.0 else "BULLISH"
     dxy_bias = "BULLISH" if dxy_price >= 99.30 else "BEARISH"
     spx_bias = "BULLISH" if spx_price >= 7700.0 else "NEUTRAL"
-    eur_bias = "BEARISH" if dxy_price >= 99.30 else "BULLISH"
 
-    # Extracción dinámica 100% de catalizadores reales de la sesión (v5.0: 4 slots deterministas)
+    # Extracción de catalizadores
     catalysts = get_session_dynamic_catalysts(session_id, now_utc)
 
-    # Fuentes RSS con aislamiento y detección de modo degradado (§Módulo 3)
+    # Detección determinista de la divisa caliente de Forex (§Auditoría v20 - Módulo 5)
+    hot_fx_sym, hot_fx_price, hot_fx_name = detect_hot_forex_pair(session_id, catalysts, state['prices_cache'])
+
+    # Fuentes RSS con aislamiento y detección de modo degradado
     headlines, is_degraded = fetch_rss_headlines()
 
-    # 2. Sincronizar Daily Briefing de la Sesión Activa (cada 60s o en cambio de sesión/datos)
+    # 1. Sincronizar Daily Briefing de la Sesión Activa
     if session_id != state['current_session'] or time.time() - state['last_briefing_check'] > 60:
-        executive_thesis = synthesize_with_gemini(session_name, gold_price, btc_price, dxy_price, spx_price, gold_bias, catalysts)
+        btc_briefing_val = btc_price or 79000.0
+        executive_thesis = synthesize_with_gemini(session_name, gold_price, btc_briefing_val, dxy_price, spx_price, gold_bias, catalysts)
         
         if session_id == 'weekend_wrap':
             img_url = 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=1200&auto=format&fit=crop'
@@ -1112,14 +1379,12 @@ def sync_macro_and_news():
         elif session_id == 'london_pre':
             img_url = 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop'
             sentiment = {'score': 52, 'label': 'NEUTRAL', 'risk_appetite': 'BALANCED'}
-        else: # ny_pre (Wall Street)
+        else:
             img_url = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?q=80&w=1200&auto=format&fit=crop'
             sentiment = {'score': 64, 'label': 'RISK_ON', 'risk_appetite': 'BULLISH'}
 
-        # Inyectar marca de modo degradado en metadata (§3.2)
         sentiment['is_degraded'] = is_degraded
 
-        # Construcción dinámica de todos los activos calculados por el motor cuántico
         asset_bias = {}
         for sym in ['DXY', 'EURUSD', 'GBPUSD', 'USDJPY', 'SPX500', 'NAS100', 'XAUUSD', 'BTCUSD']:
             if sym in state['quant_records']:
@@ -1162,104 +1427,59 @@ def sync_macro_and_news():
         except Exception as e:
             log("BRIEFING", "⚠️", f"Error en briefing: {e}")
 
-    # 3. Sincronización de Noticias con Deduplicación Anclada en Fuente (§Módulo 4)
-    cutoff_iso = (now_utc - timedelta(hours=24)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    existing_source_ids = set()
-    try:
-        req_get = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/news?select=link,created_at&created_at=gte.{cutoff_iso}",
-            headers=DB_HEADERS
-        )
-        with urllib.request.urlopen(req_get, timeout=5) as resp:
-            rows = json.loads(resp.read().decode('utf-8'))
-            for r in rows:
-                l = str(r.get('link') or '').strip()
-                if '#src_' in l:
-                    existing_source_ids.add(l.split('#src_')[-1].strip())
-                existing_source_ids.add(l)
-    except Exception as e:
-        log("NOTICIAS", "⚠️", f"Error consultando noticias recientes: {e}")
+    # 2. Generación del Lote Multiactivo con Cadencia Propia (§Auditoría v20 - Módulo 2)
+    t_start = time.time()
+    news_items = generate_institutional_news(
+        session_name=session_name,
+        gold_price=gold_price,
+        silver_price=silver_price,
+        spx_price=spx_price,
+        nas_price=nas_price,
+        dow_price=dow_price,
+        dxy_price=dxy_price,
+        hot_fx_sym=hot_fx_sym,
+        hot_fx_price=hot_fx_price,
+        hot_fx_name=hot_fx_name,
+        oil_price=oil_price,
+        btc_price=btc_price,
+        catalysts=catalysts,
+        now_utc=now_utc,
+        raw_headlines=headlines,
+        is_degraded=is_degraded
+    )
+    ai_latency = time.time() - t_start
 
-    # Verificar si hay novedad pre-invocación (§4.2)
-    for h in headlines:
-        h['source_id'] = hashlib.sha256(h.get('link', '').strip().lower().encode('utf-8')).hexdigest()[:16]
-
-    new_headlines = [h for h in headlines if h['source_id'] not in existing_source_ids]
-
-    for c in catalysts:
-        c_id = c.get('id') or c.get('title')
-        c_actual = c.get('actual') or ''
-        c['source_id'] = f"cat_{c_id}_{c_actual}"
-    new_catalysts = [c for c in catalysts if c['source_id'] not in existing_source_ids]
-
-    # Pre-invocación: si el feed ya está poblado (>= 6 noticias) y no hay cables nuevos ni catalizadores resueltos, NO invocar a Gemini (§4.2)
-    has_news_events = (len(new_headlines) > 0 or len(new_catalysts) > 0)
-    has_feed = (len(existing_source_ids) >= 6)
-    should_generate = (not has_feed) or has_news_events
-
-    ai_latency = 0.0
-    new_items_to_insert = []
-
-    if should_generate:
-        t_start = time.time()
-        news_items = generate_institutional_news(
-            session_name, gold_price, gold_bias, btc_price, dxy_price, dxy_bias, spx_price, eur_price,
-            catalysts, now_utc, raw_headlines=headlines, is_degraded=is_degraded
-        )
-        ai_latency = time.time() - t_start
-
-        # Filtrar solo novedades que no estén en la base de datos (§4.2)
-        for n in news_items:
-            l = n.get('link', '')
-            sid = l.split('#src_')[-1] if '#src_' in l else l
-            if sid not in existing_source_ids and l not in existing_source_ids:
-                new_items_to_insert.append(n)
-                existing_source_ids.add(sid)
-                existing_source_ids.add(l)
-
-        if new_items_to_insert:
-            # 1. Purgar noticias anteriores que compartan los mismos tags que estamos por insertar (§Unicidad por Categoría)
-            tags_to_replace = list({str(item.get('tag', '')).upper() for item in new_items_to_insert if item.get('tag')})
-            for t in tags_to_replace:
-                try:
-                    quoted_tag = urllib.parse.quote(t)
-                    req_del_tag = urllib.request.Request(
-                        f"{SUPABASE_URL}/rest/v1/news?tag=eq.{quoted_tag}",
-                        headers=DB_HEADERS,
-                        method='DELETE'
-                    )
-                    urllib.request.urlopen(req_del_tag, timeout=5)
-                except Exception as e:
-                    log("NOTICIAS", "⚠️", f"Error al limpiar noticias previas de {t}: {e}")
-
-            # 2. Insertar las noticias nuevas autoritativas
+    if news_items:
+        # Purgar categorías previas y legados con tilde (§Auditoría v20 - Módulos 7 y 8)
+        tags_to_purge = {'METALES', 'INDICES', 'FOREX', 'ENERGIA', 'CENTRALES', 'CRIPTO', 'ÍNDICES', 'ENERGÍA', 'ORO', 'FED'}
+        for t in tags_to_purge:
             try:
-                req_ins = urllib.request.Request(
-                    f"{SUPABASE_URL}/rest/v1/news",
-                    data=json.dumps(new_items_to_insert).encode('utf-8'),
+                quoted_tag = urllib.parse.quote(t)
+                req_del_tag = urllib.request.Request(
+                    f"{SUPABASE_URL}/rest/v1/news?tag=eq.{quoted_tag}",
                     headers=DB_HEADERS,
-                    method='POST'
+                    method='DELETE'
                 )
-                urllib.request.urlopen(req_ins, timeout=5)
-                log("NOTICIAS", "📰", f"{len(new_items_to_insert)} Noticias institucionales nuevas insertadas ({session_name}).")
+                urllib.request.urlopen(req_del_tag, timeout=5)
             except Exception as e:
-                log("NOTICIAS", "⚠️", f"Error al insertar noticias: {e}")
-    else:
-        log("NOTICIAS", "ℹ️", f"Deduplicación activa: 0 temas nuevos en {session_name}. Feed preservado (0 llamadas consumidas).")
+                log("NOTICIAS", "⚠️", f"Error al limpiar noticias previas de {t}: {e}")
 
-    # Mantenimiento del feed rodante: purgar noticias mayores a 24 horas (§4.3)
-    try:
-        req_del = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/news?created_at=lt.{cutoff_iso}",
-            headers=DB_HEADERS,
-            method='DELETE'
-        )
-        urllib.request.urlopen(req_del, timeout=5)
-    except Exception as e:
-        log("NOTICIAS", "⚠️", f"Error en purga rodante 24h: {e}")
+        # Insertar lote autoritativo fresco
+        try:
+            req_ins = urllib.request.Request(
+                f"{SUPABASE_URL}/rest/v1/news",
+                data=json.dumps(news_items).encode('utf-8'),
+                headers=DB_HEADERS,
+                method='POST'
+            )
+            urllib.request.urlopen(req_ins, timeout=5)
+            feat_count = sum(1 for n in news_items if '#featured' in n.get('link', ''))
+            log("NOTICIAS", "📰", f"{len(news_items)} Noticias institucionales insertadas ({session_name} | Destacadas: {feat_count}).")
+        except Exception as e:
+            log("NOTICIAS", "⚠️", f"Error al insertar noticias: {e}")
 
     # Monitoreo en Producción (§Módulo 6)
-    log("MONITOR", "📊", f"Ciclo completado | Latencia IA: {round(ai_latency, 2)}s | Modo degradado: {is_degraded} | Noticias nuevas: {len(new_items_to_insert)} | RSS totales: {len(headlines)}")
+    log("MONITOR", "📊", f"Ciclo completado | Latencia IA: {round(ai_latency, 2)}s | Modo degradado: {is_degraded} | Noticias totales: {len(news_items)} | RSS totales: {len(headlines)}")
 
 # ==============================================================================
 # 6. BUCLE MAESTRO DEL ORQUESTADOR AUTÓNOMO

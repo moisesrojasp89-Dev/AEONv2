@@ -183,10 +183,87 @@ function initRealtime() {
   });
 }
 
+let currentNewsFilter = 'live';
+
+function applyNewsFilter(filterValue) {
+  currentNewsFilter = (filterValue || 'live').toLowerCase();
+  
+  const filterBtns = document.querySelectorAll('#news-filters .filter-btn');
+  filterBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter.toLowerCase() === currentNewsFilter);
+  });
+
+  const mobileSelect = document.getElementById('mobile-news-select');
+  if (mobileSelect) {
+    mobileSelect.value = currentNewsFilter;
+  }
+
+  if (currentNewsFilter === 'live' || currentNewsFilter === 'all') {
+    // 1. Live Feed: Exactamente 4 noticias destacadas con #featured (o top 4 de mayor relevancia)
+    let featured = allNewsCache.filter(item => {
+      const link = String(item.link || '');
+      return link.includes('#featured') || Boolean(item.is_featured);
+    });
+
+    if (featured.length < 4) {
+      const seen = new Set(featured.map(f => f.id || f.title));
+      for (const item of allNewsCache) {
+        const itemKey = item.id || item.title;
+        if (!seen.has(itemKey)) {
+          featured.push(item);
+          seen.add(itemKey);
+          if (featured.length >= 4) break;
+        }
+      }
+    }
+
+    renderNews(featured.slice(0, 4));
+  } else {
+    // 2. Filtros por Categoría Temática
+    const val = currentNewsFilter.toUpperCase();
+    const filtered = allNewsCache.filter(item => {
+      const tag = String(item.tag || '').toUpperCase();
+      if (val === 'METALES' || val === 'ORO') {
+        return tag === 'METALES' || tag === 'ORO';
+      }
+      if (val === 'INDICES' || val === 'ÍNDICES') {
+        return tag === 'INDICES' || tag === 'ÍNDICES';
+      }
+      if (val === 'FOREX' || val === 'DIVISAS') {
+        return tag === 'FOREX' || tag === 'DIVISAS';
+      }
+      if (val === 'ENERGIA' || val === 'ENERGÍA') {
+        return tag === 'ENERGIA' || tag === 'ENERGÍA';
+      }
+      if (val === 'CENTRALES' || val === 'FED') {
+        return tag === 'CENTRALES' || tag === 'FED';
+      }
+      if (val === 'CRIPTO') {
+        return tag === 'CRIPTO';
+      }
+      return tag === val;
+    });
+
+    if (filtered.length === 0) {
+      const container = document.getElementById('news-list');
+      if (container) {
+        container.innerHTML = `
+          <div class="news-empty-state">
+            <span class="news-empty-icon">🔍</span>
+            No hay noticias activas en la categoría seleccionada en este momento.
+          </div>
+        `;
+      }
+    } else {
+      renderNews(filtered);
+    }
+  }
+}
+
 async function loadDynamicNews() {
   try {
     allNewsCache = await fetchNews(data.news);
-    renderNews(allNewsCache);
+    applyNewsFilter(currentNewsFilter);
   } catch (err) {
     console.error('[AEON] Error cargando noticias:', err);
   }
@@ -194,65 +271,13 @@ async function loadDynamicNews() {
 
 function initNewsFilters() {
   const filterBtns = document.querySelectorAll('#news-filters .filter-btn');
-
-  function applyFilter(filterValue) {
-    filterBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === filterValue);
-    });
-
-    if (!filterValue || filterValue === 'all') {
-      renderNews(allNewsCache);
-    } else {
-      const val = filterValue.toUpperCase();
-      const filtered = allNewsCache.filter(item => {
-        const tag = String(item.tag || '').toUpperCase();
-        const title = String(item.title || '').toUpperCase();
-        
-        if (val === 'ORO' || val === 'METALES') {
-          if (tag === 'METALES' || tag === 'ORO') return true;
-          if (['CRIPTO', 'FOREX', 'ÍNDICES', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
-          return title.includes('ORO') || title.includes('XAU') || title.includes('METALES');
-        }
-        if (val === 'FOREX') {
-          if (tag === 'FOREX' || tag === 'DIVISAS') return true;
-          if (['CRIPTO', 'METALES', 'ÍNDICES', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
-          return title.includes('EURUSD') || title.includes('GBPUSD') || title.includes('DXY') || title.includes('DÓLAR INDEX');
-        }
-        if (val === 'ÍNDICES' || val === 'INDICES') {
-          if (tag === 'ÍNDICES' || tag === 'INDICES') return true;
-          if (['CRIPTO', 'METALES', 'FOREX', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
-          return title.includes('S&P') || title.includes('NASDAQ') || title.includes('DOW') || title.includes('WALL STREET');
-        }
-        if (val === 'FED' || val === 'CENTRALES') {
-          if (tag === 'CENTRALES' || tag === 'FED') return true;
-          if (['CRIPTO', 'METALES', 'FOREX', 'ÍNDICES', 'ENERGÍA'].includes(tag)) return false;
-          return title.includes('FED') || title.includes('POWELL') || title.includes('BCE') || title.includes('POLÍTICA MONETARIA');
-        }
-        return tag === val;
-      });
-      if (filtered.length === 0) {
-        const container = document.getElementById('news-list');
-        if (container) {
-          container.innerHTML = `
-            <div class="news-empty-state">
-              <span class="news-empty-icon">🔍</span>
-              No hay noticias activas en la categoría seleccionada en este momento.
-            </div>
-          `;
-        }
-      } else {
-        renderNews(filtered);
-      }
-    }
-  }
-
   filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+    btn.addEventListener('click', () => applyNewsFilter(btn.dataset.filter));
   });
 
   const mobileSelect = document.getElementById('mobile-news-select');
   if (mobileSelect) {
-    mobileSelect.addEventListener('change', (e) => applyFilter(e.target.value));
+    mobileSelect.addEventListener('change', (e) => applyNewsFilter(e.target.value));
   }
 }
 

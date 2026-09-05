@@ -47,11 +47,13 @@ export const newsCard = (n) => {
   const escapedImpact = escapeHTML(tacticalImpact);
 
   const isExternal = link.startsWith('http://') || link.startsWith('https://');
+  const isFeatured = String(n.link || '').includes('#featured') || Boolean(n.is_featured);
 
   return `
     <article class="news-row" aria-label="${title}" data-tag="${tag}">
       <div class="news-meta">
         <span class="news-tag ${tagClass}">${tag}</span>
+        ${isFeatured ? '<span class="news-featured-pill">⚡ DESTACADO</span>' : ''}
         <time class="news-time">${time}</time>
       </div>
       <div class="news-content">

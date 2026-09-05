@@ -153,11 +153,30 @@
   transition: background var(--dur-slow);
 }
 
-.news-row[data-tag="FED"]::before { background: var(--red); }
-.news-row[data-tag="ORO"]::before { background: var(--yellow); }
+.news-row[data-tag="FED"]::before, .news-row[data-tag="CENTRALES"]::before { background: var(--red); }
+.news-row[data-tag="ORO"]::before, .news-row[data-tag="METALES"]::before { background: var(--yellow); }
 .news-row[data-tag="FOREX"]::before { background: var(--accent); }
 .news-row[data-tag="MACRO"]::before { background: var(--green); }
-.news-row[data-tag="ÍNDICES"]::before { background: var(--purple); }
+.news-row[data-tag="INDICES"]::before, .news-row[data-tag="ÍNDICES"]::before { background: var(--purple); }
+.news-row[data-tag="ENERGIA"]::before, .news-row[data-tag="ENERGÍA"]::before { background: #f97316; }
+.news-row[data-tag="CRIPTO"]::before { background: #f59e0b; }
+
+.news-featured-pill {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  white-space: nowrap;
+}
 
 .news-meta {
   display: flex;
