@@ -18,6 +18,7 @@ import time
 import math
 import json
 import urllib.request
+import urllib.parse
 import urllib.error
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
@@ -826,6 +827,7 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
     """
     t_str = now_utc.strftime("%H:%M")
     source_tag = "AEON Internal Quant Desk (Modo Resiliencia)" if is_degraded else "AEON Terminal AI / Wire"
+    is_weekend = ('Semanal' in session_name or 'Fin de Semana' in session_name or 'weekend' in session_name.lower())
 
     # 1. Generación profunda con Gemini (gemini-3.7-flash -> fallback gemini-3.6-flash)
     if GEMINI_API_KEY:
@@ -840,28 +842,52 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
         if raw_headlines and not is_degraded:
             rss_context = "Cables financieros de última hora (Yahoo Finance / CNBC / Financial Wire):\n" + "\n".join([f"- {h['title']} (Fuente: {h.get('source', 'Wire')})" for h in raw_headlines[:6]]) + "\n\n"
 
-        prompt = (
-            f"Eres el Director de Análisis Macroeconómico y Order Flow de AEON, una terminal institucional de trading cuantitativo. "
-            f"Genera exactamente entre 6 y 8 piezas de inteligencia financiera y Order Flow de ALTO IMPACTO técnico.\n"
-            f"PROHIBIDO el texto de relleno genérico. Agrupa temas duplicados bajo una sola noticia cohesiva.\n\n"
-            f"{rss_context}"
-            f"Datos en vivo de la sesión actual ({session_name}):\n"
-            f"- Oro Spot (XAU/USD): ${gold_price:,.2f} (Sesgo: {gold_bias})\n"
-            f"- Dólar Index (DXY): {dxy_price:.2f} (Sesgo: {dxy_bias})\n"
-            f"- EUR/USD: {eur_price:.4f}\n"
-            f"- S&P 500: {spx_price:,.2f}\n"
-            f"- Bitcoin (BTC/USD): ${btc_price:,.0f}\n"
-            f"- Catalizadores clave de la sesión: {cat_summary}\n\n"
-            f"Responde ÚNICAMENTE un array JSON válido con objetos de este esquema:\n"
-            f"[\n"
-            f"  {{\n"
-            f"    \"tag\": \"METALES\" | \"ENERGÍA\" | \"FOREX\" | \"ÍNDICES\" | \"CENTRALES\" | \"CRIPTO\" | \"MACRO\",\n"
-            f"    \"title\": \"Titular institucional directo y profesional (máx 14 palabras)\",\n"
-            f"    \"desc\": \"Contexto macro y causa real del movimiento en 1-2 oraciones\",\n"
-            f"    \"tactical_impact\": \"Implicación táctica cuantitativa y niveles de Order Flow / dPOC / liquidez\"\n"
-            f"  }}\n"
-            f"]"
-        )
+        if is_weekend:
+            prompt = (
+                f"Eres el Director de Análisis Macroeconómico de AEON, terminal institucional cuantitativa. "
+                f"Estamos en el CIERRE SEMANAL DE MERCADOS (Fin de semana). Los mercados de futuros y Forex han cerrado su negociación semanal.\n"
+                f"Genera exactamente 6 piezas de inteligencia institucional de BALANCE DE CIERRE SEMANAL, exactamente una por cada una de estas 6 áreas temáticas obligatorias:\n"
+                f"1. METALES: Cierre semanal del Oro Spot (XAU/USD ${gold_price:,.2f}) tras el informe de nóminas NFP de hoy y balance semanal de refugio.\n"
+                f"2. FOREX: Cierre semanal del Dólar Index (DXY {dxy_price:.2f}) y EUR/USD ({eur_price:.4f}) de cara a la decisión de tipos del BCE de la próxima semana.\n"
+                f"3. ÍNDICES: Cierre semanal de Wall Street: S&P 500 ({spx_price:,.0f}) y balance de renta variable.\n"
+                f"4. ENERGÍA: Cierre semanal del Petróleo WTI (USOIL) y proyecciones de oferta OPEP+.\n"
+                f"5. CENTRALES: Balance de política monetaria semanal de la Fed y bancos centrales de cara a la próxima semana.\n"
+                f"6. CRIPTO: Bitcoin (${btc_price:,.0f}) y mercado criptoactivo cotizando 24/7 de cara a la reapertura dominical.\n\n"
+                f"REGLA CRÍTICA: Es un balance de CIERRE SEMANAL. Queda terminantemente PROHIBIDO usar frases de mercado abierto como 'en la jornada', 'máximos de sesión', o 'presión intradía'. Redacta con tono de balance de cierre semanal.\n\n"
+                f"Responde ÚNICAMENTE un array JSON válido con exactamente 6 objetos (tags exactos: METALES, FOREX, ÍNDICES, ENERGÍA, CENTRALES, CRIPTO):\n"
+                f"[\n"
+                f"  {{\n"
+                f"    \"tag\": \"METALES\" | \"ENERGÍA\" | \"FOREX\" | \"ÍNDICES\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"title\": \"Titular institucional de cierre semanal (máx 14 palabras)\",\n"
+                f"    \"desc\": \"Balance semanal y causa real de la estructura de precios en 1-2 oraciones\",\n"
+                f"    \"tactical_impact\": \"Implicación táctica y niveles clave para la reapertura de la próxima semana\"\n"
+                f"  }}\n"
+                f"]"
+            )
+        else:
+            prompt = (
+                f"Eres el Director de Análisis Macroeconómico y Order Flow de AEON, una terminal institucional de trading cuantitativo. "
+                f"Estamos en la {session_name}. "
+                f"Genera exactamente 6 piezas de inteligencia financiera y Order Flow de ALTO IMPACTO técnico (una por cada área: METALES, FOREX, ÍNDICES, ENERGÍA, CENTRALES, CRIPTO).\n"
+                f"PROHIBIDO el texto de relleno genérico. Agrupa temas duplicados bajo una sola noticia cohesiva.\n\n"
+                f"{rss_context}"
+                f"Datos en vivo de la sesión actual ({session_name}):\n"
+                f"- Oro Spot (XAU/USD): ${gold_price:,.2f} (Sesgo: {gold_bias})\n"
+                f"- Dólar Index (DXY): {dxy_price:.2f} (Sesgo: {dxy_bias})\n"
+                f"- EUR/USD: {eur_price:.4f}\n"
+                f"- S&P 500: {spx_price:,.2f}\n"
+                f"- Bitcoin (BTC/USD): ${btc_price:,.0f}\n"
+                f"- Catalizadores clave de la sesión: {cat_summary}\n\n"
+                f"Responde ÚNICAMENTE un array JSON válido con objetos de este esquema:\n"
+                f"[\n"
+                f"  {{\n"
+                f"    \"tag\": \"METALES\" | \"ENERGÍA\" | \"FOREX\" | \"ÍNDICES\" | \"CENTRALES\" | \"CRIPTO\",\n"
+                f"    \"title\": \"Titular institucional directo y profesional (máx 14 palabras)\",\n"
+                f"    \"desc\": \"Contexto macro y causa real del movimiento en 1-2 oraciones\",\n"
+                f"    \"tactical_impact\": \"Implicación táctica cuantitativa y niveles de Order Flow / dPOC / liquidez\"\n"
+                f"  }}\n"
+                f"]"
+            )
 
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
@@ -892,7 +918,14 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
                     parsed = json.loads(clean_json)
                     if isinstance(parsed, list) and len(parsed) >= 5:
                         news_out = []
+                        seen_tags = set()
                         for idx, item in enumerate(parsed):
+                            item_tag = str(item.get("tag", "MACRO")).upper()
+                            # Garantizar que no haya tags duplicados en la misma generación
+                            if item_tag in seen_tags and item_tag != 'MACRO':
+                                continue
+                            seen_tags.add(item_tag)
+
                             desc_text = str(item.get("desc", "")).strip()
                             impact_text = str(item.get("tactical_impact", "")).strip()
                             full_desc = f"{desc_text} ⚡ IMPACTO: {impact_text}" if impact_text else desc_text
@@ -900,18 +933,18 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
 
                             # Asociar con cable RSS si corresponde, o hash determinista (§Módulo 4.1)
                             src_link = "#"
-                            if raw_headlines and idx < len(raw_headlines):
+                            if raw_headlines and idx < len(raw_headlines) and not is_weekend:
                                 raw_h = raw_headlines[idx]
                                 h_link = raw_h.get('link', '')
                                 h_sid = hashlib.sha256(h_link.lower().encode('utf-8')).hexdigest()[:16]
                                 src_link = f"{h_link}#src_{h_sid}" if h_link.startswith('http') else f"#src_{h_sid}"
                             else:
-                                tag_clean = str(item.get('tag', 'MACRO')).lower()
+                                tag_clean = item_tag.lower()
                                 src_hash = hashlib.sha256(f"{tag_clean}_{title_clean.lower()}_{now_utc.strftime('%Y%m%d')}".encode('utf-8')).hexdigest()[:16]
                                 src_link = f"#src_of_{tag_clean}_{now_utc.strftime('%Y%m%d')}_{src_hash}"
 
                             news_out.append({
-                                "tag": str(item.get("tag", "MACRO")).upper(),
+                                "tag": item_tag,
                                 "title": title_clean,
                                 "desc": full_desc,
                                 "link": src_link,
@@ -934,6 +967,59 @@ def generate_institutional_news(session_name: str, gold_price: float, gold_bias:
 
     date_key = now_utc.strftime('%Y%m%d')
     sess_key = session_name[:3].lower()
+
+    if is_weekend:
+        fallback_news = [
+            {
+                "tag": "METALES",
+                "title": f"Cierre Semanal Oro Spot (${gold_price:,.2f}): Balance tras nóminas y consolidación semanal",
+                "desc": f"El Oro Spot sella la semana defendiendo el rango sobre ${gold_supp:,.2f}, asimilando el informe de nóminas NFP y el reajuste en las curvas de rendimiento soberano. ⚡ IMPACTO: 🪙 XAU/USD: Nivel de liquidación institucional semanal en ${gold_supp:,.2f}; resistencia estructural a vigilar en la reapertura en ${gold_res:,.2f}.",
+                "link": f"#src_weekend_xauusd_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            },
+            {
+                "tag": "ENERGÍA",
+                "title": "Cierre Semanal Petróleo WTI: Estabilidad operativa y proyecciones de oferta OPEP+",
+                "desc": "El crudo finaliza la semana en rango acotado mientras los operadores asimilan los inventarios comerciales y el cronograma de producción de la alianza OPEP+. ⚡ IMPACTO: 🛢️ USOIL: Soporte estructural de cierre en $68.20 con techo técnico en $71.50.",
+                "link": f"#src_weekend_usoil_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            },
+            {
+                "tag": "FOREX",
+                "title": f"Cierre Semanal Dólar ({dxy_price:.2f}): Consolidación del billete verde de cara al BCE",
+                "desc": f"El Dólar Index concluye la semana con toma de beneficios, mientras el EUR/USD ({eur_price:.4f}) estabiliza su estructura a la espera de la decisión de tipos del BCE. ⚡ IMPACTO: 🏛️ Macro FX: Soporte del DXY en {dxy_supp:.2f}. EUR/USD encuentra balance con soporte semanal en {eur_target:.4f}.",
+                "link": f"#src_weekend_forex_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            },
+            {
+                "tag": "ÍNDICES",
+                "title": f"Cierre Semanal S&P 500 ({spx_price:,.0f}): Wall Street sella la semana con sesgo constructivo",
+                "desc": f"La renta variable estadounidense cierra la semana defendiendo cotas históricas, con rotación hacia sectores defensivos y absorción de volumen tras los datos macro. ⚡ IMPACTO: 📈 S&P 500: Cierre sobre {spx_price:,.0f} mantiene régimen técnico alcista con resistencia en {spx_res:,.0f}.",
+                "link": f"#src_weekend_spx_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            },
+            {
+                "tag": "CENTRALES",
+                "title": "Cierre Semanal Política Monetaria: Fed y BCE definen las expectativas del 4T",
+                "desc": f"El mercado concluye la semana asimilando las últimas declaraciones de funcionarios de la Reserva Federal y anticipando el ritmo de relajación cuantitativa europea. ⚡ IMPACTO: 🌐 Centrales: Tasas terminales descuentan pausas estratégicas y ajustes graduales ante la inflación.",
+                "link": f"#src_weekend_central_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            },
+            {
+                "tag": "CRIPTO",
+                "title": f"Criptoactivos 24/7: Bitcoin (${btc_price:,.0f}) mantiene negociación activa de fin de semana",
+                "desc": f"Con los mercados tradicionales cerrados, BTC/USD actúa como el termómetro de liquidez global, defendiendo el nivel clave de ${btc_supp:,.0f} en libros spot. ⚡ IMPACTO: ₿ BTC/USD: Muro de bids institucionales en ${btc_supp:,.0f}; resistencia inmediata en ${btc_res:,.0f}.",
+                "link": f"#src_weekend_btc_{date_key}",
+                "time": t_str,
+                "created_at": now_utc.isoformat()
+            }
+        ]
+        return fallback_news
 
     fallback_news = [
         {
@@ -1132,6 +1218,21 @@ def sync_macro_and_news():
                 existing_source_ids.add(l)
 
         if new_items_to_insert:
+            # 1. Purgar noticias anteriores que compartan los mismos tags que estamos por insertar (§Unicidad por Categoría)
+            tags_to_replace = list({str(item.get('tag', '')).upper() for item in new_items_to_insert if item.get('tag')})
+            for t in tags_to_replace:
+                try:
+                    quoted_tag = urllib.parse.quote(t)
+                    req_del_tag = urllib.request.Request(
+                        f"{SUPABASE_URL}/rest/v1/news?tag=eq.{quoted_tag}",
+                        headers=DB_HEADERS,
+                        method='DELETE'
+                    )
+                    urllib.request.urlopen(req_del_tag, timeout=5)
+                except Exception as e:
+                    log("NOTICIAS", "⚠️", f"Error al limpiar noticias previas de {t}: {e}")
+
+            # 2. Insertar las noticias nuevas autoritativas
             try:
                 req_ins = urllib.request.Request(
                     f"{SUPABASE_URL}/rest/v1/news",
@@ -1181,9 +1282,15 @@ def start_engine():
             # 2. Calendario Económico Sniper (cada 20s en ventana o 60s normal)
             sync_calendar_sniper_loop()
 
-            # 3. Briefing & Noticias (cada 3m en apertura / 10m regular)
-            _, _, is_open_window = get_current_trading_session()
-            news_interval = 180 if is_open_window else 600
+            # 3. Briefing & Noticias (1h en fin de semana / 3m en apertura / 10m regular)
+            current_sess_id, _, is_open_window = get_current_trading_session()
+            if current_sess_id == 'weekend_wrap':
+                news_interval = 3600 # 1 hora en fin de semana con mercados cerrados
+            elif is_open_window:
+                news_interval = 180  # 3 min en apertura
+            else:
+                news_interval = 600  # 10 min en sesión regular
+
             if time.time() - state['last_news_sync'] > news_interval:
                 sync_macro_and_news()
                 state['last_news_sync'] = time.time()

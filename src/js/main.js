@@ -209,18 +209,26 @@ function initNewsFilters() {
         const title = String(item.title || '').toUpperCase();
         
         if (val === 'ORO' || val === 'METALES') {
-          return tag.includes('ORO') || tag.includes('METALES') || tag.includes('GOLD') || title.includes('ORO') || title.includes('METALES') || title.includes('XAU');
+          if (tag === 'METALES' || tag === 'ORO') return true;
+          if (['CRIPTO', 'FOREX', 'ÍNDICES', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
+          return title.includes('ORO') || title.includes('XAU') || title.includes('METALES');
         }
         if (val === 'FOREX') {
-          return tag.includes('FOREX') || tag.includes('EUR') || tag.includes('GBP') || tag.includes('USD') || title.includes('EURUSD') || title.includes('DÓLAR');
+          if (tag === 'FOREX' || tag === 'DIVISAS') return true;
+          if (['CRIPTO', 'METALES', 'ÍNDICES', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
+          return title.includes('EURUSD') || title.includes('GBPUSD') || title.includes('DXY') || title.includes('DÓLAR INDEX');
         }
         if (val === 'ÍNDICES' || val === 'INDICES') {
-          return tag.includes('ÍNDICES') || tag.includes('INDICES') || tag.includes('SPX') || title.includes('S&P') || title.includes('ÍNDICE');
+          if (tag === 'ÍNDICES' || tag === 'INDICES') return true;
+          if (['CRIPTO', 'METALES', 'FOREX', 'CENTRALES', 'ENERGÍA'].includes(tag)) return false;
+          return title.includes('S&P') || title.includes('NASDAQ') || title.includes('DOW') || title.includes('WALL STREET');
         }
         if (val === 'FED' || val === 'CENTRALES') {
-          return tag.includes('FED') || tag.includes('CENTRAL') || tag.includes('POLICY') || tag.includes('INFLACIÓN') || title.includes('FED');
+          if (tag === 'CENTRALES' || tag === 'FED') return true;
+          if (['CRIPTO', 'METALES', 'FOREX', 'ÍNDICES', 'ENERGÍA'].includes(tag)) return false;
+          return title.includes('FED') || title.includes('POWELL') || title.includes('BCE') || title.includes('POLÍTICA MONETARIA');
         }
-        return tag.includes(val) || title.includes(val);
+        return tag === val;
       });
       if (filtered.length === 0) {
         const container = document.getElementById('news-list');
