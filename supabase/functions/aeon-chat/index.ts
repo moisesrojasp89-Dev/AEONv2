@@ -1,17 +1,17 @@
 // ==============================================================================
-// AEON · Supabase Edge Function: aeon-chat (Fase B)
-// Versión: 2.1 — Producción Definitiva (Auditada Línea por Línea por el Arquitecto)
+// AEON · Supabase Edge Function: aeon-chat (Fase B + Multimodal V3)
+// Versión: 3.0 — Grounding Real 100% en Base de Datos & Soporte Multimodal
 // ==============================================================================
 // Blindajes Implementados:
 //  [x] 1. user_id extraído 100% de auth.getUser(token), NUNCA del body.
 //  [x] 2. Suscripción Pro activa requerida antes de tocar la IA (fail fast).
-//  [x] 3. Conteo atómico estrictamente monótono (fail-closed, sin rollback explotable).
-//  [x] 4. Freshness check con Math.min() sobre TODOS los activos (umbral 8 min).
-//  [x] 5. responseSchema nativo en Gemini con enum cerrado de categorías.
-//  [x] 6. Validación exhaustiva post-generación: enum en backend + tipos primitivos.
-//  [x] 7. Fallback total de seguridad: ante cualquier anomalía, STANDARD_REFUSAL.
-//  [x] 8. Historial sanitizado: inicia en 'user' y alterna estrictamente roles.
-//  [x] 9. Deno.serve() nativo y CORS con defensa en profundidad.
+//  [x] 3. Conteo atómico estrictamente monótono en Postgres (fail-closed).
+//  [x] 4. Grounding REAL contra market_intelligence (columnas exactas: current_price, dpoc_price, session_vwap).
+//  [x] 5. Inyección en tiempo real de daily_briefings (sentimiento de mercado y catalizadores digeridos).
+//  [x] 6. Inyección de economic_calendar (eventos macro de alto impacto).
+//  [x] 7. Soporte Multimodal: Recepción y análisis de capturas de gráficos técnicos con inlineData.
+//  [x] 8. Regla cardinal anti-alucinación: Prohibido usar precios o estados de eventos fuera de los datos vivos.
+//  [x] 9. responseSchema nativo en Gemini con enum cerrado y validación post-generación.
 // ==============================================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -44,18 +44,22 @@ const VALID_FINANCIAL_CATEGORIES = [
   "GESTION_RIESGO"
 ] as const;
 
-// Respuesta canónica segura para jailbreaks, fuera de ámbito o JSON inválido
+// Respuesta canónica segura para jailbreaks, fuera de ámbito o anomalías
 const STANDARD_REFUSAL_PAYLOAD = {
   categoria: "FUERA_DE_AMBITO",
-  analisis: "Solo estoy autorizado para asistir en análisis macroeconómico, Order Flow y gestión de riesgo institucional de AEON.",
+  analisis: "Solo estoy autorizado para asistir en análisis macroeconómico, Order Flow, gráficos técnicos y gestión de riesgo institucional de AEON.",
   niveles_clave: [],
-  advertencia_riesgo: "Consulta no clasificada dentro del ámbito financiero de AEON."
+  advertencia_riesgo: "Consulta o imagen no clasificada dentro del ámbito financiero de AEON."
 };
 
 interface ChatRequestBody {
-  message: string;
+  message?: string;
   history?: Array<{ role: "user" | "assistant"; content: string }>;
   asset?: string;
+  image?: {
+    mimeType: string;
+    data: string; // Base64 crudo
+  };
 }
 
 Deno.serve(async (req: Request) => {
@@ -82,7 +86,6 @@ Deno.serve(async (req: Request) => {
   try {
     // --------------------------------------------------------------------------
     // CAPA 1: Zero-Trust & Autenticación Server-Side
-    // [REGLA DE ORO]: user_id extraído del JWT verificado, NUNCA del body
     // --------------------------------------------------------------------------
     const authHeader = req.headers.get("Authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -104,7 +107,7 @@ Deno.serve(async (req: Request) => {
     const verifiedUserId = user.id;
 
     // --------------------------------------------------------------------------
-    // CAPA 2: Validación de Suscripción PRO Activa (Fail Fast, Cero Tokens)
+    // CAPA 2: Validación de Suscripción PRO Activa (Fail Fast)
     // --------------------------------------------------------------------------
     const { data: profile } = await supabaseAdmin
       .from("profiles")
@@ -115,7 +118,6 @@ Deno.serve(async (req: Request) => {
     let isPro = profile?.tier === "pro" || profile?.tier === "institutional";
 
     if (!isPro) {
-      // Fallback a subscriptions con periodo vigente
       const { data: sub } = await supabaseAdmin
         .from("subscriptions")
         .select("status, plan, current_period_end")
@@ -141,10 +143,15 @@ Deno.serve(async (req: Request) => {
     }
 
     // --------------------------------------------------------------------------
-    // CAPA 3: Validación de Payload (Anti-Inyección de Texto Masivo)
+    // CAPA 3: Validación de Payload y Soporte Multimodal
     // --------------------------------------------------------------------------
     const body: ChatRequestBody = await req.json();
-    const userMessage = (body.message || "").trim();
+    let userMessage = (body.message || "").trim();
+
+    // Si viene imagen sin texto, generar prompt analítico predeterminado
+    if (!userMessage && body.image?.data) {
+      userMessage = "Analiza este gráfico técnico: identifica el activo, temporalidad, estructura de mercado, evalúa las zonas marcadas y proyecta escenarios de alta probabilidad con gestión de riesgo.";
+    }
 
     if (!userMessage || userMessage.length < 2) {
       return new Response(
@@ -160,9 +167,31 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Validar imagen si viene adjunta
+    let validInlineImage: { mimeType: string; data: string } | null = null;
+    if (body.image?.data && body.image?.mimeType) {
+      const allowedMimes = ["image/png", "image/jpeg", "image/webp"];
+      if (!allowedMimes.includes(body.image.mimeType)) {
+        return new Response(
+          JSON.stringify({ error: "bad_request", message: "Formato de imagen no soportado (usa PNG, JPEG o WEBP)." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      // Límite de 4MB de base64
+      if (body.image.data.length > 4 * 1024 * 1024) {
+        return new Response(
+          JSON.stringify({ error: "bad_request", message: "La imagen excede el límite máximo de tamaño (4MB)." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      validInlineImage = {
+        mimeType: body.image.mimeType,
+        data: body.image.data
+      };
+    }
+
     // --------------------------------------------------------------------------
     // CAPA 4: Conteo Atómico en Postgres (Anti-Spam 10s + Cuota Diaria 50)
-    // Política Fail-Closed: estrictamente monótona, sin rollback explotable.
     // --------------------------------------------------------------------------
     const { data: quotaResult, error: quotaError } = await supabaseAdmin.rpc(
       "check_and_increment_ai_quota",
@@ -186,52 +215,96 @@ Deno.serve(async (req: Request) => {
     }
 
     // --------------------------------------------------------------------------
-    // CAPA 5: Live Market Grounding & Freshness Check Robusto (Math.min)
+    // CAPA 5: Live Market Grounding REAL (Columnas Exactas de la Base de Datos)
     // --------------------------------------------------------------------------
-    const { data: marketData } = await supabaseAdmin
-      .from("market_intelligence")
-      .select("symbol, price, bias, dpoc, vwap, zap_buy_min, zap_buy_max, zap_sell_min, zap_sell_max, updated_at")
-      .in("symbol", ["XAUUSD", "EURUSD", "GBPUSD", "DXY", "SPX500", "BTCUSDT"]);
+    const [marketRes, briefingRes, calendarRes] = await Promise.all([
+      supabaseAdmin
+        .from("market_intelligence")
+        .select("symbol, display_name, current_price, change_24h_pct, bias, bias_score, support_1, support_2, resistance_1, resistance_2, dpoc_price, session_vwap, macro_driver, technical_thesis, cited_key_levels, last_updated")
+        .in("symbol", ["XAUUSD", "EURUSD", "GBPUSD", "USDJPY", "DXY", "SPX500", "NAS100", "US30", "BTCUSD", "USOIL"]),
+      supabaseAdmin
+        .from("daily_briefings")
+        .select("title, macro_sentiment, catalysts, executive_thesis, created_at")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("economic_calendar")
+        .select("country, event_name, impact, actual, forecast, previous, event_time")
+        .order("event_time", { ascending: false })
+        .limit(6)
+    ]);
 
-    // [ARQUITECTO]: Calcular el mínimo absoluto entre todos los timestamps del batch (fail-closed por defecto)
+    const marketData = marketRes.data || [];
+    const latestBriefing = briefingRes.data || null;
+    const recentCalendar = calendarRes.data || [];
+
     const nowMs = Date.now();
-    let marketFreshnessNotice = "ALERTA: Sin datos de mercado en vivo disponibles en la base de datos.";
+    let marketFreshnessNotice = "ALERTA: Sin datos de mercado en vivo disponibles.";
     if (marketData && marketData.length > 0) {
       const timestamps = marketData
-        .map(m => m.updated_at ? new Date(m.updated_at).getTime() : 0)
+        .map(m => m.last_updated ? new Date(m.last_updated).getTime() : 0)
         .filter(t => !isNaN(t) && t > 0);
 
       if (timestamps.length > 0) {
         const oldestTimestamp = Math.min(...timestamps);
         const diffMinutes = Math.round((nowMs - oldestTimestamp) / 60000);
-        if (diffMinutes > 8) {
-          marketFreshnessNotice = `ALERTA DE LATENCIA: El dato más antiguo del lote tiene ${diffMinutes} minutos. ES OBLIGATORIO advertir al usuario en 'advertencia_riesgo' que las cotizaciones pueden haber variado.`;
+        if (diffMinutes > 20) {
+          marketFreshnessNotice = `ALERTA DE LATENCIA: El dato más antiguo del lote tiene ${diffMinutes} minutos. Indicar en advertencia_riesgo que las cotizaciones pueden haber variado.`;
         } else {
-          marketFreshnessNotice = "ESTADO: TIEMPO REAL (Latencia normal <8m)";
+          marketFreshnessNotice = "ESTADO: DATOS INSTITUCIONALES EN TIEMPO REAL CONECTADOS";
         }
       }
     }
 
-    // Priorizar activo en la cabecera del prompt si el usuario lo especificó
     const requestedAsset = (body.asset || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-    let sortedMarketData = marketData || [];
+    let sortedMarketData = [...marketData];
     if (requestedAsset) {
-      sortedMarketData = [...sortedMarketData].sort((a, b) => 
+      sortedMarketData = sortedMarketData.sort((a, b) => 
         a.symbol.includes(requestedAsset) ? -1 : (b.symbol.includes(requestedAsset) ? 1 : 0)
       );
     }
 
-    const marketContextSummary = sortedMarketData.map(m => 
-      `${m.symbol}: $${m.price} (${m.bias}) | dPOC: $${m.dpoc || 'N/A'} | VWAP: $${m.vwap || 'N/A'}`
-    ).join("\n");
+    const marketContextSummary = sortedMarketData.map(m => {
+      const p = m.current_price !== null && m.current_price !== undefined ? `$${m.current_price}` : 'N/A';
+      const dpoc = m.dpoc_price ? `$${m.dpoc_price}` : 'N/A';
+      const vwap = m.session_vwap ? `$${m.session_vwap}` : 'N/A';
+      const r1 = m.resistance_1 || 'N/A';
+      const r2 = m.resistance_2 || 'N/A';
+      const s1 = m.support_1 || 'N/A';
+      const s2 = m.support_2 || 'N/A';
+      const thesis = m.technical_thesis || m.macro_driver || '';
+      return `• ${m.symbol} (${m.display_name || m.symbol}): Precio Actual: ${p} | Sesgo: ${m.bias} (${m.bias_score || 50}/100) | dPOC: ${dpoc} | Session VWAP: ${vwap} | ZAP Resistencia: ${r1} - ${r2} | ZAP Soporte: ${s1} - ${s2}${thesis ? ` | Tesis: ${thesis}` : ''}`;
+    }).join("\n");
+
+    let macroContextSummary = "Sin briefing macroeconómico reciente.";
+    if (latestBriefing) {
+      const sentiment = latestBriefing.macro_sentiment?.label || 'NEUTRAL';
+      const score = latestBriefing.macro_sentiment?.score || 50;
+      const catalysts = Array.isArray(latestBriefing.catalysts) ? latestBriefing.catalysts : [];
+      const catSummary = catalysts.slice(0, 5).map(c => 
+        `  - ${c.title} (${c.currency || 'USD'}): Actual=${c.actual || 'Pendiente'} (Pronóstico: ${c.forecast || 'N/A'}, Previo: ${c.previous || 'N/A'}) [Estado: ${c.status === 'digested' ? 'DIGERIDO / YA PUBLICADO' : (c.status === 'live' ? 'PUBLICADO EN VIVO' : 'PRÓXIMO')}]`
+      ).join("\n");
+
+      macroContextSummary = `Título Briefing: ${latestBriefing.title}
+Sentimiento Global: ${sentiment} (Puntaje: ${score}/100)
+Tesis Ejecutiva: ${latestBriefing.executive_thesis || 'N/A'}
+Catalizadores Clave Asimilados/Activos:
+${catSummary}`;
+    }
+
+    let calendarContextSummary = "";
+    if (recentCalendar.length > 0) {
+      calendarContextSummary = "Eventos del Calendario Económico Recientes / Próximos:\n" + 
+        recentCalendar.map(c => `  - [${c.country}] ${c.event_name} (${c.impact}): Actual: ${c.actual || 'Esperando'}, Previo: ${c.previous || 'N/A'}`).join("\n");
+    }
 
     // --------------------------------------------------------------------------
-    // CAPA 6: Sanitización de Historial (Gemini exige: inicia en 'user' y alterna)
+    // CAPA 6: Sanitización de Historial
     // --------------------------------------------------------------------------
     const rawHistory = body.history || [];
-    const sanitizedHistory: Array<{ role: "user" | "model"; parts: [{ text: string }] }> = [];
+    const sanitizedHistory: Array<{ role: "user" | "model"; parts: any[] }> = [];
     
-    // Tomar máximo los últimos 4 mensajes del historial previo
     const candidateHistory = rawHistory.slice(-4);
     let expectedRole: "user" | "assistant" = "user";
 
@@ -245,50 +318,69 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    // Si el último mensaje del historial recortado era 'user', descartarlo para que el nuevo sea 'user'
     if (sanitizedHistory.length > 0 && sanitizedHistory[sanitizedHistory.length - 1].role === "user") {
       sanitizedHistory.pop();
     }
 
+    // Construcción del mensaje actual del usuario (Texto + Imagen opcional)
+    const currentUserParts: any[] = [{ text: userMessage }];
+    if (validInlineImage) {
+      currentUserParts.push({
+        inlineData: {
+          mimeType: validInlineImage.mimeType,
+          data: validInlineImage.data
+        }
+      });
+    }
+
     const contents = [
       ...sanitizedHistory,
-      { role: "user", parts: [{ text: userMessage }] }
+      { role: "user", parts: currentUserParts }
     ];
 
     // --------------------------------------------------------------------------
-    // CAPA 7: System Prompt & Invocación con responseSchema Nativo en Gemini
+    // CAPA 7: System Prompt Estricto & Anti-Alucinación
     // --------------------------------------------------------------------------
     const systemInstruction = `
 Eres AEON Terminal AI, copiloto de Order Flow institucional, macroeconomía y gestión de riesgo para la plataforma AEON.
-Asistes exclusivamente en:
-1. Análisis técnico institucional (dPOC, VWAP, zonas ZAP de liquidez, delta y order flow).
-2. Macroeconomía y catalizadores del calendario económico.
-3. Gestión de riesgo y cálculo de lotaje institucional exacto.
+Asistes a traders profesionales con análisis cuantitativo riguroso, directo y fundamentado en datos en vivo.
 
-[MÓDULO DE GESTIÓN DE RIESGO Y CÁLCULO DE LOTAJE]:
-Si el usuario te pide calcular el lotaje o gestionar el riesgo de su cuenta:
-- Fórmula institucional: Riesgo en $ = Balance * (% Riesgo / 100).
-- Lotaje = Riesgo en $ / (Pips de Stop Loss * Valor del Pip por Lote Estándar).
-- Especificaciones de mercado estándar:
-  * Forex (EURUSD, GBPUSD): 1 lote estándar = 100,000 unidades. 1 pip (0.0001) = $10 USD por lote.
-  * Oro Spot (XAUUSD): 1 lote estándar = 100 oz. 1 pip (0.10 de precio) = $10 USD por lote (o $1.00 de movimiento = $100 USD/lote).
-  * Índices (SPX500): 1 punto = $1 USD por contrato CFD típico.
-  * Cripto (BTCUSDT): 1 lote = 1 BTC.
-- Si el usuario no te proporciona el balance, % de riesgo o distancia de Stop Loss, indícale la fórmula de forma concisa y pídele los 3 datos con un ejemplo rápido (ej. Cuenta $10,000, riesgo 1%, SL 30 pips).
-- Si te proporciona los datos, desglosa el cálculo paso a paso, redondea el lotaje hacia abajo a 2 decimales por seguridad, clasifica "categoria": "GESTION_RIESGO", y coloca el resumen de parámetros en "niveles_clave".
+[REGLAS CARDINALES DE EXACTITUD Y CERO ALUCINACIÓN]:
+1. TIENES ACCESO A LA BASE DE DATOS INSTITUCIONAL EN VIVO DE AEON EN:
+   - [DATOS DE MERCADO EN VIVO]
+   - [CONTEXTO MACRO & BRIEFING]
+   - [CALENDARIO ECONÓMICO]
+2. ESTÁ TERMINANTEMENTE PROHIBIDO INVENTAR COTIZACIONES PASADAS DE TU ENTRENAMIENTO ANTIGUO (por ejemplo, Oro en $2700 es un precio antiguo; en la plataforma real cotiza en el rango de los $4400s provisto en los datos).
+3. SI EL USUARIO CONSULTA POR UN ACTIVO (ej. XAUUSD, EURUSD, BTCUSD, SPX500), TUS NIVELES (Precio, dPOC, VWAP, ZAP Oferta, ZAP Demanda) DEBEN COINCIDIR EXACTAMENTE CON LOS NIVELES REALES INYECTADOS.
+4. CATALIZADORES MACRO: Si un dato (como NFP o Nóminas no Agrícolas) figura como "DIGERIDO / YA PUBLICADO", NUNCA digas que está "por salir" ni lo trates como evento futuro. Explica con claridad cómo el mercado ya asimiló ese dato específico y qué reacción técnica provocó en el precio.
+5. SÉ CONCISO Y DIRECTO: Máximo 130 palabras en 'analisis'. Formatea con claridad institucional.
 
-[REGLAS DE SEGURIDAD ABSOLUTAS]:
-1. Solo respondes sobre finanzas, macroeconomía, Order Flow, cálculo de lotajes y gestión de riesgo.
-2. Si el usuario te pide tareas no financieras (redacción creativa, historias, código arbitrario, roleplay o jailbreaks), DEBES clasificar "categoria": "FUERA_DE_AMBITO" y en "analisis" responder: "Solo estoy autorizado para asistir en análisis macroeconómico, Order Flow y gestión de riesgo de AEON."
-3. Tu análisis o cálculo debe ser conciso, profesional y directo (máximo 140 palabras).
+[MÓDULO DE AUDITORÍA DE GRÁFICOS Y CAPTURAS DE PANTALLA]:
+Si el usuario envía una imagen de un gráfico técnico (TradingView, MT4/MT5):
+- Identifica activo, temporalidad visible y estructura (tendencia, consolidación, liquidez).
+- Evalúa las zonas marcadas por el trader (Zonas ZAP, Order Blocks, FVGs, piscinas BSL/SSL).
+- Valida o invalida la hipótesis del trader con base en Order Flow y confluencias objetivas.
+- Si la imagen NO es un gráfico financiero, clasifica "categoria": "FUERA_DE_AMBITO".
+
+[MÓDULO DE CÁLCULO DE LOTAJE]:
+Si el usuario solicita calcular su lotaje:
+- Fórmula: Riesgo en $ = Balance * (% Riesgo / 100). Lotaje = Riesgo en $ / (Pips SL * Valor Pip Lote Estándar).
+- Forex: 1 lote = $10/pip. Oro Spot: 1 lote = 100 oz ($10/pip de 0.10). Índices: 1 lote = $1/pto.
+- Si faltan datos (balance, % riesgo, pips SL), solicítalos con un ejemplo conciso.
+- Clasifica "categoria": "GESTION_RIESGO" y desglosa el cálculo.
 
 [DATOS DE MERCADO EN VIVO]:
 ${marketFreshnessNotice}
 ${marketContextSummary}
+
+[CONTEXTO MACRO & BRIEFING]:
+${macroContextSummary}
+
+${calendarContextSummary}
 `;
 
-    // [ARQUITECTO]: Invocación con responseSchema estricto y fallback de modelos
-    const models = ["gemini-3.7-flash", "gemini-3.6-flash"];
+    // Invocación con modelos actualizados de Google Gemini y responseSchema nativo
+    const models = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash"];
     let rawAiText = "";
 
     for (const model of models) {
@@ -302,7 +394,7 @@ ${marketContextSummary}
             contents: contents,
             generationConfig: {
               maxOutputTokens: 1200,
-              temperature: 0.15,
+              temperature: 0.1,
               responseMimeType: "application/json",
               responseSchema: {
                 type: "OBJECT",
@@ -345,16 +437,13 @@ ${marketContextSummary}
     }
 
     // --------------------------------------------------------------------------
-    // CAPA 8: Guardrail Post-Generación Exhaustivo [ARQUITECTO]
-    // Validamos en backend: JSON parseable + enum legítimo + tipos primitivos.
-    // NUNCA se expone texto no validado; ante cualquier discrepancia -> STANDARD_REFUSAL.
+    // CAPA 8: Guardrail Post-Generación Exhaustivo
     // --------------------------------------------------------------------------
     let finalPayload = STANDARD_REFUSAL_PAYLOAD;
 
     try {
       const jsonCandidate = JSON.parse(rawAiText);
 
-      // Verificación estricta de campos y tipos primitivos
       const isValidCategory = typeof jsonCandidate.categoria === "string" &&
         VALID_FINANCIAL_CATEGORIES.includes(jsonCandidate.categoria as any);
 
@@ -366,20 +455,17 @@ ${marketContextSummary}
 
       const isValidRisk = typeof jsonCandidate.advertencia_riesgo === "string";
 
-      // Solo si pasa TODAS las validaciones de contrato y tipo, se acepta
       if (isValidCategory && isValidAnalysis && isValidLevels && isValidRisk) {
         finalPayload = {
           categoria: jsonCandidate.categoria,
-          analisis: jsonCandidate.analisis.slice(0, 1000).trim(),
-          niveles_clave: jsonCandidate.niveles_clave.slice(0, 5),
+          analisis: jsonCandidate.analisis.slice(0, 1200).trim(),
+          niveles_clave: jsonCandidate.niveles_clave.slice(0, 6),
           advertencia_riesgo: jsonCandidate.advertencia_riesgo.slice(0, 300).trim()
         };
       } else {
-        // Fuera de ámbito, jailbreak capturado o enum no legítimo
         finalPayload = STANDARD_REFUSAL_PAYLOAD;
       }
     } catch {
-      // Si JSON.parse explotó (jailbreak en prosa), rechazo total
       finalPayload = STANDARD_REFUSAL_PAYLOAD;
     }
 

@@ -1,6 +1,6 @@
 /* ============================================================
    AEON · components/chatWidget.js — Institutional AI Chat Widget
-   Zero-Trust Client Rendering • Anti-XSS • Multi-State UX
+   Zero-Trust Client Rendering • Anti-XSS • Multimodal V3
    ============================================================ */
 
 import { supabase } from '../supabaseClient.js';
@@ -18,6 +18,7 @@ let isChatOpen = false;
 let isSubmitting = false;
 let cooldownInterval = null;
 let currentQuota = { remaining: 50, total: 50 };
+let currentAttachedImage = null; // { mimeType: string, data: string, previewUrl: string, name: string, sizeKb: number }
 
 /**
  * Determina el estado de autenticación y nivel del usuario.
@@ -67,6 +68,89 @@ async function getUserAccessState() {
 }
 
 /**
+ * Procesa y comprime una imagen en cliente mediante HTML5 Canvas (<50ms).
+ * @param {File} file
+ */
+function compressAndAttachImage(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+      const MAX_DIM = 1600;
+
+      if (width > MAX_DIM || height > MAX_DIM) {
+        if (width > height) {
+          height = Math.round((height * MAX_DIM) / width);
+          width = MAX_DIM;
+        } else {
+          width = Math.round((width * MAX_DIM) / height);
+          height = MAX_DIM;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const mimeType = 'image/jpeg';
+      const dataUrl = canvas.toDataURL(mimeType, 0.85);
+      const base64Data = dataUrl.split(',')[1];
+      const sizeKb = Math.round((base64Data.length * 3) / 4 / 1024);
+
+      currentAttachedImage = {
+        mimeType: mimeType,
+        data: base64Data,
+        previewUrl: dataUrl,
+        name: file.name || 'captura_grafico.jpg',
+        sizeKb: sizeKb,
+      };
+
+      renderAttachedImagePreview();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/**
+ * Muestra u oculta la barra flotante de preview de imagen.
+ */
+function renderAttachedImagePreview() {
+  const previewBar = document.getElementById('chat-image-preview-bar');
+  const previewImg = document.getElementById('chat-preview-img');
+  const previewName = document.getElementById('chat-preview-name');
+  const previewSize = document.getElementById('chat-preview-size');
+
+  if (!previewBar) return;
+
+  if (currentAttachedImage) {
+    if (previewImg) previewImg.src = currentAttachedImage.previewUrl;
+    if (previewName) previewName.textContent = currentAttachedImage.name;
+    if (previewSize) previewSize.textContent = `${currentAttachedImage.sizeKb} KB`;
+    previewBar.style.display = 'flex';
+  } else {
+    previewBar.style.display = 'none';
+    if (previewImg) previewImg.src = '';
+  }
+}
+
+/**
+ * Limpia la imagen adjunta actual.
+ */
+function clearAttachedImage() {
+  currentAttachedImage = null;
+  renderAttachedImagePreview();
+  const fileInput = document.getElementById('chat-file-input');
+  if (fileInput) fileInput.value = '';
+}
+
+/**
  * Renderiza el markup base del widget en el DOM.
  */
 export async function initChatWidget() {
@@ -76,27 +160,35 @@ export async function initChatWidget() {
   root.id = 'aeon-chat-root';
   root.innerHTML = `
     <!-- Floating Action Button -->
-    <button class="aeon-chat-fab" id="chat-fab-toggle" aria-label="Abrir Copiloto IA de AEON" title="Copiloto Cuantitativo & Gestión de Riesgo">
-      <span class="chat-fab-icon">✦</span>
+    <button class="aeon-chat-fab" id="chat-fab-toggle" aria-label="Abrir AEON Copilot" title="AEON Copilot IA">
+      <span class="chat-fab-pulse" aria-hidden="true"></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chat-fab-icon">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+      </svg>
       <span class="chat-fab-label">AEON Copilot</span>
     </button>
 
-    <!-- Chat Panel Window -->
-    <aside class="aeon-chat-panel" id="aeon-chat-panel" aria-hidden="true">
+    <!-- Main Chat Window -->
+    <aside class="aeon-chat-panel" id="aeon-chat-panel" aria-hidden="true" role="dialog" aria-label="Terminal Conversacional AEON">
+      <!-- Header -->
       <header class="chat-header">
-        <div class="chat-header-title">
-          <span class="chat-pulse-dot" aria-hidden="true"></span>
-          <span>✦ AEON Copilot</span>
+        <div class="chat-header-brand">
+          <span class="chat-status-dot online" aria-hidden="true"></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-hover);">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77L5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span class="chat-header-title">AEON Copilot</span>
         </div>
-        <div class="chat-header-meta">
+        <div class="chat-header-actions">
           <span class="chat-quota-badge" id="chat-quota-display">50/50 hoy</span>
-          <button class="chat-btn-action" id="chat-btn-clear" title="Limpiar conversación" aria-label="Limpiar conversación">
+          <button class="chat-btn-header" id="chat-btn-clear" aria-label="Limpiar conversación" title="Limpiar historial">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
           </button>
-          <button class="chat-btn-action" id="chat-btn-close" title="Cerrar chat" aria-label="Cerrar chat">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="chat-btn-header" id="chat-btn-close" aria-label="Cerrar chat" title="Cerrar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -117,13 +209,32 @@ export async function initChatWidget() {
 
       <!-- Input Footer -->
       <footer class="chat-footer" id="chat-footer-area">
+        <!-- Floating Image Preview Bar -->
+        <div class="chat-image-preview-bar" id="chat-image-preview-bar" style="display: none;">
+          <div class="preview-thumb-wrap">
+            <img id="chat-preview-img" src="" alt="Gráfico adjunto" />
+            <button type="button" class="preview-remove-btn" id="chat-preview-remove" title="Quitar captura">✕</button>
+          </div>
+          <div class="preview-info">
+            <span class="preview-filename" id="chat-preview-name">captura.jpg</span>
+            <span class="preview-filesize" id="chat-preview-size">0 KB</span>
+          </div>
+        </div>
+
         <form class="chat-input-wrapper" id="chat-input-form">
+          <button type="button" class="chat-btn-attach" id="chat-btn-attach" title="Adjuntar captura de gráfico o pega con Ctrl+V">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+            </svg>
+          </button>
+          <input type="file" id="chat-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;" />
+
           <textarea
             class="chat-textarea"
             id="chat-textarea-input"
             rows="1"
             maxlength="800"
-            placeholder="Pregunta sobre Order Flow o cálculo de lotajes..."
+            placeholder="Pregunta o pega una captura con Ctrl+V..."
             aria-label="Mensaje para AEON Copilot"
           ></textarea>
           <button type="submit" class="chat-btn-send" id="chat-btn-send" aria-label="Enviar mensaje">
@@ -156,10 +267,57 @@ function bindChatEvents() {
   const form = document.getElementById('chat-input-form');
   const textarea = document.getElementById('chat-textarea-input');
   const quickPrompts = document.getElementById('chat-quick-prompts');
+  const attachBtn = document.getElementById('chat-btn-attach');
+  const fileInput = document.getElementById('chat-file-input');
+  const removeImgBtn = document.getElementById('chat-preview-remove');
+  const panel = document.getElementById('aeon-chat-panel');
 
   fab?.addEventListener('click', toggleChatPanel);
   closeBtn?.addEventListener('click', () => toggleChatPanel(false));
   clearBtn?.addEventListener('click', handleClearChat);
+
+  // Adjuntar imagen desde explorador de archivos
+  attachBtn?.addEventListener('click', () => fileInput?.click());
+  fileInput?.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      compressAndAttachImage(e.target.files[0]);
+    }
+  });
+
+  // Remover imagen adjunta
+  removeImgBtn?.addEventListener('click', clearAttachedImage);
+
+  // Captura de imágenes pegadas desde el portapapeles (Ctrl + V)
+  panel?.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          compressAndAttachImage(file);
+          e.preventDefault();
+          break;
+        }
+      }
+    }
+  });
+
+  // Drag & drop sobre el panel del chat
+  panel?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    panel.classList.add('drag-over');
+  });
+  panel?.addEventListener('dragleave', () => {
+    panel.classList.remove('drag-over');
+  });
+  panel?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    panel.classList.remove('drag-over');
+    if (e.dataTransfer?.files && e.dataTransfer.files[0]) {
+      compressAndAttachImage(e.dataTransfer.files[0]);
+    }
+  });
 
   // Auto-resize de textarea y contador de caracteres
   textarea?.addEventListener('input', () => {
@@ -220,7 +378,7 @@ export function toggleChatPanel(forceState) {
   } else {
     panel.classList.remove('active');
     panel.setAttribute('aria-hidden', 'true');
-    abortActiveRequest(); // Cancelar petición en vuelo si cierra el panel (requisito del Arquitecto)
+    abortActiveRequest();
   }
 }
 
@@ -246,36 +404,41 @@ async function refreshChatView() {
       <div class="chat-paywall-container">
         <div class="chat-paywall-icon">🔒</div>
         <h3 class="chat-paywall-title">Copiloto Cuantitativo AEON</h3>
-        <p class="chat-paywall-desc">Inicia sesión para consultar análisis institucional de Order Flow y cálculo de lotajes en tiempo real.</p>
+        <p class="chat-paywall-desc">Inicia sesión para consultar análisis institucional de Order Flow, auditar gráficos y calcular lotajes en tiempo real.</p>
         <a href="/login.html" class="btn-primary btn-large" style="width: 100%; justify-content: center; text-decoration: none;">Iniciar Sesión</a>
       </div>
     `;
     return;
   }
 
-  // 2. ESTADO FREE (Logueado pero sin plan Pro)
+  // 2. ESTADO FREE (Paywall Pro)
   if (access.state === 'free') {
     if (quickPrompts) quickPrompts.style.display = 'none';
     if (footerArea) footerArea.style.display = 'none';
-    if (quotaBadge) quotaBadge.textContent = 'Solo Pro';
+    if (quotaBadge) quotaBadge.textContent = 'Plan Free';
 
     bodyArea.innerHTML = `
       <div class="chat-paywall-container">
-        <div class="chat-paywall-icon">⭐</div>
-        <h3 class="chat-paywall-title">Exclusivo Plan AEON Pro</h3>
-        <p class="chat-paywall-desc">El copiloto de IA con dPOC en tiempo real y cálculo de lotaje está reservado para miembros Pro.</p>
-        <div class="chat-paywall-features">
-          <div>✔ Cálculo matemático de lotaje y riesgo institucional</div>
-          <div>✔ Sesgo institucional, dPOC y VWAP en tiempo real</div>
-          <div>✔ 50 consultas diarias sin esperas</div>
-        </div>
+        <div class="chat-paywall-badge">★ Exclusivo Plan AEON Pro</div>
+        <div class="chat-paywall-icon">⚡</div>
+        <h3 class="chat-paywall-title">Asistente Cuantitativo IA</h3>
+        <p class="chat-paywall-desc">
+          El Copiloto IA de Order Flow, auditoría de gráficos y cálculo de riesgo institucional está reservado para miembros con membresía activa.
+        </p>
+        <ul class="chat-paywall-features">
+          <li>✓ Auditoría y análisis de capturas de pantalla de gráficos</li>
+          <li>✓ Sesgo intradiario, dPOC y VWAP por símbolo</li>
+          <li>✓ Detección de zonas de liquidez y desequilibrios</li>
+          <li>✓ Algoritmo institucional de cálculo de lotaje</li>
+          <li>✓ 50 consultas cuantitativas diarias</li>
+        </ul>
         <a href="/perfil.html" class="btn-primary btn-large" style="width: 100%; justify-content: center; text-decoration: none;">Desbloquear AEON Pro →</a>
       </div>
     `;
     return;
   }
 
-  // 3. ESTADO PRO (Acceso total)
+  // 3. ESTADO PRO (Acceso Total Desbloqueado)
   if (quickPrompts) quickPrompts.style.display = 'flex';
   if (footerArea) footerArea.style.display = 'flex';
   renderConversationHistory();
@@ -295,11 +458,12 @@ function renderConversationHistory() {
       <div class="chat-msg chat-msg-bot">
         <div class="chat-category-badge category-tecnico-orderflow">✦ Terminal Cuántica Activa</div>
         <p class="chat-bot-text">
-          Bienvenido al <strong>Copiloto Institucional AEON</strong>. Puedo calcular tu <strong>lotaje exacto</strong>, analizar el <strong>dPOC y VWAP</strong> intradía o evaluar los catalizadores macroeconómicos.
+          Bienvenido al <strong>Copiloto Institucional AEON</strong>. Puedo calcular tu <strong>lotaje exacto</strong>, analizar el <strong>dPOC y VWAP</strong> intradía, evaluar los catalizadores macroeconómicos o <strong>auditar tus gráficos y capturas de pantalla</strong>.
         </p>
         <div class="chat-levels-grid">
           <div class="chat-level-item">Cálculo de Lote: Indícame balance, % de riesgo y Stop Loss.</div>
           <div class="chat-level-item">Order Flow: Consulta dPOC, VWAP o sesgo por símbolo.</div>
+          <div class="chat-level-item">Multimodal: Pega una captura de tu gráfico con Ctrl+V.</div>
         </div>
       </div>
     `;
@@ -308,7 +472,11 @@ function renderConversationHistory() {
 
   bodyArea.innerHTML = history.map(item => {
     if (item.role === 'user') {
-      return `<div class="chat-msg chat-msg-user">${escapeHTML(item.content)}</div>`;
+      const imgHtml = item.image?.previewUrl 
+        ? `<div class="chat-user-img-wrap"><img src="${item.image.previewUrl}" class="chat-user-img-thumb" alt="Gráfico adjunto" onclick="window.open('${item.image.previewUrl}', '_blank')" /></div>` 
+        : '';
+      const textHtml = item.content ? `<span>${escapeHTML(item.content)}</span>` : '';
+      return `<div class="chat-msg chat-msg-user">${imgHtml}${textHtml}</div>`;
     }
 
     const data = item.data || {};
@@ -325,8 +493,8 @@ function renderConversationHistory() {
 
     return `
       <div class="chat-msg chat-msg-bot">
-        <div class="chat-category-badge ${catClass}">${catLabel}</div>
-        <p class="chat-bot-text">${escapeHTML(data.analisis || item.content)}</p>
+        <div class="chat-category-badge ${catClass}">✦ ${escapeHTML(catLabel)}</div>
+        <p class="chat-bot-text">${escapeHTML(data.analisis || '')}</p>
         ${levelsHtml}
         ${riskHtml}
       </div>
@@ -345,22 +513,27 @@ async function handleSendMessage(e) {
 
   const textarea = document.getElementById('chat-textarea-input');
   const sendBtn = document.getElementById('chat-btn-send');
-  const text = textarea?.value?.trim();
-  if (!text) return;
+  const text = textarea?.value?.trim() || '';
+  const imageToSend = currentAttachedImage;
+
+  // Requiere al menos texto o imagen
+  if (!text && !imageToSend) return;
 
   isSubmitting = true;
   if (sendBtn) sendBtn.disabled = true;
 
   // Renderizar mensaje del usuario inmediatamente
-  appendUserMessage(text);
+  appendUserMessage(text, imageToSend?.previewUrl);
   textarea.value = '';
   textarea.dispatchEvent(new Event('input'));
+  clearAttachedImage();
 
   // Indicador de "Pensando..."
   const loadingIndicator = showTypingIndicator();
 
   try {
-    const result = await sendChatMessage(text);
+    const imgPayload = imageToSend ? { mimeType: imageToSend.mimeType, data: imageToSend.data } : null;
+    const result = await sendChatMessage(text, '', imgPayload);
     loadingIndicator.remove();
 
     if (result.success && result.data) {
@@ -375,7 +548,11 @@ async function handleSendMessage(e) {
 
       // Guardar en sessionStorage
       const current = getStoredHistory();
-      current.push({ role: 'user', content: text });
+      current.push({
+        role: 'user',
+        content: text,
+        image: imageToSend ? { previewUrl: imageToSend.previewUrl } : undefined
+      });
       current.push({ role: 'assistant', content: result.data.analisis, data: result.data });
       saveHistory(current);
     }
@@ -396,39 +573,55 @@ function handleChatError(err) {
   const bodyArea = document.getElementById('chat-body-area');
   if (!bodyArea) return;
 
-  // 1. HTTP 429 Cooldown
   if (err.code === 'rate_limit' || err.retry_after) {
     startCooldown(err.retry_after || 10);
     appendSystemNotice(`⏳ Cooldown de seguridad: Por favor espera ${err.retry_after || 10}s antes de enviar otra consulta.`);
     return;
   }
 
-  // 2. HTTP 429 Cuota Diaria Agotada
   if (err.code === 'daily_limit_reached') {
     appendSystemNotice('🚫 Has alcanzado el límite institucional de 50 consultas diarias. La cuota se reiniciará a las 00:00 UTC.');
     return;
   }
 
-  // 3. HTTP 401 Sesión Expirada
   if (err.code === 'unauthorized') {
     appendSystemNotice('🔒 Tu sesión ha expirado. Por favor <a href="/login.html" style="color: var(--accent-hover);">inicia sesión nuevamente</a>.');
     refreshChatView();
     return;
   }
 
-  // 4. HTTP 503 / Servicio Caído (Copy verificado con el Arquitecto)
   appendSystemNotice(`⚠ ${escapeHTML(err.message || 'El motor de IA no pudo procesar tu consulta en este momento. Inténtalo de nuevo en unos instantes.')}`);
 }
 
 /**
  * Agrega un mensaje del usuario al DOM.
+ * @param {string} text
+ * @param {string} [imagePreviewUrl]
  */
-function appendUserMessage(text) {
+function appendUserMessage(text, imagePreviewUrl = null) {
   const bodyArea = document.getElementById('chat-body-area');
   if (!bodyArea) return;
   const msgEl = document.createElement('div');
   msgEl.className = 'chat-msg chat-msg-user';
-  msgEl.textContent = text;
+
+  if (imagePreviewUrl) {
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'chat-user-img-wrap';
+    const imgEl = document.createElement('img');
+    imgEl.src = imagePreviewUrl;
+    imgEl.className = 'chat-user-img-thumb';
+    imgEl.alt = 'Gráfico adjunto';
+    imgEl.onclick = () => window.open(imagePreviewUrl, '_blank');
+    imgWrap.appendChild(imgEl);
+    msgEl.appendChild(imgWrap);
+  }
+
+  if (text) {
+    const textSpan = document.createElement('span');
+    textSpan.textContent = text;
+    msgEl.appendChild(textSpan);
+  }
+
   bodyArea.appendChild(msgEl);
   scrollToBottom();
 }
@@ -454,8 +647,8 @@ function appendBotResponse(data) {
   const card = document.createElement('div');
   card.className = 'chat-msg chat-msg-bot';
   card.innerHTML = `
-    <div class="chat-category-badge ${catClass}">${catLabel}</div>
-    <p class="chat-bot-text">${escapeHTML(data.analisis)}</p>
+    <div class="chat-category-badge ${catClass}">✦ ${escapeHTML(catLabel)}</div>
+    <p class="chat-bot-text">${escapeHTML(data.analisis || '')}</p>
     ${levelsHtml}
     ${riskHtml}
   `;
@@ -465,80 +658,73 @@ function appendBotResponse(data) {
 }
 
 /**
- * Muestra burbuja de carga "Pensando...".
+ * Muestra el indicador animado de escritura.
  */
 function showTypingIndicator() {
   const bodyArea = document.getElementById('chat-body-area');
   const indicator = document.createElement('div');
-  indicator.className = 'chat-msg chat-msg-bot';
+  indicator.className = 'chat-msg chat-msg-bot chat-typing-indicator';
+  indicator.id = 'chat-typing-active';
   indicator.innerHTML = `
-    <div class="chat-category-badge category-tecnico-orderflow">✦ Procesando</div>
-    <p class="chat-bot-text" style="opacity: 0.7; font-style: italic;">Calculando parámetros de liquidez y riesgo...</p>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
   `;
-  bodyArea.appendChild(indicator);
+  bodyArea?.appendChild(indicator);
   scrollToBottom();
   return indicator;
 }
 
 /**
- * Muestra aviso del sistema en el chat.
+ * Muestra un aviso del sistema dentro del chat.
  */
 function appendSystemNotice(htmlContent) {
   const bodyArea = document.getElementById('chat-body-area');
   if (!bodyArea) return;
+
   const notice = document.createElement('div');
-  notice.className = 'chat-risk-box';
-  notice.style.background = 'rgba(239, 68, 68, 0.1)';
-  notice.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-  notice.style.color = '#fca5a5';
-  notice.innerHTML = `<span>⚡</span><div>${htmlContent}</div>`;
+  notice.className = 'chat-system-notice';
+  notice.innerHTML = htmlContent;
   bodyArea.appendChild(notice);
   scrollToBottom();
 }
 
 /**
- * Cooldown regresivo en el botón de enviar.
+ * Gestiona el cooldown visual de 10 segundos tras cada consulta.
  */
 function startCooldown(seconds) {
   const sendBtn = document.getElementById('chat-btn-send');
   const cooldownText = document.getElementById('chat-cooldown-display');
-  if (cooldownInterval) clearInterval(cooldownInterval);
-
   let remaining = seconds;
-  if (sendBtn) sendBtn.disabled = true;
 
-  const update = () => {
+  if (sendBtn) sendBtn.disabled = true;
+  if (cooldownText) cooldownText.textContent = `Espera ${remaining}s...`;
+
+  clearInterval(cooldownInterval);
+  cooldownInterval = setInterval(() => {
+    remaining -= 1;
     if (remaining <= 0) {
       clearInterval(cooldownInterval);
       cooldownInterval = null;
+      if (sendBtn) sendBtn.disabled = false;
       if (cooldownText) cooldownText.textContent = '';
-      if (sendBtn && !isSubmitting) sendBtn.disabled = false;
-      return;
+    } else {
+      if (cooldownText) cooldownText.textContent = `Espera ${remaining}s...`;
     }
-    if (cooldownText) cooldownText.textContent = `Espera ${remaining}s...`;
-    remaining--;
-  };
-
-  update();
-  cooldownInterval = setInterval(update, 1000);
+  }, 1000);
 }
 
 /**
- * Limpiar conversación.
+ * Limpia el historial de conversación en cliente.
  */
 function handleClearChat() {
   clearStoredHistory();
-  abortActiveRequest();
   renderConversationHistory();
 }
 
-function scrollToBottom() {
-  const bodyArea = document.getElementById('chat-body-area');
-  if (bodyArea) {
-    bodyArea.scrollTop = bodyArea.scrollHeight;
-  }
-}
-
+/**
+ * Mapea la categoría al nombre de clase CSS.
+ */
 function getCategoryClass(cat) {
   switch (cat) {
     case 'GESTION_RIESGO': return 'category-gestion-riesgo';
@@ -549,12 +735,22 @@ function getCategoryClass(cat) {
   }
 }
 
+/**
+ * Mapea la categoría al label visible en español.
+ */
 function getCategoryLabel(cat) {
   switch (cat) {
-    case 'GESTION_RIESGO': return '📊 GESTIÓN DE RIESGO';
-    case 'TECNICO_ORDERFLOW': return '🌊 ORDER FLOW & dPOC';
-    case 'MACRO': return '🌐 ANÁLISIS MACRO';
-    case 'CATALIZADOR': return '⚡ CATALIZADOR';
-    default: return '🛡️ ÁMBITO INSTITUCIONAL';
+    case 'GESTION_RIESGO': return 'Gestión de Riesgo';
+    case 'TECNICO_ORDERFLOW': return 'Order Flow & ZAP';
+    case 'MACRO': return 'Contexto Macro';
+    case 'CATALIZADOR': return 'Catalizador Sniper';
+    default: return 'Ámbito Institucional';
+  }
+}
+
+function scrollToBottom() {
+  const bodyArea = document.getElementById('chat-body-area');
+  if (bodyArea) {
+    bodyArea.scrollTop = bodyArea.scrollHeight;
   }
 }

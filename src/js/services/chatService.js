@@ -63,7 +63,7 @@ export function abortActiveRequest() {
  * @param {string} [asset] - Símbolo opcional (ej. "XAUUSD")
  * @returns {Promise<{ success: boolean, data: object, meta: object }>}
  */
-export async function sendChatMessage(userMessage, asset = '') {
+export async function sendChatMessage(userMessage, asset = '', imageData = null) {
   // 1. Cancelar petición previa si estuviera en curso
   abortActiveRequest();
   activeAbortController = new AbortController();
@@ -98,6 +98,7 @@ export async function sendChatMessage(userMessage, asset = '') {
     message: userMessage.trim(),
     history: currentHistory,
     asset: asset || undefined,
+    image: imageData || undefined,
   };
 
   try {
