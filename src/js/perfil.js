@@ -146,6 +146,7 @@ async function initDashboard() {
   const cardRenewalLabel = document.getElementById('card-renewal-label');
   const cardRenewalDate = document.getElementById('card-renewal-date');
   const dashPlanCta = document.getElementById('dash-plan-cta');
+  const cardPolicyNote = document.getElementById('dash-card-policy-note');
 
   const btnRefreshQuota = document.getElementById('dash-btn-refresh-quota');
   const quotaCounter = document.getElementById('dash-quota-counter');
@@ -367,8 +368,11 @@ async function initDashboard() {
       }
 
       if (dashPlanCta) {
-        dashPlanCta.textContent = 'Acceder a Señales PRO →';
-        dashPlanCta.href = '/index.html#senales';
+        dashPlanCta.textContent = 'Ir al Terminal de Mercados →';
+        dashPlanCta.href = '/mercados.html';
+      }
+      if (cardPolicyNote) {
+        cardPolicyNote.textContent = 'Membresía activa vinculada a tu cuenta. Acceso total al Terminal y Copiloto IA.';
       }
     } else {
       if (profileBadgeTop) {
@@ -393,6 +397,9 @@ async function initDashboard() {
       if (dashPlanCta) {
         dashPlanCta.textContent = 'Mejorar a PRO →';
         dashPlanCta.href = '/index.html#pro';
+      }
+      if (cardPolicyNote) {
+        cardPolicyNote.textContent = 'Facturación segura cifrada. Cancelación con un clic en cualquier momento.';
       }
     }
   } catch (err) {
