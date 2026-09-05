@@ -720,7 +720,7 @@ SESSION_CURRENCY_MATRIX = {
     'ny_pre': {'primary': ['USD'], 'secondary': ['CAD']},
     'london_pre': {'primary': ['EUR'], 'secondary': ['GBP', 'CHF']},
     'asian_wrap': {'primary': ['JPY'], 'secondary': ['AUD', 'CNY', 'NZD']},
-    'weekend_wrap': {'primary': ['USD'], 'secondary': ['EUR', 'GBP', 'JPY']}
+    'weekend_wrap': {'primary': ['USD'], 'secondary': ['CAD', 'EUR', 'GBP', 'JPY']}
 }
 
 TIER_1A_KEYWORDS = [
@@ -750,10 +750,59 @@ TIER_2B_KEYWORDS = [
     'consumer sentiment'
 ]
 
+def score_catalyst_event(ev: dict, primary_currencies: list, secondary_currencies: list) -> tuple:
+    """Calcula el puntaje institucional jerárquico de un catalizador macroeconómico."""
+    curr = ev.get('country', '')
+    ev_name = ev.get('event_name', '').strip()
+    name_lower = ev_name.lower()
+
+    # 1. SCORE DE TIER
+    tier_score = 0
+    if 'unemployment rate' in name_lower:
+        tier_score = 15000 if curr in primary_currencies else 3000
+    elif any(kw in name_lower for kw in TIER_1A_KEYWORDS):
+        tier_score = 15000
+    elif any(kw in name_lower for kw in TIER_1B_KEYWORDS):
+        tier_score = 10000
+    elif any(kw in name_lower for kw in TIER_2A_KEYWORDS):
+        tier_score = 5000
+    elif any(kw in name_lower for kw in TIER_2B_KEYWORDS):
+        tier_score = 3000
+
+    # 2. SCORE DE DIVISA
+    if curr in primary_currencies:
+        curr_score = 2000
+        curr_prio = 2
+    elif curr in secondary_currencies:
+        curr_score = 500
+        curr_prio = 1
+    else:
+        curr_score = 0
+        curr_prio = 0
+
+    # 3. SCORE DE IMPACTO
+    impact_upper = str(ev.get('impact', 'HIGH')).upper()
+    if impact_upper == 'HIGH':
+        impact_score = 500
+        impact_prio = 2
+    elif impact_upper == 'MEDIUM':
+        impact_score = 250
+        impact_prio = 1
+    else:
+        impact_score = 50
+        impact_prio = 0
+
+    total_score = tier_score + curr_score + impact_score
+    return total_score, impact_prio, curr_prio
+
 def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
     """
     Extrae dinámicamente los 4 catalizadores de mayor jerarquía institucional y desempate matemático.
-    Auditoría v5.0: Soporta persistencia de sesión completa, fin de semana y tie-breaker determinista.
+    Auditoría v20+:
+    - Fin de semana (weekend_wrap): Muestra el balance de la sesión de cierre semanal (viernes de cierre)
+      con datos reales publicados y estado 'digested' (DIGERIDO).
+    - Sesiones activas (incluyendo reapertura dominical en Asia): Ventana por horizontes escalonados con
+      inmediatez estricta (0-36h -> 36-72h -> 72-120h), impidiendo saltos temporales a días lejanos.
     """
     if now_utc is None:
         now_utc = datetime.now(timezone.utc)
@@ -780,119 +829,133 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
     curr_matrix = SESSION_CURRENCY_MATRIX.get(session_id, {'primary': ['USD'], 'secondary': ['CAD']})
     primary_currencies = curr_matrix['primary']
     secondary_currencies = curr_matrix['secondary']
-    all_target_currencies = primary_currencies + secondary_currencies
+    major_fallback_currencies = ['USD', 'EUR', 'GBP', 'CAD', 'JPY', 'AUD', 'CNY', 'NZD', 'CHF']
 
     is_weekend = (session_id == 'weekend_wrap')
+    ny_now = now_utc.astimezone(ZoneInfo("America/New_York"))
 
-    scored_events = []
-    for ev in events:
-        try:
-            ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
-            diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
+    selected_events = []
 
-            # FILTRO TEMPORAL SEGÚN SESIÓN
-            if is_weekend:
-                # En fin de semana, proyectar eventos futuros (a partir del lunes 00:00 UTC) hasta +168h (7 días)
-                if diff_hours < 0 or diff_hours > 168.0:
+    # =========================================================================
+    # CASO 1: FIN DE SEMANA (Viernes 17:00 NY -> Domingo 17:00 NY)
+    # Balance de la sesión de cierre semanal del viernes
+    # =========================================================================
+    if is_weekend:
+        days_since_friday = (ny_now.weekday() - 4) % 7
+        friday_date = (ny_now - timedelta(days=days_since_friday)).date()
+
+        scored_friday = []
+        for ev in events:
+            try:
+                ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
+                ev_ny = ev_time.astimezone(ZoneInfo("America/New_York"))
+
+                # Eventos correspondientes al viernes de cierre (hasta las 17:00 campana NY)
+                if ev_ny.date() != friday_date or ev_ny.hour >= 17:
                     continue
-            else:
-                # Durante la sesión activa:
-                # En sesión NY (12:30-21:00 UTC), los eventos de hoy (desde las 12:00 UTC) no se borran tras 3h.
-                # Se mantiene ventana de -10h a +14h para retener los catalizadores de toda la sesión bursátil viva.
-                if not (-10.0 <= diff_hours <= 14.0):
+
+                curr = ev.get('country', '')
+                if curr not in major_fallback_currencies:
                     continue
 
-            curr = ev.get('country', '')
-            if curr not in all_target_currencies:
+                total_score, impact_prio, curr_prio = score_catalyst_event(ev, primary_currencies, secondary_currencies)
+                ev_name = ev.get('event_name', '').strip()
+
+                sort_key = (
+                    total_score,
+                    impact_prio,
+                    curr_prio,
+                    ev_time.timestamp(),
+                    [-ord(c) for c in ev_name.lower()]
+                )
+                scored_friday.append((sort_key, ev))
+            except Exception:
                 continue
 
-            ev_name = ev.get('event_name', '').strip()
-            name_lower = ev_name.lower()
+        scored_friday.sort(key=lambda x: x[0], reverse=True)
+        selected_events = [x[1] for x in scored_friday[:4]]
 
-            # 1. SCORE DE TIER
-            tier_score = 0
-            if 'unemployment rate' in name_lower:
-                # Unemployment Rate es Tier-1A para USD (o divisa primaria), Tier-2B para divisas secundarias
-                tier_score = 15000 if curr in primary_currencies else 3000
-            elif any(kw in name_lower for kw in TIER_1A_KEYWORDS):
-                tier_score = 15000
-            elif any(kw in name_lower for kw in TIER_1B_KEYWORDS):
-                tier_score = 10000
-            elif any(kw in name_lower for kw in TIER_2A_KEYWORDS):
-                tier_score = 5000
-            elif any(kw in name_lower for kw in TIER_2B_KEYWORDS):
-                tier_score = 3000
+    # =========================================================================
+    # CASO 2: SESIONES ACTIVAS (incluyendo reapertura dominical en Asia)
+    # Ventana por horizontes escalonados con inmediatez estricta
+    # =========================================================================
+    else:
+        live_or_recent = []
+        h1_events = [] # 0h a 36h (Inmediato: hoy y mañana)
+        h2_events = [] # 36h a 72h (Medio: días 2 y 3)
+        h3_events = [] # 72h a 120h (Extendido: días 4 y 5)
 
-            # 2. SCORE DE DIVISA
-            if curr in primary_currencies:
-                curr_score = 2000
-                curr_prio = 2
-            elif curr in secondary_currencies:
-                curr_score = 500
-                curr_prio = 1
-            else:
-                curr_score = 0
-                curr_prio = 0
+        for ev in events:
+            try:
+                ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
+                diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
 
-            # 3. SCORE DE IMPACTO
-            impact_upper = str(ev.get('impact', 'HIGH')).upper()
-            if impact_upper == 'HIGH':
-                impact_score = 500
-                impact_prio = 2
-            elif impact_upper == 'MEDIUM':
-                impact_score = 250
-                impact_prio = 1
-            else:
-                impact_score = 50
-                impact_prio = 0
+                curr = ev.get('country', '')
+                if curr not in major_fallback_currencies:
+                    continue
 
-            # 4. SCORE DE TIEMPO
-            time_score = max(0, 300 - int(abs(diff_hours) * 20))
+                total_score, impact_prio, curr_prio = score_catalyst_event(ev, primary_currencies, secondary_currencies)
+                ev_name = ev.get('event_name', '').strip()
 
-            total_score = tier_score + curr_score + impact_score + time_score
+                sort_key = (
+                    total_score,
+                    -abs(diff_hours),
+                    impact_prio,
+                    curr_prio,
+                    [-ord(c) for c in ev_name.lower()]
+                )
 
-            # Clave de ordenamiento determinista (§2.3 de la auditoría):
-            # 1. total_score desc
-            # 2. cercanía en tiempo (-abs(diff_hours)) desc
-            # 3. impacto desc
-            # 4. divisa desc
-            # 5. orden alfabético A-Z (se usa string inverso para que reverse=True ordene A antes de Z)
-            sort_key = (
-                total_score,
-                -abs(diff_hours),
-                impact_prio,
-                curr_prio,
-                [-ord(c) for c in ev_name.lower()]
-            )
+                if -4.0 <= diff_hours < 0:
+                    live_or_recent.append((sort_key, ev))
+                elif 0 <= diff_hours <= 36.0:
+                    h1_events.append((sort_key, ev))
+                elif 36.0 < diff_hours <= 72.0:
+                    h2_events.append((sort_key, ev))
+                elif 72.0 < diff_hours <= 120.0:
+                    h3_events.append((sort_key, ev))
+            except Exception:
+                continue
 
-            scored_events.append((sort_key, ev_time, ev))
-        except Exception:
-            continue
+        live_or_recent.sort(key=lambda x: x[0], reverse=True)
+        h1_events.sort(key=lambda x: x[0], reverse=True)
+        h2_events.sort(key=lambda x: x[0], reverse=True)
+        h3_events.sort(key=lambda x: x[0], reverse=True)
 
-    # Ordenar por desempate determinista
-    scored_events.sort(key=lambda x: x[0], reverse=True)
+        # Llenado escalonado priorizando rigurosamente la inmediatez
+        for item in live_or_recent:
+            if len(selected_events) < 4:
+                selected_events.append(item[1])
 
-    # Tomar exactamente 4 slots (§Módulo 2.3)
-    top_events = [x[2] for x in scored_events[:4]]
+        for item in h1_events:
+            if len(selected_events) < 4:
+                selected_events.append(item[1])
 
-    # Ordenar los eventos estrictamente por orden cronológico para visualización en la UI
-    top_events.sort(key=lambda ev: ev.get('event_time', ''))
+        for item in h2_events:
+            if len(selected_events) < 4:
+                selected_events.append(item[1])
+
+        for item in h3_events:
+            if len(selected_events) < 4:
+                selected_events.append(item[1])
+
+    # Orden cronológico final para presentación en la UI
+    selected_events.sort(key=lambda ev: ev.get('event_time', ''))
 
     catalysts_payload = []
-    for ev in top_events:
+    for ev in selected_events:
         try:
             ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
             actual_val = ev.get('actual')
-            is_past = (ev_time <= now_utc)
-            
+            is_past = (ev_time <= now_utc) or is_weekend
+
             if is_past:
-                status = 'live'
+                status = 'digested' if (actual_val and actual_val not in ('Pendiente', '—', 'None')) else 'live'
                 if not actual_val or actual_val in ('Pendiente', '—', 'None'):
                     actual_val = 'Publicado'
             else:
                 status = 'upcoming'
                 actual_val = None
-            
+
             catalysts_payload.append({
                 'id': ev.get('id'),
                 'time': ev_time.strftime('%H:%M'), # UTC estandarizado
