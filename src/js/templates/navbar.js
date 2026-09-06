@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { id: 'mercados',    label: 'Mercados',    href: '/mercados.html',         icon: '<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>' },
   { id: 'analisis',    label: 'Análisis',    href: '/analisis.html',         icon: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
   { id: 'calendario',  label: 'Calendario',  href: '/calendario.html',       icon: '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>' },
-  { id: 'educacion',   label: 'Educación',   href: '/index.html#educacion',  icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>' },
+  { id: 'playbooks',   label: 'Playbooks',   href: '/index.html#playbooks',  icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
 ];
 
 /**
@@ -30,7 +30,7 @@ function detectActivePage() {
   if (path.includes('perfil.html'))      return 'perfil';
 
   // index.html or root — use hash to determine section
-  if (hash === '#educacion') return 'educacion';
+  if (hash === '#playbooks' || hash === '#educacion') return 'playbooks';
   return 'briefing';
 }
 
