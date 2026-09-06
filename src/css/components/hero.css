@@ -107,8 +107,8 @@
   position: absolute;
   inset: 0;
   background: 
-    linear-gradient(180deg, rgba(6, 10, 18, 0.6) 0%, rgba(6, 10, 18, 0.05) 35%, rgba(6, 10, 18, 0.3) 65%, rgba(6, 10, 18, 0.9) 100%),
-    radial-gradient(circle at center, transparent 35%, rgba(6, 10, 18, 0.45) 100%);
+    linear-gradient(180deg, rgba(6, 10, 18, 0.35) 0%, rgba(6, 10, 18, 0) 35%, rgba(6, 10, 18, 0.12) 70%, rgba(6, 10, 18, 0.35) 100%),
+    radial-gradient(circle at center, transparent 45%, rgba(6, 10, 18, 0.3) 100%);
   pointer-events: none;
 }
 
@@ -182,69 +182,6 @@
   border-radius: var(--radius-pill);
 }
 
-.hero-hud-bottom {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.65rem 1rem;
-  background: rgba(8, 13, 24, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  z-index: 2;
-}
-
-.hero-hud-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.hero-hud-label {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-}
-
-.hero-hud-val {
-  font-family: var(--font-head);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-bright);
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.hero-hud-indicator {
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  font-weight: 600;
-  color: var(--green-bright);
-  background: var(--green-dim);
-  padding: 0.1rem 0.45rem;
-  border-radius: 4px;
-  border: 1px solid rgba(74, 222, 128, 0.25);
-}
-
-.hero-hud-quote {
-  font-family: var(--font-body);
-  font-size: 0.76rem;
-  color: var(--muted);
-  font-style: italic;
-  text-align: right;
-  max-width: 24ch;
-  line-height: 1.35;
-}
 
 /* Fallback chart styling if retained elsewhere */
 .hero-chart-card {
@@ -287,14 +224,4 @@
     display: none;
   }
 
-  .hero-hud-bottom {
-    bottom: 0.75rem;
-    left: 0.75rem;
-    right: 0.75rem;
-    padding: 0.55rem 0.85rem;
-  }
-
-  .hero-hud-quote {
-    display: none;
-  }
 }

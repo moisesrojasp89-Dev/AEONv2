@@ -27,7 +27,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -146,7 +146,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -177,7 +177,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -208,7 +208,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -327,7 +327,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -335,56 +335,56 @@
     "category": "CRYPTO",
     "display_name": "Bitcoin",
     "session_origin": "GLOBAL",
-    "current_price": 79871.815,
-    "change_24h_pct": 1.75,
+    "current_price": 79905.005,
+    "change_24h_pct": 1.79,
     "bias": "BULLISH",
     "bias_score": 90,
-    "support_1": 78913.35,
-    "support_2": 78082.69,
-    "resistance_1": 80830.28,
-    "resistance_2": 81660.94,
-    "dpoc_price": 79616.23,
-    "session_vwap": 79744.02,
-    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (79616.23) y Session VWAP (79744.02).",
-    "technical_thesis": "Estructura alcista con soporte clave en 78913.35. La absorción compradora proyecta expansión hacia la resistencia 80830.28 con RSI en 73.0.",
+    "support_1": 78946.14,
+    "support_2": 78115.13,
+    "resistance_1": 80863.87,
+    "resistance_2": 81694.88,
+    "dpoc_price": 79649.31,
+    "session_vwap": 79777.16,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (79649.31) y Session VWAP (79777.16).",
+    "technical_thesis": "Estructura alcista con soporte clave en 78946.14. La absorción compradora proyecta expansión hacia la resistencia 80863.87 con RSI en 73.5.",
     "cited_key_levels": {
       "levels": [
-        78913.35,
-        79616.23,
-        80830.28,
-        79744.02
+        78946.14,
+        79649.31,
+        80863.87,
+        79777.16
       ],
       "session_levels": {
-        "pdh": 81153.6,
-        "pdl": 78597.7,
-        "asian_high": 80319.1,
-        "asian_low": 79424.53,
+        "pdh": 81187.33,
+        "pdl": 78630.36,
+        "asian_high": 80352.47,
+        "asian_low": 79457.54,
         "current_session": "NEW_YORK",
-        "ema_50_1h": 79731.24,
-        "sma_200_1d": 74680.15,
-        "session_vwap": 79744.02,
-        "vwap_upper_1s": 80190.59,
-        "vwap_lower_1s": 79297.45,
-        "vwap_upper_2s": 80700.95,
-        "vwap_lower_2s": 78787.09,
-        "dpoc_price": 79616.23,
-        "vah_price": 80830.28,
-        "val_price": 78913.35,
-        "volume_spike_alert": "Absorción institucional detectada en 78913.35"
+        "ema_50_1h": 79764.37,
+        "sma_200_1d": 74711.18,
+        "session_vwap": 79777.16,
+        "vwap_upper_1s": 80223.91,
+        "vwap_lower_1s": 79330.41,
+        "vwap_upper_2s": 80734.49,
+        "vwap_lower_2s": 78819.83,
+        "dpoc_price": 79649.31,
+        "vah_price": 80863.87,
+        "val_price": 78946.14,
+        "volume_spike_alert": "Absorción institucional detectada en 78946.14"
       },
       "structural_poi": [
         {
           "id": "btcusd-poi-sell",
           "type": "SELLSIDE_POI",
           "zone_label": "ZAP Oferta / Venta (1H)",
-          "range_low": 80830.28,
-          "range_high": 81660.94,
-          "mean_threshold": 81245.61,
+          "range_low": 80863.87,
+          "range_high": 81694.88,
+          "mean_threshold": 81279.38,
           "confluences": [
             "EMA 50 (1H) en resistencia",
             "iFVG (Inversion Fair Value Gap)",
             "dPOC + Banda VWAP +1σ",
-            "Resistencia R1 ($80,830)"
+            "Resistencia R1 ($80,864)"
           ],
           "status": "active"
         },
@@ -392,11 +392,11 @@
           "id": "btcusd-poi-buy",
           "type": "BUYSIDE_POI",
           "zone_label": "ZAP Demanda / Rebote (1H)",
-          "range_low": 78082.69,
-          "range_high": 78913.35,
-          "mean_threshold": 78498.02,
+          "range_low": 78115.13,
+          "range_high": 78946.14,
+          "mean_threshold": 78530.64,
           "confluences": [
-            "Order Block 4H mitigado en $78,913",
+            "Order Block 4H mitigado en $78,946",
             "Fibonacci OTE 78.6%",
             "Piscina SSL en mínimos"
           ],
@@ -406,13 +406,13 @@
       "liquidity_pools": {
         "bsl": [
           {
-            "price": 81802.83,
+            "price": 81836.83,
             "label": "Máximo Semanal / Trendline Liquidity $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 81153.6,
+            "price": 81187.33,
             "label": "PDH (Máximo Sesión Previa)",
             "status": "unmitigated",
             "timeframe": "1D"
@@ -420,13 +420,13 @@
         ],
         "ssl": [
           {
-            "price": 78913.35,
+            "price": 78946.14,
             "label": "Soporte de Directriz $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 77968.92,
+            "price": 78001.32,
             "label": "Mínimo Estructural Mayor $$$",
             "status": "unmitigated",
             "timeframe": "4H"
@@ -434,19 +434,19 @@
         ]
       },
       "structural_scenarios": {
-        "bullish_path": "SI el precio sostiene el soporte en 78913.35 y consolida sobre el dPOC (79616.23), ENTONCES proyecta expansión hacia la ZAP de Oferta en 80830.28 buscando la liquidez BSL en 81153.6.",
-        "bearish_path": "SI el precio pierde el soporte 78913.35 y quiebra el nivel VAL (78082.69), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 77968.92.",
-        "invalidation_level": 77832.83,
-        "invalidation_text": "Cierre de vela de 1H bajo 77832.83 invalida la estructura de rebote intradiario."
+        "bullish_path": "SI el precio sostiene el soporte en 78946.14 y consolida sobre el dPOC (79649.31), ENTONCES proyecta expansión hacia la ZAP de Oferta en 80863.87 buscando la liquidez BSL en 81187.33.",
+        "bearish_path": "SI el precio pierde el soporte 78946.14 y quiebra el nivel VAL (78115.13), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 78001.32.",
+        "invalidation_level": 77865.16,
+        "invalidation_text": "Cierre de vela de 1H bajo 77865.16 invalida la estructura de rebote intradiario."
       },
-      "diagnosis": "Bitcoin cotiza en $79,871.82 bajo estructura bullish (90/100). Flujo comprador institucional activo por encima del dPOC (79616.23) y Session VWAP (79744.02). Estructura alcista con soporte clave en 78913.35. La absorción compradora proyecta expansión hacia la resistencia 80830.28 con RSI en 73.0."
+      "diagnosis": "Bitcoin cotiza en $79,905.01 bajo estructura bullish (90/100). Flujo comprador institucional activo por encima del dPOC (79649.31) y Session VWAP (79777.16). Estructura alcista con soporte clave en 78946.14. La absorción compradora proyecta expansión hacia la resistencia 80863.87 con RSI en 73.5."
     },
     "catalyst_tags": [
       "BULLISH_FLOW",
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -477,7 +477,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -596,7 +596,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -627,7 +627,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -658,7 +658,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -689,7 +689,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -720,7 +720,7 @@
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -751,7 +751,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -782,7 +782,7 @@
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-06T00:24:53.608034+00:00",
+    "last_updated": "2026-09-06T00:36:09.864270+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   }
 ]
