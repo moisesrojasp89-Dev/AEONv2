@@ -133,7 +133,32 @@ async function initMarketsPage() {
     });
   }
 
-  // 4. Suscribirse a Supabase Realtime
+  // 4. Delegación de eventos para botón "Auditar con IA"
+  if (container) {
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-market-copilot');
+      if (!btn) return;
+      const symbol = btn.dataset.symbol || '';
+      const name = btn.dataset.name || symbol;
+
+      const chatPanel = document.getElementById('aeon-chat-panel');
+      const chatFab = document.getElementById('chat-fab-toggle');
+      const chatTextarea = document.getElementById('chat-textarea-input');
+
+      // Si el panel de chat no está abierto, abrirlo
+      if (chatPanel && !chatPanel.classList.contains('active')) {
+        chatFab?.click();
+      }
+
+      if (chatTextarea) {
+        chatTextarea.value = `Audita los niveles clave, sesgo institucional y liquidez para ${name} (${symbol}).`;
+        chatTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+        setTimeout(() => chatTextarea.focus(), 160);
+      }
+    });
+  }
+
+  // 5. Suscribirse a Supabase Realtime
   marketsService.subscribeToLiveUpdates(handleLiveUpdate);
 }
 

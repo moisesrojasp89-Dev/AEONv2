@@ -93,17 +93,17 @@ export function renderNavbar() {
         </div>
         <!-- User view -->
         <div id="nav-user-view" class="nav-auth-group" style="display: none;">
-          <a href="/perfil.html" class="nav-btn btn-nav-ghost">Mi Perfil</a>
+          <a href="/perfil.html" class="nav-btn btn-nav-ghost">Perfil</a>
           <button id="btn-logout" class="btn-primary nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>`;
 
   // Mobile drawer guest/user sections
   const drawerAuthSection = isPerfilPage
     ? `<div class="drawer-section">
-          <p class="drawer-label">MI CUENTA</p>
+          <p class="drawer-label">CUENTA</p>
           <a href="/perfil.html" class="mobile-link active">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Mi Perfil</span>
+            <span>Perfil</span>
           </a>
           <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
@@ -118,10 +118,10 @@ export function renderNavbar() {
           </a>
         </div>
         <div class="drawer-section" id="mobile-nav-user" style="display: none;">
-          <p class="drawer-label">MI CUENTA</p>
+          <p class="drawer-label">CUENTA</p>
           <a href="/perfil.html" class="mobile-link">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Mi Perfil</span>
+            <span>Perfil</span>
           </a>
           <button id="btn-logout-mobile" class="mobile-link" style="text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; font-family: inherit;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>

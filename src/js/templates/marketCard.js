@@ -142,7 +142,14 @@ export function renderMarketCard(m) {
         </a>
       </div>
     `
-    : '';
+    : `
+      <div class="market-card-action">
+        <button type="button" class="market-action-btn font-mono btn-market-copilot" data-symbol="${symbol}" data-name="${displayName}">
+          <span>Auditar con IA</span>
+          <span class="market-action-arrow">✦</span>
+        </button>
+      </div>
+    `;
 
   return `
     <article class="market-card" data-symbol="${symbol}" data-category="${category}">
