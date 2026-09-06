@@ -580,12 +580,13 @@ ${macroContextSummary}
 ${calendarContextSummary}
 `;
 
-    // Invocación con modelos actualizados de Google Gemini y responseSchema nativo
+    // Invocación con modelos ultra-rápidos de Google Gemini y responseSchema nativo
+    // gemini-3.1-flash-lite como principal (<3.3s), gemini-flash-latest como respaldo inmediato (<2.4s)
     const models = [
-      "gemini-3.5-flash-lite",
       "gemini-3.1-flash-lite",
-      "gemini-3-flash-preview",
-      "gemini-3.7-flash"
+      "gemini-flash-latest",
+      "gemini-3.1-flash-lite-preview",
+      "gemini-flash-lite-latest"
     ];
     let rawAiText = "";
 
@@ -595,7 +596,7 @@ ${calendarContextSummary}
         const res = await fetch(geminiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          signal: AbortSignal.timeout(10000),
+          signal: AbortSignal.timeout(5000),
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: systemInstruction }] },
             contents: contents,
