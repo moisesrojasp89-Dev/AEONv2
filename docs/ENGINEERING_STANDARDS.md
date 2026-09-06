@@ -144,4 +144,21 @@ Ninguna estrategia de trading o motor algorítmico se promoverá a producción n
 | **Backend / DB** | RLS Zero-Trust, Funciones RPC indexadas, Idempotencia en Webhooks. | Migraciones SQL Versionadas |
 | **VPS / Infra** | SSH endurecido, `fail2ban`, Docker Compose aislado, backups cifrados offsite. | Healthcheck cada 30s |
 | **Trading Core** | Certificación de 1 año con fricción Exness Raw, WFO en 10 ventanas y Quality Gates. | $PF \ge 1.35, SR \ge 1.30, DD \le 12\%$ |
+| **Legal / Compliance** | Consentimiento explícito de Términos PRO, cláusula No-Financial-Advice estricta y descargo de riesgo. | Modal Contractual Vinculante |
+
+---
+
+## ⚖️ 8. Gobernanza Legal, Cumplimiento y Blindaje Contractual PRO
+
+Para proteger la plataforma ante contingencias regulatorias y blindar la operación legal:
+
+### A. Cláusula Estricta de No Asesoramiento Financiero (*No Financial Advice - NFA*)
+* Ningún componente de la plataforma (incluyendo el análisis estructural ZAP, el escáner de sesgos de mercado, las confluencias de Order Flow y las respuestas del **AEON Copilot**) constituye ni debe interpretarse como asesoramiento financiero personalizado, recomendación de inversión ni gestión delegada de capital.
+* Todo trader asume la responsabilidad total y exclusiva de sus decisiones operativas y gestión de riesgo en su broker o cuenta de fondeo.
+
+### B. Protocolo de Aceptación Contractual para Membresías PRO
+1. **Consentimiento Previo Vinculante:** Antes de completar el upgrade a cualquier modalidad PRO o Institucional, el usuario debe visualizar y aceptar formalmente los Términos y Condiciones Contractuales de AEON Intelligence.
+2. **Registro de Auditoría en Base de Datos:**
+   * La aceptación queda registrada con marca de tiempo UTC (`terms_accepted_at`), versión del contrato (`terms_version`) y dirección IP / User-Agent en el perfil del usuario (`public.profiles`).
+3. **Modal de Consulta Permanente:** El contrato íntegro permanece accesible en todo momento dentro del Command Center del Trader ([`perfil.html`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/perfil.html)) bajo la pestaña *Membresía*, garantizando transparencia total.
 

@@ -358,3 +358,66 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   - **Free:** Modal interactivo con comparativa de beneficios y botón de actualización a Pro.
   - **Pro / Institucional:** Acceso completo al Copiloto con indicador de cuota diaria (50 consultas/día), historial local persistente (`localStorage`), sanitización XSS y renderizado estructurado de confluencias de mercado.
 
+---
+
+## 💎 11. Hito 11: Auditoría CSS Exhaustiva & Tokenización Integral 100%
+* **Propósito:** Erradicar deuda técnica oculta, inconsistencias de estilo y valores fijos en las hojas de estilo del proyecto.
+* **Acciones Ejecutadas:**
+  1. **Tokenización de Diseño (`src/css/variables.css`):** Creación de tokens canónicos para la paleta neutral (`--slate-500`, `--slate-400`, `--slate-200`, `--slate-50`), estados de botones (`--accent-dim`, `--accent-border`, `--accent-glow`), y capas (`--z-behind: -1`, `--z-base: 1`, `--z-above: 2`, `--z-sticky: 10`, `--z-nav: 900`, `--z-overlay: 998`, `--z-drawer: 999`, `--z-modal: 1000`).
+  2. **Erradicación de Hexadecimales Hardcodeados:** Reemplazo de más de 80 instancias de colores hexadecimales fijos en `components/news.css`, `signals.css`, `navbar.css`, `perfil.css`, `auth.css` y `form-controls.css`.
+  3. **Eliminación de `!important`:** Eliminación del 100% de declaraciones `!important` en el código fuente, restaurando la cascada natural y la especificidad CSS predecible.
+  4. **Estandarización de Radios y Transiciones:** Uso consistente de `--radius-xs`, `--radius-sm`, `--radius-md`, `--radius-pill`, `--dur-fast`, `--dur-base` y `--ease-spring`.
+
+---
+
+## 🏛️ 12. Hito 12: Desacoplamiento y Unificación de Navbar Centralizada
+* **Problema Previo:** La barra de navegación y el cajón móvil (`aside.mobile-drawer`) se encontraban duplicados en 11 archivos HTML distintos, acumulando más de 1.500 líneas de código redundante y provocando inconsistencias en el estado de autenticación de los usuarios.
+* **Solución Arquitectónica:**
+  1. **Inyección Dinámica Centralizada:** Sustitución de los bloques `<header>` y `<aside>` duplicados por un único punto de anclaje `<div id="navbar-root"></div>` en las 11 páginas (`index.html`, `mercados.html`, `calendario.html`, `perfil.html`, `login.html`, `registro.html`, `recuperar.html`, `actualizar-password.html`, `aviso-legal.html`, `privacidad.html`, `cookies.html`).
+  2. **Plantilla Única en [`src/js/templates/navbar.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/templates/navbar.js):** Renderizado reactivo que detecta la página actual, resalta la pestaña activa con accesibilidad `aria-current="page"` y gestiona las vistas de visitante (*Guest*) vs usuario autenticado (*User View*).
+  3. **Integración Global de AEON Copilot:** Inicialización automática del asistente inteligente flotante en todo el ecosistema de la plataforma.
+
+---
+
+## 👤 13. Hito 13: Rediseño Integral del Command Center del Trader (`perfil.html`)
+* **Problema Previo:** La vista de perfil carecía de estética profesional; presentaba exceso de tarjetas redondeadas poco integradas, falta de rigor contractual para el plan PRO y fallas visuales en pantallas móviles.
+* **Solución Implementada:**
+  1. **Estética Dark Luxury / Linear:** Banner HUD de identidad con avatar generado por iniciales, píldora de estatus de conexión activa (`Online · v3.2`) y badges de suscripción (*Free* vs *PRO Institucional*).
+  2. **Navegación por Pestañas WAI-ARIA:** Estructura modular accesible por teclado (`role="tablist"` / `role="tabpanel"`) dividida en:
+     * **General:** Resumen de cuenta, telemetría de trading y accesos rápidos (Quick Dock).
+     * **Membresía:** Estado de suscripción, beneficios desbloqueados y botón de consulta del contrato PRO.
+     * **Seguridad:** Gestión de contraseñas, sesiones activas y autenticación.
+     * **Preferencias:** Zonas horarias, unidades de cotización y alertas.
+  3. **Modal Contractual de Términos y Condiciones PRO:**
+     * Creación de un modal legal formal para membresías PRO que estipula el alcance de la inteligencia cuantitativa, el descargo de responsabilidad de no-asesoramiento financiero (No Financial Advice) y los acuerdos de servicio vinculantes.
+     * Reemplazo de enlaces legados como `"Acceder a Señales PRO →"` por accesos claros al Terminal de Mercados (`/mercados.html`).
+  4. **Optimización Responsive Móvil:** Eliminación de tarjetas con bordes excesivos y layouts rígidos, logrando una interfaz limpia y proporcional a cualquier tamaño de pantalla.
+
+---
+
+## 📚 14. Hito 14: Rebranding Institucional "Educación" → "Playbooks Operativos"
+* **Justificación Estratégica:** En el contexto de AEON Intelligence como terminal cuantitativa para traders institucionales, el término "Educación" remitía a cursos o academias minoristas convencionales. El nuevo concepto **"Playbooks Operativos"** refleja manuales de ejecución sistemática, gestión de Order Flow, explotación de ZAPs y control de riesgo profesional.
+* **Implementación:**
+  * **Portada (`index.html`):** Título de sección actualizado a *"Playbooks Operativos"*, con subtítulo orientado a la ejecución institucional y ancla dual `#playbooks` con compatibilidad retroactiva para enlaces legados `#educacion`.
+  * **Navegación Global:** Actualizado en [`src/js/templates/navbar.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/templates/navbar.js) con nuevo icono SVG de manual institucional.
+  * **Páginas Satélite y Legales:** Sincronizado en `perfil.html` (Quick Dock y footer), `aviso-legal.html`, `privacidad.html` y `cookies.html`.
+
+---
+
+## 📱 15. Hito 15: Optimización de Copia de Perfil & Paridad Dimensional de Tarjetas de Mercados
+* **Problema 1 (Copia Redundante):** En el navbar y menú lateral, la etiqueta decía *"Mi Perfil"* y *"MI CUENTA"*, lo cual resultaba redundante para un usuario ya registrado y autenticado.
+  * **Solución:** Actualizado a **`Perfil`** y **`CUENTA`** en todos los componentes de navegación.
+* **Problema 2 (Disparidad de Tamaño en Mercados Móvil):** En `mercados.html`, 4 activos insignia (Bitcoin, Oro, Nasdaq, Euro) tenían un botón de acción inferior (`[ Analizar ZAP → ]`) midiendo ~409px, mientras que las otras 10 tarjetas carecían de esta fila y medían ~352px. Al deslizar el carrusel táctil, la disparidad provocaba saltos bruscos e incómodos.
+  * **Solución:**
+    1. **Acción Institucional Dual en [`marketCard.js`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/js/templates/marketCard.js):** Para los 10 activos sin gráfico ZAP directo en `/analisis.html` (DXY, AUD/USD, GBP/USD, etc.), se integró el botón **`[ Auditar con IA ✦ ]`**. Al pulsarlo, interactúa reactivamente con `chatWidget.js` para abrir el Copiloto IA y pre-llenar la consulta de auditoría institucional del activo.
+    2. **Flexbox Elástico en [`market.css`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/css/components/market.css):** Reglas `align-items: stretch` en `.markets-grid-layout`, `align-self: stretch` en `.market-card`, `.market-thesis-box { flex: 1 1 auto }` y `.market-card-action { margin-top: auto }`.
+    3. **Verificación Automatizada:** Se comprobó mediante Playwright una paridad de **0.00px de variación** entre las 14 tarjetas en resoluciones iPhone SE (375px), iPhone 12/13/14 (390px), iPhone Pro Max (430px) y Android (360px).
+
+---
+
+## 🌌 16. Hito 16: Limpieza y Despeje Visual del Hero Institucional
+* **Problema:** Sobre la ilustración 3D cuántica del Hero flotaba un recuadro inferior con el texto `ESTADO DE LIQUIDEZ: Expansión Global [ Risk-On ]` y `"El contexto que necesitas antes de operar."`. La frase era idéntica al propio título H1 de la portada y el estado macro se analiza en detalle en el *Daily Macro Briefing*, saturando innecesariamente la composición artística.
+* **Solución:**
+  1. **Eliminación en [`index.html`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/index.html):** Se removió el nodo `.hero-hud-bottom`.
+  2. **Optimización en [`hero.css`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/css/components/hero.css):** Se limpiaron las reglas huérfanas de `.hero-hud-bottom` y se redujo la sombra del gradiente inferior de `.hero-visual-overlay` (de 90% a 35%), permitiendo que la topografía cuántica y la esfera 3D brillen con total nitidez. Se mantuvo la insignia superior minimalista `AEON INTELLIGENCE` con el pulso cuántico.
+

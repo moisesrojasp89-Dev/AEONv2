@@ -27,21 +27,29 @@
 
 ## 2. Design System & CSS
 
-1. **Tokens de Diseño (`src/css/variables.css`):**
-   * Usar siempre variables CSS para colores, fuentes y radios:
-     * Colores: `var(--accent)`, `var(--green)`, `var(--red)`, `var(--yellow)`, `var(--purple)`
-     * Superficies: `var(--bg)`, `var(--surface)`, `var(--surface-2)`, `var(--border)`
+2. **Tokens de Diseño (`src/css/variables.css`):**
+   * Usar siempre variables CSS para colores, fuentes, radios y capas:
+     * Colores de Marca & Acentos: `var(--accent)`, `var(--accent-hover)`, `var(--accent-dim)`, `var(--accent-border)`, `var(--accent-glow)`
+     * Semánticos: `var(--green)`, `var(--red)`, `var(--yellow)`, `var(--purple)`
+     * Paleta Neutral Slate: `var(--slate-500)`, `var(--slate-400)`, `var(--slate-200)`, `var(--slate-50)`
+     * Superficies: `var(--bg)`, `var(--surface)`, `var(--surface-2)`, `var(--border)`, `var(--border-2)`
      * Tipografía: `var(--font-head)` (Space Grotesk), `var(--font-body)` (Inter), `var(--font-mono)` (JetBrains Mono)
-     * Radios: `var(--radius-sm)`, `var(--radius-md)`, `var(--radius-lg)`
-   * **Nunca usar colores hexadecimales hardcodeados** en componentes si existe un token equivalente.
+     * Radios: `var(--radius-xs)`, `var(--radius-sm)`, `var(--radius-md)`, `var(--radius-pill)`, `var(--radius-circle)`
+     * Capas Z-Index Canónicas: `var(--z-behind: -1)`, `var(--z-base: 1)`, `var(--z-above: 2)`, `var(--z-sticky: 10)`, `var(--z-nav: 900)`, `var(--z-overlay: 998)`, `var(--z-drawer: 999)`, `var(--z-modal: 1000)`
+   * **Prohibido el uso de colores hexadecimales hardcodeados** en componentes si existe un token equivalente.
+   * **Prohibición estricta de `!important`:** Toda especificidad debe resolverse mediante la cascada natural y arquitectura BEM.
 
-2. **Compatibilidad Glassmorphism:**
+3. **Compatibilidad Glassmorphism:**
    * Cada contenedor con `backdrop-filter: blur(...)` debe incluir su contraparte `-webkit-backdrop-filter: blur(...)` para soporte completo en Safari e iOS.
 
-3. **Convención BEM / Nombres de Clases:**
-   * Evitar selectores de clase genéricos que colisionen globalmente (ej: usar `.btn-nav-ghost` en navbar en lugar de `.btn-ghost` si tienen comportamientos distintos).
+4. **Convención BEM y Nomenclatura UI:**
+   * Evitar selectores de clase genéricos que colisionen globalmente (ej: usar `.btn-nav-ghost` en navbar en lugar de `.btn-ghost`).
+   * **Copia Institucional Limpia (Cero Posesivos Redundantes):** En barras de navegación y menús de usuario autenticado, utilizar términos objetivos directos: **`Perfil`** (nunca *"Mi Perfil"*) y **`CUENTA`** (nunca *"MI CUENTA"*).
 
-4. **Accesibilidad y Movimiento:**
+5. **Paridad Dimensional en Componentes Móviles (Carruseles):**
+   * En contenedores con desplazamiento horizontal táctil (`scroll-snap-type: x mandatory`), el contenedor padre debe declarar `align-items: stretch` y las tarjetas `align-self: stretch` con estructura vertical elástica (`flex: 1 1 auto` en cajas de contenido y `margin-top: auto` en filas de acción) para garantizar **0.00px de variación de altura** entre tarjetas adyacentes.
+
+6. **Accesibilidad y Movimiento:**
    * Las animaciones continuas (como el ticker) deben usar aceleración por hardware (`translate3d(0, 0, 0)`) y no deben romper el layout visual en navegadores de escritorio.
 
 ---

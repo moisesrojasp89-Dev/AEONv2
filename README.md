@@ -50,16 +50,25 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │  - Producción en Vercel: https://aeondev.vercel.app                    │
 │  - Entorno Local (Wi-Fi): http://192.168.1.8:5173                      │
 │  - Navbar Global Centralizada: Single source of truth (#navbar-root)   │
+│    con navegación reactiva limpia ('Perfil' y cajón móvil 'CUENTA')    │
 │  - AEON Copilot (chatWidget.js): Botón flotante FAB global con soporte │
 │    multiestado (Guest / Free Paywall / Pro), cuotas y anti-XSS         │
-│  - Hero Institucional: Imagen de alta fidelidad hero-preview.webp      │
-│  - Radar de Mercados Globales: 14 activos, carrusel táctil y badges    │
+│  - Hero Institucional: Imagen cuántica 3D nítida con micro-HUD superior│
+│  - Radar de Mercados Globales: 14 activos, carrusel táctil horizontal  │
+│    con paridad dimensional al subpíxel (0.00px de variación en móvil)  │
+│  - Acciones Contextuales de Mercado:                                   │
+│      • [ Analizar ZAP → ] para los 4 reyes hacia /analisis.html        │
+│      • [ Auditar con IA ✦ ] para 10 activos enlazado al Copilot IA    │
 │  - Terminal de Análisis Estructural (/analisis.html):                   │
 │      • 4 Reyes del Mercado (Oro XAU, Bitcoin BTC, Euro EUR, Nasdaq NAS)│
 │      • Gráficos nativos Canvas Lightweight Charts v5 (Curva neón)      │
 │      • Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda) & EMA 50  │
 │      • Piscinas de Liquidez ($$$ BSL/SSL) & Escenarios "Si / Entonces" │
 │      • Cálculo cuántico Zero-DDL en cited_key_levels y Heartbeat 25s   │
+│  - Playbooks Operativos (Antes Educación): Manuales tácticos           │
+│    institucionales de Order Flow, ZAPs y Gestión de Riesgo Profesional │
+│  - Command Center del Trader (/perfil.html): Rediseño Dark Luxury con  │
+│    pestañas WAI-ARIA, modal contractual de Términos y Condiciones PRO │
 │  - Calendario Modular (form-controls, sidebar-widget, calendar.css)    │
 │  - Feed de Noticias: Grid adaptativo de noticias destacadas y filtro   │
 │  - Cero Deuda Técnica: 0 inline styles, 0 !important, tokens CSS puros │
@@ -95,13 +104,15 @@ python scripts/ai/aeon_autonomous_engine.py
 | **Cerebro Cuántico 14 Activos** | Microestructura dPOC, VWAP, sesgos deterministas y fórmula ICE DXY. | ✅ **Operativo** |
 | **Terminal de Análisis (`/analisis.html`)** | Gráficos Canvas nativos, ZAPs dinámicas, piscinas BSL/SSL, Zero-DDL y Heartbeat 25s. | ✅ **Operativo en Vivo** |
 | **AEON Copilot (Chatbot IA)** | Copiloto macro institucional, Edge Function `aeon-chat` Zero-Trust y widget multiestado. | ✅ **Operativo** |
-| **Hero Institucional & Grids** | Imagen `hero-preview.webp` dark luxury y grid responsive anti-colapso en noticias. | ✅ **Desplegado** |
-| **Conexión Mercados ↔ Análisis** | Enlace contextual directo `[ Analizar ZAP → ]` con soporte de parámetros URL (`?symbol=`). | ✅ **Desplegado** |
-| **Navbar Centralizada Unificada** | Cero duplicación HTML; inyección única vía `<div id="navbar-root"></div>`. | ✅ **Desplegado** |
+| **Hero Institucional Limpio** | Ilustración 3D cuántica despejada con micro-HUD superior minimalista. | ✅ **Desplegado** |
+| **Radar de Mercados & Conexión Dual** | Enlace `[ Analizar ZAP → ]` para los 4 reyes y `[ Auditar con IA ✦ ]` conectado a Copilot. | ✅ **Desplegado** |
+| **Paridad Dimensional Móvil** | Flexbox elástico con 100% de paridad dimensional al subpíxel en carrusel de mercados. | ✅ **Verificado (0.00px)** |
+| **Playbooks Operativos** | Rebranding institucional de educación hacia manuales sistemáticos de ejecución. | ✅ **Desplegado** |
+| **Command Center del Trader (`perfil.html`)** | Interfaz Dark Luxury, navegación WAI-ARIA y modal contractual de Términos y Condiciones PRO. | ✅ **Desplegado** |
+| **Navbar Centralizada Unificada** | Cero duplicación HTML (11 páginas); inyección única `<div id="navbar-root"></div>`. | ✅ **Desplegado** |
 | **Erradicación de Deuda Técnica** | Cero estilos inline, cero `!important`, variables CSS 100% tokenizadas. | ✅ **Auditoría OK** |
 | **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
 | **Modo Weekend Wrap** | Cierre semanal con datos digeridos (NFP/Desempleo) y horizontes escalonados para Asia. | ✅ **Operativo** |
-| **Mercados Móvil** | Carrusel horizontal táctil `86vw` con cero scroll vertical. | ✅ **Desplegado** |
 | **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
 
 ---
@@ -111,4 +122,6 @@ python scripts/ai/aeon_autonomous_engine.py
 * 📖 **[Bitácora de Desarrollo y Errores](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico detallado de bugs resueltos, refactorizaciones y lecciones aprendidas.
 * 🏛️ **[Estándares de Ingeniería](docs/ENGINEERING_STANDARDS.md):** Convenciones de código, seguridad RLS y gobernanza cuantitativa.
 * 🗺️ **[Roadmap v2.0](docs/AEON_ROADMAP_V2.md):** Fases y arquitectura a largo plazo.
+* 📐 **[Convenciones Técnicas](docs/CONVENTIONS.md):** Estándares de diseño, BEM, tokens y protocolos de señales.
+* 📋 **[Estado Actual vs Objetivo](docs/CURRENT_STATE_VS_TARGET.md):** Diagnóstico de arquitectura y cuadro de mando exhaustivo.
 
