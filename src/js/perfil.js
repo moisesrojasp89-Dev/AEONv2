@@ -127,7 +127,7 @@ function setupCheckoutModal() {
   const methodItems = document.querySelectorAll('.checkout-method-item');
 
   let selectedPlan = 'monthly';
-  let selectedPrice = 19;
+  let selectedPrice = 6.99;
   let selectedMethod = 'binance';
 
   const WALLET_DATA = {
@@ -177,7 +177,7 @@ function setupCheckoutModal() {
 
     const lockIcon = btnProceedPayment.querySelector('.btn-lock-icon');
     if (isAccepted) {
-      btnProceedText.textContent = `Proceder al Pago Seguro ($${selectedPrice} USDT) →`;
+      btnProceedText.textContent = `Proceder al Pago Seguro ($${selectedPrice.toFixed(2)} USDT) →`;
       if (lockIcon) lockIcon.textContent = '⚡';
     } else {
       btnProceedText.textContent = 'Acepta los términos para continuar';
@@ -194,7 +194,7 @@ function setupCheckoutModal() {
       if (radio) radio.checked = true;
 
       selectedPlan = card.dataset.plan || 'monthly';
-      selectedPrice = Number(card.dataset.price) || 19;
+      selectedPrice = parseFloat(card.dataset.price) || 6.99;
       updateProceedButtonState();
     });
   });
@@ -217,14 +217,20 @@ function setupCheckoutModal() {
   }
 
   // Proceder al Paso 2: Detalles de Transferencia
+  const PLAN_LABELS = {
+    'weekly': 'Pase Semanal de Prueba (7 días)',
+    'monthly': 'Membresía Mensual (30 días)',
+    'quarterly': 'Pase Trimestral (90 días)'
+  };
+
   if (btnProceedPayment) {
     btnProceedPayment.addEventListener('click', () => {
       if (!termsCheckbox || !termsCheckbox.checked) return;
 
       const walletInfo = WALLET_DATA[selectedMethod] || WALLET_DATA['binance'];
-      if (depositAmountDisplay) depositAmountDisplay.textContent = `$${selectedPrice}.00 USDT`;
+      if (depositAmountDisplay) depositAmountDisplay.textContent = `$${selectedPrice.toFixed(2)} USDT`;
       if (depositNetworkDisplay) depositNetworkDisplay.textContent = walletInfo.network;
-      if (depositPlanDisplay) depositPlanDisplay.textContent = selectedPlan === 'monthly' ? 'Membresía Mensual (30 días)' : 'Membresía Trimestral (90 días)';
+      if (depositPlanDisplay) depositPlanDisplay.textContent = PLAN_LABELS[selectedPlan] || 'Membresía AEON Pro';
       if (depositAddressInput) depositAddressInput.value = walletInfo.address;
       if (copyHint) copyHint.classList.remove('visible');
 

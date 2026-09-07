@@ -1564,7 +1564,7 @@
   border-radius: var(--radius-md, 14px);
   box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(14, 165, 233, 0.08);
   width: 100%;
-  max-width: 540px;
+  max-width: 650px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -1642,11 +1642,11 @@
   margin: 0;
 }
 
-/* Grid de Planes */
+/* Grid de Planes (3 Niveles) */
 .checkout-plans-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
@@ -2062,7 +2062,7 @@
   margin-bottom: 1.5rem;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 640px) {
   .checkout-modal-card {
     padding: 1.5rem 1.1rem;
   }

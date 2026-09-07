@@ -455,35 +455,50 @@
           <p class="checkout-subtitle">Acceso total al Copiloto Cuantitativo IA, auditoría de gráficos en tiempo real y cálculo de lotaje profesional.</p>
         </div>
 
-        <!-- Selector de Planes -->
+        <!-- Selector de Planes (Oferta de Lanzamiento) -->
         <div class="checkout-plans-grid">
-          <label class="checkout-plan-card active" data-plan="monthly" data-price="19">
+          <label class="checkout-plan-card" data-plan="weekly" data-price="1.99">
+            <input type="radio" name="checkout-plan" value="weekly" class="checkout-radio" />
+            <div class="plan-card-body">
+              <div class="plan-card-header">
+                <span class="plan-card-name">Pase Semanal</span>
+                <span class="plan-card-badge">PRUEBA 7D</span>
+              </div>
+              <div class="plan-card-price">
+                <span class="price-val">$1.99</span>
+                <span class="price-unit">USDT / 7 días</span>
+              </div>
+              <p class="plan-card-desc">Acceso total para probar Zonas ZAP y Copiloto IA sin compromiso.</p>
+            </div>
+          </label>
+
+          <label class="checkout-plan-card active" data-plan="monthly" data-price="6.99">
             <input type="radio" name="checkout-plan" value="monthly" checked class="checkout-radio" />
             <div class="plan-card-body">
               <div class="plan-card-header">
                 <span class="plan-card-name">Plan Mensual</span>
-                <span class="plan-card-badge">FLEXIBLE</span>
+                <span class="plan-card-badge highlight">MÁS POPULAR ★</span>
               </div>
               <div class="plan-card-price">
-                <span class="price-val">$19</span>
+                <span class="price-val">$6.99</span>
                 <span class="price-unit">USDT / mes</span>
               </div>
-              <p class="plan-card-desc">Facturación mes a mes. Cancela cuando quieras.</p>
+              <p class="plan-card-desc">El estándar de los traders. Facturación mensual, cancela cuando quieras.</p>
             </div>
           </label>
 
-          <label class="checkout-plan-card" data-plan="quarterly" data-price="49">
+          <label class="checkout-plan-card" data-plan="quarterly" data-price="14.99">
             <input type="radio" name="checkout-plan" value="quarterly" class="checkout-radio" />
             <div class="plan-card-body">
               <div class="plan-card-header">
-                <span class="plan-card-name">Plan Trimestral</span>
-                <span class="plan-card-badge highlight">AHORRA 15%</span>
+                <span class="plan-card-name">Pase Trimestral</span>
+                <span class="plan-card-badge highlight">AHORRA 28%</span>
               </div>
               <div class="plan-card-price">
-                <span class="price-val">$49</span>
+                <span class="price-val">$14.99</span>
                 <span class="price-unit">USDT / 3 meses</span>
               </div>
-              <p class="plan-card-desc">Equivalente a ~$16.30/mes. Máximo valor para operadores activos.</p>
+              <p class="plan-card-desc">Equivalente a ~$5.00/mes. Máximo valor para operadores constantes.</p>
             </div>
           </label>
         </div>
@@ -550,7 +565,7 @@
         <div class="deposit-summary-card">
           <div class="deposit-row">
             <span class="deposit-lbl">Total a Enviar:</span>
-            <span class="deposit-val highlight font-mono" id="deposit-amount-display">$19.00 USDT</span>
+            <span class="deposit-val highlight font-mono" id="deposit-amount-display">$6.99 USDT</span>
           </div>
           <div class="deposit-row">
             <span class="deposit-lbl">Red Seleccionada:</span>
