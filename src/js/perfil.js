@@ -94,6 +94,201 @@ function renderPasswordStrength(strength) {
   textEl.className = `strength-text ${strength.className}`;
 }
 
+// ============================================================
+// Checkout Modal PRO & Blindaje Clickwrap ("Chulito")
+// ============================================================
+let currentUserId = null;
+
+function setupCheckoutModal() {
+  const checkoutModal = document.getElementById('modal-checkout-pro');
+  if (!checkoutModal) return;
+
+  const btnCloseCheckout = document.getElementById('btn-close-checkout');
+  const btnFinishCheckout = document.getElementById('btn-finish-checkout');
+  const btnBackToPlans = document.getElementById('btn-back-to-plans');
+  const btnProceedPayment = document.getElementById('btn-proceed-payment');
+  const btnProceedText = document.getElementById('btn-proceed-text');
+  const termsCheckbox = document.getElementById('checkout-terms-checkbox');
+  const btnConfirmSent = document.getElementById('btn-confirm-sent');
+  const btnCopyAddress = document.getElementById('btn-copy-address');
+  const copyHint = document.getElementById('copy-success-hint');
+  const depositAddressInput = document.getElementById('deposit-address-input');
+  const depositAmountDisplay = document.getElementById('deposit-amount-display');
+  const depositNetworkDisplay = document.getElementById('deposit-network-display');
+  const depositPlanDisplay = document.getElementById('deposit-plan-display');
+  const pendingTerminalId = document.getElementById('pending-terminal-id');
+  const dashPlanCta = document.getElementById('dash-plan-cta');
+
+  const viewPlans = document.getElementById('checkout-view-plans');
+  const viewDetails = document.getElementById('checkout-view-details');
+  const viewPending = document.getElementById('checkout-view-pending');
+
+  const planCards = document.querySelectorAll('.checkout-plan-card');
+  const methodItems = document.querySelectorAll('.checkout-method-item');
+
+  let selectedPlan = 'monthly';
+  let selectedPrice = 19;
+  let selectedMethod = 'binance';
+
+  const WALLET_DATA = {
+    'binance': {
+      network: 'Binance Pay (Cero Gas Fee)',
+      address: 'Pay ID: 101395084 (AEON Intelligence)'
+    },
+    'usdt-trc20': {
+      network: 'Red TRON (TRC-20)',
+      address: 'TQv8kL7X2m9PZ1wYaNxC5rBe4dF6uJ8sAe'
+    },
+    'usdt-bep20': {
+      network: 'Binance Smart Chain (BEP-20) / Polygon',
+      address: '0x71C5A8e3678385dF981775E6C1D61fD47D754B4F'
+    }
+  };
+
+  function openCheckoutModal() {
+    switchCheckoutView('plans');
+    if (termsCheckbox) {
+      termsCheckbox.checked = false;
+      updateProceedButtonState();
+    }
+    checkoutModal.classList.add('open');
+    checkoutModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCheckoutModal() {
+    checkoutModal.classList.remove('open');
+    checkoutModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  window.openAeonCheckoutModal = openCheckoutModal;
+
+  function switchCheckoutView(viewName) {
+    if (viewPlans) viewPlans.classList.toggle('active', viewName === 'plans');
+    if (viewDetails) viewDetails.classList.toggle('active', viewName === 'details');
+    if (viewPending) viewPending.classList.toggle('active', viewName === 'pending');
+  }
+
+  function updateProceedButtonState() {
+    if (!btnProceedPayment || !btnProceedText) return;
+    const isAccepted = termsCheckbox && termsCheckbox.checked;
+    btnProceedPayment.disabled = !isAccepted;
+
+    const lockIcon = btnProceedPayment.querySelector('.btn-lock-icon');
+    if (isAccepted) {
+      btnProceedText.textContent = `Proceder al Pago Seguro ($${selectedPrice} USDT) →`;
+      if (lockIcon) lockIcon.textContent = '⚡';
+    } else {
+      btnProceedText.textContent = 'Acepta los términos para continuar';
+      if (lockIcon) lockIcon.textContent = '🔒';
+    }
+  }
+
+  // Interacción de Selección de Plan
+  planCards.forEach(card => {
+    card.addEventListener('click', () => {
+      planCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+
+      selectedPlan = card.dataset.plan || 'monthly';
+      selectedPrice = Number(card.dataset.price) || 19;
+      updateProceedButtonState();
+    });
+  });
+
+  // Interacción de Selección de Método de Pago
+  methodItems.forEach(item => {
+    item.addEventListener('click', () => {
+      methodItems.forEach(m => m.classList.remove('active'));
+      item.classList.add('active');
+      const radio = item.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+
+      selectedMethod = item.dataset.method || 'binance';
+    });
+  });
+
+  // Listener del "Chulito" Obligatorio (Clickwrap Legal)
+  if (termsCheckbox) {
+    termsCheckbox.addEventListener('change', updateProceedButtonState);
+  }
+
+  // Proceder al Paso 2: Detalles de Transferencia
+  if (btnProceedPayment) {
+    btnProceedPayment.addEventListener('click', () => {
+      if (!termsCheckbox || !termsCheckbox.checked) return;
+
+      const walletInfo = WALLET_DATA[selectedMethod] || WALLET_DATA['binance'];
+      if (depositAmountDisplay) depositAmountDisplay.textContent = `$${selectedPrice}.00 USDT`;
+      if (depositNetworkDisplay) depositNetworkDisplay.textContent = walletInfo.network;
+      if (depositPlanDisplay) depositPlanDisplay.textContent = selectedPlan === 'monthly' ? 'Membresía Mensual (30 días)' : 'Membresía Trimestral (90 días)';
+      if (depositAddressInput) depositAddressInput.value = walletInfo.address;
+      if (copyHint) copyHint.classList.remove('visible');
+
+      switchCheckoutView('details');
+    });
+  }
+
+  if (btnBackToPlans) {
+    btnBackToPlans.addEventListener('click', () => switchCheckoutView('plans'));
+  }
+
+  // Copiar dirección con feedback visual
+  if (btnCopyAddress && depositAddressInput) {
+    btnCopyAddress.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(depositAddressInput.value);
+        if (copyHint) {
+          copyHint.classList.add('visible');
+          setTimeout(() => copyHint.classList.remove('visible'), 2500);
+        }
+      } catch (_) {
+        depositAddressInput.select();
+        document.execCommand('copy');
+      }
+    });
+  }
+
+  // Confirmar Envío -> Paso 3
+  if (btnConfirmSent) {
+    btnConfirmSent.addEventListener('click', () => {
+      if (pendingTerminalId) {
+        pendingTerminalId.textContent = `AEON-${computeTerminalId(currentUserId || '')}`;
+      }
+      switchCheckoutView('pending');
+    });
+  }
+
+  // Cerrar Modal
+  if (btnCloseCheckout) btnCloseCheckout.addEventListener('click', closeCheckoutModal);
+  if (btnFinishCheckout) btnFinishCheckout.addEventListener('click', closeCheckoutModal);
+
+  checkoutModal.addEventListener('click', (e) => {
+    if (e.target === checkoutModal) closeCheckoutModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && checkoutModal.classList.contains('open')) {
+      closeCheckoutModal();
+    }
+  });
+
+  // Conectar inmediatamente el botón de Upgrade en la tarjeta
+  if (dashPlanCta) {
+    dashPlanCta.addEventListener('click', (e) => {
+      if (dashPlanCta.dataset.isPro === 'true') {
+        window.location.href = '/mercados.html';
+        return;
+      }
+      e.preventDefault();
+      openCheckoutModal();
+    });
+  }
+}
+
 async function initDashboard() {
   initNavbar();
 
@@ -114,6 +309,7 @@ async function initDashboard() {
   }
 
   const user = userData.user;
+  currentUserId = user.id;
   const meta = user.user_metadata || {};
 
   // ============================================================
@@ -368,8 +564,8 @@ async function initDashboard() {
       }
 
       if (dashPlanCta) {
+        dashPlanCta.dataset.isPro = 'true';
         dashPlanCta.textContent = 'Ir al Terminal de Mercados →';
-        dashPlanCta.href = '/mercados.html';
       }
       if (cardPolicyNote) {
         cardPolicyNote.textContent = 'Membresía activa vinculada a tu cuenta. Acceso total al Terminal y Copiloto IA.';
@@ -395,8 +591,8 @@ async function initDashboard() {
         cardRenewalDate.textContent = 'Acceso Básico';
       }
       if (dashPlanCta) {
+        dashPlanCta.dataset.isPro = 'false';
         dashPlanCta.textContent = 'Mejorar a PRO →';
-        dashPlanCta.href = '/index.html#pro';
       }
       if (cardPolicyNote) {
         cardPolicyNote.textContent = 'Facturación segura cifrada. Cancelación con un clic en cualquier momento.';
@@ -580,7 +776,12 @@ async function initDashboard() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initDashboard);
+  document.addEventListener('DOMContentLoaded', () => {
+    setupCheckoutModal();
+    initDashboard();
+  });
 } else {
+  setupCheckoutModal();
   initDashboard();
 }
+

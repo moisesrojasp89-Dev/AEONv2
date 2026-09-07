@@ -30,6 +30,7 @@ export default defineConfig({
         recuperar: resolve(__dirname, 'recuperar.html'),
         actualizarPassword: resolve(__dirname, 'actualizar-password.html'),
         avisoLegal: resolve(__dirname, 'aviso-legal.html'),
+        terminos: resolve(__dirname, 'terminos.html'),
         privacidad: resolve(__dirname, 'privacidad.html'),
         cookies: resolve(__dirname, 'cookies.html'),
       },

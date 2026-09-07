@@ -149,7 +149,7 @@
             </div>
 
             <div class="card-actions-area">
-              <a id="dash-plan-cta" href="/index.html#pro" class="btn btn-primary btn-block">Mejorar a PRO →</a>
+              <button type="button" id="dash-plan-cta" class="btn btn-primary btn-block">Mejorar a PRO →</button>
               <p class="card-policy-note" id="dash-card-policy-note">Facturación segura cifrada. Cancelación con un clic en cualquier momento.</p>
             </div>
           </div>
@@ -439,6 +439,178 @@
 
   </main>
 
+  <!-- ============================================================
+       MODAL: Checkout & Suscripción PRO en Cripto / Stablecoins
+       Blindaje Clickwrap Obligatorio ("Chulito" Contractual)
+       ============================================================ -->
+  <div id="modal-checkout-pro" class="checkout-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="checkout-modal-title">
+    <div class="checkout-modal-card">
+      <button type="button" class="checkout-close-btn" id="btn-close-checkout" aria-label="Cerrar modal">✕</button>
+
+      <!-- PASO 1: Selección de Plan y Aceptación de Términos -->
+      <div id="checkout-view-plans" class="checkout-view active">
+        <div class="checkout-header">
+          <div class="checkout-badge">⚡ ACCESO INSTITUCIONAL INMEDIATO</div>
+          <h2 class="checkout-title" id="checkout-modal-title">Desbloquear AEON Pro</h2>
+          <p class="checkout-subtitle">Acceso total al Copiloto Cuantitativo IA, auditoría de gráficos en tiempo real y cálculo de lotaje profesional.</p>
+        </div>
+
+        <!-- Selector de Planes -->
+        <div class="checkout-plans-grid">
+          <label class="checkout-plan-card active" data-plan="monthly" data-price="19">
+            <input type="radio" name="checkout-plan" value="monthly" checked class="checkout-radio" />
+            <div class="plan-card-body">
+              <div class="plan-card-header">
+                <span class="plan-card-name">Plan Mensual</span>
+                <span class="plan-card-badge">FLEXIBLE</span>
+              </div>
+              <div class="plan-card-price">
+                <span class="price-val">$19</span>
+                <span class="price-unit">USDT / mes</span>
+              </div>
+              <p class="plan-card-desc">Facturación mes a mes. Cancela cuando quieras.</p>
+            </div>
+          </label>
+
+          <label class="checkout-plan-card" data-plan="quarterly" data-price="49">
+            <input type="radio" name="checkout-plan" value="quarterly" class="checkout-radio" />
+            <div class="plan-card-body">
+              <div class="plan-card-header">
+                <span class="plan-card-name">Plan Trimestral</span>
+                <span class="plan-card-badge highlight">AHORRA 15%</span>
+              </div>
+              <div class="plan-card-price">
+                <span class="price-val">$49</span>
+                <span class="price-unit">USDT / 3 meses</span>
+              </div>
+              <p class="plan-card-desc">Equivalente a ~$16.30/mes. Máximo valor para operadores activos.</p>
+            </div>
+          </label>
+        </div>
+
+        <!-- Métodos de Pago Cripto -->
+        <div class="checkout-method-section">
+          <span class="checkout-section-label">Método de Liquidación (Stablecoins):</span>
+          <div class="checkout-methods-grid">
+            <label class="checkout-method-item active" data-method="binance">
+              <input type="radio" name="checkout-method" value="binance" checked class="checkout-radio" />
+              <div class="method-meta">
+                <span class="method-title">Binance Pay</span>
+                <span class="method-sub">0% Comisión de Red (Gas Free)</span>
+              </div>
+            </label>
+
+            <label class="checkout-method-item" data-method="usdt-trc20">
+              <input type="radio" name="checkout-method" value="usdt-trc20" class="checkout-radio" />
+              <div class="method-meta">
+                <span class="method-title">USDT (TRC-20)</span>
+                <span class="method-sub">Red TRON Descentralizada</span>
+              </div>
+            </label>
+
+            <label class="checkout-method-item" data-method="usdt-bep20">
+              <input type="radio" name="checkout-method" value="usdt-bep20" class="checkout-radio" />
+              <div class="method-meta">
+                <span class="method-title">USDT / USDC (BEP-20)</span>
+                <span class="method-sub">Binance Smart Chain / Polygon</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- BLINDAJE CONTRACTUAL: "CHULITO" OBLIGATORIO -->
+        <div class="checkout-terms-box">
+          <label class="checkout-checkbox-label">
+            <input type="checkbox" id="checkout-terms-checkbox" class="checkout-checkbox" />
+            <span class="checkout-checkbox-custom" aria-hidden="true"></span>
+            <span class="checkout-terms-text">
+              He leído, comprendo y acepto sin reservas los <a href="/terminos.html" target="_blank" rel="noopener">Términos y Condiciones</a>, el <a href="/aviso-legal.html" target="_blank" rel="noopener">Descargo de Responsabilidad (NFA)</a> y la <strong>Política Estricta de No Reembolso</strong> para software digital e inteligencia cuantitativa de entrega inmediata. Entiendo que las transacciones en blockchain son finales e irreversibles.
+            </span>
+          </label>
+        </div>
+
+        <!-- Botón de Proceder (Inicialmente Bloqueado) -->
+        <div class="checkout-action-area">
+          <button type="button" id="btn-proceed-payment" class="btn btn-primary btn-block checkout-submit-btn" disabled>
+            <span class="btn-lock-icon">🔒</span>
+            <span id="btn-proceed-text">Acepta los términos para continuar</span>
+          </button>
+          <p class="checkout-guarantee-note">Liquidación segura cifrada · Activación instantánea vinculada a tu Terminal ID</p>
+        </div>
+      </div>
+
+      <!-- PASO 2: Instrucciones y Datos de Transferencia -->
+      <div id="checkout-view-details" class="checkout-view">
+        <div class="checkout-header">
+          <button type="button" class="btn-back-step" id="btn-back-to-plans">← Cambiar Plan o Red</button>
+          <h2 class="checkout-title">Completar Transferencia</h2>
+          <p class="checkout-subtitle">Envía el monto exacto por la red seleccionada para activar tu acceso.</p>
+        </div>
+
+        <div class="deposit-summary-card">
+          <div class="deposit-row">
+            <span class="deposit-lbl">Total a Enviar:</span>
+            <span class="deposit-val highlight font-mono" id="deposit-amount-display">$19.00 USDT</span>
+          </div>
+          <div class="deposit-row">
+            <span class="deposit-lbl">Red Seleccionada:</span>
+            <span class="deposit-val font-mono" id="deposit-network-display">Binance Pay (ID: 101395084)</span>
+          </div>
+          <div class="deposit-row">
+            <span class="deposit-lbl">Plan Contratado:</span>
+            <span class="deposit-val" id="deposit-plan-display">Membresía Mensual (30 días)</span>
+          </div>
+        </div>
+
+        <div class="deposit-address-box">
+          <label class="deposit-input-label">Dirección / ID de Pago Oficial:</label>
+          <div class="deposit-copy-wrapper">
+            <input type="text" id="deposit-address-input" class="deposit-input font-mono" readonly value="TQv8kL7X2m9PZ1wYaNxC5rBe4dF6uJ8sAe" />
+            <button type="button" class="btn btn-secondary btn-copy" id="btn-copy-address">Copiar Dirección</button>
+          </div>
+          <span class="copy-success-hint" id="copy-success-hint">¡Copiado al portapapeles! ✓</span>
+        </div>
+
+        <div class="deposit-notice-box">
+          <span class="notice-icon">ℹ</span>
+          <p class="notice-text">
+            <strong>Recomendación Institucional:</strong> Verifica que la red de tu exchange/wallet coincida exactamente con la red indicada arriba. Una vez enviada la transferencia, el terminal sincroniza el pago en blockchain y tu cuenta pasará a estado PRO.
+          </p>
+        </div>
+
+        <div class="checkout-action-area">
+          <button type="button" id="btn-confirm-sent" class="btn btn-primary btn-block">
+            Ya he realizado la transferencia ✓
+          </button>
+          <a href="mailto:soporte@aeon-intelligence.com?subject=Confirmacion%20Pago%20AEON%20PRO" class="btn-support-link">
+            ¿Necesitas asistencia inmediata? Contactar a Soporte →
+          </a>
+        </div>
+      </div>
+
+      <!-- PASO 3: Estado de Confirmación / En Proceso -->
+      <div id="checkout-view-pending" class="checkout-view">
+        <div class="checkout-header text-center">
+          <div class="pending-spinner-icon">⚡</div>
+          <h2 class="checkout-title">Confirmación en Proceso</h2>
+          <p class="checkout-subtitle">Estamos sincronizando tu transacción con la red blockchain y Supabase.</p>
+        </div>
+
+        <div class="pending-info-card">
+          <p>Tu cuenta ha sido puesta en cola de verificación prioritaria.</p>
+          <p class="font-mono text-muted" style="font-size: 0.85rem; margin-top: 0.5rem;">Terminal ID: <span id="pending-terminal-id">AEON-XXXX</span></p>
+        </div>
+
+        <div class="checkout-action-area">
+          <button type="button" id="btn-finish-checkout" class="btn btn-secondary btn-block">
+            Cerrar y Volver al Dashboard
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <footer class="footer" role="contentinfo">
     <div class="footer-inner container">
       <div class="footer-brand">
@@ -455,6 +627,7 @@
         </div>
         <div class="footer-col">
           <p class="footer-col-title">Legal</p>
+          <a href="/terminos.html">Términos y Condiciones</a>
           <a href="/aviso-legal.html">Aviso Legal</a>
           <a href="/privacidad.html">Privacidad</a>
           <a href="/cookies.html">Cookies</a>

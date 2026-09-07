@@ -1533,3 +1533,544 @@
     padding: 0.8rem 0.85rem;
   }
 }
+
+/* ============================================================
+   CHECKOUT MODAL: Dark Luxury Pro Membership & Clickwrap Shield
+   ============================================================ */
+.checkout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: var(--z-modal, 1000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base, 0.25s) var(--ease, ease);
+}
+
+.checkout-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.checkout-modal-card {
+  background: #0a0f1d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(14, 165, 233, 0.08);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 2rem;
+  color: var(--text, #e2e8f0);
+}
+
+.checkout-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-circle, 50%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted, #94a3b8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--dur-fast, 0.15s) var(--ease, ease);
+  z-index: 10;
+}
+
+.checkout-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.checkout-view {
+  display: none;
+}
+
+.checkout-view.active {
+  display: block;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.checkout-header {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent, #0ea5e9);
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill, 999px);
+  margin-bottom: 0.75rem;
+}
+
+.checkout-title {
+  font-family: var(--font-head, 'Space Grotesk', sans-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-bright, #ffffff);
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.checkout-subtitle {
+  font-size: 0.86rem;
+  color: var(--muted, #94a3b8);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Grid de Planes */
+.checkout-plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-plan-card {
+  position: relative;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm, 10px);
+  padding: 1rem;
+  cursor: pointer;
+  transition: all var(--dur-base, 0.2s) var(--ease, ease);
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-plan-card:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(14, 165, 233, 0.35);
+}
+
+.checkout-plan-card.active {
+  background: rgba(14, 165, 233, 0.06);
+  border-color: var(--accent, #0ea5e9);
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+}
+
+.checkout-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plan-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.plan-card-name {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-bright, #ffffff);
+}
+
+.plan-card-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs, 4px);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted, #94a3b8);
+}
+
+.plan-card-badge.highlight {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.plan-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.plan-card-price .price-val {
+  font-family: var(--font-head, 'Space Grotesk', sans-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-bright, #ffffff);
+}
+
+.plan-card-price .price-unit {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  color: var(--accent, #0ea5e9);
+}
+
+.plan-card-desc {
+  font-size: 0.74rem;
+  color: var(--muted-2, #64748b);
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Métodos de Pago */
+.checkout-method-section {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-section-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.checkout-methods-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkout-method-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-xs, 8px);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all var(--dur-fast, 0.15s) var(--ease, ease);
+}
+
+.checkout-method-item:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.checkout-method-item.active {
+  background: rgba(14, 165, 233, 0.05);
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+.method-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.method-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-bright, #ffffff);
+}
+
+.method-sub {
+  font-size: 0.74rem;
+  color: var(--muted, #94a3b8);
+}
+
+/* Blindaje Legal: Clickwrap Box */
+.checkout-terms-box {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm, 10px);
+  padding: 0.95rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkout-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkout-checkbox-custom {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: var(--radius-xs, 4px);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: all var(--dur-fast, 0.15s) var(--ease, ease);
+}
+
+.checkout-checkbox:focus-visible + .checkout-checkbox-custom {
+  outline: 2px solid var(--accent);
+}
+
+.checkout-checkbox:checked + .checkout-checkbox-custom {
+  background: var(--accent, #0ea5e9);
+  border-color: var(--accent, #0ea5e9);
+}
+
+.checkout-checkbox:checked + .checkout-checkbox-custom::after {
+  content: "✓";
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #06090e;
+}
+
+.checkout-terms-text {
+  font-size: 0.76rem;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+.checkout-terms-text strong {
+  color: #fee2e2;
+}
+
+.checkout-terms-text a {
+  color: var(--accent-bright, #38bdf8);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.checkout-terms-text a:hover {
+  color: #ffffff;
+}
+
+/* Action Area */
+.checkout-action-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.checkout-submit-btn {
+  padding: 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-xs, 6px);
+  transition: all var(--dur-base, 0.25s) var(--ease, ease);
+}
+
+.checkout-submit-btn:disabled {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--muted-2, #64748b) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.checkout-guarantee-note {
+  font-size: 0.72rem;
+  color: var(--muted-2, #64748b);
+  text-align: center;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Paso 2: Detalles de Depósito */
+.btn-back-step {
+  background: none;
+  border: none;
+  color: var(--accent, #0ea5e9);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.btn-back-step:hover {
+  color: var(--accent-hover, #38bdf8);
+  text-decoration: underline;
+}
+
+.deposit-summary-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm, 10px);
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.deposit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.deposit-lbl {
+  color: var(--muted, #94a3b8);
+}
+
+.deposit-val {
+  color: var(--text-bright, #ffffff);
+  font-weight: 600;
+}
+
+.deposit-val.highlight {
+  font-size: 1.15rem;
+  color: var(--accent, #0ea5e9);
+}
+
+.deposit-address-box {
+  margin-bottom: 1.25rem;
+}
+
+.deposit-input-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.deposit-copy-wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deposit-input {
+  flex: 1;
+  background: #06090e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-xs, 6px);
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: #38bdf8;
+  outline: none;
+}
+
+.btn-copy {
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.copy-success-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: #22c55e;
+  margin-top: 0.35rem;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.copy-success-hint.visible {
+  opacity: 1;
+}
+
+.deposit-notice-box {
+  background: rgba(14, 165, 233, 0.06);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: var(--radius-xs, 8px);
+  padding: 0.85rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.notice-icon {
+  color: var(--accent, #0ea5e9);
+  font-size: 1.1rem;
+}
+
+.notice-text {
+  font-size: 0.78rem;
+  color: var(--muted, #94a3b8);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.notice-text strong {
+  color: var(--text-bright, #ffffff);
+}
+
+.btn-support-link {
+  font-size: 0.78rem;
+  color: var(--muted, #94a3b8);
+  text-align: center;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.btn-support-link:hover {
+  color: var(--accent, #0ea5e9);
+  text-decoration: underline;
+}
+
+/* Paso 3: Pending */
+.pending-spinner-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: pulse 1.5s infinite;
+}
+
+.pending-info-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm, 10px);
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 540px) {
+  .checkout-modal-card {
+    padding: 1.5rem 1.1rem;
+  }
+  .checkout-plans-grid {
+    grid-template-columns: 1fr;
+  }
+  .deposit-copy-wrapper {
+    flex-direction: column;
+  }
+}
+
