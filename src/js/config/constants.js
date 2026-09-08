@@ -15,6 +15,7 @@ export const DB_TABLES = {
   DAILY_BRIEFINGS: 'daily_briefings',
   MARKET_INTELLIGENCE: 'market_intelligence',
   MARKET_INTELLIGENCE_HISTORY: 'market_intelligence_history',
+  PAYMENTS: 'payments',
 };
 
 /**

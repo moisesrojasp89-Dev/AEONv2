@@ -2046,7 +2046,26 @@
   text-decoration: underline;
 }
 
-/* Paso 3: Pending */
+/* Paso 2: TxID Box */
+.deposit-tx-box {
+  margin-bottom: 1.25rem;
+}
+
+.deposit-tx-hint {
+  font-size: 0.72rem;
+  color: var(--muted-2, #64748b);
+  margin: 0.35rem 0 0;
+  line-height: 1.4;
+}
+
+.deposit-error-msg {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin: 0.35rem 0 0;
+  font-weight: 500;
+}
+
+/* Paso 3: Pending Details */
 .pending-spinner-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
@@ -2060,6 +2079,77 @@
   padding: 1.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
+}
+
+.pending-badge-status {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-pill, 999px);
+  padding: 0.25rem 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.pending-order-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  text-align: left;
+  margin: 0.75rem 0 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.85rem 0;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.meta-lbl {
+  color: var(--muted, #94a3b8);
+}
+
+.meta-val {
+  color: var(--text-bright, #ffffff);
+  font-weight: 600;
+}
+
+.meta-val.highlight {
+  color: var(--accent, #0ea5e9);
+  font-size: 0.95rem;
+}
+
+.pending-note {
+  font-size: 0.78rem;
+  color: var(--muted, #94a3b8);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.btn-vip-notify {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #06090e !important;
+  font-weight: 700 !important;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.btn-vip-notify:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 640px) {

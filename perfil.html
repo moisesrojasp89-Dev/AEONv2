@@ -586,19 +586,40 @@
           <span class="copy-success-hint" id="copy-success-hint">¡Copiado al portapapeles! ✓</span>
         </div>
 
+        <!-- Campo de Comprobante / TxID -->
+        <div class="deposit-tx-box">
+          <label for="deposit-tx-input" class="deposit-input-label">
+            ID de Transacción / Comprobante de Binance Pay (o Hash):
+          </label>
+          <input 
+            type="text" 
+            id="deposit-tx-input" 
+            class="deposit-input font-mono" 
+            placeholder="Ej: 284918239 o Hash de Tx" 
+            required 
+            autocomplete="off"
+          />
+          <p class="deposit-tx-hint">
+            En Binance App ve a <strong>Pay &gt; Historial &gt; Order ID / Pay ID</strong> o copia el Hash de tu envío.
+          </p>
+          <p id="deposit-tx-error" class="deposit-error-msg" style="display: none;">
+            ⚠ Por favor ingresa el ID de transacción o referencia de tu transferencia.
+          </p>
+        </div>
+
         <div class="deposit-notice-box">
           <span class="notice-icon">ℹ</span>
           <p class="notice-text">
-            <strong>Recomendación Institucional:</strong> Verifica que la red de tu exchange/wallet coincida exactamente con la red indicada arriba. Una vez enviada la transferencia, el terminal sincroniza el pago en blockchain y tu cuenta pasará a estado PRO.
+            <strong>Recomendación Institucional:</strong> Al transferir por Binance Pay no pagas comisión de red (0% gas). Una vez registrado tu ID, el sistema enlaza tu orden en cola prioritaria de activación.
           </p>
         </div>
 
         <div class="checkout-action-area">
           <button type="button" id="btn-confirm-sent" class="btn btn-primary btn-block">
-            Ya he realizado la transferencia ✓
+            <span id="btn-confirm-text">Validar y Registrar Pago ✓</span>
           </button>
           <a href="mailto:soporte@aeon-intelligence.com?subject=Confirmacion%20Pago%20AEON%20PRO" class="btn-support-link">
-            ¿Necesitas asistencia inmediata? Contactar a Soporte →
+            ¿Necesitas asistencia o pago manual? Contactar a Soporte →
           </a>
         </div>
       </div>
@@ -607,16 +628,45 @@
       <div id="checkout-view-pending" class="checkout-view">
         <div class="checkout-header text-center">
           <div class="pending-spinner-icon">⚡</div>
-          <h2 class="checkout-title">Confirmación en Proceso</h2>
-          <p class="checkout-subtitle">Estamos sincronizando tu transacción con la red blockchain y Supabase.</p>
+          <h2 class="checkout-title">Pago Registrado Exitosamente</h2>
+          <p class="checkout-subtitle">Tu orden ha sido enlazada en el sistema en cola de verificación prioritaria.</p>
         </div>
 
         <div class="pending-info-card">
-          <p>Tu cuenta ha sido puesta en cola de verificación prioritaria.</p>
-          <p class="font-mono text-muted" style="font-size: 0.85rem; margin-top: 0.5rem;">Terminal ID: <span id="pending-terminal-id">AEON-XXXX</span></p>
+          <div class="pending-badge-status">🟡 EN REVISIÓN PRIORITARIA</div>
+          
+          <div class="pending-order-meta">
+            <div class="meta-row">
+              <span class="meta-lbl">Número de Orden:</span>
+              <span class="meta-val font-mono" id="pending-order-id">AEON-PAY-XXXXX</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-lbl">Plan Solicitado:</span>
+              <span class="meta-val" id="pending-plan-name">Plan Mensual (30 días)</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-lbl">Importe Registrado:</span>
+              <span class="meta-val font-mono highlight" id="pending-amount">$6.99 USDT</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-lbl">Referencia Binance:</span>
+              <span class="meta-val font-mono" id="pending-tx-ref">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-lbl">Terminal ID:</span>
+              <span class="meta-val font-mono" id="pending-terminal-id">AEON-XXXX</span>
+            </div>
+          </div>
+
+          <p class="pending-note">
+            El tiempo promedio de activación es de <strong>5 a 15 minutos</strong>. En cuanto el pago se verifique, tu cuenta pasará automáticamente a estado <strong>PRO</strong>.
+          </p>
         </div>
 
         <div class="checkout-action-area">
+          <a id="btn-whatsapp-notify" href="https://t.me/AeonSupport" target="_blank" rel="noopener" class="btn btn-primary btn-block btn-vip-notify">
+            💬 Notificar a Soporte para Activación VIP Rápida →
+          </a>
           <button type="button" id="btn-finish-checkout" class="btn btn-secondary btn-block">
             Cerrar y Volver al Dashboard
           </button>

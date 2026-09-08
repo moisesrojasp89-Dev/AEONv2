@@ -98,6 +98,7 @@ function renderPasswordStrength(strength) {
 // Checkout Modal PRO & Blindaje Clickwrap ("Chulito")
 // ============================================================
 let currentUserId = null;
+let currentUserEmail = '';
 
 function setupCheckoutModal() {
   const checkoutModal = document.getElementById('modal-checkout-pro');
@@ -110,13 +111,21 @@ function setupCheckoutModal() {
   const btnProceedText = document.getElementById('btn-proceed-text');
   const termsCheckbox = document.getElementById('checkout-terms-checkbox');
   const btnConfirmSent = document.getElementById('btn-confirm-sent');
+  const btnConfirmText = document.getElementById('btn-confirm-text');
   const btnCopyAddress = document.getElementById('btn-copy-address');
   const copyHint = document.getElementById('copy-success-hint');
   const depositAddressInput = document.getElementById('deposit-address-input');
   const depositAmountDisplay = document.getElementById('deposit-amount-display');
   const depositNetworkDisplay = document.getElementById('deposit-network-display');
   const depositPlanDisplay = document.getElementById('deposit-plan-display');
+  const depositTxInput = document.getElementById('deposit-tx-input');
+  const depositTxError = document.getElementById('deposit-tx-error');
+  const pendingOrderId = document.getElementById('pending-order-id');
+  const pendingPlanName = document.getElementById('pending-plan-name');
+  const pendingAmount = document.getElementById('pending-amount');
+  const pendingTxRef = document.getElementById('pending-tx-ref');
   const pendingTerminalId = document.getElementById('pending-terminal-id');
+  const btnWhatsappNotify = document.getElementById('btn-whatsapp-notify');
   const dashPlanCta = document.getElementById('dash-plan-cta');
 
   const viewPlans = document.getElementById('checkout-view-plans');
@@ -258,12 +267,85 @@ function setupCheckoutModal() {
     });
   }
 
-  // Confirmar Envío -> Paso 3
+  // Confirmar Envío -> Guardar en Supabase y Pasar a Paso 3
   if (btnConfirmSent) {
-    btnConfirmSent.addEventListener('click', () => {
-      if (pendingTerminalId) {
-        pendingTerminalId.textContent = `AEON-${computeTerminalId(currentUserId || '')}`;
+    btnConfirmSent.addEventListener('click', async () => {
+      const txRef = depositTxInput ? depositTxInput.value.trim() : '';
+
+      if (!txRef || txRef.length < 4) {
+        if (depositTxError) depositTxError.style.display = 'block';
+        if (depositTxInput) {
+          depositTxInput.focus();
+          depositTxInput.style.borderColor = '#ef4444';
+        }
+        return;
       }
+
+      if (depositTxError) depositTxError.style.display = 'none';
+      if (depositTxInput) depositTxInput.style.borderColor = '';
+
+      // Estado de carga en el botón
+      btnConfirmSent.disabled = true;
+      if (btnConfirmText) btnConfirmText.textContent = 'Registrando orden en sistema...';
+
+      // Generar Order ID único
+      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const orderId = `AEON-PAY-${randomSuffix}`;
+
+      const planDaysMap = { weekly: 7, monthly: 30, quarterly: 90 };
+      const days = planDaysMap[selectedPlan] || 30;
+
+      // Guardar en Supabase (tabla payments)
+      try {
+        if (currentUserId) {
+          const { error: insertErr } = await supabase.from('payments').insert({
+            order_id: orderId,
+            user_id: currentUserId,
+            user_email: currentUserEmail || '',
+            plan: selectedPlan,
+            plan_days: days,
+            amount: selectedPrice,
+            currency: 'USDT',
+            payment_method: selectedMethod,
+            tx_reference: txRef,
+            status: 'pending'
+          });
+
+          if (insertErr) {
+            console.warn('[AEON] Registro de pago en Supabase:', insertErr.message);
+          }
+        }
+      } catch (err) {
+        console.warn('[AEON] Error en insert payments:', err);
+      } finally {
+        btnConfirmSent.disabled = false;
+        if (btnConfirmText) btnConfirmText.textContent = 'Validar y Registrar Pago ✓';
+      }
+
+      // Rellenar datos en Paso 3
+      const terminalCode = computeTerminalId(currentUserId || '');
+      if (pendingOrderId) pendingOrderId.textContent = orderId;
+      if (pendingPlanName) pendingPlanName.textContent = PLAN_LABELS[selectedPlan] || 'Membresía AEON Pro';
+      if (pendingAmount) pendingAmount.textContent = `$${selectedPrice.toFixed(2)} USDT`;
+      if (pendingTxRef) pendingTxRef.textContent = txRef;
+      if (pendingTerminalId) pendingTerminalId.textContent = `AEON-${terminalCode}`;
+
+      // Configurar enlace de notificación instantánea
+      if (btnWhatsappNotify) {
+        const notifyText = encodeURIComponent(
+          `✦ REPORTE DE PAGO AEON PRO ✦\n\n` +
+          `• Orden: ${orderId}\n` +
+          `• Plan: ${PLAN_LABELS[selectedPlan] || selectedPlan}\n` +
+          `• Monto: $${selectedPrice.toFixed(2)} USDT\n` +
+          `• Método: ${WALLET_DATA[selectedMethod]?.network || selectedMethod}\n` +
+          `• Ref / TxID: ${txRef}\n` +
+          `• Terminal ID: AEON-${terminalCode}\n` +
+          `• Usuario: ${currentUserEmail || 'Trader'}\n\n` +
+          `Solicito verificación y activación de mi membresía.`
+        );
+        btnWhatsappNotify.href = `https://t.me/AeonSupport?text=${notifyText}`;
+      }
+
       switchCheckoutView('pending');
     });
   }
@@ -316,6 +398,7 @@ async function initDashboard() {
 
   const user = userData.user;
   currentUserId = user.id;
+  currentUserEmail = user.email || '';
   const meta = user.user_metadata || {};
 
   // ============================================================
