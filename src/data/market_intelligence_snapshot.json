@@ -4,30 +4,30 @@
     "category": "INDICES",
     "display_name": "S&P 500",
     "session_origin": "US",
-    "current_price": 7715.85,
-    "change_24h_pct": 0.08,
+    "current_price": 7707.25,
+    "change_24h_pct": -0.04,
     "bias": "NEUTRAL",
     "bias_score": 50,
-    "support_1": 7688.07,
-    "support_2": 7664.93,
-    "resistance_1": 7743.63,
-    "resistance_2": 7766.77,
-    "dpoc_price": 7715.85,
-    "session_vwap": 7717.01,
-    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (7715.85).",
-    "technical_thesis": "Precio oscilando entre el soporte 7688.07 y la resistencia 7743.63. Se recomienda esperar confirmación de ruptura de banda VWAP (7717.01).",
+    "support_1": 7679.5,
+    "support_2": 7656.38,
+    "resistance_1": 7735.0,
+    "resistance_2": 7758.12,
+    "dpoc_price": 7707.25,
+    "session_vwap": 7708.41,
+    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (7707.25).",
+    "technical_thesis": "Precio oscilando entre el soporte 7679.5 y la resistencia 7735.0. Se recomienda esperar confirmación de ruptura de banda VWAP (7708.41).",
     "cited_key_levels": [
-      7688.07,
-      7715.85,
-      7743.63,
-      7717.01
+      7679.5,
+      7707.25,
+      7735.0,
+      7708.41
     ],
     "catalyst_tags": [
       "RANGE_CONSOLIDATION",
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-08T05:01:59.440311+00:00",
+    "last_updated": "2026-09-08T05:39:02.787815+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -35,55 +35,55 @@
     "category": "INDICES",
     "display_name": "Nasdaq 100",
     "session_origin": "US",
-    "current_price": 29696.949999999997,
-    "change_24h_pct": 0.67,
+    "current_price": 29630.55,
+    "change_24h_pct": 0.44,
     "bias": "BULLISH",
-    "bias_score": 68,
-    "support_1": 29563.31,
-    "support_2": 29447.5,
-    "resistance_1": 29830.59,
-    "resistance_2": 29946.4,
-    "dpoc_price": 29661.31,
-    "session_vwap": 29679.13,
-    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (29661.31) y Session VWAP (29679.13).",
-    "technical_thesis": "Estructura alcista con soporte clave en 29563.31. La absorción compradora proyecta expansión hacia la resistencia 29830.59 con RSI en 60.0.",
+    "bias_score": 63,
+    "support_1": 29497.21,
+    "support_2": 29381.65,
+    "resistance_1": 29763.89,
+    "resistance_2": 29879.45,
+    "dpoc_price": 29594.99,
+    "session_vwap": 29612.77,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (29594.99) y Session VWAP (29612.77).",
+    "technical_thesis": "Estructura alcista con soporte clave en 29497.21. La absorción compradora proyecta expansión hacia la resistencia 29763.89 con RSI en 57.3.",
     "cited_key_levels": {
       "levels": [
-        29563.31,
-        29661.31,
-        29830.59,
-        29679.13
+        29497.21,
+        29594.99,
+        29763.89,
+        29612.77
       ],
       "session_levels": {
-        "pdh": 29949.91,
-        "pdl": 29445.06,
-        "asian_high": 29759.31,
-        "asian_low": 29634.59,
+        "pdh": 29882.95,
+        "pdl": 29379.22,
+        "asian_high": 29692.77,
+        "asian_low": 29568.33,
         "current_session": "ASIA",
-        "ema_50_1h": 29677.35,
-        "sma_200_1d": 27766.65,
-        "session_vwap": 29679.13,
-        "vwap_upper_1s": 29741.46,
-        "vwap_lower_1s": 29616.8,
-        "vwap_upper_2s": 29812.69,
-        "vwap_lower_2s": 29545.57,
-        "dpoc_price": 29661.31,
-        "vah_price": 29830.59,
-        "val_price": 29563.31,
-        "volume_spike_alert": "Absorción institucional detectada en 29563.31"
+        "ema_50_1h": 29610.99,
+        "sma_200_1d": 27704.56,
+        "session_vwap": 29612.77,
+        "vwap_upper_1s": 29674.96,
+        "vwap_lower_1s": 29550.58,
+        "vwap_upper_2s": 29746.03,
+        "vwap_lower_2s": 29479.51,
+        "dpoc_price": 29594.99,
+        "vah_price": 29763.89,
+        "val_price": 29497.21,
+        "volume_spike_alert": "Absorción institucional detectada en 29497.21"
       },
       "structural_poi": [
         {
           "id": "nas100-poi-sell",
           "type": "SELLSIDE_POI",
           "zone_label": "ZAP Oferta / Venta (1H)",
-          "range_low": 29830.59,
-          "range_high": 29946.4,
-          "mean_threshold": 29888.5,
+          "range_low": 29763.89,
+          "range_high": 29879.45,
+          "mean_threshold": 29821.67,
           "confluences": [
             "Rechazo Banda VWAP +1σ",
             "FVG Bajista 1H",
-            "Resistencia R1 ($29,830.6)",
+            "Resistencia R1 ($29,763.9)",
             "Bloque de Mitigación"
           ],
           "status": "active"
@@ -92,13 +92,13 @@
           "id": "nas100-poi-buy",
           "type": "BUYSIDE_POI",
           "zone_label": "ZAP Demanda / Rebote (1H)",
-          "range_low": 29447.5,
-          "range_high": 29563.31,
-          "mean_threshold": 29505.4,
+          "range_low": 29381.65,
+          "range_high": 29497.21,
+          "mean_threshold": 29439.43,
           "confluences": [
             "Piscina SSL de compradores",
             "Order Block Diario",
-            "Rebote en soporte S1 ($29,563.3)"
+            "Rebote en soporte S1 ($29,497.2)"
           ],
           "status": "active"
         }
@@ -106,13 +106,13 @@
       "liquidity_pools": {
         "bsl": [
           {
-            "price": 30189.51,
+            "price": 30122.01,
             "label": "Máximo Semanal / Trendline Liquidity $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 29949.91,
+            "price": 29882.95,
             "label": "PDH (Máximo Sesión Previa)",
             "status": "unmitigated",
             "timeframe": "1D"
@@ -120,13 +120,13 @@
         ],
         "ssl": [
           {
-            "price": 29563.31,
+            "price": 29497.21,
             "label": "Soporte de Directriz $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 29209.5,
+            "price": 29144.19,
             "label": "Mínimo Estructural Mayor $$$",
             "status": "unmitigated",
             "timeframe": "4H"
@@ -134,19 +134,19 @@
         ]
       },
       "structural_scenarios": {
-        "bullish_path": "SI el precio sostiene el soporte en 29563.31 y consolida sobre el dPOC (29661.31), ENTONCES proyecta expansión hacia la ZAP de Oferta en 29830.59 buscando la liquidez BSL en 29949.91.",
-        "bearish_path": "SI el precio pierde el soporte 29563.31 y quiebra el nivel VAL (29447.5), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 29209.5.",
-        "invalidation_level": 29412.16,
-        "invalidation_text": "Cierre de vela de 1H bajo 29412.16 invalida la estructura de rebote intradiario."
+        "bullish_path": "SI el precio sostiene el soporte en 29497.21 y consolida sobre el dPOC (29594.99), ENTONCES proyecta expansión hacia la ZAP de Oferta en 29763.89 buscando la liquidez BSL en 29882.95.",
+        "bearish_path": "SI el precio pierde el soporte 29497.21 y quiebra el nivel VAL (29381.65), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 29144.19.",
+        "invalidation_level": 29346.39,
+        "invalidation_text": "Cierre de vela de 1H bajo 29346.39 invalida la estructura de rebote intradiario."
       },
-      "diagnosis": "El Nasdaq 100 cotiza en $29,696.95 con estructura institucional bullish (68/100). Flujo comprador institucional activo por encima del dPOC (29661.31) y Session VWAP (29679.13). Estructura alcista con soporte clave en 29563.31. La absorción compradora proyecta expansión hacia la resistencia 29830.59 con RSI en 60.0."
+      "diagnosis": "El Nasdaq 100 cotiza en $29,630.55 con estructura institucional bullish (63/100). Flujo comprador institucional activo por encima del dPOC (29594.99) y Session VWAP (29612.77). Estructura alcista con soporte clave en 29497.21. La absorción compradora proyecta expansión hacia la resistencia 29763.89 con RSI en 57.3."
     },
     "catalyst_tags": [
       "BULLISH_FLOW",
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-08T05:01:59.440311+00:00",
+    "last_updated": "2026-09-08T05:39:02.787815+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -154,30 +154,30 @@
     "category": "INDICES",
     "display_name": "Dow Jones 30",
     "session_origin": "US",
-    "current_price": 53062.0,
-    "change_24h_pct": 18.44,
+    "current_price": 53012.0,
+    "change_24h_pct": 18.33,
     "bias": "BULLISH",
     "bias_score": 96,
-    "support_1": 52823.22,
-    "support_2": 52616.28,
-    "resistance_1": 53300.78,
-    "resistance_2": 53507.72,
-    "dpoc_price": 52998.33,
-    "session_vwap": 53030.16,
-    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (52998.33) y Session VWAP (53030.16).",
-    "technical_thesis": "Estructura alcista con soporte clave en 52823.22. La absorción compradora proyecta expansión hacia la resistencia 53300.78 con RSI en 88.0.",
+    "support_1": 52773.45,
+    "support_2": 52566.7,
+    "resistance_1": 53250.55,
+    "resistance_2": 53457.3,
+    "dpoc_price": 52948.39,
+    "session_vwap": 52980.19,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (52948.39) y Session VWAP (52980.19).",
+    "technical_thesis": "Estructura alcista con soporte clave en 52773.45. La absorción compradora proyecta expansión hacia la resistencia 53250.55 con RSI en 88.0.",
     "cited_key_levels": [
-      52823.22,
-      52998.33,
-      53300.78,
-      53030.16
+      52773.45,
+      52948.39,
+      53250.55,
+      52980.19
     ],
     "catalyst_tags": [
       "BULLISH_FLOW",
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-08T05:01:59.440311+00:00",
+    "last_updated": "2026-09-08T05:39:02.787815+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -185,30 +185,30 @@
     "category": "INDICES",
     "display_name": "Nikkei 225",
     "session_origin": "ASIA",
-    "current_price": 66307.2,
-    "change_24h_pct": -0.29,
+    "current_price": 66082.2,
+    "change_24h_pct": -0.63,
     "bias": "BEARISH",
-    "bias_score": 60,
-    "support_1": 66008.82,
-    "support_2": 65750.22,
-    "resistance_1": 66605.58,
-    "resistance_2": 66864.18,
-    "dpoc_price": 66386.77,
-    "session_vwap": 66346.98,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (66386.77) y Session VWAP (66346.98).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 66605.58. La absorción vendedora proyecta retroceso hacia el soporte 66008.82 con RSI en 44.5.",
+    "bias_score": 67,
+    "support_1": 65784.83,
+    "support_2": 65527.11,
+    "resistance_1": 66379.57,
+    "resistance_2": 66637.29,
+    "dpoc_price": 66161.5,
+    "session_vwap": 66121.85,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (66161.5) y Session VWAP (66121.85).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 66379.57. La absorción vendedora proyecta retroceso hacia el soporte 65784.83 con RSI en 40.4.",
     "cited_key_levels": [
-      66008.82,
-      66386.77,
-      66605.58,
-      66346.98
+      65784.83,
+      66161.5,
+      66379.57,
+      66121.85
     ],
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.440311+00:00",
+    "last_updated": "2026-09-08T05:39:02.787815+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -216,56 +216,56 @@
     "category": "METALS",
     "display_name": "Oro al Contado",
     "session_origin": "GLOBAL",
-    "current_price": 4437.0650000000005,
-    "change_24h_pct": -3.12,
+    "current_price": 4425.01,
+    "change_24h_pct": -3.38,
     "bias": "BEARISH",
     "bias_score": 96,
-    "support_1": 4410.44,
-    "support_2": 4387.37,
-    "resistance_1": 4463.69,
-    "resistance_2": 4486.76,
-    "dpoc_price": 4444.16,
-    "session_vwap": 4440.61,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (4444.16) y Session VWAP (4440.61).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 4463.69. La absorción vendedora proyecta retroceso hacia el soporte 4410.44 con RSI en 18.0.",
+    "support_1": 4398.46,
+    "support_2": 4375.45,
+    "resistance_1": 4451.56,
+    "resistance_2": 4474.57,
+    "dpoc_price": 4432.09,
+    "session_vwap": 4428.55,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (4432.09) y Session VWAP (4428.55).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 4451.56. La absorción vendedora proyecta retroceso hacia el soporte 4398.46 con RSI en 18.0.",
     "cited_key_levels": {
       "levels": [
-        4410.44,
-        4444.16,
-        4463.69,
-        4440.61
+        4398.46,
+        4432.09,
+        4451.56,
+        4428.55
       ],
       "session_levels": {
-        "pdh": 4481.54,
-        "pdl": 4392.8,
-        "asian_high": 4449.49,
-        "asian_low": 4424.64,
+        "pdh": 4469.37,
+        "pdl": 4380.87,
+        "asian_high": 4437.4,
+        "asian_low": 4412.62,
         "current_session": "ASIA",
-        "ema_50_1h": 4440.97,
-        "sma_200_1d": 4725.47,
-        "session_vwap": 4440.61,
-        "vwap_upper_1s": 4453.04,
-        "vwap_lower_1s": 4428.18,
-        "vwap_upper_2s": 4467.25,
-        "vwap_lower_2s": 4413.97,
-        "dpoc_price": 4444.16,
-        "vah_price": 4463.69,
-        "val_price": 4410.44,
-        "volume_spike_alert": "Presión vendedora activa en rechazo de 4463.69"
+        "ema_50_1h": 4428.9,
+        "sma_200_1d": 4712.64,
+        "session_vwap": 4428.55,
+        "vwap_upper_1s": 4440.95,
+        "vwap_lower_1s": 4416.15,
+        "vwap_upper_2s": 4455.12,
+        "vwap_lower_2s": 4401.98,
+        "dpoc_price": 4432.09,
+        "vah_price": 4451.56,
+        "val_price": 4398.46,
+        "volume_spike_alert": "Presión vendedora activa en rechazo de 4451.56"
       },
       "structural_poi": [
         {
           "id": "xauusd-poi-sell",
           "type": "SELLSIDE_POI",
           "zone_label": "ZAP Oferta / Venta (1H)",
-          "range_low": 4463.69,
-          "range_high": 4486.76,
-          "mean_threshold": 4475.23,
+          "range_low": 4451.56,
+          "range_high": 4474.57,
+          "mean_threshold": 4463.07,
           "confluences": [
             "EMA 50 (1H) dinámica",
             "FVG Bajista de Ruptura (1H)",
             "61.8% Fibonacci OTE",
-            "Resistencia R1 ($4,463.69)"
+            "Resistencia R1 ($4,451.56)"
           ],
           "status": "active"
         },
@@ -273,11 +273,11 @@
           "id": "xauusd-poi-buy",
           "type": "BUYSIDE_POI",
           "zone_label": "ZAP Demanda / Rebote (1H)",
-          "range_low": 4387.37,
-          "range_high": 4410.44,
-          "mean_threshold": 4398.9,
+          "range_low": 4375.45,
+          "range_high": 4398.46,
+          "mean_threshold": 4386.95,
           "confluences": [
-            "Barrido SSL en $4,410.44 purgado",
+            "Barrido SSL en $4,398.46 purgado",
             "Order Block Institucional",
             "Banda VWAP -2σ (Sobreventa)"
           ],
@@ -287,13 +287,13 @@
       "liquidity_pools": {
         "bsl": [
           {
-            "price": 4517.39,
+            "price": 4505.12,
             "label": "Máximo Semanal / Trendline Liquidity $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 4481.54,
+            "price": 4469.37,
             "label": "PDH (Máximo Sesión Previa)",
             "status": "unmitigated",
             "timeframe": "1D"
@@ -301,13 +301,13 @@
         ],
         "ssl": [
           {
-            "price": 4410.44,
+            "price": 4398.46,
             "label": "Soporte de Directriz $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 4357.66,
+            "price": 4345.82,
             "label": "Mínimo Estructural Mayor $$$",
             "status": "unmitigated",
             "timeframe": "4H"
@@ -315,19 +315,19 @@
         ]
       },
       "structural_scenarios": {
-        "bullish_path": "SI el precio reconquista con vela con cuerpo la EMA 50 y el dPOC (4444.16), ENTONCES anulará la presión vendedora buscando el retroceso correctivo hacia 4463.69.",
-        "bearish_path": "SI el precio continúa siendo rechazado en el Session VWAP (4440.61) y quiebra 4410.44, ENTONCES continuará la cascada de liquidación hacia la piscina SSL mayor en 4357.66.",
-        "invalidation_level": 4493.94,
-        "invalidation_text": "Cierre de vela de 1H por encima de 4493.94 invalida la estructura bajista inmediata."
+        "bullish_path": "SI el precio reconquista con vela con cuerpo la EMA 50 y el dPOC (4432.09), ENTONCES anulará la presión vendedora buscando el retroceso correctivo hacia 4451.56.",
+        "bearish_path": "SI el precio continúa siendo rechazado en el Session VWAP (4428.55) y quiebra 4398.46, ENTONCES continuará la cascada de liquidación hacia la piscina SSL mayor en 4345.82.",
+        "invalidation_level": 4481.73,
+        "invalidation_text": "Cierre de vela de 1H por encima de 4481.73 invalida la estructura bajista inmediata."
       },
-      "diagnosis": "El Oro Spot cotiza en $4,437.07 con estructura bearish (96/100). Presión vendedora institucional por debajo del dPOC (4444.16) y Session VWAP (4440.61). Estructura bajista con resistencia clave en 4463.69. La absorción vendedora proyecta retroceso hacia el soporte 4410.44 con RSI en 18.0."
+      "diagnosis": "El Oro Spot cotiza en $4,425.01 con estructura bearish (96/100). Presión vendedora institucional por debajo del dPOC (4432.09) y Session VWAP (4428.55). Estructura bajista con resistencia clave en 4451.56. La absorción vendedora proyecta retroceso hacia el soporte 4398.46 con RSI en 18.0."
     },
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.440311+00:00",
+    "last_updated": "2026-09-08T05:39:02.787815+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -335,56 +335,56 @@
     "category": "CRYPTO",
     "display_name": "Bitcoin",
     "session_origin": "GLOBAL",
-    "current_price": 78703.99,
-    "change_24h_pct": 0.26,
+    "current_price": 78733.0,
+    "change_24h_pct": 0.3,
     "bias": "BULLISH",
-    "bias_score": 60,
-    "support_1": 77759.54,
-    "support_2": 76941.02,
-    "resistance_1": 79648.44,
-    "resistance_2": 80466.96,
-    "dpoc_price": 78452.14,
-    "session_vwap": 78578.06,
-    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (78452.14) y Session VWAP (78578.06).",
-    "technical_thesis": "Estructura alcista con soporte clave en 77759.54. La absorción compradora proyecta expansión hacia la resistencia 79648.44 con RSI en 55.1.",
+    "bias_score": 61,
+    "support_1": 77788.2,
+    "support_2": 76969.38,
+    "resistance_1": 79677.8,
+    "resistance_2": 80496.62,
+    "dpoc_price": 78481.05,
+    "session_vwap": 78607.03,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (78481.05) y Session VWAP (78607.03).",
+    "technical_thesis": "Estructura alcista con soporte clave en 77788.2. La absorción compradora proyecta expansión hacia la resistencia 79677.8 con RSI en 55.6.",
     "cited_key_levels": {
       "levels": [
-        77759.54,
-        78452.14,
-        79648.44,
-        78578.06
+        77788.2,
+        78481.05,
+        79677.8,
+        78607.03
       ],
       "session_levels": {
-        "pdh": 79967.03,
-        "pdl": 77448.5,
-        "asian_high": 79144.73,
-        "asian_low": 78263.25,
+        "pdh": 79996.51,
+        "pdl": 77477.05,
+        "asian_high": 79173.9,
+        "asian_low": 78292.1,
         "current_session": "ASIA",
-        "ema_50_1h": 78565.47,
-        "sma_200_1d": 73588.23,
-        "session_vwap": 78578.06,
-        "vwap_upper_1s": 79018.1,
-        "vwap_lower_1s": 78138.02,
-        "vwap_upper_2s": 79521.0,
-        "vwap_lower_2s": 77635.12,
-        "dpoc_price": 78452.14,
-        "vah_price": 79648.44,
-        "val_price": 77759.54,
-        "volume_spike_alert": "Absorción institucional detectada en 77759.54"
+        "ema_50_1h": 78594.43,
+        "sma_200_1d": 73615.36,
+        "session_vwap": 78607.03,
+        "vwap_upper_1s": 79047.23,
+        "vwap_lower_1s": 78166.83,
+        "vwap_upper_2s": 79550.31,
+        "vwap_lower_2s": 77663.75,
+        "dpoc_price": 78481.05,
+        "vah_price": 79677.8,
+        "val_price": 77788.2,
+        "volume_spike_alert": "Absorción institucional detectada en 77788.2"
       },
       "structural_poi": [
         {
           "id": "btcusd-poi-sell",
           "type": "SELLSIDE_POI",
           "zone_label": "ZAP Oferta / Venta (1H)",
-          "range_low": 79648.44,
-          "range_high": 80466.96,
-          "mean_threshold": 80057.7,
+          "range_low": 79677.8,
+          "range_high": 80496.62,
+          "mean_threshold": 80087.21,
           "confluences": [
             "EMA 50 (1H) en resistencia",
             "iFVG (Inversion Fair Value Gap)",
             "dPOC + Banda VWAP +1σ",
-            "Resistencia R1 ($79,648)"
+            "Resistencia R1 ($79,678)"
           ],
           "status": "active"
         },
@@ -392,11 +392,11 @@
           "id": "btcusd-poi-buy",
           "type": "BUYSIDE_POI",
           "zone_label": "ZAP Demanda / Rebote (1H)",
-          "range_low": 76941.02,
-          "range_high": 77759.54,
-          "mean_threshold": 77350.28,
+          "range_low": 76969.38,
+          "range_high": 77788.2,
+          "mean_threshold": 77378.79,
           "confluences": [
-            "Order Block 4H mitigado en $77,760",
+            "Order Block 4H mitigado en $77,788",
             "Fibonacci OTE 78.6%",
             "Piscina SSL en mínimos"
           ],
@@ -406,13 +406,13 @@
       "liquidity_pools": {
         "bsl": [
           {
-            "price": 80606.77,
+            "price": 80636.48,
             "label": "Máximo Semanal / Trendline Liquidity $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 79967.03,
+            "price": 79996.51,
             "label": "PDH (Máximo Sesión Previa)",
             "status": "unmitigated",
             "timeframe": "1D"
@@ -420,13 +420,13 @@
         ],
         "ssl": [
           {
-            "price": 77759.54,
+            "price": 77788.2,
             "label": "Soporte de Directriz $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 76828.91,
+            "price": 76857.23,
             "label": "Mínimo Estructural Mayor $$$",
             "status": "unmitigated",
             "timeframe": "4H"
@@ -434,19 +434,19 @@
         ]
       },
       "structural_scenarios": {
-        "bullish_path": "SI el precio sostiene el soporte en 77759.54 y consolida sobre el dPOC (78452.14), ENTONCES proyecta expansión hacia la ZAP de Oferta en 79648.44 buscando la liquidez BSL en 79967.03.",
-        "bearish_path": "SI el precio pierde el soporte 77759.54 y quiebra el nivel VAL (76941.02), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 76828.91.",
-        "invalidation_level": 76694.81,
-        "invalidation_text": "Cierre de vela de 1H bajo 76694.81 invalida la estructura de rebote intradiario."
+        "bullish_path": "SI el precio sostiene el soporte en 77788.2 y consolida sobre el dPOC (78481.05), ENTONCES proyecta expansión hacia la ZAP de Oferta en 79677.8 buscando la liquidez BSL en 79996.51.",
+        "bearish_path": "SI el precio pierde el soporte 77788.2 y quiebra el nivel VAL (76969.38), ENTONCES aplicará fallo de subasta con aceleración bajista hacia 76857.23.",
+        "invalidation_level": 76723.08,
+        "invalidation_text": "Cierre de vela de 1H bajo 76723.08 invalida la estructura de rebote intradiario."
       },
-      "diagnosis": "Bitcoin cotiza en $78,703.99 bajo estructura bullish (60/100). Flujo comprador institucional activo por encima del dPOC (78452.14) y Session VWAP (78578.06). Estructura alcista con soporte clave en 77759.54. La absorción compradora proyecta expansión hacia la resistencia 79648.44 con RSI en 55.1."
+      "diagnosis": "Bitcoin cotiza en $78,733.00 bajo estructura bullish (61/100). Flujo comprador institucional activo por encima del dPOC (78481.05) y Session VWAP (78607.03). Estructura alcista con soporte clave en 77788.2. La absorción compradora proyecta expansión hacia la resistencia 79677.8 con RSI en 55.6."
     },
     "catalyst_tags": [
       "BULLISH_FLOW",
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -477,7 +477,7 @@
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -485,51 +485,51 @@
     "category": "FOREX",
     "display_name": "Euro / Dólar",
     "session_origin": "EUROPE",
-    "current_price": 1.162535,
-    "change_24h_pct": -0.3,
+    "current_price": 1.16261,
+    "change_24h_pct": -0.29,
     "bias": "BEARISH",
-    "bias_score": 61,
-    "support_1": 1.1573,
-    "support_2": 1.15277,
-    "resistance_1": 1.16777,
-    "resistance_2": 1.1723,
-    "dpoc_price": 1.16393,
-    "session_vwap": 1.16323,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (1.16393) y Session VWAP (1.16323).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 1.16777. La absorción vendedora proyecta retroceso hacia el soporte 1.1573 con RSI en 44.4.",
+    "bias_score": 60,
+    "support_1": 1.15738,
+    "support_2": 1.15284,
+    "resistance_1": 1.16784,
+    "resistance_2": 1.17238,
+    "dpoc_price": 1.16401,
+    "session_vwap": 1.16331,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (1.16401) y Session VWAP (1.16331).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 1.16784. La absorción vendedora proyecta retroceso hacia el soporte 1.15738 con RSI en 44.5.",
     "cited_key_levels": {
       "levels": [
-        1.1573,
-        1.16393,
-        1.16777,
-        1.16323
+        1.15738,
+        1.16401,
+        1.16784,
+        1.16331
       ],
       "session_levels": {
-        "pdh": 1.17244,
-        "pdl": 1.15267,
-        "asian_high": 1.16498,
-        "asian_low": 1.16009,
+        "pdh": 1.17251,
+        "pdl": 1.15275,
+        "asian_high": 1.16505,
+        "asian_low": 1.16017,
         "current_session": "ASIA",
-        "ema_50_1h": 1.1633,
-        "sma_200_1d": 1.2381,
-        "session_vwap": 1.16323,
-        "vwap_upper_1s": 1.16567,
-        "vwap_lower_1s": 1.16079,
-        "vwap_upper_2s": 1.16846,
-        "vwap_lower_2s": 1.158,
-        "dpoc_price": 1.16393,
-        "vah_price": 1.16777,
-        "val_price": 1.1573,
-        "volume_spike_alert": "Presión vendedora activa en rechazo de 1.16777"
+        "ema_50_1h": 1.16338,
+        "sma_200_1d": 1.23818,
+        "session_vwap": 1.16331,
+        "vwap_upper_1s": 1.16575,
+        "vwap_lower_1s": 1.16087,
+        "vwap_upper_2s": 1.16854,
+        "vwap_lower_2s": 1.15808,
+        "dpoc_price": 1.16401,
+        "vah_price": 1.16784,
+        "val_price": 1.15738,
+        "volume_spike_alert": "Presión vendedora activa en rechazo de 1.16784"
       },
       "structural_poi": [
         {
           "id": "eurusd-poi-sell",
           "type": "SELLSIDE_POI",
           "zone_label": "ZAP Oferta / Venta (1H)",
-          "range_low": 1.16777,
-          "range_high": 1.1723,
-          "mean_threshold": 1.17003,
+          "range_low": 1.16784,
+          "range_high": 1.17238,
+          "mean_threshold": 1.17011,
           "confluences": [
             "PDH en confluencia institucional",
             "Banda VWAP +2σ",
@@ -542,12 +542,12 @@
           "id": "eurusd-poi-buy",
           "type": "BUYSIDE_POI",
           "zone_label": "ZAP Demanda / Rebote (1H)",
-          "range_low": 1.15277,
-          "range_high": 1.1573,
-          "mean_threshold": 1.15504,
+          "range_low": 1.15284,
+          "range_high": 1.15738,
+          "mean_threshold": 1.15511,
           "confluences": [
             "Soporte dinámico EMA 50",
-            "VAL de Sesión (1.1573)",
+            "VAL de Sesión (1.1574)",
             "FVG Alcista de absorción"
           ],
           "status": "active"
@@ -556,13 +556,13 @@
       "liquidity_pools": {
         "bsl": [
           {
-            "price": 1.18182,
+            "price": 1.18189,
             "label": "Máximo Semanal / Trendline Liquidity $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 1.17244,
+            "price": 1.17251,
             "label": "PDH (Máximo Sesión Previa)",
             "status": "unmitigated",
             "timeframe": "1D"
@@ -570,13 +570,13 @@
         ],
         "ssl": [
           {
-            "price": 1.1573,
+            "price": 1.15738,
             "label": "Soporte de Directriz $$$",
             "status": "unmitigated",
             "timeframe": "1H"
           },
           {
-            "price": 1.14345,
+            "price": 1.14353,
             "label": "Mínimo Estructural Mayor $$$",
             "status": "unmitigated",
             "timeframe": "4H"
@@ -584,19 +584,19 @@
         ]
       },
       "structural_scenarios": {
-        "bullish_path": "SI el precio reconquista con vela con cuerpo la EMA 50 y el dPOC (1.16393), ENTONCES anulará la presión vendedora buscando el retroceso correctivo hacia 1.16777.",
-        "bearish_path": "SI el precio continúa siendo rechazado en el Session VWAP (1.16323) y quiebra 1.1573, ENTONCES continuará la cascada de liquidación hacia la piscina SSL mayor en 1.14345.",
-        "invalidation_level": 1.17371,
-        "invalidation_text": "Cierre de vela de 1H por encima de 1.17371 invalida la estructura bajista inmediata."
+        "bullish_path": "SI el precio reconquista con vela con cuerpo la EMA 50 y el dPOC (1.16401), ENTONCES anulará la presión vendedora buscando el retroceso correctivo hacia 1.16784.",
+        "bearish_path": "SI el precio continúa siendo rechazado en el Session VWAP (1.16331) y quiebra 1.15738, ENTONCES continuará la cascada de liquidación hacia la piscina SSL mayor en 1.14353.",
+        "invalidation_level": 1.17379,
+        "invalidation_text": "Cierre de vela de 1H por encima de 1.17379 invalida la estructura bajista inmediata."
       },
-      "diagnosis": "El par EUR/USD cotiza en 1.1625 con sesgo bearish (61/100). Presión vendedora institucional por debajo del dPOC (1.16393) y Session VWAP (1.16323). Estructura bajista con resistencia clave en 1.16777. La absorción vendedora proyecta retroceso hacia el soporte 1.1573 con RSI en 44.4."
+      "diagnosis": "El par EUR/USD cotiza en 1.1626 con sesgo bearish (60/100). Presión vendedora institucional por debajo del dPOC (1.16401) y Session VWAP (1.16331). Estructura bajista con resistencia clave en 1.16784. La absorción vendedora proyecta retroceso hacia el soporte 1.15738 con RSI en 44.5."
     },
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -604,30 +604,30 @@
     "category": "FOREX",
     "display_name": "Dólar / Yen Japonés",
     "session_origin": "ASIA",
-    "current_price": 153.4075,
-    "change_24h_pct": -3.21,
+    "current_price": 153.5,
+    "change_24h_pct": -3.15,
     "bias": "BEARISH",
     "bias_score": 96,
-    "support_1": 152.717,
-    "support_2": 152.119,
-    "resistance_1": 154.098,
-    "resistance_2": 154.696,
-    "dpoc_price": 153.592,
-    "session_vwap": 153.5,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (153.592) y Session VWAP (153.5).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 154.098. La absorción vendedora proyecta retroceso hacia el soporte 152.717 con RSI en 18.0.",
+    "support_1": 152.809,
+    "support_2": 152.211,
+    "resistance_1": 154.191,
+    "resistance_2": 154.789,
+    "dpoc_price": 153.684,
+    "session_vwap": 153.592,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (153.684) y Session VWAP (153.592).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 154.191. La absorción vendedora proyecta retroceso hacia el soporte 152.809 con RSI en 18.0.",
     "cited_key_levels": [
-      152.717,
-      153.592,
-      154.098,
-      153.5
+      152.809,
+      153.684,
+      154.191,
+      153.592
     ],
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -635,30 +635,30 @@
     "category": "FOREX",
     "display_name": "Libra / Dólar",
     "session_origin": "EUROPE",
-    "current_price": 1.354075,
-    "change_24h_pct": -0.58,
+    "current_price": 1.353985,
+    "change_24h_pct": -0.59,
     "bias": "BEARISH",
     "bias_score": 66,
-    "support_1": 1.34798,
-    "support_2": 1.3427,
-    "resistance_1": 1.36017,
-    "resistance_2": 1.36545,
-    "dpoc_price": 1.3557,
-    "session_vwap": 1.35489,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (1.3557) y Session VWAP (1.35489).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 1.36017. La absorción vendedora proyecta retroceso hacia el soporte 1.34798 con RSI en 41.0.",
+    "support_1": 1.34789,
+    "support_2": 1.34261,
+    "resistance_1": 1.36008,
+    "resistance_2": 1.36536,
+    "dpoc_price": 1.35561,
+    "session_vwap": 1.3548,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (1.35561) y Session VWAP (1.3548).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 1.36008. La absorción vendedora proyecta retroceso hacia el soporte 1.34789 con RSI en 40.9.",
     "cited_key_levels": [
-      1.34798,
-      1.3557,
-      1.36017,
-      1.35489
+      1.34789,
+      1.35561,
+      1.36008,
+      1.3548
     ],
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -666,30 +666,30 @@
     "category": "FOREX",
     "display_name": "Dólar / Dólar Canadiense",
     "session_origin": "US",
-    "current_price": 1.3802400000000001,
-    "change_24h_pct": -0.13,
-    "bias": "NEUTRAL",
-    "bias_score": 50,
-    "support_1": 1.37527,
-    "support_2": 1.37113,
-    "resistance_1": 1.38521,
-    "resistance_2": 1.38935,
-    "dpoc_price": 1.38024,
-    "session_vwap": 1.38045,
-    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (1.38024).",
-    "technical_thesis": "Precio oscilando entre el soporte 1.37527 y la resistencia 1.38521. Se recomienda esperar confirmación de ruptura de banda VWAP (1.38045).",
+    "current_price": 1.37949,
+    "change_24h_pct": -0.18,
+    "bias": "BEARISH",
+    "bias_score": 58,
+    "support_1": 1.37328,
+    "support_2": 1.3679,
+    "resistance_1": 1.3857,
+    "resistance_2": 1.39108,
+    "dpoc_price": 1.38115,
+    "session_vwap": 1.38032,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (1.38115) y Session VWAP (1.38032).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 1.3857. La absorción vendedora proyecta retroceso hacia el soporte 1.37328 con RSI en 45.8.",
     "cited_key_levels": [
-      1.37527,
-      1.38024,
-      1.38521,
-      1.38045
+      1.37328,
+      1.38115,
+      1.3857,
+      1.38032
     ],
     "catalyst_tags": [
-      "RANGE_CONSOLIDATION",
-      "NEUTRAL_POC",
-      "WAIT_BREAKOUT"
+      "BEARISH_FLOW",
+      "VWAP_REJECTION",
+      "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -697,30 +697,30 @@
     "category": "FOREX",
     "display_name": "Dólar Australiano / Dólar",
     "session_origin": "ASIA",
-    "current_price": 0.721745,
-    "change_24h_pct": 0.1,
+    "current_price": 0.721575,
+    "change_24h_pct": 0.08,
     "bias": "NEUTRAL",
     "bias_score": 50,
-    "support_1": 0.71915,
-    "support_2": 0.71698,
-    "resistance_1": 0.72434,
-    "resistance_2": 0.72651,
-    "dpoc_price": 0.72174,
-    "session_vwap": 0.72185,
-    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (0.72174).",
-    "technical_thesis": "Precio oscilando entre el soporte 0.71915 y la resistencia 0.72434. Se recomienda esperar confirmación de ruptura de banda VWAP (0.72185).",
+    "support_1": 0.71898,
+    "support_2": 0.71681,
+    "resistance_1": 0.72417,
+    "resistance_2": 0.72634,
+    "dpoc_price": 0.72157,
+    "session_vwap": 0.72168,
+    "macro_driver": "Consolidación en rango equilibrado alrededor del punto de control dPOC (0.72157).",
+    "technical_thesis": "Precio oscilando entre el soporte 0.71898 y la resistencia 0.72417. Se recomienda esperar confirmación de ruptura de banda VWAP (0.72168).",
     "cited_key_levels": [
-      0.71915,
-      0.72174,
-      0.72434,
-      0.72185
+      0.71898,
+      0.72157,
+      0.72417,
+      0.72168
     ],
     "catalyst_tags": [
       "RANGE_CONSOLIDATION",
       "NEUTRAL_POC",
       "WAIT_BREAKOUT"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -728,30 +728,30 @@
     "category": "FOREX",
     "display_name": "Dólar Neozelandés / Dólar",
     "session_origin": "ASIA",
-    "current_price": 0.58594,
-    "change_24h_pct": -7.29,
+    "current_price": 0.586165,
+    "change_24h_pct": -7.25,
     "bias": "BEARISH",
     "bias_score": 96,
-    "support_1": 0.5833,
-    "support_2": 0.58102,
-    "resistance_1": 0.58858,
-    "resistance_2": 0.59086,
-    "dpoc_price": 0.58664,
-    "session_vwap": 0.58629,
-    "macro_driver": "Presión vendedora institucional por debajo del dPOC (0.58664) y Session VWAP (0.58629).",
-    "technical_thesis": "Estructura bajista con resistencia clave en 0.58858. La absorción vendedora proyecta retroceso hacia el soporte 0.5833 con RSI en 18.0.",
+    "support_1": 0.58353,
+    "support_2": 0.58124,
+    "resistance_1": 0.5888,
+    "resistance_2": 0.59109,
+    "dpoc_price": 0.58687,
+    "session_vwap": 0.58652,
+    "macro_driver": "Presión vendedora institucional por debajo del dPOC (0.58687) y Session VWAP (0.58652).",
+    "technical_thesis": "Estructura bajista con resistencia clave en 0.5888. La absorción vendedora proyecta retroceso hacia el soporte 0.58353 con RSI en 18.0.",
     "cited_key_levels": [
-      0.5833,
-      0.58664,
-      0.58858,
-      0.58629
+      0.58353,
+      0.58687,
+      0.5888,
+      0.58652
     ],
     "catalyst_tags": [
       "BEARISH_FLOW",
       "VWAP_REJECTION",
       "DPOC_BREAK"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   },
   {
@@ -759,30 +759,30 @@
     "category": "FOREX",
     "display_name": "Dólar / Franco Suizo",
     "session_origin": "EUROPE",
-    "current_price": 0.80923,
-    "change_24h_pct": 0.78,
+    "current_price": 0.80908,
+    "change_24h_pct": 0.76,
     "bias": "BULLISH",
     "bias_score": 70,
-    "support_1": 0.80559,
-    "support_2": 0.80243,
-    "resistance_1": 0.81287,
-    "resistance_2": 0.81603,
-    "dpoc_price": 0.80826,
-    "session_vwap": 0.80874,
-    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (0.80826) y Session VWAP (0.80874).",
-    "technical_thesis": "Estructura alcista con soporte clave en 0.80559. La absorción compradora proyecta expansión hacia la resistencia 0.81287 con RSI en 61.4.",
+    "support_1": 0.80544,
+    "support_2": 0.80228,
+    "resistance_1": 0.81272,
+    "resistance_2": 0.81588,
+    "dpoc_price": 0.80811,
+    "session_vwap": 0.80859,
+    "macro_driver": "Flujo comprador institucional activo por encima del dPOC (0.80811) y Session VWAP (0.80859).",
+    "technical_thesis": "Estructura alcista con soporte clave en 0.80544. La absorción compradora proyecta expansión hacia la resistencia 0.81272 con RSI en 61.1.",
     "cited_key_levels": [
-      0.80559,
-      0.80826,
-      0.81287,
-      0.80874
+      0.80544,
+      0.80811,
+      0.81272,
+      0.80859
     ],
     "catalyst_tags": [
       "BULLISH_FLOW",
       "VWAP_SUPPORT",
       "DPOC_EXPANSION"
     ],
-    "last_updated": "2026-09-08T05:01:59.441355+00:00",
+    "last_updated": "2026-09-08T05:39:02.788818+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   }
 ]
