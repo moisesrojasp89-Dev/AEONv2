@@ -47,7 +47,51 @@
   color: var(--muted);
   line-height: 1.7;
   max-width: 48ch;
+  margin-bottom: 1.25rem;
+}
+
+/* ---- Terminal Module Pillars ---- */
+.hero-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 2rem;
+}
+
+.hero-pillar-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.28rem 0.7rem;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.hero-pillar-chip::before {
+  content: "";
+  display: inline-block;
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  opacity: 0.8;
+}
+
+.hero-pillar-chip:hover {
+  color: var(--text-bright);
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
+  transform: translateY(-1px);
 }
 
 .hero-buttons {
@@ -200,6 +244,16 @@
     font-size: 1.55rem;
     letter-spacing: -0.025em;
     margin-bottom: 0.75rem;
+  }
+
+  .hero-pillars {
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-pillar-chip {
+    font-size: 0.64rem;
+    padding: 0.2rem 0.5rem;
   }
 
   .hero-buttons {

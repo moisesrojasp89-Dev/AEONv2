@@ -142,16 +142,23 @@ function setupCheckoutModal() {
   const WALLET_DATA = {
     'binance': {
       network: 'Binance Pay (Cero Gas Fee)',
-      address: 'Pay ID: 101395084 (AEON Intelligence)'
+      address: 'Pay ID: 401032901 (m-Alejandro)'
     },
     'usdt-trc20': {
       network: 'Red TRON (TRC-20)',
-      address: 'TQv8kL7X2m9PZ1wYaNxC5rBe4dF6uJ8sAe'
+      address: 'PENDIENTE — Contactar soporte para dirección TRC-20'
     },
     'usdt-bep20': {
-      network: 'Binance Smart Chain (BEP-20) / Polygon',
-      address: '0x71C5A8e3678385dF981775E6C1D61fD47D754B4F'
+      network: 'Binance Smart Chain (BEP-20)',
+      address: 'PENDIENTE — Contactar soporte para dirección BEP-20'
     }
+  };
+
+  // Mapeo de métodos frontend → valores de la columna CHECK en SQL
+  const METHOD_DB_MAP = {
+    'binance': 'binance_pay',
+    'usdt-trc20': 'usdt_trc20',
+    'usdt-bep20': 'usdt_bep20'
   };
 
   function openCheckoutModal() {
@@ -272,8 +279,15 @@ function setupCheckoutModal() {
     btnConfirmSent.addEventListener('click', async () => {
       const txRef = depositTxInput ? depositTxInput.value.trim() : '';
 
-      if (!txRef || txRef.length < 4) {
-        if (depositTxError) depositTxError.style.display = 'block';
+      // Validación de TxID por método de pago
+      const TX_MIN_LENGTHS = { 'binance': 6, 'usdt-trc20': 10, 'usdt-bep20': 10 };
+      const minLen = TX_MIN_LENGTHS[selectedMethod] || 4;
+
+      if (!txRef || txRef.length < minLen) {
+        if (depositTxError) {
+          depositTxError.textContent = `⚠ Ingresa un ID de transacción válido (mínimo ${minLen} caracteres).`;
+          depositTxError.style.display = 'block';
+        }
         if (depositTxInput) {
           depositTxInput.focus();
           depositTxInput.style.borderColor = '#ef4444';
@@ -288,39 +302,53 @@ function setupCheckoutModal() {
       btnConfirmSent.disabled = true;
       if (btnConfirmText) btnConfirmText.textContent = 'Registrando orden en sistema...';
 
-      // Generar Order ID único
-      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+      // Generar Order ID criptográficamente seguro
+      const bytes = new Uint8Array(5);
+      crypto.getRandomValues(bytes);
+      const randomSuffix = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
       const orderId = `AEON-PAY-${randomSuffix}`;
 
       const planDaysMap = { weekly: 7, monthly: 30, quarterly: 90 };
       const days = planDaysMap[selectedPlan] || 30;
 
       // Guardar en Supabase (tabla payments)
+      let insertOk = false;
       try {
-        if (currentUserId) {
-          const { error: insertErr } = await supabase.from('payments').insert({
-            order_id: orderId,
-            user_id: currentUserId,
-            user_email: currentUserEmail || '',
-            plan: selectedPlan,
-            plan_days: days,
-            amount: selectedPrice,
-            currency: 'USDT',
-            payment_method: selectedMethod,
-            tx_reference: txRef,
-            status: 'pending'
-          });
-
-          if (insertErr) {
-            console.warn('[AEON] Registro de pago en Supabase:', insertErr.message);
-          }
+        if (!currentUserId) {
+          throw new Error('Sesión no disponible. Recarga la página e intenta de nuevo.');
         }
+
+        const { error: insertErr } = await supabase.from('payments').insert({
+          order_id: orderId,
+          user_id: currentUserId,
+          user_email: currentUserEmail || '',
+          plan: selectedPlan,
+          plan_days: days,
+          amount: selectedPrice,
+          currency: 'USDT',
+          payment_method: METHOD_DB_MAP[selectedMethod] || 'binance_pay',
+          tx_reference: txRef,
+          status: 'pending'
+        });
+
+        if (insertErr) {
+          throw new Error(insertErr.message || 'Error registrando el pago.');
+        }
+
+        insertOk = true;
       } catch (err) {
-        console.warn('[AEON] Error en insert payments:', err);
+        console.error('[AEON] Error en insert payments:', err);
+        if (depositTxError) {
+          depositTxError.textContent = `⚠ No se pudo registrar tu pago: ${err.message}. Contacta soporte con tu TxID.`;
+          depositTxError.style.display = 'block';
+        }
       } finally {
         btnConfirmSent.disabled = false;
         if (btnConfirmText) btnConfirmText.textContent = 'Validar y Registrar Pago ✓';
       }
+
+      // SOLO avanzar a Paso 3 si el INSERT fue exitoso
+      if (!insertOk) return;
 
       // Rellenar datos en Paso 3
       const terminalCode = computeTerminalId(currentUserId || '');

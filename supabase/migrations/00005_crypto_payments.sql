@@ -1,6 +1,7 @@
 -- ==============================================================================
 -- AEON · MIGRACIÓN 00005: Sistema de Pagos en Criptoactivos & Binance Pay
 -- Gobernanza: RLS Estricto, Auditoría Inmutable y Activación Automatizada
+-- VERSIÓN CORREGIDA — Auditoría Claude Opus 4.6 · 2026-09-08
 -- ==============================================================================
 
 -- 1. Crear tabla de pagos en criptoactivos
@@ -44,7 +45,7 @@ CREATE POLICY "Usuarios leen su historial de pagos"
     USING (auth.uid() = user_id);
 
 -- 4. Función RPC para Aprobación y Activación Instantánea de Membresía
--- Permite activar el acceso PRO y registrar la vigencia exacta de días (7, 30 o 90 días)
+-- CORREGIDA: Expira suscripciones previas antes de insertar la nueva
 CREATE OR REPLACE FUNCTION public.approve_crypto_payment(p_payment_id UUID)
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -78,13 +79,19 @@ BEGIN
     SET tier = 'pro', updated_at = now()
     WHERE id = v_pay.user_id;
 
-    -- 3. Actualizar o insertar suscripción activa
+    -- 3. Expirar suscripciones previas activas del mismo usuario
+    UPDATE public.subscriptions
+    SET status = 'expired', updated_at = now()
+    WHERE user_id = v_pay.user_id
+      AND plan = 'pro'
+      AND status = 'active';
+
+    -- 4. Insertar nueva suscripción activa con fechas correctas
     INSERT INTO public.subscriptions (
         user_id, plan, status, current_period_start, current_period_end, created_at, updated_at
     ) VALUES (
         v_pay.user_id, 'pro', 'active', now(), v_period_end, now(), now()
-    )
-    ON CONFLICT (id) DO NOTHING;
+    );
 
     RETURN jsonb_build_object(
         'success', true,

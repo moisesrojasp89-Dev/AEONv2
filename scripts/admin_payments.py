@@ -3,6 +3,7 @@
 ==============================================================================
 AEON Terminal — Panel de Control de Pagos Cripto (Admin CLI)
 Gobernanza: Activación Instantánea de Membresías PRO vía Service Role
+VERSIÓN CORREGIDA — Usa RPC approve_crypto_payment para evitar duplicación
 ==============================================================================
 Uso:
   python scripts/admin_payments.py list
@@ -64,6 +65,23 @@ def api_request(endpoint, method='GET', data=None):
         print(f"❌ Error de red: {e}")
         return None
 
+def rpc_call(function_name, params):
+    """Llama a una función RPC de Supabase (PostgREST)"""
+    url = f"{SUPABASE_URL}/rest/v1/rpc/{function_name}"
+    req_data = json.dumps(params).encode('utf-8')
+    req = urllib.request.Request(url, data=req_data, headers=HEADERS, method='POST')
+    try:
+        with urllib.request.urlopen(req) as resp:
+            content = resp.read().decode('utf-8')
+            return json.loads(content) if content else {}
+    except urllib.error.HTTPError as e:
+        err_msg = e.read().decode('utf-8')
+        print(f"❌ Error HTTP {e.code} en RPC {function_name}: {err_msg}")
+        return None
+    except Exception as e:
+        print(f"❌ Error de red: {e}")
+        return None
+
 def list_pending():
     print("\n========================================================")
     print(" ✦ AEON TERMINAL · ÓRDENES DE PAGO PENDIENTES ✦")
@@ -108,8 +126,7 @@ def approve_payment(target_ref):
 
     pay = payments[0]
     pid = pay['id']
-    user_id = pay['user_id']
-    user_email = pay.get('user_email', user_id)
+    user_email = pay.get('user_email', pay['user_id'])
     plan = pay.get('plan', 'monthly')
     plan_days = int(pay.get('plan_days', 30))
 
@@ -117,41 +134,27 @@ def approve_payment(target_ref):
         print(f"⚠ Esta orden ya había sido aprobada previamente.")
         return
 
-    # 1. Marcar pago como aprobado
-    now_utc = datetime.now(timezone.utc)
-    end_date = now_utc + timedelta(days=plan_days)
+    # Usar la función RPC para aprobación atómica (expira subs previas + inserta nueva)
+    result = rpc_call('approve_crypto_payment', {'p_payment_id': pid})
 
-    upd_pay = api_request(f"payments?id=eq.{pid}", method='PATCH', data={
-        'status': 'approved',
-        'updated_at': now_utc.isoformat()
-    })
+    if result is None:
+        print("❌ Error al ejecutar la aprobación. Verifica los logs de Supabase.")
+        return
 
-    # 2. Actualizar perfil del usuario a 'pro'
-    upd_profile = api_request(f"profiles?id=eq.{user_id}", method='PATCH', data={
-        'tier': 'pro',
-        'updated_at': now_utc.isoformat()
-    })
-
-    # 3. Insertar o actualizar suscripción
-    sub_data = {
-        'user_id': user_id,
-        'plan': 'pro',
-        'status': 'active',
-        'current_period_start': now_utc.isoformat(),
-        'current_period_end': end_date.isoformat(),
-        'updated_at': now_utc.isoformat()
-    }
-    ins_sub = api_request("subscriptions", method='POST', data=sub_data)
-
-    print("\n" + "=" * 55)
-    print(" ✅ ¡ORDEN APROBADA & ACCESO PRO ACTIVADO CON ÉXITO!")
-    print("=" * 55)
-    print(f" • Orden:          {pay.get('order_id')}")
-    print(f" • Usuario:        {user_email}")
-    print(f" • Plan Activado:  {plan.upper()} ({plan_days} días)")
-    print(f" • Vigencia Hasta: {end_date.strftime('%Y-%m-%d %H:%M:%S')} UTC")
-    print(f" • Rango Perfil:   PRO (Desbloqueo Total de IA & Señales)")
-    print("=" * 55 + "\n")
+    if isinstance(result, dict) and result.get('success'):
+        period_end = result.get('period_end', 'N/A')
+        print("\n" + "=" * 55)
+        print(" ✅ ¡ORDEN APROBADA & ACCESO PRO ACTIVADO CON ÉXITO!")
+        print("=" * 55)
+        print(f" • Orden:          {pay.get('order_id')}")
+        print(f" • Usuario:        {user_email}")
+        print(f" • Plan Activado:  {plan.upper()} ({plan_days} días)")
+        print(f" • Vigencia Hasta: {period_end}")
+        print(f" • Rango Perfil:   PRO (Desbloqueo Total de IA & Señales)")
+        print("=" * 55 + "\n")
+    else:
+        msg = result.get('message', 'Error desconocido') if isinstance(result, dict) else str(result)
+        print(f"⚠ Resultado de aprobación: {msg}")
 
 def reject_payment(target_ref):
     payments = api_request(f"payments?or=(order_id.eq.{target_ref},id.eq.{target_ref})&limit=1")
