@@ -84,23 +84,23 @@ BEGIN
     SET status = 'approved', updated_at = now()
     WHERE id = p_payment_id;
 
-    -- 2. Actualizar rango en el perfil a 'pro'
+    -- 2. Actualizar rango en el perfil a 'pro' (sin auto-degradar al admin si prueba un pago)
     UPDATE public.profiles
-    SET tier = 'pro', updated_at = now()
+    SET tier = CASE WHEN tier = 'admin' THEN 'admin' ELSE 'pro' END
     WHERE id = v_pay.user_id;
 
     -- 3. Expirar suscripciones previas activas del mismo usuario
     UPDATE public.subscriptions
-    SET status = 'expired', updated_at = now()
+    SET status = 'expired'
     WHERE user_id = v_pay.user_id
       AND plan = 'pro'
       AND status = 'active';
 
-    -- 4. Insertar nueva suscripción activa con fechas correctas
+    -- 4. Insertar nueva suscripción activa con columnas exactas de la tabla
     INSERT INTO public.subscriptions (
-        user_id, plan, status, current_period_start, current_period_end, created_at, updated_at
+        user_id, plan, status, current_period_end, created_at
     ) VALUES (
-        v_pay.user_id, 'pro', 'active', now(), v_period_end, now(), now()
+        v_pay.user_id, 'pro', 'active', v_period_end, now()
     );
 
     RETURN jsonb_build_object(
