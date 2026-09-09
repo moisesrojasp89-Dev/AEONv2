@@ -33,6 +33,7 @@ export default defineConfig({
         terminos: resolve(__dirname, 'terminos.html'),
         privacidad: resolve(__dirname, 'privacidad.html'),
         cookies: resolve(__dirname, 'cookies.html'),
+        adminPagos: resolve(__dirname, 'admin-pagos.html'),
       },
     },
   },
