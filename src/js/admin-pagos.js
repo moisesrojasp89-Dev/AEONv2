@@ -24,11 +24,11 @@ async function initAdminPanel() {
   const userId = authData.session.user.id;
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role, tier')
+    .select('tier')
     .eq('id', userId)
     .maybeSingle();
 
-  if (!profile || (profile.role !== 'admin' && profile.tier !== 'admin')) {
+  if (!profile || profile.tier !== 'admin') {
     if (accessDenied) accessDenied.style.display = 'block';
     if (adminContent) adminContent.style.display = 'none';
     return;
