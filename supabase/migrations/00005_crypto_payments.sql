@@ -56,6 +56,16 @@ DECLARE
     v_pay RECORD;
     v_period_end TIMESTAMPTZ;
 BEGIN
+    -- 1. VERIFICACIÓN DE SEGURIDAD: Solo Admin o Service Role pueden aprobar pagos
+    IF current_setting('request.jwt.claim.role', true) <> 'service_role' AND auth.role() <> 'service_role' THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM public.profiles
+            WHERE id = auth.uid() AND tier = 'admin'
+        ) THEN
+            RAISE EXCEPTION 'Acceso denegado: solo el administrador puede aprobar pagos.';
+        END IF;
+    END IF;
+
     -- Bloqueo de fila para evitar ejecuciones concurrentes
     SELECT * INTO v_pay FROM public.payments WHERE id = p_payment_id FOR UPDATE;
     IF NOT FOUND THEN
