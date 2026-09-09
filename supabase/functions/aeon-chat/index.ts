@@ -260,21 +260,29 @@ Deno.serve(async (req: Request) => {
     // --------------------------------------------------------------------------
     // CAPA 2: Validación de Suscripción PRO Activa (Fail Fast)
     // --------------------------------------------------------------------------
-    const { data: profile } = await supabaseAdmin
+    const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
       .select("tier")
       .eq("id", verifiedUserId)
       .maybeSingle();
 
-    let isPro = profile?.tier === "pro" || profile?.tier === "institutional";
+    if (profileError) {
+      console.error("[AEON Chat] Error consultando perfil de usuario:", profileError);
+    }
+
+    let isPro = profile?.tier === "pro" || profile?.tier === "institutional" || profile?.tier === "admin";
 
     if (!isPro) {
-      const { data: sub } = await supabaseAdmin
+      const { data: sub, error: subError } = await supabaseAdmin
         .from("subscriptions")
         .select("status, plan, current_period_end")
         .eq("user_id", verifiedUserId)
         .eq("status", "active")
         .maybeSingle();
+
+      if (subError) {
+        console.error("[AEON Chat] Error consultando suscripciones activas:", subError);
+      }
 
       if (sub && (sub.plan === "pro" || sub.plan === "institutional")) {
         const isPeriodValid = !sub.current_period_end || new Date(sub.current_period_end) >= new Date();
@@ -690,23 +698,12 @@ ${calendarContextSummary}
     );
 
   } catch (err: unknown) {
-    // Si la cuota se incrementó pero ocurrió un fallo del servicio, reembolsar la pregunta
+    // Si la cuota se incrementó pero ocurrió un fallo del servicio, reembolsar la pregunta de forma atómica
     if (quotaIncremented && verifiedUserId) {
       try {
-        const { data: usage } = await supabaseAdmin
-          .from("user_ai_usage")
-          .select("daily_requests")
-          .eq("user_id", verifiedUserId)
-          .maybeSingle();
-
-        if (usage && usage.daily_requests > 0) {
-          await supabaseAdmin
-            .from("user_ai_usage")
-            .update({ daily_requests: usage.daily_requests - 1 })
-            .eq("user_id", verifiedUserId);
-        }
-      } catch (_) {
-        // Rollback silencioso de respaldo
+        await supabaseAdmin.rpc("refund_ai_quota", { p_user_id: verifiedUserId });
+      } catch (refundErr) {
+        console.error("[AEON Chat] Error ejecutando refund_ai_quota:", refundErr);
       }
     }
 

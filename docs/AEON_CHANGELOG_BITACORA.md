@@ -421,3 +421,24 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   1. **Eliminación en [`index.html`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/index.html):** Se removió el nodo `.hero-hud-bottom`.
   2. **Optimización en [`hero.css`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/src/css/components/hero.css):** Se limpiaron las reglas huérfanas de `.hero-hud-bottom` y se redujo la sombra del gradiente inferior de `.hero-visual-overlay` (de 90% a 35%), permitiendo que la topografía cuántica y la esfera 3D brillen con total nitidez. Se mantuvo la insignia superior minimalista `AEON INTELLIGENCE` con el pulso cuántico.
 
+---
+
+## 🛡️ 17. Hito 17: Auditoría Integral de Seguridad, Blindaje Atómico de Cuotas IA y Hardening PostgreSQL
+* **Contexto:** Auditoría técnica externa exhaustiva de arquitectura de seguridad (modelos Claude Opus/Sonnet) sobre las migraciones SQL (00001–00005) y la Edge Function server-side `aeon-chat`.
+* **Hallazgos y Mejoras de Arquitectura:**
+  1. **Eliminación de Race Conditions en Reembolsos de Cuota (Capa 4/Catch):**
+     * **Problema Previo:** Si la IA fallaba en Capa 5, el bloque `catch` de la Edge Function realizaba un flujo `select-then-update` secuencial manual en cliente para devolver la cuota restando 1. En escenarios concurrentes con fallas simultáneas, dos lecturas paralelas podían pisarse y perder el conteo exacto de reembolsos.
+     * **Solución Implementada ([`00006_ai_quota_refund_and_security_hardening.sql`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/supabase/migrations/00006_ai_quota_refund_and_security_hardening.sql)):** Creación del Stored Procedure atómico `public.refund_ai_quota(p_user_id UUID)` que ejecuta `UPDATE public.user_ai_usage SET daily_requests = GREATEST(daily_requests - 1, 0) WHERE user_id = p_user_id;` en una sola sentencia SQL atómica donde el motor de Postgres gestiona el bloqueo a nivel de fila.
+     * **Blindaje PostgREST:** `REVOKE ALL ON FUNCTION public.refund_ai_quota(UUID) FROM PUBLIC, anon, authenticated;` y `GRANT EXECUTE ... TO service_role;`.
+     * **Integración en Edge Function ([`aeon-chat/index.ts`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/supabase/functions/aeon-chat/index.ts)):** Invocación directa vía `supabaseAdmin.rpc("refund_ai_quota", { p_user_id: verifiedUserId })`.
+  2. **Hardening de `search_path` en Funciones `SECURITY DEFINER`:**
+     * Se estandarizó la directriz de seguridad de Postgres incorporando `SET search_path = public` a todas las funciones existentes: `handle_new_user()`, `protect_profile_tier()`, y `get_track_record_summary()`, mitigando vectores teóricos de búsqueda de esquema y escalación de privilegios.
+  3. **Robustez y Consistencia en la Capa 2 de Autorización (`aeon-chat`):**
+     * **Paridad de Roles:** Se incluyó `profile?.tier === "admin"` en la comprobación de acceso (`isPro`), evitando bloqueos 403 espurios a cuentas administradoras.
+     * **Trazabilidad sin Pérdida de Principio Fail-Closed:** Se añadió logging de diagnóstico (`console.error`) ante errores transitorios de red en consultas a `profiles` y `subscriptions` para distinguir caídas de conexión de denegaciones legítimas de membresía.
+  4. **Auditoría de Bundles de Producción y Superficie de Ataque:**
+     * **Inspección de Bundles Vite (`dist/`):** Verificación de aislamiento de credenciales. Cero exposición de claves privadas (`SUPABASE_SERVICE_ROLE_KEY`, `BINANCE_SECRET`, `TELEGRAM_TOKEN`, `GEMINI_API_KEY`, etc.); únicamente viaja la `VITE_SUPABASE_ANON_KEY` pública requerida para RLS.
+     * **Storage Buckets:** Verificación de ausencia de riesgo en Supabase Storage (las capturas de gráficos se procesan transient en memoria y los comprobantes cripto se auditan vía hash alfanumérico).
+     * **Row Level Security (RLS):** 100% de tablas relacionales del esquema `public` con políticas RLS activadas e inmutabilidad garantizada.
+
+
