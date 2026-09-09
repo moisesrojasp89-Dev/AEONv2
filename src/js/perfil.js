@@ -371,7 +371,7 @@ function setupCheckoutModal() {
           `• Usuario: ${currentUserEmail || 'Trader'}\n\n` +
           `Solicito verificación y activación de mi membresía.`
         );
-        btnWhatsappNotify.href = `https://t.me/AeonSupport?text=${notifyText}`;
+        btnWhatsappNotify.href = `https://t.me/Soporte_AEON?text=${notifyText}`;
       }
 
       switchCheckoutView('pending');
