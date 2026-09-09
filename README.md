@@ -69,6 +69,10 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │    institucionales de Order Flow, ZAPs y Gestión de Riesgo Profesional │
 │  - Command Center del Trader (/perfil.html): Rediseño Dark Luxury con  │
 │    pestañas WAI-ARIA, modal contractual de Términos y Condiciones PRO │
+│  - Pasarela Cripto Binance Pay: Checkout 3 pasos con blindaje legal    │
+│    clickwrap obligatorio, QR en alta definición y Pay ID 401032901    │
+│  - Panel de Pagos Admin (/admin-pagos.html): Interfaz móvil para       │
+│    aprobar/rechazar órdenes y activar PRO en 1 toque vía RPC segura   │
 │  - Calendario Modular (form-controls, sidebar-widget, calendar.css)    │
 │  - Feed de Noticias: Grid adaptativo de noticias destacadas y filtro   │
 │  - Cero Deuda Técnica: 0 inline styles, 0 !important, tokens CSS puros │
@@ -113,6 +117,7 @@ python scripts/ai/aeon_autonomous_engine.py
 | **Erradicación de Deuda Técnica** | Cero estilos inline, cero `!important`, variables CSS 100% tokenizadas. | ✅ **Auditoría OK** |
 | **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
 | **Modo Weekend Wrap** | Cierre semanal con datos digeridos (NFP/Desempleo) y horizontes escalonados para Asia. | ✅ **Operativo** |
+| **Pasarela Binance Pay & Panel Admin** | Modal 3 pasos con clickwrap legal, QR Pay ID 401032901, RPC atómico y admin panel móvil. | ✅ **Desplegado** |
 | **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
 
 ---

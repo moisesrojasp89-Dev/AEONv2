@@ -441,4 +441,29 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
      * **Storage Buckets:** Verificación de ausencia de riesgo en Supabase Storage (las capturas de gráficos se procesan transient en memoria y los comprobantes cripto se auditan vía hash alfanumérico).
      * **Row Level Security (RLS):** 100% de tablas relacionales del esquema `public` con políticas RLS activadas e inmutabilidad garantizada.
 
+---
 
+## 💳 18. Hito 18: Pasarela de Pagos Cripto con Binance Pay, Modal Clickwrap y Panel Administrativo Móvil
+
+* **Propósito y Estrategia Comercial:** Implementar la infraestructura de monetización para el lanzamiento de AEON Intelligence sin intermediarios bancarios ni comisiones de red abusivas, empleando stablecoins (USDT) a través de Binance Pay para traders de América Latina e internacionales.
+* **Estructura de Precios de Lanzamiento:**
+  * **Pase Semanal de Prueba (7 días):** \$1.99 USDT — Acceso total al Copiloto IA y Zonas ZAP sin compromiso.
+  * **Membresía Mensual (30 días):** \$6.99 USDT — El estándar institucional más popular con renovación flexible.
+  * **Pase Trimestral (90 días):** \$14.99 USDT — Máximo valor operativo con 28% de descuento efectivo.
+* **Componentes y Arquitectura de la Solución:**
+  1. **Modal de Checkout Institucional en 3 Pasos (`perfil.html`):**
+     * **Paso 1 (Planes y Clickwrap Legal Obligatorio):** Selector de 3 niveles con insignias visuales dinámicas. Botón de proceder bloqueado mediante checkbox contractual ("chulito") que exige la aceptación sin reservas de los Términos de Servicio, Descargo NFA y Política Estricta de No Reembolso para software digital.
+     * **Paso 2 (Transferencia Cripto con QR):** Visualización del código QR oficial de Binance Pay, Pay ID oficial (`401032901` - m-Alejandro) con botón de copiado de un toque, e ingreso validado del ID de transacción / Order ID de Binance Pay.
+     * **Paso 3 (Confirmación y Fast-Track):** Resumen detallado de la orden en cola prioritaria con Terminal ID y enlace directo prellenado a Telegram de soporte (`@Soporte_AEON`).
+  2. **Auditoría de Seguridad y Corrección de 6 Vulnerabilidades Críticas:**
+     * **Renovaciones Limpias de Suscripción:** Reemplazo del patrón roto `ON CONFLICT (id) DO NOTHING` por expiración explícita (`status = 'expired'`) antes de la inserción de la nueva vigencia.
+     * **Sincronización de Esquema SQL:** Alineación estricta de valores de `payment_method` (`binance_pay`, `usdt_trc20`, `usdt_bep20`) entre el cliente JS y los CHECK constraints de PostgreSQL.
+     * **Calibración a Columnas Reales de Base de Datos:** Eliminación de llamadas a columnas inexistentes (`updated_at` en `profiles`, `current_period_start` y `updated_at` en `subscriptions`), garantizando ejecución limpia sin errores `42703`.
+     * **Order IDs Criptográficos:** Sustitución de `Math.random()` por `crypto.getRandomValues()` (generación segura de 10 caracteres hex base-16).
+     * **Aislamiento Fail-Closed en Frontend:** Bloqueo estricto del avance a la vista de confirmación ante cualquier error o excepción en la llamada `insert` a Supabase.
+     * **Protección de Rol Administrador:** Prevención de auto-degradación de cuentas admin si el titular realiza pagos o pruebas en la pasarela.
+  3. **Panel Administrativo Web Móvil (`admin-pagos.html` & `src/js/admin-pagos.js`):**
+     * Panel responsivo con diseño Dark Luxury protegido por verificación de rango `tier = 'admin'` a nivel de frontend y de base de datos.
+     * Consulta reactiva de órdenes en estado `pending` mediante RPC `admin_list_pending_payments()`.
+     * Activación instantánea con 1 clic mediante `approve_crypto_payment(p_payment_id)` o rechazo vía `admin_reject_payment()`.
+     * Operatividad 100% autónoma desde smartphones sin requerir acceso a terminales SSH ni consola CLI.
