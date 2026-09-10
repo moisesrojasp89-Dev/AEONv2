@@ -784,5 +784,67 @@
     ],
     "last_updated": "2026-09-08T05:48:58.399796+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "XAGUSD",
+    "category": "METALS",
+    "display_name": "Plata al Contado",
+    "session_origin": "GLOBAL",
+    "current_price": 64.212,
+    "change_24h_pct": 0.33,
+    "bias": "BULLISH",
+    "bias_score": 62,
+    "support_1": 63.731,
+    "support_2": 63.308,
+    "resistance_1": 64.693,
+    "resistance_2": 65.116,
+    "dpoc_price": 64.084,
+    "session_vwap": 64.148,
+    "macro_driver": "Flujo comprador institucional activo respaldado por correlación con metales preciosos y demanda industrial de semiconductores.",
+    "technical_thesis": "Estructura alcista con soporte clave en 63.731. La absorción sobre el Session VWAP (64.148) proyecta expansión hacia la resistencia 64.693 con RSI en 56.4.",
+    "cited_key_levels": [
+      63.731,
+      64.084,
+      64.693,
+      64.148
+    ],
+    "catalyst_tags": [
+      "SILVER_FLOW",
+      "METALS_CONFLUENCE",
+      "DPOC_EXPANSION"
+    ],
+    "last_updated": "2026-09-10T17:04:27.922715+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "USOIL",
+    "category": "ENERGY",
+    "display_name": "Petróleo WTI",
+    "session_origin": "US",
+    "current_price": 101.808,
+    "change_24h_pct": 1.81,
+    "bias": "BULLISH",
+    "bias_score": 68,
+    "support_1": 100.892,
+    "support_2": 100.076,
+    "resistance_1": 102.724,
+    "resistance_2": 103.54,
+    "dpoc_price": 101.564,
+    "session_vwap": 101.686,
+    "macro_driver": "Tensiones en rutas de suministro y disciplina productiva de la OPEP+ consolidan prima de riesgo alcista en el crudo WTI.",
+    "technical_thesis": "Consolidación compradora sobre el dPOC (101.564). La ruptura del Session High (102.724) habilita extensión hacia la piscina de liquidez en 103.540.",
+    "cited_key_levels": [
+      100.892,
+      101.564,
+      102.724,
+      101.686
+    ],
+    "catalyst_tags": [
+      "OPEC_SUPPLY",
+      "WTI_CRUDE",
+      "ENERGY_MOMENTUM"
+    ],
+    "last_updated": "2026-09-10T17:04:27.922715+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   }
 ]

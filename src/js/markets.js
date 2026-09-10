@@ -25,7 +25,15 @@ function renderMarkets() {
 
   // 1. Filtro por Categoría
   if (currentCategory !== 'ALL') {
-    filtered = filtered.filter(m => String(m.category).toUpperCase() === currentCategory);
+    filtered = filtered.filter(m => {
+      const cat = String(m.category || '').toUpperCase();
+      if (currentCategory === 'METALS' && (cat === 'METALS' || cat === 'METALES')) return true;
+      if (currentCategory === 'ENERGY' && (cat === 'ENERGY' || cat === 'ENERGIA' || cat === 'ENERGÍA')) return true;
+      if (currentCategory === 'CRYPTO' && (cat === 'CRYPTO' || cat === 'CRIPTO')) return true;
+      if (currentCategory === 'INDICES' && (cat === 'INDICES' || cat === 'ÍNDICES')) return true;
+      if (currentCategory === 'FOREX' && (cat === 'FOREX' || cat === 'DIVISAS')) return true;
+      return cat === currentCategory;
+    });
   }
 
   // 2. Filtro por Búsqueda
@@ -88,7 +96,7 @@ async function initMarketsPage() {
     container.innerHTML = `
       <div class="markets-loading-state font-mono">
         <div class="spinner"></div>
-        <p>Cargando inteligencia de 14 mercados globales...</p>
+        <p>Cargando inteligencia de 16 mercados globales...</p>
       </div>
     `;
   }

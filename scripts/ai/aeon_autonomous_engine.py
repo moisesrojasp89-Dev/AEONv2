@@ -556,7 +556,7 @@ def sync_markets_loop():
             gold_p = quotes.get('XAUUSD', {}).get('price', 4471.0)
             btc_p = quotes.get('BTCUSD', {}).get('price', 77849.0)
             spx_p = quotes.get('SPX500', {}).get('price', 7728.75)
-            log("MERCADOS", "✅", f"Ciclo OK — 14 activos calculados en {elapsed_ms}ms (XAU: ${gold_p:,.2f} | SPX: {spx_p:,.2f} | BTC: ${btc_p:,.0f})")
+            log("MERCADOS", "✅", f"Ciclo OK — {len(updated_records)} activos calculados en {elapsed_ms}ms (XAU: ${gold_p:,.2f} | SPX: {spx_p:,.2f} | BTC: ${btc_p:,.0f})")
     except Exception as e:
         log("MERCADOS", "❌", f"Error al sincronizar con Supabase: {e}")
 

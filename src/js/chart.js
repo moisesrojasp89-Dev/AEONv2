@@ -31,6 +31,18 @@ function getAssetConfig() {
       minMove: 0.01,
       ...areaColors(cssVar('--accent')),
     },
+    XAG_USD: {
+      name: 'Plata (XAG/USD)',
+      precision: 3,
+      minMove: 0.001,
+      ...areaColors(cssVar('--slate-400') || '#94a3b8'),
+    },
+    WTICO_USD: {
+      name: 'Petróleo WTI (USOIL)',
+      precision: 2,
+      minMove: 0.01,
+      ...areaColors(cssVar('--yellow') || '#eab308'),
+    },
     EUR_USD: {
       name: 'EUR/USD (Euro)',
       precision: 4,

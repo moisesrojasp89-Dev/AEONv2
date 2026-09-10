@@ -44,6 +44,40 @@ function getAssetIconHTML(symbol) {
       </div>
     `;
   }
+  if (symbol === 'XAGUSD') {
+    return `
+      <div class="market-asset-badge silver-badge" title="Plata al Contado (XAG/USD)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#silverGrad)" stroke="#CBD5E1" stroke-width="1.5"/>
+          <text x="12" y="15.5" font-size="9" font-weight="800" fill="#0F172A" text-anchor="middle" font-family="'Space Grotesk', sans-serif">AG</text>
+          <defs>
+            <linearGradient id="silverGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FFFFFF"/>
+              <stop offset="0.5" stop-color="#CBD5E1"/>
+              <stop offset="1" stop-color="#94A3B8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    `;
+  }
+  if (symbol === 'USOIL') {
+    return `
+      <div class="market-asset-badge oil-badge" title="Petróleo WTI (USOIL / WTICO)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#oilGrad)" stroke="#38BDF8" stroke-width="1.5"/>
+          <path d="M12 6.5C12 6.5 8 11.2 8 14C8 16.21 9.79 18 12 18C14.21 18 16 16.21 16 14C16 11.2 12 6.5 12 6.5Z" fill="#38BDF8"/>
+          <defs>
+            <linearGradient id="oilGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1E293B"/>
+              <stop offset="0.5" stop-color="#0F172A"/>
+              <stop offset="1" stop-color="#020617"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    `;
+  }
   if (symbol === 'BTCUSD') {
     return `
       <div class="market-asset-badge btc-badge" title="Bitcoin (BTC/USD)">
@@ -71,8 +105,14 @@ export function renderMarketCard(m) {
   const iconHTML = getAssetIconHTML(m.symbol);
   const category = escapeHTML(m.category || 'FOREX');
   
+  const decimals = m.decimals !== undefined 
+    ? m.decimals 
+    : (m.symbol === 'EURUSD' || m.symbol === 'GBPUSD' || m.symbol === 'USDCAD' || m.symbol === 'AUDUSD' || m.symbol === 'NZDUSD' || m.symbol === 'USDCHF' 
+        ? 5 
+        : (m.symbol === 'XAGUSD' ? 3 : 2));
+
   const currentPrice = Number(m.current_price || 0).toLocaleString('en-US', {
-    minimumFractionDigits: m.decimals !== undefined ? m.decimals : (m.symbol === 'EURUSD' || m.symbol === 'GBPUSD' || m.symbol === 'USDCAD' || m.symbol === 'AUDUSD' || m.symbol === 'NZDUSD' || m.symbol === 'USDCHF' ? 5 : 2),
+    minimumFractionDigits: decimals,
     maximumFractionDigits: 5
   });
 

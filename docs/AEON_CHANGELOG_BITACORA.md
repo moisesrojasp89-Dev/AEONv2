@@ -8,9 +8,10 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 
 ### A. Motor Autónomo de Alta Frecuencia (Local VPS Engine — `aeon_autonomous_engine.py`)
 * **Propósito:** Reemplazar por completo los cron jobs lentos y limitados de GitHub Actions por un motor autónomo multi-módulo que corre localmente en segundo plano (costo \$0) o en un VPS dedicado.
-* **Módulo de Mercados (14 Activos):**
+* **Módulo de Mercados (16 Activos Globales):**
   * Sincronización continua cada 20 segundos con cotizaciones reales en lote.
-  * Ingesta de 12 activos mediante **1 sola petición batch a OANDA** (`XAU_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,SPX500_USD,NAS100_USD,US30_USD,JP225_USD`).
+  * Ingesta de 14 activos mediante **1 sola petición batch a OANDA** (`XAU_USD,XAG_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,USD_SEK,WTICO_USD,SPX500_USD,NAS100_USD,US30_USD,JP225_USD`).
+  * Inclusión de **Plata Spot (XAG/USD)** en Metales y **Petróleo Crudo WTI (USOIL / WTICO)** en el nuevo sector de Energía.
   * Ingesta de Bitcoin (BTC/USD) en **1 sola petición a la API pública de Binance**.
   * Cálculo matemático directo del DXY mediante fórmula geométrica ponderada ICE.
   * **Cero llamadas consumidas a TwelveData** (eliminación de riesgo de error `429 Too Many Requests`).
@@ -35,13 +36,23 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 * Inclusión de la tarjeta inferior institucional *AEON Pro Terminal*.
 * Controlador autónomo en `src/js/navbar.js` con cierre automático en navegación y tecla `Escape`.
 
-### B. Terminal de Mercados Móvil con Carrusel Horizontal Estricto
-* Eliminación del scroll vertical infinito en móvil.
-* Implementación de `#markets-grid` con `display: flex`, `flex-wrap: nowrap`, `overflow-x: auto` y `scroll-snap-type: x mandatory`.
-* Tarjetas calibradas a `86vw` de ancho para navegación táctil fluida con el pulgar.
-* Indicador visual de deslizamiento `👈 Desliza activos en vivo 👉` con iconos SVG animados.
+### B. Terminal de Mercados: Expansión a 16 Activos y Badges Vectoriales
+* Incorporación de **Plata (XAG/USD)** con badge de plata metalizada (`AG`) y precisión de 3 decimales.
+* Incorporación de **Petróleo WTI (USOIL)** con badge institucional de energía y filtro dedicado `🛢️ Energía (1)`.
+* Actualización dinámica del contador a `16 Activos en Vivo` y filtros por sector: Índices (4), Metales (2), Energía (1), Cripto (1), Divisas & DXY (8).
+* Acción contextual `[ Auditar con IA ✦ ]` que transfiere el activo y sus niveles directamente al Copilot institucional en el chat flotante.
 
-### C. Calendario Económico y Filtros de Noticias
+### C. Tema Global Obsidian Dark OLED (`#06090E`) & Cero FOUC
+* 100% tokenizado en `variables.css` (`--bg: #06090E`, `--bg-deep: #04060A`, `--bg-drawer: #080C14`).
+* Estilo crítico inline en `<head>` (`fadeIn` en 0.05s) para erradicar cualquier parpadeo de HTML sin estilos al refrescar.
+* Header de cristal calibrado a `rgba(6, 9, 14, 0.75)` con desenfoque de 16px.
+
+### D. Pasarela de Pagos Binance Pay & Notificaciones Push a Telegram
+* Checkout modal en 3 pasos con validación de TxID e instrucciones directas con QR oficial sin recargar.
+* Notificación push instantánea a Telegram mediante webhook/pg_net en base de datos al enviar el pago (cero esfuerzo para el usuario).
+* Panel de administración `admin-pagos.html` para aprobación rápida y activación inmediata de suscripción Pro en un clic.
+
+### E. Calendario Económico y Filtros de Noticias
 * Inclusión de snapshots locales en `src/data/economic_calendar_snapshot.json` y `src/data/market_intelligence_snapshot.json` como failover garantizado ante fallas de red.
 * Corrección del selector de categorías de noticias (`Live Feed`, `Metales`, `Forex`, `Índices`, `Centrales`) para filtrar estrictamente y mostrar estado vacío si no hay coincidencias en lugar de recargar todas las noticias.
 

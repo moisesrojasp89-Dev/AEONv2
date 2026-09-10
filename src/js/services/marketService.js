@@ -16,6 +16,8 @@ const CHART_CACHE_PREFIX = 'AEON_CHART_CACHE_';
 export function normalizeInstrument(sym = '') {
   const s = String(sym || '').toUpperCase().trim();
   if (s === 'XAUUSD' || s === 'GOLD') return 'XAU_USD';
+  if (s === 'XAGUSD' || s === 'SILVER') return 'XAG_USD';
+  if (s === 'USOIL' || s === 'WTI' || s === 'WTICO' || s === 'OIL') return 'WTICO_USD';
   if (s === 'EURUSD' || s === 'EURO') return 'EUR_USD';
   if (s === 'SPX500' || s === 'SP500' || s === 'SPX') return 'SPX500_USD';
   if (s === 'NAS100' || s === 'NASDAQ' || s === 'NAS') return 'NAS100_USD';
@@ -61,6 +63,8 @@ export async function fetchForexAndIndexPrices() {
       
       const symbolMap = {
         'XAUUSD': 'XAU_USD',
+        'XAGUSD': 'XAG_USD',
+        'USOIL': 'WTICO_USD',
         'EURUSD': 'EUR_USD',
         'GBPUSD': 'GBP_USD',
         'USDJPY': 'USD_JPY',

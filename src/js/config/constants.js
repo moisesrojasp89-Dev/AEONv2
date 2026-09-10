@@ -46,6 +46,8 @@ export const ASSETS = {
   DEFAULT_INSTRUMENTS: [
     'EUR_USD',
     'XAU_USD',
+    'XAG_USD',
+    'WTICO_USD',
     'SPX500_USD',
     'NAS100_USD',
     'US30_USD',
@@ -54,6 +56,8 @@ export const ASSETS = {
   OANDA_DEFAULT_INSTRUMENTS: [
     'EUR_USD',
     'XAU_USD',
+    'XAG_USD',
+    'WTICO_USD',
     'SPX500_USD',
     'NAS100_USD',
     'US30_USD',
