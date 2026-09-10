@@ -42,6 +42,7 @@ export const API_ENDPOINTS = {
 export const ASSETS = {
   CRYPTO: {
     BTC: 'bitcoin',
+    ETH: 'ethereum',
   },
   DEFAULT_INSTRUMENTS: [
     'EUR_USD',

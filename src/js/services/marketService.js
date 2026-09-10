@@ -23,6 +23,7 @@ export function normalizeInstrument(sym = '') {
   if (s === 'NAS100' || s === 'NASDAQ' || s === 'NAS') return 'NAS100_USD';
   if (s === 'US30' || s === 'DOW' || s === 'DJI') return 'US30_USD';
   if (s === 'BTCUSDT' || s === 'BTC_USD' || s === 'BITCOIN') return 'BTC';
+  if (s === 'ETHUSD' || s === 'ETHUSDT' || s === 'ETH_USD' || s === 'ETHEREUM') return 'ETH';
   return s;
 }
 
@@ -76,6 +77,8 @@ export async function fetchForexAndIndexPrices() {
         'NAS100': 'NAS100_USD',
         'US30': 'US30_USD',
         'JP225': 'JP225_USD',
+        'BTCUSD': 'BTC',
+        'ETHUSD': 'ETH',
         'DXY': 'DXY'
       };
 
@@ -131,10 +134,13 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
   const normSym = normalizeInstrument(instrument);
   const cacheKey = `${CHART_CACHE_PREFIX}${normSym}`;
 
-  // 1. Caso Crypto (Bitcoin) — Consultamos Coinbase con fallback a Kraken
-  if (normSym === 'BTC' || normSym === 'BTC_USD') {
+  // 1. Caso Crypto (Bitcoin & Ethereum) — Consultamos Coinbase con fallback a Kraken
+  if (normSym === 'BTC' || normSym === 'BTC_USD' || normSym === 'ETH' || normSym === 'ETH_USD') {
+    const isEth = normSym === 'ETH' || normSym === 'ETH_USD';
+    const cbPair = isEth ? 'ETH-USD' : 'BTC-USD';
+    const krPair = isEth ? 'ETHUSD' : 'XBTUSD';
     try {
-      const cbUrl = `${API_ENDPOINTS.COINBASE_BTC_CANDLES}?granularity=86400`;
+      const cbUrl = `https://api.exchange.coinbase.com/products/${cbPair}/candles?granularity=86400`;
       const cbRes = await fetch(cbUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
       if (cbRes.ok) {
         const data = await cbRes.json();
@@ -144,7 +150,7 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
             .reverse()
             .map((d) => ({
               time: new Date(d[0] * 1000).toISOString().split('T')[0],
-              value: Math.round(d[4]),
+              value: isEth ? Number(d[4].toFixed(2)) : Math.round(d[4]),
             }));
           try {
             sessionStorage.setItem(cacheKey, JSON.stringify(series));
@@ -153,12 +159,12 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
         }
       }
     } catch (err) {
-      console.warn('[AEON] Coinbase BTC fallback a Kraken:', err.message);
+      console.warn(`[AEON] Coinbase ${normSym} fallback a Kraken:`, err.message);
     }
 
     // Fallback a Kraken
     try {
-      const krUrl = `${API_ENDPOINTS.KRAKEN_BTC_OHLC}?pair=XBTUSD&interval=1440`;
+      const krUrl = `${API_ENDPOINTS.KRAKEN_BTC_OHLC}?pair=${krPair}&interval=1440`;
       const krRes = await fetch(krUrl, { signal: AbortSignal.timeout(TIMING.CRYPTO_TIMEOUT_MS) });
       if (krRes.ok) {
         const data = await krRes.json();

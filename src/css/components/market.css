@@ -228,6 +228,11 @@
   border: 1px solid var(--btc-border);
 }
 
+.eth-badge {
+  background: rgba(129, 140, 248, 0.12);
+  border: 1px solid rgba(129, 140, 248, 0.35);
+}
+
 .market-flag-icon {
   font-size: 1.5rem;
   line-height: 1;

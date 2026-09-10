@@ -88,6 +88,26 @@ function getAssetIconHTML(symbol) {
       </div>
     `;
   }
+  if (symbol === 'ETHUSD') {
+    return `
+      <div class="market-asset-badge eth-badge" title="Ethereum (ETH/USD)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#ethGrad)" stroke="#818CF8" stroke-width="1.5"/>
+          <path d="M12 4L12 11.5L16 13.5L12 4Z" fill="#C7D2FE" opacity="0.8"/>
+          <path d="M12 4L8 13.5L12 11.5L12 4Z" fill="#E0E7FF"/>
+          <path d="M12 12.5L12 18L16 14.5L12 12.5Z" fill="#A5B4FC"/>
+          <path d="M12 18L12 12.5L8 14.5L12 18Z" fill="#818CF8"/>
+          <defs>
+            <linearGradient id="ethGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1E1B4B"/>
+              <stop offset="0.5" stop-color="#312E81"/>
+              <stop offset="1" stop-color="#0F172A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    `;
+  }
   const flag = ASSET_FLAGS[symbol] || '📈';
   return `<span class="market-flag-icon">${flag}</span>`;
 }

@@ -846,5 +846,36 @@
     ],
     "last_updated": "2026-09-10T17:04:27.922715+00:00",
     "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
+  },
+  {
+    "symbol": "ETHUSD",
+    "category": "CRYPTO",
+    "display_name": "Ethereum",
+    "session_origin": "GLOBAL",
+    "current_price": 2452.87,
+    "change_24h_pct": 0.85,
+    "bias": "BULLISH",
+    "bias_score": 64,
+    "support_1": 2430.79,
+    "support_2": 2411.66,
+    "resistance_1": 2474.95,
+    "resistance_2": 2494.08,
+    "dpoc_price": 2446.98,
+    "session_vwap": 2449.93,
+    "macro_driver": "Acumulación en derivados institucionales y actividad sostenida en staking consolidan soporte sobre el dPOC (2446.98).",
+    "technical_thesis": "Estructura alcista con soporte clave en 2430.79. La absorción compradora sobre Session VWAP (2449.93) proyecta extensión hacia la resistencia en 2474.95 con RSI en 55.8.",
+    "cited_key_levels": [
+      2430.79,
+      2446.98,
+      2474.95,
+      2449.93
+    ],
+    "catalyst_tags": [
+      "ETH_FLOW",
+      "DEFI_LIQUIDITY",
+      "DPOC_SUPPORT"
+    ],
+    "last_updated": "2026-09-10T17:19:07.783869+00:00",
+    "updated_by": "AEON_AUTONOMOUS_ENGINE_V2"
   }
 ]

@@ -8,11 +8,11 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 
 ### A. Motor Autónomo de Alta Frecuencia (Local VPS Engine — `aeon_autonomous_engine.py`)
 * **Propósito:** Reemplazar por completo los cron jobs lentos y limitados de GitHub Actions por un motor autónomo multi-módulo que corre localmente en segundo plano (costo \$0) o en un VPS dedicado.
-* **Módulo de Mercados (16 Activos Globales):**
+* **Módulo de Mercados (17 Activos Globales):**
   * Sincronización continua cada 20 segundos con cotizaciones reales en lote.
   * Ingesta de 14 activos mediante **1 sola petición batch a OANDA** (`XAU_USD,XAG_USD,EUR_USD,USD_JPY,GBP_USD,USD_CAD,AUD_USD,NZD_USD,USD_CHF,USD_SEK,WTICO_USD,SPX500_USD,NAS100_USD,US30_USD,JP225_USD`).
-  * Inclusión de **Plata Spot (XAG/USD)** en Metales y **Petróleo Crudo WTI (USOIL / WTICO)** en el nuevo sector de Energía.
-  * Ingesta de Bitcoin (BTC/USD) en **1 sola petición a la API pública de Binance**.
+  * Inclusión de **Plata Spot (XAG/USD)** en Metales y **Petróleo Crudo WTI (USOIL / WTICO)** en Energía.
+  * Ingesta dual de Criptoactivos: **Bitcoin (BTC/USD)** y **Ethereum (ETH/USD)** mediante APIs públicas de Binance y Coinbase.
   * Cálculo matemático directo del DXY mediante fórmula geométrica ponderada ICE.
   * **Cero llamadas consumidas a TwelveData** (eliminación de riesgo de error `429 Too Many Requests`).
   * Cálculo determinista de dPOC, Session VWAP, variación 24h y soporte/resistencia S1/R1.
@@ -36,10 +36,11 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 * Inclusión de la tarjeta inferior institucional *AEON Pro Terminal*.
 * Controlador autónomo en `src/js/navbar.js` con cierre automático en navegación y tecla `Escape`.
 
-### B. Terminal de Mercados: Expansión a 16 Activos y Badges Vectoriales
+### B. Terminal de Mercados: Expansión a 17 Activos y Badges Vectoriales
 * Incorporación de **Plata (XAG/USD)** con badge de plata metalizada (`AG`) y precisión de 3 decimales.
 * Incorporación de **Petróleo WTI (USOIL)** con badge institucional de energía y filtro dedicado `🛢️ Energía (1)`.
-* Actualización dinámica del contador a `16 Activos en Vivo` y filtros por sector: Índices (4), Metales (2), Energía (1), Cripto (1), Divisas & DXY (8).
+* Incorporación de **Ethereum (ETH/USD)** con badge vectorial facetado índigo (`Ξ`) y filtro ampliado `₿ Cripto (2)`.
+* Actualización dinámica del contador a `17 Activos en Vivo` y filtros por sector: Índices (4), Metales (2), Energía (1), Cripto (2), Divisas & DXY (8).
 * Acción contextual `[ Auditar con IA ✦ ]` que transfiere el activo y sus niveles directamente al Copilot institucional en el chat flotante.
 
 ### C. Tema Global Obsidian Dark OLED (`#06090E`) & Cero FOUC

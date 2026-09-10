@@ -61,6 +61,12 @@ function getAssetConfig() {
       minMove: 1,
       ...areaColors(cssVar('--yellow')),
     },
+    ETH: {
+      name: 'Ethereum (ETH/USD)',
+      precision: 2,
+      minMove: 0.01,
+      ...areaColors(cssVar('--purple') || '#818CF8'),
+    },
   };
 }
 

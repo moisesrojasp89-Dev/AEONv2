@@ -96,7 +96,7 @@ async function initMarketsPage() {
     container.innerHTML = `
       <div class="markets-loading-state font-mono">
         <div class="spinner"></div>
-        <p>Cargando inteligencia de 16 mercados globales...</p>
+        <p>Cargando inteligencia de 17 mercados globales...</p>
       </div>
     `;
   }

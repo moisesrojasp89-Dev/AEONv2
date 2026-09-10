@@ -106,7 +106,8 @@ BENCHMARKS = {
     'NAS100': {'base': 29500.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Nasdaq 100', 'category': 'INDICES'},
     'US30': {'base': 44800.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Dow Jones 30', 'category': 'INDICES'},
     'JP225': {'base': 66500.00, 'decimals': 2, 'spread_pct': 0.003, 'name': 'Nikkei 225', 'category': 'INDICES'},
-    'BTCUSD': {'base': 78500.00, 'decimals': 2, 'spread_pct': 0.008, 'name': 'Bitcoin', 'category': 'CRIPTO'}
+    'BTCUSD': {'base': 78500.00, 'decimals': 2, 'spread_pct': 0.008, 'name': 'Bitcoin', 'category': 'CRIPTO'},
+    'ETHUSD': {'base': 2450.00, 'decimals': 2, 'spread_pct': 0.006, 'name': 'Ethereum', 'category': 'CRIPTO'}
 }
 
 state = {
@@ -377,14 +378,17 @@ def calculate_dxy(eur: float, jpy: float, gbp: float, cad: float, sek: float, ch
     except Exception:
         return 99.198
 
-def fetch_btc_price() -> Optional[float]:
+def fetch_crypto_spot(symbol: str = 'BTCUSD') -> Optional[float]:
     """
-    Obtiene el precio spot de Bitcoin de forma independiente a OANDA (§Auditoría v20 - Módulo 1).
-    Timeout estricto de 4s (Binance -> fallback Coinbase). Si ambas fallan, retorna None con WARNING.
+    Obtiene el precio spot de Cripto (BTC o ETH) de forma independiente a OANDA (§Auditoría v20 - Módulo 1).
+    Timeout estricto de 4s (Binance -> fallback Coinbase). Si ambas fallan, retorna None.
     """
+    pair_binance = 'BTCUSDT' if symbol == 'BTCUSD' else 'ETHUSDT'
+    pair_coinbase = 'BTC-USD' if symbol == 'BTCUSD' else 'ETH-USD'
+
     # 1. Binance Public API (timeout 4s)
     try:
-        b_url = "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT"
+        b_url = f"https://api.binance.com/api/v3/ticker/24hr?symbol={pair_binance}"
         b_req = urllib.request.Request(b_url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(b_req, timeout=4) as b_resp:
             b_data = json.loads(b_resp.read().decode('utf-8'))
@@ -396,7 +400,7 @@ def fetch_btc_price() -> Optional[float]:
 
     # 2. Coinbase Public Spot API (fallback timeout 4s)
     try:
-        c_url = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+        c_url = f"https://api.coinbase.com/v2/prices/{pair_coinbase}/spot"
         c_req = urllib.request.Request(c_url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(c_req, timeout=4) as c_resp:
             c_data = json.loads(c_resp.read().decode('utf-8'))
@@ -406,11 +410,11 @@ def fetch_btc_price() -> Optional[float]:
     except Exception:
         pass
 
-    log("CRIPTOMERCADO", "⚠️", "Fuente de precio BTC no disponible. Omitiendo tarjeta Cripto este ciclo.")
+    log("CRIPTOMERCADO", "⚠️", f"Fuente de precio {symbol} no disponible. Omitiendo este ciclo.")
     return None
 
 def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
-    """Obtiene cotizaciones de los activos usando 1 llamada OANDA Batch + fuente independiente de BTC."""
+    """Obtiene cotizaciones de los activos usando 1 llamada OANDA Batch + fuentes independientes de Cripto (BTC & ETH)."""
     quotes = {}
     
     # 1. OANDA Batch (15 Activos en 1 llamada HTTP)
@@ -436,10 +440,14 @@ def fetch_live_quotes() -> Dict[str, Dict[str, float]]:
         if k_sym not in quotes:
             log("MERCADOS", "⚠️", f"Cotización de {k_sym} no disponible en OANDA este ciclo.")
 
-    # 2. Bitcoin independiente de OANDA (§Auditoría v20 - Módulo 1)
-    btc_val = fetch_btc_price()
+    # 2. Criptomonedas independientes de OANDA (BTC & ETH)
+    btc_val = fetch_crypto_spot('BTCUSD')
     if btc_val is not None:
         quotes['BTCUSD'] = {'price': btc_val, 'change_24h': 1.2}
+
+    eth_val = fetch_crypto_spot('ETHUSD')
+    if eth_val is not None:
+        quotes['ETHUSD'] = {'price': eth_val, 'change_24h': 0.85}
 
     # 3. Dólar Index (DXY) derivado con fórmula completa oficial ICE
     if 'EURUSD' in quotes and 'USDJPY' in quotes and 'GBPUSD' in quotes:
