@@ -474,8 +474,52 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
      * **Order IDs Criptográficos:** Sustitución de `Math.random()` por `crypto.getRandomValues()` (generación segura de 10 caracteres hex base-16).
      * **Aislamiento Fail-Closed en Frontend:** Bloqueo estricto del avance a la vista de confirmación ante cualquier error o excepción en la llamada `insert` a Supabase.
      * **Protección de Rol Administrador:** Prevención de auto-degradación de cuentas admin si el titular realiza pagos o pruebas en la pasarela.
-  3. **Panel Administrativo Web Móvil (`admin-pagos.html` & `src/js/admin-pagos.js`):**
-     * Panel responsivo con diseño Dark Luxury protegido por verificación de rango `tier = 'admin'` a nivel de frontend y de base de datos.
-     * Consulta reactiva de órdenes en estado `pending` mediante RPC `admin_list_pending_payments()`.
-     * Activación instantánea con 1 clic mediante `approve_crypto_payment(p_payment_id)` o rechazo vía `admin_reject_payment()`.
-     * Operatividad 100% autónoma desde smartphones sin requerir acceso a terminales SSH ni consola CLI.
+   3. **Panel Administrativo Web Móvil (`admin-pagos.html` & `src/js/admin-pagos.js`):**
+      * Panel responsivo con diseño Dark Luxury protegido por verificación de rango `tier = 'admin'` a nivel de frontend y de base de datos.
+      * Consulta reactiva de órdenes en estado `pending` mediante RPC `admin_list_pending_payments()`.
+      * Activación instantánea con 1 clic mediante `approve_crypto_payment(p_payment_id)` o rechazo vía `admin_reject_payment()`.
+      * Operatividad 100% autónoma desde smartphones sin requerir acceso a terminales SSH ni consola CLI.
+
+---
+
+## ⚡ 19. Hito 19: Expansión de la Terminal a 17 Activos Globales (Plata Spot XAG, Petróleo WTI y Ethereum ETH)
+* **Objetivo:** Ampliar el abanico operativo de la terminal institucional incorporando los activos de mayor volumen mundial de trading en materias primas y criptomonedas, alcanzando un universo de 17 activos globales.
+* **Activos Añadidos:**
+  1. **Plata Spot al Contado (`XAGUSD` / `XAG_USD`):** Metales preciosos. Diseñado con badge SVG metálico plateado `AG`, cotización a 3 decimales de precisión y correlación microestructural con el Oro.
+  2. **Petróleo Crudo WTI (`USOIL` / `WTICO_USD`):** Sector Energía. Incorporación de filtro dedicado `🛢️ Energía (1)` con badge institucional de combustible y sesgo de oferta/demanda OPEP+.
+  3. **Ethereum (`ETHUSD` / `ETH_USD`):** Sector Cripto. Convivencia dual con Bitcoin en el filtro `₿ Cripto (2)`, con badge facetado índigo `Ξ` y cotización en tiempo real vía API pública de Coinbase/Binance.
+* **Optimización en el Motor Autónomo (`aeon_autonomous_engine.py`):**
+  * Ingesta de 14 activos en un solo lote OANDA v20 + consultas directas de bajo costo para cripto.
+  * **Cero llamadas a TwelveData** y cálculo determinista de VWAP, dPOC y niveles S1/R1 para cada nuevo activo.
+
+---
+
+## 🏦 20. Hito 20: HUD de Macro Liquidez & Rendimientos de la Fed (Las 5 Joyitas del Banco Central)
+* **Propósito Estratégico:** Ofrecer a los traders una lectura directa e instantánea de la política monetaria de la Reserva Federal y las condiciones de liquidez global, democratizando datos que tradicionalmente solo están al alcance de mesas institucionales o terminales Bloomberg.
+* **Los 5 Indicadores Implementados:**
+  1. **US10Y (Rendimiento del Bono del Tesoro a 10 Años):** Benchmark mundial de la tasa libre de riesgo y costo de capital.
+  2. **US02Y (Rendimiento del Bono del Tesoro a 2 Años):** Barómetro de expectativas a corto plazo sobre las tasas Fed; monitoreo de inversión de curva de rendimientos ($10Y - 2Y$).
+  3. **FEDFUNDS (Tasa Efectiva de Fondos Federales):** Tasa interbancaria oficial fijada por el FOMC.
+  4. **RRPONTSYD (Reverse Repo Facility de la Fed):** Drenaje o inyección de liquidez ociosa en el sistema bancario.
+  5. **WALCL (Balance Total de la Reserva Federal):** Activos totales del banco central (indicador indiscutible de Quantitative Easing vs Quantitative Tightening).
+* **Arquitectura de Sincronización Multi-Cadencia (`aeon_autonomous_engine.py`):**
+  * **Fast Cadence (3–5 min):** Rendimientos US10Y y US02Y consultados en horario de mercado vía Yahoo Finance con fallback a FRED.
+  * **Macro Cadence (30–60 min):** Tasas oficiales FEDFUNDS, balance WALCL y RRP extraídos directamente de la API de St. Louis Fed FRED.
+* **Gobernanza de Base de Datos & PostgreSQL:**
+  * Tabla `public.macro_liquidity` con políticas RLS Zero-Trust (`SELECT` público, modificaciones restringidas a `service_role`).
+  * Trigger idempotente `trg_log_macro_liquidity_change` para registro histórico de variaciones reales sin redundancia.
+* **Interfaz de Usuario (UI/UX) y Enfoque Formativo:**
+  * Componente `macroLiquidityHUD.js` con badges dinámicos de régimen (Expansión / Contracción / Neutral).
+  * Modal explicativo interactivo (`js-macro-info`) que traduce cada métrica a lenguaje claro para el trader formativo.
+  * Incorporación del **Playbook Operativo #5** (*"Macro Liquidez & Yields Fed: El Pulso del Banco Central"*) en `src/data/education.json`.
+  * Integración simultánea en la portada principal (`index.html` bajo el Radar) y en la cabecera de `mercados.html`.
+
+---
+
+## 💎 21. Hito 21: Refactorización UX — Carrusel de Playbooks, Desbloqueo Móvil y Actualizaciones Realtime In-Place
+* **Problema 1 (Desktop Playbooks Wrap):** El grid responsive envolvía la 5ª tarjeta de Playbooks a una segunda fila solitaria, rompiendo la armonía estética en pantallas grandes.
+  * **Solución:** `.education-grid` refactorizado a carrusel horizontal flex con `scroll-snap-type: x mandatory`, barra de scroll obsidian sutil y flechas de navegación táctica **`←` y `→`** en la cabecera con desplazamiento suave de `±330px`.
+* **Problema 2 (Corte Vertical en Mercados Móvil):** La regla `body.markets-body-locked { overflow: hidden; height: 100dvh }` impedía que el usuario hiciera scroll vertical, dejando cortados el análisis técnico, los tags y el botón *"Auditar con IA"* de las tarjetas de mercado.
+  * **Solución:** Desbloqueo a `overflow-y: auto; min-height: 100dvh; height: auto` con padding inferior ergonómico de `4rem`. Se preserva el swipe táctil horizontal entre activos y se habilita un scroll vertical natural para leer la tarjeta completa.
+* **Problema 3 (Reseteo Brusco de Scroll en Tiempo Real):** En `mercados.html`, cada tick o actualización de precios invocaba `renderMarkets()`, el cual borraba el HTML del carrusel y ejecutaba `container.scrollTo({ left: 0 })`, regresando bruscamente al usuario al primer activo mientras leía.
+  * **Solución:** Refactorización de `handleLiveUpdate` en `src/js/markets.js` para realizar una actualización atómica *in-place* (`existingCard.replaceWith(newCard)`). Se incorporó la animación `.card-live-pulse` con un destello cian suave y se preservó `scrollLeft` intacto. El scroll solo se resetea al inicio si el usuario hace clic deliberadamente en un filtro de categoría o escribe en el buscador.

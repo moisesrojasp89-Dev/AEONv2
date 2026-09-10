@@ -22,8 +22,8 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 │ ESTADO DE EJECUCIÓN (SEPTIEMBRE DE 2026)                                     │
 ├──────────────────────────────────────┬──────────────────────────────────────┤
 │ ✅ FASES 100% COMPLETADAS            │ 🎯 EN PROGRESO / PRÓXIMO SPRINT      │
-│ • Fase 0: Security & RLS Hardening   │ • Fase 6E: Monetización Stripe,      │
-│ • Fase 1: Data Provider Layer & RPC  │   Checkout y Webhooks Idempotentes   │
+│ • Fase 0: Security & RLS Hardening   │ • Fase 6H: Pasarela Stripe FIAT      │
+│ • Fase 1: Data Provider Layer & RPC  │   (Alternativa con tarjeta de crédito│
 │ • Fase 2: Quant Validation Lab (WFO) ├──────────────────────────────────────┤
 │ • Fase 3: VPS 24/7 & Unified Daemons │ ⏳ PLANIFICADO A FUTURO              │
 │ • Fase 4: Market Intel & Scoring     │ • Fases 7-8: CME Futures Order Flow  │
@@ -32,6 +32,9 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 │ • Fase 6B: AEON Copilot Chatbot IA   │                                      │
 │ • Fase 6C: Command Center & Legal    │                                      │
 │ • Fase 6D: Playbooks & Paridad Móvil │                                      │
+│ • Fase 6E: Pasarela Binance Pay & Adm│                                      │
+│ • Fase 6F: Macro Liquidez Fed HUD    │                                      │
+│ • Fase 6G: Expansión 17 Activos & UX │                                      │
 └──────────────────────────────────────┴──────────────────────────────────────┘
 ```
 
@@ -60,7 +63,13 @@ FASE 6C: Command Center Trader & Contrato PRO ────► [✅ COMPLETADO]
   │
 FASE 6D: Playbooks Operativos & Paridad Móvil ────► [✅ COMPLETADO]
   │
-FASE 6E: Pasarela Stripe & Webhooks Idempotentes ─► [🎯 PRÓXIMO OBJETIVO]
+FASE 6E: Pasarela Cripto Binance Pay & Panel Admin ► [✅ COMPLETADO]
+  │
+FASE 6F: Macro Liquidez Fed HUD (5 Joyitas) ──────► [✅ COMPLETADO]
+  │
+FASE 6G: Expansión 17 Activos & Refactorización UX ► [✅ COMPLETADO]
+  │
+FASE 6H: Pasarela Stripe FIAT (Opcional Tarjetas) ─► [🎯 PRÓXIMO SPRINT]
   │
 FASE 7 & 8: Futures Intelligence (CME Order Flow) ─► [⏳ PLANIFICADO]
   │
@@ -108,14 +117,14 @@ FASE 9: High Reliability & Global Scale ──────────► [⏳ P
 
 | Sprint | Tarea / Hito | Estado | Archivos / Componentes |
 |---|---|:---:|---|
-| **6.1** | **Integración Stripe Checkout & Webhooks Idempotentes** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK |
-| **6.2** | **Aprovisionamiento de Suscripción (`public.subscriptions`)** | 🎯 Próximo | Esquema relacional, triggers y control de expiración |
-| **6.3** | **Blindaje RLS de Módulos Pro (`signals_pro_data`, Macro AI)** | 🎯 Próximo | Políticas de seguridad Zero-Trust en PostgreSQL |
 | **6.4** | **Chatbot IA Institucional In-App (AEON Copilot)** | ✅ **Completado** | `supabase/functions/aeon-chat`, `src/js/components/chatWidget.js`, `src/js/services/chatService.js`, `src/css/components/chat.css` |
 | **6.5** | **Terminal de Análisis & Order Flow en Vivo (`/analisis.html`)** | ✅ **Completado** | `analisis.html`, `src/js/analysis.js`, `analysisService.js`, `analysisCard.js`, `compute_structural_analysis` |
 | **6.6** | **Command Center del Trader & Contrato PRO (`/perfil.html`)** | ✅ **Completado** | `perfil.html`, `src/js/perfil.js`, `src/css/components/perfil.css`, modal contractual de Términos y Condiciones |
 | **6.7** | **Playbooks Operativos & Paridad Dimensional Móvil** | ✅ **Completado** | `index.html`, `navbar.js`, `marketCard.js`, `markets.js`, `market.css`, acción `[ Auditar con IA ✦ ]` |
-| **6.8** | **Portal de Gestión de Suscripción & Facturación Stripe** | 🎯 Próximo | `src/js/perfil.js`, Stripe Customer Portal |
+| **6.8** | **Pasarela Cripto Binance Pay & Panel Admin Móvil** | ✅ **Completado** | `perfil.html`, `admin-pagos.html`, `admin-pagos.js`, `00005_crypto_payments.sql`, `approve_crypto_payment` RPC |
+| **6.9** | **Macro Liquidez Fed HUD (US10Y, US02Y, Fed Funds, RRP, WALCL)** | ✅ **Completado** | `macroLiquidityHUD.js`, `macroLiquidityService.js`, `aeon_autonomous_engine.py`, tabla `macro_liquidity`, Playbook #5 |
+| **6.10**| **Expansión a 17 Activos, Carrusel Playbooks & UX In-Place** | ✅ **Completado** | Ingesta batch XAG/USOIL/ETH, `.education-grid` carrusel horizontal con flechas `←/→`, scroll vertical libre en móvil y reemplazo in-place en ticks |
+| **6.11**| **Pasarela FIAT Stripe Opcional (Tarjetas de Crédito)** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK, Customer Portal |
 
 ---
 
