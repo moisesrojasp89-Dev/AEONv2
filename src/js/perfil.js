@@ -115,7 +115,7 @@ function showProFloatingToast() {
     <div class="pro-toast-icon">🎉</div>
     <div class="pro-toast-content">
       <h4>¡Membresía PRO Activada!</h4>
-      <p>Tu pago ha sido verificado y aprobado. Ya dispones de acceso total a las señales élite y al Terminal institucional.</p>
+      <p>Tu pago ha sido verificado y aprobado. Ya dispones de acceso total al Terminal institucional y al Copiloto IA.</p>
       <a href="/mercados.html" class="pro-toast-btn">Ir al Terminal de Mercados →</a>
     </div>
     <button type="button" class="pro-toast-close" aria-label="Cerrar notificación" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;line-height:1;padding:0 0 0 0.5rem;">&times;</button>
@@ -182,7 +182,7 @@ function triggerProCelebration() {
           ✓ ¡Acceso Institucional Desbloqueado!
         </p>
         <p class="pending-time-estimate" style="color: #94a3b8;">
-          Ya puedes acceder a todas las señales de trading, análisis Macro en vivo y Copiloto IA sin restricciones.
+          Ya puedes acceder a análisis Macro en vivo, niveles institucionales dPOC/VWAP y al Copiloto IA sin restricciones.
         </p>
       `;
     }
