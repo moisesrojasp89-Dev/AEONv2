@@ -15,6 +15,8 @@ export const DB_TABLES = {
   DAILY_BRIEFINGS: 'daily_briefings',
   MARKET_INTELLIGENCE: 'market_intelligence',
   MARKET_INTELLIGENCE_HISTORY: 'market_intelligence_history',
+  MACRO_LIQUIDITY: 'macro_liquidity',
+  MACRO_LIQUIDITY_HISTORY: 'macro_liquidity_history',
   PAYMENTS: 'payments',
 };
 

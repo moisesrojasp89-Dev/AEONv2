@@ -132,5 +132,37 @@
       }
     ],
     "aiPrompt": "Tengo una cuenta de 500 USD y quiero arriesgar 2% con un Stop Loss de 7.50 dólares en el Oro. ¿Cuál debe ser mi lotaje exacto?"
+  },
+  {
+    "id": "fed-liquidity-yields",
+    "level": "Institucional",
+    "badgeClass": "badge-institucional",
+    "title": "Macro Liquidez & Yields Fed",
+    "readTime": "5 min",
+    "summary": "Cómo interpretar los 5 pilares de la Fed (US10Y, US02Y, EFFR, Reverse Repo y Balance WALCL) para anticipar giros en Oro, Nasdaq y Cripto.",
+    "subtitle": "Manual de Inteligencia Macro, Tasas y Flujo Monetario Central",
+    "sections": [
+      {
+        "heading": "1. Los Bonos del Tesoro (US10Y vs. US02Y) y la Curva de Rendimientos",
+        "retailError": "Operar pares de divisas, oro o índices bursátiles mirando únicamente el gráfico de velas sin observar hacia dónde se mueven los rendimientos de la deuda soberana estadounidense.",
+        "institutionalMethod": [
+          "US10Y (Rendimiento 10 Años): Es la tasa libre de riesgo global. Cuando el US10Y sube con fuerza, aumenta el costo de capital de las corporaciones y los activos sin rendimiento (Oro) o de crecimiento futuro (Nasdaq) sufren caídas de valuación.",
+          "US02Y (Rendimiento 2 Años): Refleja la expectativa pura de lo que hará la Fed con los tipos de interés a corto plazo. Es ultra sensible a sorpresas en IPC (CPI) y Empleo (NFP).",
+          "Diferencial 10Y - 2Y: Cuando la curva se invierte (US02Y > US10Y), anticipa contracción económica. Cuando la curva se desinvierte rápidamente, suele marcar el inicio del ciclo de flexibilización o estrés bancario."
+        ],
+        "keyRule": "Si el US10Y rompe al alza con volumen durante la apertura de Wall Street, descarta compras agresivas en Oro o Nasdaq hasta ver absorción del yield."
+      },
+      {
+        "heading": "2. Liquidez Oculta: Tasa Fed Funds (EFFR), Reverse Repo (RRP) y Balance (WALCL)",
+        "retailError": "Creer que la Fed solo interviene los días de decisión del FOMC cada 6 semanas, ignorando que el drenaje o inyección diaria de liquidez interbancaria mueve el mercado continuamente.",
+        "institutionalMethod": [
+          "FEDFUNDS (EFFR): La tasa interbancaria efectiva overnight. Es el ancla de todo el sistema crediticio mundial.",
+          "Overnight Reverse Repo (RRP): Es el dinero excedente 'aparcado' por fondos monetarios en la Fed. Cuando el RRP cae (drena), esos fondos se vuelcan a comprar deuda y proporcionan liquidez directa al sistema, alimentando rallies en S&P 500 y Bitcoin.",
+          "Balance WALCL: Mide los billones de dólares en activos de la Reserva Federal. En Quantitative Easing (expansión de balance) los mercados vuelan; en Quantitative Tightening (QT), los rallies carecen de combustible duradero."
+        ],
+        "keyRule": "Un drenaje continuado de Reverse Repo combinado con rendimientos a la baja es el régimen de mayor confluencia alcista (Risk-On) para acciones, oro y criptoactivos."
+      }
+    ],
+    "aiPrompt": "¿Cuál es el estado actual de los rendimientos del Tesoro (US10Y, US02Y) y qué impacto tiene la liquidez del Reverse Repo en el Oro y el Nasdaq hoy?"
   }
 ]

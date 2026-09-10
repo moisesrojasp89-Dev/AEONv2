@@ -4,7 +4,9 @@
    ============================================================ */
 
 import { marketsService } from './services/marketsService.js';
+import { macroLiquidityService } from './services/macroLiquidityService.js';
 import { renderMarketCard } from './templates/marketCard.js';
+import { createMacroLiquidityHUD, createMacroDetailModal } from './templates/macroLiquidityHUD.js';
 import { checkSession } from './auth.js';
 import { initNavbar } from './navbar.js';
 import fallbackData from '../data/market_intelligence_snapshot.json';
@@ -168,6 +170,48 @@ async function initMarketsPage() {
 
   // 5. Suscribirse a Supabase Realtime
   marketsService.subscribeToLiveUpdates(handleLiveUpdate);
+
+  // 6. Inicializar Macro HUD de Liquidez Fed
+  await initMacroHUD();
+}
+
+/**
+ * Inicializa el HUD de Liquidez Macroeconómica Fed.
+ */
+async function initMacroHUD() {
+  const root = document.getElementById('macro-hud-root');
+  if (!root) return;
+
+  const items = await macroLiquidityService.getMacroLiquidity();
+  root.innerHTML = createMacroLiquidityHUD(items);
+
+  // Suscripción a cambios en vivo
+  macroLiquidityService.subscribeToLiveUpdates((updatedList) => {
+    root.innerHTML = createMacroLiquidityHUD(updatedList);
+  });
+
+  // Delegación de eventos para el botón modal ℹ️
+  document.addEventListener('click', (e) => {
+    const infoBtn = e.target.closest('.js-macro-info');
+    if (infoBtn) {
+      const sym = infoBtn.dataset.symbol;
+      const item = macroLiquidityService.getItem(sym);
+      if (item) {
+        document.getElementById('macro-detail-modal')?.remove();
+        document.body.insertAdjacentHTML('beforeend', createMacroDetailModal(item));
+      }
+    }
+
+    if (e.target.closest('.js-macro-modal-close') || e.target.classList.contains('macro-modal-backdrop')) {
+      document.getElementById('macro-detail-modal')?.remove();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('macro-detail-modal')?.remove();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initMarketsPage);

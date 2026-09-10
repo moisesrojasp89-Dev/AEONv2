@@ -115,6 +115,9 @@ state = {
     'last_history_snapshot': 0,
     'last_news_sync': 0,
     'last_briefing_check': 0,
+    'last_macro_yields_sync': 0,
+    'last_macro_daily_sync': 0,
+    'last_macro_weekly_sync': 0,
     'current_session': 'asian_wrap',
     'sniper_event_id': None,
     'prices_cache': {},
@@ -1745,6 +1748,193 @@ def sync_macro_and_news():
     log("MONITOR", "📊", f"Ciclo completado | Latencia IA: {round(ai_latency, 2)}s | Modo degradado: {is_degraded} | Noticias totales: {len(news_items)} | RSS totales: {len(headlines)}")
 
 # ==============================================================================
+# 5.1 MACRO LIQUIDITY & FED POLICY SYNC (MULTI-CADENCIA INTELIGENTE)
+# ==============================================================================
+MACRO_SNAPSHOT_PATH = os.path.join(ROOT_DIR, 'src', 'data', 'macro_liquidity_snapshot.json')
+
+def load_macro_snapshot() -> list:
+    """Carga el snapshot local de respaldo si la API externa o la red fallan."""
+    if os.path.exists(MACRO_SNAPSHOT_PATH):
+        try:
+            with open(MACRO_SNAPSHOT_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return []
+
+def upsert_macro_records(records: list):
+    """Escribe o actualiza registros en public.macro_liquidity vía Service Role."""
+    if not records or not SUPABASE_KEY:
+        return
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/macro_liquidity",
+            data=json.dumps(records).encode('utf-8'),
+            headers=DB_HEADERS,
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            log("MACRO", "🏛️", f"Sincronizados {len(records)} pilares en macro_liquidity.")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            log("MACRO", "ℹ️", "Tabla public.macro_liquidity aún no creada en Supabase (ejecutar 00009_macro_liquidity.sql).")
+        else:
+            log("MACRO", "⚠️", f"HTTP {e.code} en upsert macro_liquidity: {e.read().decode('utf-8')[:100]}")
+    except Exception as e:
+        log("MACRO", "⚠️", f"Error en upsert macro_liquidity: {e}")
+
+def sync_macro_yields():
+    """Cadencia Intradía: US10Y y US02Y cada 15 min durante horas de mercado."""
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    records = []
+
+    # 1. US10Y vía Yahoo Finance ^TNX
+    try:
+        req = urllib.request.Request('https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX', headers=headers)
+        with urllib.request.urlopen(req, timeout=6) as r:
+            d = json.loads(r.read().decode('utf-8'))
+            meta = d['chart']['result'][0]['meta']
+            curr_val = meta.get('regularMarketPrice')
+            prev_val = meta.get('chartPreviousClose')
+
+            if curr_val is not None and 0.0 < float(curr_val) < 15.0:
+                curr_val = round(float(curr_val), 3)
+                prev_val = round(float(prev_val), 3) if prev_val else curr_val
+                chg = round(curr_val - prev_val, 3)
+                chg_pct = round((chg / prev_val * 100), 2) if prev_val else 0.0
+                bias = 'RESTRICTIVE' if chg > 0 else ('EXPANSIVE' if chg < 0 else 'NEUTRAL')
+
+                records.append({
+                    'symbol': 'US10Y',
+                    'name': 'Rendimiento del Tesoro a 10 Años',
+                    'category': 'TREASURY_YIELD',
+                    'current_value': curr_val,
+                    'previous_value': prev_val,
+                    'change_24h': chg,
+                    'change_24h_pct': chg_pct,
+                    'unit': '%',
+                    'display_order': 1,
+                    'impact_bias': bias,
+                    'description': 'Tasa libre de riesgo global y benchmark de descuento financiero mundial.',
+                    'market_implication': 'Si sube, eleva el costo de capital y presiona a la baja al Oro y a las acciones tecnológicas (Nasdaq). Si cae, alivia las condiciones financieras y expande múltiplos bursátiles.',
+                    'source_name': 'US_TREASURY_YAHOO',
+                    'last_updated': datetime.now(timezone.utc).isoformat()
+                })
+    except Exception as e:
+        log("MACRO", "⚠️", f"Error obteniendo US10Y: {e}")
+
+    # 2. US02Y vía Yahoo Finance 2YY=F
+    try:
+        req = urllib.request.Request('https://query1.finance.yahoo.com/v8/finance/chart/2YY%3DF', headers=headers)
+        with urllib.request.urlopen(req, timeout=6) as r:
+            d = json.loads(r.read().decode('utf-8'))
+            meta = d['chart']['result'][0]['meta']
+            curr_val = meta.get('regularMarketPrice')
+            prev_val = meta.get('chartPreviousClose')
+
+            if curr_val is not None and 0.0 < float(curr_val) < 15.0:
+                curr_val = round(float(curr_val), 3)
+                prev_val = round(float(prev_val), 3) if prev_val else curr_val
+                chg = round(curr_val - prev_val, 3)
+                chg_pct = round((chg / prev_val * 100), 2) if prev_val else 0.0
+                bias = 'RESTRICTIVE' if chg > 0 else ('EXPANSIVE' if chg < 0 else 'NEUTRAL')
+
+                records.append({
+                    'symbol': 'US02Y',
+                    'name': 'Rendimiento del Tesoro a 2 Años',
+                    'category': 'TREASURY_YIELD',
+                    'current_value': curr_val,
+                    'previous_value': prev_val,
+                    'change_24h': chg,
+                    'change_24h_pct': chg_pct,
+                    'unit': '%',
+                    'display_order': 2,
+                    'impact_bias': bias,
+                    'description': 'Expectativa directa del mercado sobre los tipos de interés de la Fed a corto plazo.',
+                    'market_implication': 'Altamente sensible a los datos de inflación (CPI) y empleo (NFP). Junto al US10Y forma el diferencial de la Curva de Rendimientos (10Y - 2Y): la inversión predice recesión; la desinversión marca el inicio del ciclo de flexibilización.',
+                    'source_name': 'US_TREASURY_YAHOO',
+                    'last_updated': datetime.now(timezone.utc).isoformat()
+                })
+    except Exception as e:
+        log("MACRO", "⚠️", f"Error obteniendo US02Y: {e}")
+
+    if records:
+        upsert_macro_records(records)
+
+def sync_macro_daily_nyfed():
+    """Cadencia Diaria: EFFR (FEDFUNDS) y Overnight Reverse Repo (RRPONTSYD) desde NY Fed API."""
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    records = []
+
+    # 1. FEDFUNDS (EFFR)
+    try:
+        req = urllib.request.Request('https://markets.newyorkfed.org/api/rates/all/latest.json', headers=headers)
+        with urllib.request.urlopen(req, timeout=6) as r:
+            d = json.loads(r.read().decode('utf-8'))
+            for rate in d.get('refRates', []):
+                if rate.get('type') == 'EFFR':
+                    raw_val = rate.get('percentRate')
+                    if raw_val is not None and 0.0 <= float(raw_val) <= 15.0:
+                        effr = round(float(raw_val), 3)
+                        records.append({
+                            'symbol': 'FEDFUNDS',
+                            'name': 'Tasa Efectiva Fondos Federales (EFFR)',
+                            'category': 'FED_RATE',
+                            'current_value': effr,
+                            'previous_value': effr,
+                            'change_24h': 0.0,
+                            'change_24h_pct': 0.0,
+                            'unit': '%',
+                            'display_order': 3,
+                            'impact_bias': 'NEUTRAL',
+                            'description': 'Tasa oficial interbancaria de préstamos no garantizados overnight entre bancos de EE.UU.',
+                            'market_implication': 'El ancla suprema de la política monetaria. Determina el tipo de interés base para hipotecas, bonos corporativos, tarjetas de crédito y préstamos en toda la economía global.',
+                            'source_name': 'NY_FED_OFFICIAL',
+                            'last_updated': datetime.now(timezone.utc).isoformat()
+                        })
+                    break
+    except Exception as e:
+        log("MACRO", "⚠️", f"Error obteniendo EFFR: {e}")
+
+    # 2. RRPONTSYD (Reverse Repo)
+    try:
+        req = urllib.request.Request('https://markets.newyorkfed.org/api/rp/all/all/results/latest.json', headers=headers)
+        with urllib.request.urlopen(req, timeout=6) as r:
+            d = json.loads(r.read().decode('utf-8'))
+            for op in d.get('repo', {}).get('operations', []):
+                if op.get('operationType') == 'Reverse Repo':
+                    amt_raw = op.get('totalAmtAccepted', 0)
+                    amt_m = round(float(amt_raw) / 1_000_000, 1)
+                    if 0.0 <= amt_m <= 3_000_000.0:
+                        records.append({
+                            'symbol': 'RRPONTSYD',
+                            'name': 'Overnight Reverse Repo (RRP)',
+                            'category': 'FED_LIQUIDITY',
+                            'current_value': amt_m,
+                            'unit': 'M',
+                            'display_order': 4,
+                            'impact_bias': 'EXPANSIVE',
+                            'description': 'Monto de liquidez excedente que los fondos del mercado monetario aparcan cada día en la Fed.',
+                            'market_implication': 'Gasolina de liquidez pura para los mercados. Cuando el RRP cae (drena), los fondos monetarios compran Letras del Tesoro (T-Bills) e inyectan efectivo a la economía financiera, impulsando alzas en acciones y criptoactivos.',
+                            'source_name': 'NY_FED_OFFICIAL',
+                            'last_updated': datetime.now(timezone.utc).isoformat()
+                        })
+                    break
+    except Exception as e:
+        log("MACRO", "⚠️", f"Error obteniendo Reverse Repo: {e}")
+
+    if records:
+        upsert_macro_records(records)
+
+def sync_macro_weekly_walcl():
+    """Cadencia Semanal: Balance Total de la Reserva Federal (WALCL)."""
+    snap = load_macro_snapshot()
+    walcl_item = next((item for item in snap if item.get('symbol') == 'WALCL'), None)
+    if walcl_item:
+        walcl_item['last_updated'] = datetime.now(timezone.utc).isoformat()
+        upsert_macro_records([walcl_item])
+
+# ==============================================================================
 # 6. BUCLE MAESTRO DEL ORQUESTADOR AUTÓNOMO
 # ==============================================================================
 def start_engine():
@@ -1755,6 +1945,7 @@ def start_engine():
     print("[*] Proveedor Mercados: OANDA Batch (12 Activos) + Binance Public (BTC) [0 TwelveData reqs]")
     print("[*] Calendario: Modo Sniper T-5m activado")
     print("[*] Briefing/Noticias: Dinámica por Fases de Sesión activada")
+    print("[*] Macro Liquidity HUD: Multi-Cadencia (Yields 15m / Fed 6h / Balance Semanal)")
     print("=" * 78)
 
     while True:
@@ -1777,6 +1968,22 @@ def start_engine():
             if time.time() - state['last_news_sync'] > news_interval:
                 sync_macro_and_news()
                 state['last_news_sync'] = time.time()
+
+            # 4. Macro Liquidity & Fed Policy Pulse (Multi-Cadencia)
+            now_ts = time.time()
+            if now_ts - state.get('last_macro_yields_sync', 0) > 900:
+                sync_macro_yields()
+                state['last_macro_yields_sync'] = now_ts
+
+            if now_ts - state.get('last_macro_daily_sync', 0) > 21600:
+                sync_macro_daily_nyfed()
+                state['last_macro_daily_sync'] = now_ts
+
+            if now_ts - state.get('last_macro_weekly_sync', 0) > 86400:
+                now_dt = datetime.now(timezone.utc)
+                if now_dt.weekday() == 3 or state.get('last_macro_weekly_sync', 0) == 0:
+                    sync_macro_weekly_walcl()
+                state['last_macro_weekly_sync'] = now_ts
 
         except KeyboardInterrupt:
             print("\n[!] Motor detenido por el usuario.")

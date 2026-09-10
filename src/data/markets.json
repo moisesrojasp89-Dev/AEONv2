@@ -78,6 +78,14 @@
       "title": "Gestión de Riesgo & Asimetría",
       "readTime": "3 min",
       "summary": "La matemática de la supervivencia: ratio R:R mínimo 1:2, la regla del 1.5% máximo, cálculo exacto de lotaje y el freno de emergencia por drawdown."
+    },
+    {
+      "id": "fed-liquidity-yields",
+      "level": "Institucional",
+      "badgeClass": "badge-institucional",
+      "title": "Macro Liquidez & Yields Fed",
+      "readTime": "5 min",
+      "summary": "Cómo interpretar los 5 pilares de la Fed (US10Y, US02Y, EFFR, Reverse Repo y Balance WALCL) para anticipar giros en Oro, Nasdaq y Cripto."
     }
   ],
   "premiumFeatures": [

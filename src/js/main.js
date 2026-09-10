@@ -24,6 +24,8 @@ import {
   renderTickerBar,
 } from './render.js';
 import data from '../data/markets.json';
+import { macroLiquidityService } from './services/macroLiquidityService.js';
+import { createMacroLiquidityHUD, createMacroDetailModal } from './templates/macroLiquidityHUD.js';
 
 // Redirección de ancla #mercados a la página dedicada /mercados.html
 if (window.location.hash === '#mercados') {
@@ -338,6 +340,44 @@ function initEducationInteractions() {
   });
 }
 
+/**
+ * Inicializa el Radar Macro HUD de Liquidez Fed en la página principal.
+ */
+async function initRadarMacroHUD() {
+  const root = document.getElementById('radar-macro-hud-root');
+  if (!root) return;
+
+  const items = await macroLiquidityService.getMacroLiquidity();
+  root.innerHTML = createMacroLiquidityHUD(items);
+
+  macroLiquidityService.subscribeToLiveUpdates((updatedList) => {
+    root.innerHTML = createMacroLiquidityHUD(updatedList);
+  });
+
+  // Delegación de eventos para el modal ℹ️
+  document.addEventListener('click', (e) => {
+    const infoBtn = e.target.closest('.js-macro-info');
+    if (infoBtn) {
+      const sym = infoBtn.dataset.symbol;
+      const item = macroLiquidityService.getItem(sym);
+      if (item) {
+        document.getElementById('macro-detail-modal')?.remove();
+        document.body.insertAdjacentHTML('beforeend', createMacroDetailModal(item));
+      }
+    }
+
+    if (e.target.closest('.js-macro-modal-close') || e.target.classList.contains('macro-modal-backdrop')) {
+      document.getElementById('macro-detail-modal')?.remove();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('macro-detail-modal')?.remove();
+    }
+  });
+}
+
 async function initApp() {
   // Render de elementos iniciales
   renderEducation(data.education);
@@ -345,6 +385,7 @@ async function initApp() {
   renderTickerBar(data.ticker);
 
   initEducationInteractions();
+  initRadarMacroHUD();
   loadDynamicBriefing();
   loadDynamicNews();
   initNewsFilters();
