@@ -80,9 +80,27 @@ function bindNavbarEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') toggleMobileMenu(true);
   });
+
+  // 6. Bind logout buttons immediately so they are functional without waiting for auth.js
+  const logoutButtons = document.querySelectorAll('#btn-logout, #btn-logout-mobile, .nav-btn-logout');
+  logoutButtons.forEach(btn => {
+    btn.onclick = async (e) => {
+      e.preventDefault();
+      try {
+        const { supabase } = await import('./supabaseClient.js');
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('[AEON] Error al cerrar sesión:', err);
+      }
+      window.location.href = '/index.html';
+    };
+  });
 }
 
 export function initNavbar() {
+  // Prevent duplicate rendering if already initialized
+  if (document.querySelector('.header .navbar')) return;
+
   // 1. Render the navbar from the centralized template (if #navbar-root exists)
   renderNavbar();
 
@@ -93,9 +111,11 @@ export function initNavbar() {
   initChatWidget();
 }
 
-// Auto-initialize on DOM load
+// Auto-initialize on load or immediately if #navbar-root is already in DOM
 if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
+  if (document.getElementById('navbar-root')) {
+    initNavbar();
+  } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initNavbar);
   } else {
     initNavbar();

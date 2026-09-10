@@ -64,6 +64,30 @@ function renderDrawerLink(link, activeId) {
 }
 
 /**
+ * Synchronously checks if a user session token exists in localStorage.
+ * This runs at HTML generation time, completely eliminating the visual flicker
+ * where "Iniciar Sesión" would momentarily appear before switching to "Perfil".
+ * @returns {boolean}
+ */
+function isUserLoggedInSync() {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('sb-') && key.endsWith('-auth-token') || key === 'supabase.auth.token')) {
+        const item = localStorage.getItem(key);
+        if (item) {
+          const parsed = JSON.parse(item);
+          if (parsed && (parsed.user || parsed.access_token)) {
+            return true;
+          }
+        }
+      }
+    }
+  } catch (_) {}
+  return false;
+}
+
+/**
  * Renders the complete navbar + mobile overlay + mobile drawer into #navbar-root.
  * Handles both guest and authenticated user states.
  */
@@ -73,6 +97,7 @@ export function renderNavbar() {
 
   const activeId = detectActivePage();
   const isPerfilPage = window.location.pathname.includes('perfil.html');
+  const isLoggedIn = isUserLoggedInSync();
 
   // Logo href: "/" on index, "/index.html" on subpages
   const logoHref = (window.location.pathname === '/' || window.location.pathname.endsWith('index.html'))
@@ -87,12 +112,12 @@ export function renderNavbar() {
           <button id="btn-logout" class="btn-primary nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>`
     : `<!-- Guest view -->
-        <div id="nav-guest-view" class="nav-auth-group">
+        <div id="nav-guest-view" class="nav-auth-group" style="${isLoggedIn ? 'display: none;' : ''}">
           <a href="/login.html" class="nav-btn btn-nav-ghost">Iniciar Sesión</a>
           <a href="/registro.html" class="btn-primary nav-btn nav-btn-pro">Acceso Pro</a>
         </div>
         <!-- User view -->
-        <div id="nav-user-view" class="nav-auth-group" style="display: none;">
+        <div id="nav-user-view" class="nav-auth-group" style="${isLoggedIn ? 'display: flex;' : 'display: none;'}">
           <a href="/perfil.html" class="nav-btn btn-nav-ghost">Perfil</a>
           <button id="btn-logout" class="btn-primary nav-btn nav-btn-logout">Cerrar Sesión</button>
         </div>`;
@@ -110,14 +135,14 @@ export function renderNavbar() {
             <span>Cerrar Sesión</span>
           </button>
         </div>`
-    : `<div class="drawer-section" id="mobile-nav-guest">
+    : `<div class="drawer-section" id="mobile-nav-guest" style="${isLoggedIn ? 'display: none;' : ''}">
           <p class="drawer-label">CUENTA</p>
           <a href="/login.html" class="mobile-link">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
             <span>Iniciar Sesión</span>
           </a>
         </div>
-        <div class="drawer-section" id="mobile-nav-user" style="display: none;">
+        <div class="drawer-section" id="mobile-nav-user" style="${isLoggedIn ? 'display: block;' : 'display: none;'}">
           <p class="drawer-label">CUENTA</p>
           <a href="/perfil.html" class="mobile-link">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

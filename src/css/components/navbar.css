@@ -4,6 +4,11 @@
 
 @import './chat.css';
 
+#navbar-root {
+  display: block;
+  min-height: var(--header-h, 57px);
+}
+
 .header {
   position: sticky;
   top: 0;

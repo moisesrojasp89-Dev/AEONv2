@@ -10,6 +10,25 @@ supabase.auth.onAuthStateChange((event) => {
   }
 });
 
+function syncNavbarAuthElements(isAuthenticated) {
+  const guestView = document.getElementById('nav-guest-view');
+  const userView = document.getElementById('nav-user-view');
+  const guestMobile = document.getElementById('mobile-nav-guest');
+  const userMobile = document.getElementById('mobile-nav-user');
+
+  if (isAuthenticated) {
+    if (guestView) guestView.style.display = 'none';
+    if (userView) userView.style.display = 'flex';
+    if (guestMobile) guestMobile.style.display = 'none';
+    if (userMobile) userMobile.style.display = 'block';
+  } else {
+    if (guestView) guestView.style.display = 'flex';
+    if (userView) userView.style.display = 'none';
+    if (guestMobile) guestMobile.style.display = 'block';
+    if (userMobile) userMobile.style.display = 'none';
+  }
+}
+
 export async function checkSession() {
   let session = null;
   let isPro = false;
@@ -17,12 +36,16 @@ export async function checkSession() {
     const { data } = await supabase.auth.getSession();
     session = data?.session || null;
 
+    // Sincronizar inmediatamente la barra de navegación sin esperar las consultas posteriores
+    syncNavbarAuthElements(!!session);
+
     if (session) {
       // Validar si el usuario aún existe en el backend de Supabase
       const { data: userData, error: userErr } = await supabase.auth.getUser();
       if (userErr || !userData?.user) {
         await supabase.auth.signOut();
         session = null;
+        syncNavbarAuthElements(false);
       }
     }
 
@@ -56,20 +79,12 @@ export async function checkSession() {
     console.error('[AEON] Error verificando sesión:', err.message);
   }
   
-  const guestView = document.getElementById('nav-guest-view');
-  const userView = document.getElementById('nav-user-view');
+  syncNavbarAuthElements(!!session);
+
   const btnLogout = document.getElementById('btn-logout');
   const btnLogoutMobile = document.getElementById('btn-logout-mobile');
 
   if (session) {
-    if (guestView) guestView.style.display = 'none';
-    if (userView) userView.style.display = 'flex';
-    
-    const guestMobile = document.getElementById('mobile-nav-guest');
-    const userMobile = document.getElementById('mobile-nav-user');
-    if (guestMobile) guestMobile.style.display = 'none';
-    if (userMobile) userMobile.style.display = 'block';
-
     const handleLogout = async () => {
       try {
         await supabase.auth.signOut();
@@ -81,9 +96,6 @@ export async function checkSession() {
 
     if (btnLogout) btnLogout.onclick = handleLogout;
     if (btnLogoutMobile) btnLogoutMobile.onclick = handleLogout;
-  } else {
-    if (guestView) guestView.style.display = 'flex';
-    if (userView) userView.style.display = 'none';
   }
 
   // Ocultar sección promocional de upgrade a PRO si el usuario ya tiene rango PRO activo

@@ -14,6 +14,15 @@
   <link rel="stylesheet" href="/src/css/layout.css">
   <link rel="stylesheet" href="/src/css/components/buttons.css">
   <link rel="stylesheet" href="/src/css/auth.css">
+  <style>
+    /* Critical anti-FOUC */
+    html, body {
+      background-color: #070b12;
+      color: #E4E4E7;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body class="auth-body">
   <div class="bg-mesh" aria-hidden="true"></div>
@@ -24,7 +33,7 @@
         <img src="/AEON.png" alt="AEON" class="auth-logo-img" />
       </a>
       <h1>Iniciar Sesión</h1>
-      <p>Accede a tu panel y señales premium.</p>
+      <p>Accede a tu panel y análisis institucional.</p>
     </header>
 
     <form id="login-form" class="auth-form" novalidate>

@@ -23,15 +23,19 @@
   <link rel="stylesheet" href="/src/css/responsive.css" />
   
   <style>
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
+    html, body {
+      background-color: #06090e;
+      color: var(--text, #e2e8f0);
+      font-family: var(--font-body, 'Inter', sans-serif);
       margin: 0;
       padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+    #navbar-root {
+      display: block;
+      min-height: 57px;
     }
     .bg-mesh {
       position: fixed;
