@@ -68,12 +68,16 @@ CREATE INDEX IF NOT EXISTS idx_macro_liq_hist_symbol_time ON public.macro_liquid
 CREATE OR REPLACE FUNCTION log_macro_liquidity_history()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.macro_liquidity_history (
-        symbol, recorded_at, value, change_24h, change_24h_pct, source_name
-    ) VALUES (
-        NEW.symbol, NEW.last_updated, NEW.current_value, NEW.change_24h,
-        NEW.change_24h_pct, NEW.source_name
-    );
+    -- Idempotencia y control de duplicados: registrar solo en inserción inicial
+    -- o cuando el valor numérico realmente haya cambiado.
+    IF (TG_OP = 'INSERT' OR OLD.current_value IS DISTINCT FROM NEW.current_value) THEN
+        INSERT INTO public.macro_liquidity_history (
+            symbol, recorded_at, value, change_24h, change_24h_pct, source_name
+        ) VALUES (
+            NEW.symbol, NEW.last_updated, NEW.current_value, NEW.change_24h,
+            NEW.change_24h_pct, NEW.source_name
+        );
+    END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -83,10 +87,6 @@ DROP TRIGGER IF EXISTS trg_macro_liquidity_history ON public.macro_liquidity;
 CREATE TRIGGER trg_macro_liquidity_history
 AFTER INSERT OR UPDATE ON public.macro_liquidity
 FOR EACH ROW
-WHEN (
-    TG_OP = 'INSERT'
-    OR OLD.current_value IS DISTINCT FROM NEW.current_value
-)
 EXECUTE FUNCTION log_macro_liquidity_history();
 
 -- 5. Seguridad Zero-Trust: Row Level Security (RLS)
