@@ -585,6 +585,9 @@
           <div class="deposit-copy-wrapper">
             <input type="text" id="deposit-address-input" class="deposit-input font-mono" readonly value="401032901" />
             <button type="button" class="btn btn-secondary btn-copy" id="btn-copy-address">Copiar ID</button>
+            <a href="https://app.binance.com" target="_blank" rel="noopener" class="btn btn-open-binance" title="Abrir Binance App o Web">
+              📲 Abrir Binance
+            </a>
           </div>
           <span class="copy-success-hint" id="copy-success-hint">¡ID copiado al portapapeles! ✓ (401032901)</span>
         </div>
@@ -631,8 +634,8 @@
       <div id="checkout-view-pending" class="checkout-view">
         <div class="checkout-header text-center">
           <div class="pending-spinner-icon">⚡</div>
-          <h2 class="checkout-title">Pago Registrado Exitosamente</h2>
-          <p class="checkout-subtitle">Tu orden ha sido enlazada en el sistema en cola de verificación prioritaria.</p>
+          <h2 class="checkout-title">¡Orden Registrada con Éxito!</h2>
+          <p class="checkout-subtitle">Hemos alertado automáticamente al equipo de soporte para su verificación prioritaria.</p>
         </div>
 
         <div class="pending-info-card">
@@ -661,24 +664,19 @@
             </div>
           </div>
 
-          <p class="pending-note">
-            El tiempo promedio de activación es de <strong>5 a 15 minutos</strong>. En cuanto el pago se verifique, tu cuenta pasará automáticamente a estado <strong>PRO</strong>.
-          </p>
+          <div class="pending-auto-note">
+            <p><strong>✓ No necesitas enviar ningún comprobante.</strong> Nuestro bot notificó a soporte con tus datos para activar tu acceso.</p>
+            <p class="pending-time-estimate">Tiempo estimado de activación: <strong>5 a 15 minutos</strong>.</p>
+          </div>
         </div>
 
         <div class="checkout-action-area">
-          <a id="btn-whatsapp-notify" href="https://t.me/Soporte_AEON" target="_blank" rel="noopener" class="btn btn-primary btn-block btn-vip-notify">
-            💬 Abrir Chat con Soporte en Telegram (@Soporte_AEON) →
+          <button type="button" id="btn-finish-checkout" class="btn btn-primary btn-block">
+            Volver al Dashboard
+          </button>
+          <a id="btn-whatsapp-notify" href="https://t.me/Soporte_AEON" target="_blank" rel="noopener" class="btn-support-link" style="margin-top: 0.75rem;">
+            ¿Dudas o soporte prioritario? Contactar por Telegram (@Soporte_AEON) →
           </a>
-          <button type="button" id="btn-copy-report" class="btn btn-secondary btn-block" style="margin-top: 0.5rem;">
-            📋 Copiar Reporte de Pago
-          </button>
-          <p id="report-copy-hint" class="copy-success-hint" style="text-align: center; margin: 0.5rem 0 0;">
-            ✓ Reporte copiado al portapapeles. Pégalo en el chat de Telegram.
-          </p>
-          <button type="button" id="btn-finish-checkout" class="btn btn-secondary btn-block" style="margin-top: 0.75rem; background: transparent; border-color: rgba(255,255,255,0.1); color: var(--muted, #94a3b8);">
-            Cerrar y Volver al Dashboard
-          </button>
         </div>
       </div>
 
