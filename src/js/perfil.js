@@ -99,6 +99,104 @@ function renderPasswordStrength(strength) {
 // ============================================================
 let currentUserId = null;
 let currentUserEmail = '';
+let userIsPro = false;
+let proCelebrationShown = false;
+let pollingTimer = null;
+
+function showProFloatingToast() {
+  if (document.getElementById('pro-activated-toast')) return;
+
+  const toast = document.createElement('div');
+  toast.id = 'pro-activated-toast';
+  toast.className = 'pro-activated-toast';
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.innerHTML = `
+    <div class="pro-toast-icon">🎉</div>
+    <div class="pro-toast-content">
+      <h4>¡Membresía PRO Activada!</h4>
+      <p>Tu pago ha sido verificado y aprobado. Ya dispones de acceso total a las señales élite y al Terminal institucional.</p>
+      <a href="/mercados.html" class="pro-toast-btn">Ir al Terminal de Mercados →</a>
+    </div>
+    <button type="button" class="pro-toast-close" aria-label="Cerrar notificación" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;line-height:1;padding:0 0 0 0.5rem;">&times;</button>
+  `;
+
+  const closeBtn = toast.querySelector('.pro-toast-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => toast.remove());
+  }
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(20px)';
+      setTimeout(() => toast.remove(), 500);
+    }
+  }, 15000);
+}
+
+function triggerProCelebration() {
+  if (proCelebrationShown) return;
+  proCelebrationShown = true;
+
+  const checkoutModal = document.getElementById('modal-checkout-pro');
+  const isModalOpen = checkoutModal && checkoutModal.classList.contains('open');
+
+  if (isModalOpen) {
+    const pendingView = document.getElementById('checkout-view-pending');
+    const plansView = document.getElementById('checkout-view-plans');
+    const detailsView = document.getElementById('checkout-view-details');
+
+    if (plansView) plansView.classList.remove('active');
+    if (detailsView) detailsView.classList.remove('active');
+    if (pendingView) pendingView.classList.add('active');
+
+    const spinnerIcon = document.getElementById('pending-spinner-icon');
+    const title = document.getElementById('pending-title');
+    const subtitle = document.getElementById('pending-subtitle');
+    const badge = document.getElementById('pending-badge');
+    const autoNote = document.getElementById('pending-auto-note');
+    const finishBtn = document.getElementById('btn-finish-checkout');
+
+    if (spinnerIcon) {
+      spinnerIcon.textContent = '🎉';
+      spinnerIcon.classList.add('approved');
+    }
+    if (title) {
+      title.textContent = '¡Membresía PRO Activada!';
+      title.style.color = '#38bdf8';
+    }
+    if (subtitle) {
+      subtitle.textContent = 'Tu pago ha sido verificado con éxito por administración. Tu cuenta ya cuenta con todos los privilegios PRO.';
+    }
+    if (badge) {
+      badge.textContent = '🟢 PAGO APROBADO & PRO ACTIVO';
+      badge.classList.add('approved');
+    }
+    if (autoNote) {
+      autoNote.innerHTML = `
+        <p style="color: #4ade80; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem;">
+          ✓ ¡Acceso Institucional Desbloqueado!
+        </p>
+        <p class="pending-time-estimate" style="color: #94a3b8;">
+          Ya puedes acceder a todas las señales de trading, análisis Macro en vivo y Copiloto IA sin restricciones.
+        </p>
+      `;
+    }
+    if (finishBtn) {
+      finishBtn.textContent = '🚀 Comenzar a Operar en Mercados →';
+      finishBtn.className = 'btn btn-primary btn-block';
+      finishBtn.onclick = () => {
+        window.location.href = '/mercados.html';
+      };
+    }
+  }
+
+  showProFloatingToast();
+}
 
 function setupCheckoutModal() {
   const checkoutModal = document.getElementById('modal-checkout-pro');
@@ -361,44 +459,44 @@ function setupCheckoutModal() {
       if (pendingTxRef) pendingTxRef.textContent = txRef;
       if (pendingTerminalId) pendingTerminalId.textContent = `AEON-${terminalCode}`;
 
-      // Configurar enlace y copia de notificación instantánea
-      const plainReportText = 
-        `✦ REPORTE DE PAGO AEON PRO ✦\n\n` +
-        `• Orden: ${orderId}\n` +
-        `• Plan: ${PLAN_LABELS[selectedPlan] || selectedPlan}\n` +
-        `• Monto: $${selectedPrice.toFixed(2)} USDT\n` +
-        `• Método: Binance Pay (ID: 401032901 - AEON INTELLIGENCE)\n` +
-        `• Ref / TxID: ${txRef}\n` +
-        `• Terminal ID: AEON-${terminalCode}\n` +
-        `• Usuario: ${currentUserEmail || 'Trader'}\n\n` +
-        `Solicito verificación y activación de mi membresía.`;
-
-      const reportCopyHint = document.getElementById('report-copy-hint');
-      const btnCopyReport = document.getElementById('btn-copy-report');
-
-      const copyReportToClipboard = async () => {
-        try {
-          await navigator.clipboard.writeText(plainReportText);
-          if (reportCopyHint) {
-            reportCopyHint.textContent = '✓ Reporte copiado al portapapeles. Pégalo en el chat de Telegram.';
-            reportCopyHint.classList.add('visible');
-            setTimeout(() => reportCopyHint.classList.remove('visible'), 4000);
-          }
-        } catch (_) {}
-      };
-
-      if (btnCopyReport) {
-        btnCopyReport.onclick = copyReportToClipboard;
+      // Resetear estado visual de Paso 3 por si fue reutilizado
+      const spinnerIcon = document.getElementById('pending-spinner-icon');
+      const title = document.getElementById('pending-title');
+      const subtitle = document.getElementById('pending-subtitle');
+      const badge = document.getElementById('pending-badge');
+      const autoNote = document.getElementById('pending-auto-note');
+      if (spinnerIcon) {
+        spinnerIcon.textContent = '⚡';
+        spinnerIcon.classList.remove('approved');
       }
-
-      if (btnWhatsappNotify) {
-        btnWhatsappNotify.href = 'https://t.me/Soporte_AEON';
-        btnWhatsappNotify.onclick = () => {
-          copyReportToClipboard();
-        };
+      if (title) {
+        title.textContent = '¡Orden Registrada con Éxito!';
+        title.style.color = '';
+      }
+      if (subtitle) {
+        subtitle.textContent = 'Hemos alertado automáticamente al equipo de soporte para su verificación prioritaria.';
+      }
+      if (badge) {
+        badge.textContent = '🟡 EN REVISIÓN PRIORITARIA';
+        badge.classList.remove('approved');
+      }
+      if (autoNote) {
+        autoNote.innerHTML = `
+          <p><strong>✓ No necesitas enviar ningún comprobante.</strong> Nuestro bot notificó a soporte con tus datos para activar tu acceso.</p>
+          <p class="pending-time-estimate">Tiempo estimado de activación: <strong>5 a 15 minutos</strong>.</p>
+        `;
+      }
+      if (btnFinishCheckout) {
+        btnFinishCheckout.textContent = 'Volver al Dashboard';
+        btnFinishCheckout.onclick = closeCheckoutModal;
       }
 
       switchCheckoutView('pending');
+
+      // Activar sondeo activo para detectar aprobación de admin
+      if (typeof window.startProSoftPolling === 'function') {
+        window.startProSoftPolling();
+      }
     });
   }
 
@@ -648,100 +746,213 @@ async function initDashboard() {
   syncAiQuota(false);
 
   // ============================================================
-  // 3. Verificación de Membresía & Copy Institucional Preciso
+  // 3. Verificación de Membresía & Sincronización en Tiempo Real
   // ============================================================
-  try {
-    const { data: profData } = await supabase
-      .from(DB_TABLES.PROFILES)
-      .select('tier')
-      .eq('id', user.id)
-      .maybeSingle();
+  let realtimeChannel = null;
 
-    const isProTier = profData && (profData.tier === 'pro' || profData.tier === 'institutional');
+  async function checkAndRenderMembership(options = { notifyCelebration: false }) {
+    try {
+      const { data: profData, error: profErr } = await supabase
+        .from(DB_TABLES.PROFILES)
+        .select('tier')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    const { data: subData } = await supabase
-      .from(DB_TABLES.SUBSCRIPTIONS)
-      .select('plan, status, current_period_end')
-      .eq('user_id', user.id)
-      .eq('plan', 'pro')
-      .eq('status', 'active')
-      .gte('current_period_end', new Date().toISOString())
-      .maybeSingle();
-
-    if (isProTier || subData) {
-      if (profileBadgeTop) {
-        profileBadgeTop.className = 'plan-badge-display pro';
-        profileBadgeTop.textContent = 'PRO Trader';
-      }
-      if (titaniumCard) {
-        titaniumCard.classList.add('pro');
-      }
-      if (cardTierDisplay) {
-        cardTierDisplay.textContent = profData?.tier === 'institutional' ? 'PLAN INSTITUCIONAL' : 'PLAN PRO ÉLITE';
-      }
-      if (cardStatusPill) {
-        cardStatusPill.textContent = 'Activo';
+      if (profErr) {
+        console.warn('[AEON Perfil] Error consultando perfil:', profErr.message);
       }
 
-      // Copy preciso y sin ambigüedades sobre la renovación
-      if (subData?.current_period_end) {
-        const endDate = new Date(subData.current_period_end);
-        const formattedDate = endDate.toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        });
+      const isProTier = profData && (profData.tier === 'pro' || profData.tier === 'institutional');
 
-        if (subData.status === 'active') {
-          if (cardRenewalLabel) cardRenewalLabel.textContent = 'PRÓXIMA RENOVACIÓN';
-          if (cardRenewalDate) cardRenewalDate.textContent = formattedDate;
+      const { data: subData, error: subErr } = await supabase
+        .from(DB_TABLES.SUBSCRIPTIONS)
+        .select('plan, status, current_period_end')
+        .eq('user_id', user.id)
+        .eq('plan', 'pro')
+        .eq('status', 'active')
+        .gte('current_period_end', new Date().toISOString())
+        .maybeSingle();
+
+      if (subErr) {
+        console.warn('[AEON Perfil] Error consultando suscripción:', subErr.message);
+      }
+
+      const isPro = isProTier || !!subData;
+
+      if (isPro) {
+        if (profileBadgeTop) {
+          profileBadgeTop.className = 'plan-badge-display pro';
+          profileBadgeTop.textContent = 'PRO Trader';
+        }
+        if (titaniumCard) {
+          titaniumCard.classList.add('pro');
+        }
+        if (cardTierDisplay) {
+          cardTierDisplay.textContent = profData?.tier === 'institutional' ? 'PLAN INSTITUCIONAL' : 'PLAN PRO ÉLITE';
+        }
+        if (cardStatusPill) {
+          cardStatusPill.textContent = 'Activo';
+        }
+
+        // Copy preciso y sin ambigüedades sobre la renovación
+        if (subData?.current_period_end) {
+          const endDate = new Date(subData.current_period_end);
+          const formattedDate = endDate.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          });
+
+          if (subData.status === 'active') {
+            if (cardRenewalLabel) cardRenewalLabel.textContent = 'PRÓXIMA RENOVACIÓN';
+            if (cardRenewalDate) cardRenewalDate.textContent = formattedDate;
+          } else {
+            if (cardRenewalLabel) cardRenewalLabel.textContent = 'ACCESO ACTIVO HASTA';
+            if (cardRenewalDate) cardRenewalDate.textContent = formattedDate;
+          }
         } else {
-          if (cardRenewalLabel) cardRenewalLabel.textContent = 'ACCESO ACTIVO HASTA';
-          if (cardRenewalDate) cardRenewalDate.textContent = formattedDate;
+          if (cardRenewalLabel) cardRenewalLabel.textContent = 'MEMBRESÍA ACTIVA';
+          if (cardRenewalDate) cardRenewalDate.textContent = 'Permanente';
+        }
+
+        if (dashPlanCta) {
+          dashPlanCta.dataset.isPro = 'true';
+          dashPlanCta.textContent = 'Ir al Terminal de Mercados →';
+        }
+        if (cardPolicyNote) {
+          cardPolicyNote.textContent = 'Membresía activa vinculada a tu cuenta. Acceso total al Terminal y Copiloto IA.';
+        }
+
+        if (options.notifyCelebration) {
+          triggerProCelebration();
         }
       } else {
-        if (cardRenewalLabel) cardRenewalLabel.textContent = 'MEMBRESÍA ACTIVA';
-        if (cardRenewalDate) cardRenewalDate.textContent = 'Permanente';
+        if (profileBadgeTop) {
+          profileBadgeTop.className = 'plan-badge-display free';
+          profileBadgeTop.textContent = 'Plan Gratuito';
+        }
+        if (titaniumCard) {
+          titaniumCard.classList.remove('pro');
+        }
+        if (cardTierDisplay) {
+          cardTierDisplay.textContent = 'PLAN GRATUITO';
+        }
+        if (cardStatusPill) {
+          cardStatusPill.textContent = 'Estándar';
+        }
+        if (cardRenewalLabel) {
+          cardRenewalLabel.textContent = 'ESTADO DE CUENTA';
+        }
+        if (cardRenewalDate) {
+          cardRenewalDate.textContent = 'Acceso Básico';
+        }
+        if (dashPlanCta) {
+          dashPlanCta.dataset.isPro = 'false';
+          dashPlanCta.textContent = 'Mejorar a PRO →';
+        }
+        if (cardPolicyNote) {
+          cardPolicyNote.textContent = 'Facturación segura cifrada. Cancelación con un clic en cualquier momento.';
+        }
       }
 
-      if (dashPlanCta) {
-        dashPlanCta.dataset.isPro = 'true';
-        dashPlanCta.textContent = 'Ir al Terminal de Mercados →';
+      return { isPro, profData, subData };
+    } catch (err) {
+      console.warn('[AEON] Error verificando membresía:', err.message);
+      return { isPro: false, profData: null, subData: null };
+    }
+  }
+
+  // Verificación inicial
+  const initialMembership = await checkAndRenderMembership({ notifyCelebration: false });
+  userIsPro = initialMembership.isPro;
+  if (userIsPro) {
+    proCelebrationShown = true;
+  }
+
+  // Suscripción Realtime a cambios en perfiles y pagos
+  realtimeChannel = supabase
+    .channel(`user-membership-${user.id}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: DB_TABLES.PROFILES,
+        filter: `id=eq.${user.id}`
+      },
+      async (payload) => {
+        if (payload?.new && (payload.new.tier === 'pro' || payload.new.tier === 'institutional')) {
+          userIsPro = true;
+          await checkAndRenderMembership({ notifyCelebration: true });
+          stopPolling();
+        }
       }
-      if (cardPolicyNote) {
-        cardPolicyNote.textContent = 'Membresía activa vinculada a tu cuenta. Acceso total al Terminal y Copiloto IA.';
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: DB_TABLES.PAYMENTS,
+        filter: `user_id=eq.${user.id}`
+      },
+      async (payload) => {
+        if (payload?.new && payload.new.status === 'approved') {
+          userIsPro = true;
+          await checkAndRenderMembership({ notifyCelebration: true });
+          stopPolling();
+        }
       }
-    } else {
-      if (profileBadgeTop) {
-        profileBadgeTop.className = 'plan-badge-display free';
-        profileBadgeTop.textContent = 'Plan Gratuito';
+    )
+    .subscribe();
+
+  // Soft-polling de respaldo
+  function startPolling() {
+    if (pollingTimer || userIsPro) return;
+    pollingTimer = setInterval(async () => {
+      if (userIsPro) {
+        stopPolling();
+        return;
       }
-      if (titaniumCard) {
-        titaniumCard.classList.remove('pro');
+      const res = await checkAndRenderMembership({ notifyCelebration: true });
+      if (res.isPro) {
+        userIsPro = true;
+        stopPolling();
       }
-      if (cardTierDisplay) {
-        cardTierDisplay.textContent = 'PLAN GRATUITO';
-      }
-      if (cardStatusPill) {
-        cardStatusPill.textContent = 'Estándar';
-      }
-      if (cardRenewalLabel) {
-        cardRenewalLabel.textContent = 'ESTADO DE CUENTA';
-      }
-      if (cardRenewalDate) {
-        cardRenewalDate.textContent = 'Acceso Básico';
-      }
-      if (dashPlanCta) {
-        dashPlanCta.dataset.isPro = 'false';
-        dashPlanCta.textContent = 'Mejorar a PRO →';
-      }
-      if (cardPolicyNote) {
-        cardPolicyNote.textContent = 'Facturación segura cifrada. Cancelación con un clic en cualquier momento.';
+    }, 5000);
+  }
+
+  function stopPolling() {
+    if (pollingTimer) {
+      clearInterval(pollingTimer);
+      pollingTimer = null;
+    }
+  }
+
+  window.startProSoftPolling = startPolling;
+
+  if (!userIsPro) {
+    startPolling();
+  }
+
+  // Verificar al reenfocar la ventana
+  window.addEventListener('focus', async () => {
+    if (!userIsPro) {
+      const res = await checkAndRenderMembership({ notifyCelebration: true });
+      if (res.isPro) {
+        userIsPro = true;
+        stopPolling();
       }
     }
-  } catch (err) {
-    console.warn('[AEON] Error verificando membresía:', err.message);
-  }
+  });
+
+  // Limpieza al cerrar o cambiar de página
+  window.addEventListener('beforeunload', () => {
+    stopPolling();
+    if (realtimeChannel) {
+      supabase.removeChannel(realtimeChannel);
+    }
+  });
 
   // ============================================================
   // 4. Guardar Perfil & Preferencias Operativas en user_metadata

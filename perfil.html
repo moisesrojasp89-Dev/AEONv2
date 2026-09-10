@@ -633,13 +633,13 @@
       <!-- PASO 3: Estado de Confirmación / En Proceso -->
       <div id="checkout-view-pending" class="checkout-view">
         <div class="checkout-header text-center">
-          <div class="pending-spinner-icon">⚡</div>
-          <h2 class="checkout-title">¡Orden Registrada con Éxito!</h2>
-          <p class="checkout-subtitle">Hemos alertado automáticamente al equipo de soporte para su verificación prioritaria.</p>
+          <div class="pending-spinner-icon" id="pending-spinner-icon">⚡</div>
+          <h2 class="checkout-title" id="pending-title">¡Orden Registrada con Éxito!</h2>
+          <p class="checkout-subtitle" id="pending-subtitle">Hemos alertado automáticamente al equipo de soporte para su verificación prioritaria.</p>
         </div>
 
         <div class="pending-info-card">
-          <div class="pending-badge-status">🟡 EN REVISIÓN PRIORITARIA</div>
+          <div class="pending-badge-status" id="pending-badge">🟡 EN REVISIÓN PRIORITARIA</div>
           
           <div class="pending-order-meta">
             <div class="meta-row">
@@ -664,7 +664,7 @@
             </div>
           </div>
 
-          <div class="pending-auto-note">
+          <div class="pending-auto-note" id="pending-auto-note">
             <p><strong>✓ No necesitas enviar ningún comprobante.</strong> Nuestro bot notificó a soporte con tus datos para activar tu acceso.</p>
             <p class="pending-time-estimate">Tiempo estimado de activación: <strong>5 a 15 minutos</strong>.</p>
           </div>
