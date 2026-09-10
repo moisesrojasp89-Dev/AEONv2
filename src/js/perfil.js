@@ -142,7 +142,8 @@ function setupCheckoutModal() {
   const WALLET_DATA = {
     'binance': {
       network: 'Binance Pay (Cero Gas Fee)',
-      address: 'Pay ID: 401032901 (m-Alejandro)'
+      address: '401032901',
+      recipient: 'AEON INTELLIGENCE'
     },
     'usdt-trc20': {
       network: 'Red TRON (TRC-20)',
@@ -245,7 +246,7 @@ function setupCheckoutModal() {
 
       const walletInfo = WALLET_DATA[selectedMethod] || WALLET_DATA['binance'];
       if (depositAmountDisplay) depositAmountDisplay.textContent = `$${selectedPrice.toFixed(2)} USDT`;
-      if (depositNetworkDisplay) depositNetworkDisplay.textContent = walletInfo.network;
+      if (depositNetworkDisplay) depositNetworkDisplay.textContent = `${walletInfo.network} (ID: ${walletInfo.address})`;
       if (depositPlanDisplay) depositPlanDisplay.textContent = PLAN_LABELS[selectedPlan] || 'Membresía AEON Pro';
       if (depositAddressInput) depositAddressInput.value = walletInfo.address;
       if (copyHint) copyHint.classList.remove('visible');
@@ -258,12 +259,14 @@ function setupCheckoutModal() {
     btnBackToPlans.addEventListener('click', () => switchCheckoutView('plans'));
   }
 
-  // Copiar dirección con feedback visual
+  // Copiar ID con feedback visual (estrictamente solo números)
   if (btnCopyAddress && depositAddressInput) {
     btnCopyAddress.addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(depositAddressInput.value);
+        const idOnly = (depositAddressInput.value || '401032901').replace(/\D/g, '') || '401032901';
+        await navigator.clipboard.writeText(idOnly);
         if (copyHint) {
+          copyHint.textContent = `¡ID copiado al portapapeles! ✓ (${idOnly})`;
           copyHint.classList.add('visible');
           setTimeout(() => copyHint.classList.remove('visible'), 2500);
         }
@@ -358,20 +361,41 @@ function setupCheckoutModal() {
       if (pendingTxRef) pendingTxRef.textContent = txRef;
       if (pendingTerminalId) pendingTerminalId.textContent = `AEON-${terminalCode}`;
 
-      // Configurar enlace de notificación instantánea
+      // Configurar enlace y copia de notificación instantánea
+      const plainReportText = 
+        `✦ REPORTE DE PAGO AEON PRO ✦\n\n` +
+        `• Orden: ${orderId}\n` +
+        `• Plan: ${PLAN_LABELS[selectedPlan] || selectedPlan}\n` +
+        `• Monto: $${selectedPrice.toFixed(2)} USDT\n` +
+        `• Método: Binance Pay (ID: 401032901 - AEON INTELLIGENCE)\n` +
+        `• Ref / TxID: ${txRef}\n` +
+        `• Terminal ID: AEON-${terminalCode}\n` +
+        `• Usuario: ${currentUserEmail || 'Trader'}\n\n` +
+        `Solicito verificación y activación de mi membresía.`;
+
+      const reportCopyHint = document.getElementById('report-copy-hint');
+      const btnCopyReport = document.getElementById('btn-copy-report');
+
+      const copyReportToClipboard = async () => {
+        try {
+          await navigator.clipboard.writeText(plainReportText);
+          if (reportCopyHint) {
+            reportCopyHint.textContent = '✓ Reporte copiado al portapapeles. Pégalo en el chat de Telegram.';
+            reportCopyHint.classList.add('visible');
+            setTimeout(() => reportCopyHint.classList.remove('visible'), 4000);
+          }
+        } catch (_) {}
+      };
+
+      if (btnCopyReport) {
+        btnCopyReport.onclick = copyReportToClipboard;
+      }
+
       if (btnWhatsappNotify) {
-        const notifyText = encodeURIComponent(
-          `✦ REPORTE DE PAGO AEON PRO ✦\n\n` +
-          `• Orden: ${orderId}\n` +
-          `• Plan: ${PLAN_LABELS[selectedPlan] || selectedPlan}\n` +
-          `• Monto: $${selectedPrice.toFixed(2)} USDT\n` +
-          `• Método: ${WALLET_DATA[selectedMethod]?.network || selectedMethod}\n` +
-          `• Ref / TxID: ${txRef}\n` +
-          `• Terminal ID: AEON-${terminalCode}\n` +
-          `• Usuario: ${currentUserEmail || 'Trader'}\n\n` +
-          `Solicito verificación y activación de mi membresía.`
-        );
-        btnWhatsappNotify.href = `https://t.me/Soporte_AEON?text=${notifyText}`;
+        btnWhatsappNotify.href = 'https://t.me/Soporte_AEON';
+        btnWhatsappNotify.onclick = () => {
+          copyReportToClipboard();
+        };
       }
 
       switchCheckoutView('pending');

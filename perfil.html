@@ -563,19 +563,30 @@
         </div>
 
         <!-- QR Code de Binance Pay -->
-        <div class="deposit-qr-box" style="text-align: center; margin: 1.25rem 0;">
-          <p style="color: var(--text-muted, #94a3b8); font-size: 0.8rem; margin-bottom: 0.75rem;">Escanea con la app de Binance para pagar al instante:</p>
-          <img src="/assets/binance-pay-qr.png" alt="QR Binance Pay — AEON Intelligence" class="deposit-qr-img" style="width: 180px; height: 180px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.08);" />
-          <p style="color: var(--text-muted, #94a3b8); font-size: 0.7rem; margin-top: 0.5rem;">Pay ID: <strong style="color: var(--text-primary, #e2e8f0);">401032901</strong> · m-Alejandro</p>
+        <div class="deposit-qr-box">
+          <p class="deposit-qr-caption">Escanea con la app de Binance para pagar al instante:</p>
+          <div class="deposit-qr-card">
+            <img src="/assets/binance-pay-qr.png" alt="QR Binance Pay — AEON Intelligence" class="deposit-qr-img" />
+          </div>
+          <div class="deposit-id-badge">
+            <span class="deposit-id-label">Binance Pay ID:</span>
+            <span class="deposit-id-number font-mono">401032901</span>
+            <span class="deposit-id-tag">AEON INTELLIGENCE</span>
+          </div>
         </div>
 
         <div class="deposit-address-box">
-          <label class="deposit-input-label">ID de Pago Oficial (Binance Pay):</label>
+          <div class="deposit-input-header">
+            <label class="deposit-input-label" for="deposit-address-input">
+              Binance Pay ID Oficial:
+            </label>
+            <span class="deposit-recipient-tag">Titular: <strong>AEON INTELLIGENCE</strong></span>
+          </div>
           <div class="deposit-copy-wrapper">
-            <input type="text" id="deposit-address-input" class="deposit-input font-mono" readonly value="Pay ID: 401032901 (m-Alejandro)" />
+            <input type="text" id="deposit-address-input" class="deposit-input font-mono" readonly value="401032901" />
             <button type="button" class="btn btn-secondary btn-copy" id="btn-copy-address">Copiar ID</button>
           </div>
-          <span class="copy-success-hint" id="copy-success-hint">¡Copiado al portapapeles! ✓</span>
+          <span class="copy-success-hint" id="copy-success-hint">¡ID copiado al portapapeles! ✓ (401032901)</span>
         </div>
 
         <!-- Campo de Comprobante / TxID -->
@@ -657,9 +668,15 @@
 
         <div class="checkout-action-area">
           <a id="btn-whatsapp-notify" href="https://t.me/Soporte_AEON" target="_blank" rel="noopener" class="btn btn-primary btn-block btn-vip-notify">
-            💬 Notificar a Soporte para Activación VIP Rápida →
+            💬 Abrir Chat con Soporte en Telegram (@Soporte_AEON) →
           </a>
-          <button type="button" id="btn-finish-checkout" class="btn btn-secondary btn-block">
+          <button type="button" id="btn-copy-report" class="btn btn-secondary btn-block" style="margin-top: 0.5rem;">
+            📋 Copiar Reporte de Pago
+          </button>
+          <p id="report-copy-hint" class="copy-success-hint" style="text-align: center; margin: 0.5rem 0 0;">
+            ✓ Reporte copiado al portapapeles. Pégalo en el chat de Telegram.
+          </p>
+          <button type="button" id="btn-finish-checkout" class="btn btn-secondary btn-block" style="margin-top: 0.75rem; background: transparent; border-color: rgba(255,255,255,0.1); color: var(--muted, #94a3b8);">
             Cerrar y Volver al Dashboard
           </button>
         </div>

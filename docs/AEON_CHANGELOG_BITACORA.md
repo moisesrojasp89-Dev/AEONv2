@@ -453,7 +453,7 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 * **Componentes y Arquitectura de la Solución:**
   1. **Modal de Checkout Institucional en 3 Pasos (`perfil.html`):**
      * **Paso 1 (Planes y Clickwrap Legal Obligatorio):** Selector de 3 niveles con insignias visuales dinámicas. Botón de proceder bloqueado mediante checkbox contractual ("chulito") que exige la aceptación sin reservas de los Términos de Servicio, Descargo NFA y Política Estricta de No Reembolso para software digital.
-     * **Paso 2 (Transferencia Cripto con QR):** Visualización del código QR oficial de Binance Pay, Pay ID oficial (`401032901` - m-Alejandro) con botón de copiado de un toque, e ingreso validado del ID de transacción / Order ID de Binance Pay.
+     * **Paso 2 (Transferencia Cripto con QR):** Visualización del código QR oficial de Binance Pay, Pay ID oficial (`401032901` - AEON INTELLIGENCE) con botón de copiado de un toque, e ingreso validado del ID de transacción / Order ID de Binance Pay.
      * **Paso 3 (Confirmación y Fast-Track):** Resumen detallado de la orden en cola prioritaria con Terminal ID y enlace directo prellenado a Telegram de soporte (`@Soporte_AEON`).
   2. **Auditoría de Seguridad y Corrección de 6 Vulnerabilidades Críticas:**
      * **Renovaciones Limpias de Suscripción:** Reemplazo del patrón roto `ON CONFLICT (id) DO NOTHING` por expiración explícita (`status = 'expired'`) antes de la inserción de la nueva vigencia.
