@@ -16,37 +16,53 @@ let currentCategory = 'ALL';
 let searchQuery = '';
 
 /**
- * Renderiza la lista filtrada de tarjetas de mercado.
+ * Comprueba si un activo coincide con la categoría y búsqueda activas.
+ * @param {Object} m
+ * @returns {boolean}
  */
-function renderMarkets() {
-  const container = document.getElementById('markets-grid');
-  const countBadge = document.getElementById('markets-count-badge');
-  if (!container) return;
-
-  let filtered = allMarkets;
-
+function matchesFilters(m) {
   // 1. Filtro por Categoría
   if (currentCategory !== 'ALL') {
-    filtered = filtered.filter(m => {
-      const cat = String(m.category || '').toUpperCase();
-      if (currentCategory === 'METALS' && (cat === 'METALS' || cat === 'METALES')) return true;
-      if (currentCategory === 'ENERGY' && (cat === 'ENERGY' || cat === 'ENERGIA' || cat === 'ENERGÍA')) return true;
-      if (currentCategory === 'CRYPTO' && (cat === 'CRYPTO' || cat === 'CRIPTO')) return true;
-      if (currentCategory === 'INDICES' && (cat === 'INDICES' || cat === 'ÍNDICES')) return true;
-      if (currentCategory === 'FOREX' && (cat === 'FOREX' || cat === 'DIVISAS')) return true;
-      return cat === currentCategory;
-    });
+    const cat = String(m.category || '').toUpperCase();
+    if (currentCategory === 'METALS' && (cat === 'METALS' || cat === 'METALES')) {
+      // Coincide
+    } else if (currentCategory === 'ENERGY' && (cat === 'ENERGY' || cat === 'ENERGIA' || cat === 'ENERGÍA')) {
+      // Coincide
+    } else if (currentCategory === 'CRYPTO' && (cat === 'CRYPTO' || cat === 'CRIPTO')) {
+      // Coincide
+    } else if (currentCategory === 'INDICES' && (cat === 'INDICES' || cat === 'ÍNDICES')) {
+      // Coincide
+    } else if (currentCategory === 'FOREX' && (cat === 'FOREX' || cat === 'DIVISAS')) {
+      // Coincide
+    } else if (cat !== currentCategory) {
+      return false;
+    }
   }
 
   // 2. Filtro por Búsqueda
   if (searchQuery.trim() !== '') {
     const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(m => 
-      String(m.symbol).toLowerCase().includes(q) || 
-      String(m.display_name).toLowerCase().includes(q) ||
-      String(m.category).toLowerCase().includes(q)
-    );
+    const matchesQuery = 
+      String(m.symbol || '').toLowerCase().includes(q) || 
+      String(m.display_name || '').toLowerCase().includes(q) ||
+      String(m.category || '').toLowerCase().includes(q);
+    if (!matchesQuery) return false;
   }
+
+  return true;
+}
+
+/**
+ * Renderiza la lista filtrada de tarjetas de mercado.
+ * @param {Object} [options]
+ * @param {boolean} [options.resetScroll=false] Resetea el scroll al inicio solo si es explícito (ej: al filtrar)
+ */
+function renderMarkets({ resetScroll = false } = {}) {
+  const container = document.getElementById('markets-grid');
+  const countBadge = document.getElementById('markets-count-badge');
+  if (!container) return;
+
+  const filtered = allMarkets.filter(matchesFilters);
 
   if (countBadge) {
     countBadge.textContent = `${filtered.length} Activo${filtered.length === 1 ? '' : 's'}`;
@@ -63,22 +79,63 @@ function renderMarkets() {
     return;
   }
 
+  const prevScrollLeft = container.scrollLeft;
   container.innerHTML = filtered.map(m => renderMarketCard(m)).join('');
-  container.scrollTo({ left: 0, behavior: 'smooth' });
+
+  if (resetScroll) {
+    container.scrollTo({ left: 0, behavior: 'smooth' });
+  } else {
+    container.scrollLeft = prevScrollLeft;
+  }
 }
 
 /**
- * Actualiza un activo en vivo en el estado local y en el DOM.
+ * Actualiza un activo en vivo en el estado local y en el DOM sin resetear la posición del carrusel.
  * @param {Object} updatedAsset
  */
 function handleLiveUpdate(updatedAsset) {
+  if (!updatedAsset || !updatedAsset.symbol) return;
+
   const index = allMarkets.findIndex(m => m.symbol === updatedAsset.symbol);
   if (index !== -1) {
     allMarkets[index] = { ...allMarkets[index], ...updatedAsset };
   } else {
     allMarkets.push(updatedAsset);
   }
-  renderMarkets();
+
+  const assetData = index !== -1 ? allMarkets[index] : updatedAsset;
+  const container = document.getElementById('markets-grid');
+  if (!container) return;
+
+  const existingCard = container.querySelector(`.market-card[data-symbol="${updatedAsset.symbol}"]`);
+  const isMatch = matchesFilters(assetData);
+
+  if (existingCard) {
+    if (isMatch) {
+      // Reemplazo atómico in-place de la tarjeta en el DOM sin alterar scroll
+      const tempWrapper = document.createElement('div');
+      tempWrapper.innerHTML = renderMarketCard(assetData).trim();
+      const newCard = tempWrapper.firstElementChild;
+      if (newCard) {
+        newCard.classList.add('card-live-pulse');
+        existingCard.replaceWith(newCard);
+        setTimeout(() => newCard.classList.remove('card-live-pulse'), 1400);
+      }
+    } else {
+      // Si con el nuevo valor ya no coincide con los filtros, remover suavemente
+      existingCard.remove();
+    }
+  } else if (isMatch) {
+    // Si no existía en pantalla pero ahora cumple el filtro, re-renderizar preservando scroll
+    renderMarkets({ resetScroll: false });
+  }
+
+  // Actualizar contador visible
+  const countBadge = document.getElementById('markets-count-badge');
+  if (countBadge) {
+    const visibleCards = container.querySelectorAll('.market-card').length;
+    countBadge.textContent = `${visibleCards} Activo${visibleCards === 1 ? '' : 's'}`;
+  }
 
   // Mostrar notificación sutil de actualización
   const toast = document.getElementById('market-live-toast');
@@ -120,7 +177,7 @@ async function initMarketsPage() {
   if (!allMarkets || allMarkets.length === 0) {
     allMarkets = fallbackData;
   }
-  renderMarkets();
+  renderMarkets({ resetScroll: true });
 
   // 2. Configurar pestañas de categorías
   const filterPills = document.querySelectorAll('.market-filter-pill');
@@ -130,7 +187,7 @@ async function initMarketsPage() {
       const target = e.currentTarget;
       target.classList.add('active');
       currentCategory = target.dataset.category || 'ALL';
-      renderMarkets();
+      renderMarkets({ resetScroll: true });
     });
   });
 
@@ -139,7 +196,7 @@ async function initMarketsPage() {
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       searchQuery = e.target.value;
-      renderMarkets();
+      renderMarkets({ resetScroll: true });
     });
   }
 

@@ -493,17 +493,20 @@
   }
 
   body.markets-body-locked {
-    overflow: hidden;
-    height: 100vh;
-    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    height: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .markets-page-container {
-    padding: 0.35rem 0.55rem;
-    height: calc(100dvh - var(--header-h, 57px));
+    padding: 0.5rem 0.65rem 4rem;
+    min-height: calc(100dvh - var(--header-h, 57px));
+    height: auto;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .markets-hero-header {
@@ -564,15 +567,13 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    flex: 0 0 auto;
-    min-height: 0;
     align-items: stretch;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    gap: 0.65rem;
-    padding: 0.1rem 0.1rem 0.4rem;
+    gap: 0.75rem;
+    padding: 0.25rem 0.25rem 1rem;
     scrollbar-width: none;
   }
 
@@ -581,17 +582,18 @@
   }
 
   .market-card {
-    flex: 0 0 86vw;
-    min-width: 86vw;
-    max-width: var(--card-max-w, 360px);
+    flex: 0 0 88vw;
+    min-width: 88vw;
+    max-width: 380px;
     scroll-snap-align: center;
     height: auto;
+    min-height: min-content;
     align-self: stretch;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0.65rem 0.75rem;
-    gap: 0.4rem;
+    padding: 0.85rem 0.95rem;
+    gap: 0.6rem;
     border-radius: var(--radius-md);
     box-shadow: 0 8px 24px var(--shadow);
   }
@@ -662,9 +664,9 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0.45rem 0.6rem;
-    font-size: 0.74rem;
-    line-height: 1.35;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
   }
 
   .market-thesis-label {
@@ -673,13 +675,13 @@
   }
 
   .market-macro-text {
-    font-size: 0.74rem;
-    margin-bottom: 0.2rem;
+    font-size: 0.76rem;
+    margin-bottom: 0.25rem;
   }
 
   .market-tech-text {
-    font-size: 0.7rem;
-    margin-bottom: 0.3rem;
+    font-size: 0.72rem;
+    margin-bottom: 0.35rem;
   }
 
   .market-tags-row {
@@ -689,11 +691,26 @@
 
   .market-card-action {
     margin-top: auto;
-    padding-top: 0.4rem;
+    padding-top: 0.5rem;
   }
 
-  /* Solo ocultar footer en la terminal de mercados de pantalla completa */
   body.markets-body-locked .footer {
-    display: none;
+    display: block;
   }
+}
+
+/* ── Animación de Pulso en Vivo al Actualizar Activos (In-Place) ── */
+@keyframes market-card-pulse {
+  0% {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.45);
+  }
+  100% {
+    border-color: var(--border-2);
+    box-shadow: 0 6px 20px -2px var(--shadow);
+  }
+}
+
+.card-live-pulse {
+  animation: market-card-pulse 1.4s ease-out;
 }

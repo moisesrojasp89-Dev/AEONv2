@@ -10,14 +10,75 @@
 }
 
 .education-grid {
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 1.15rem;
+  padding: 0.5rem 0.25rem 1.25rem 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+.education-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.education-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.education-grid::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: var(--radius-pill);
+}
+
+.education-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-border);
+}
+
+/* Playbooks Navigation Buttons (Desktop) */
+.playbooks-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.playbooks-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.playbooks-nav-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.playbooks-nav-btn:active {
+  transform: translateY(0);
 }
 
 /* ------------------------------------------------------------
    Interactive Education Cards
    ------------------------------------------------------------ */
 .edu-card {
+  flex: 0 0 310px;
+  min-width: 300px;
+  max-width: 320px;
+  scroll-snap-align: start;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);

@@ -338,6 +338,22 @@ function initEducationInteractions() {
       }
     }
   });
+
+  // Flechas de navegación para desplazamiento horizontal suave
+  const prevBtn = document.getElementById('playbooks-prev-btn');
+  const nextBtn = document.getElementById('playbooks-next-btn');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      container.scrollBy({ left: -330, behavior: 'smooth' });
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      container.scrollBy({ left: 330, behavior: 'smooth' });
+    });
+  }
 }
 
 /**
