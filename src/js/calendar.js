@@ -245,6 +245,12 @@ function renderEvents() {
 
   const mappedEvents = filtered.map((dbEvt) => {
     const timeInfo = formatLocalTime(dbEvt.event_time);
+    const isPast = new Date(dbEvt.event_time) < new Date();
+    let actualVal = dbEvt.actual;
+    if (!actualVal) {
+      const isQualitative = !dbEvt.forecast || dbEvt.forecast === '—' || dbEvt.forecast === '-';
+      actualVal = (isPast && isQualitative) ? 'Publicado' : 'Pendiente';
+    }
     return {
       date: timeInfo.date,
       time: timeInfo.time,
@@ -253,7 +259,7 @@ function renderEvents() {
       assets: [dbEvt.country],
       impact: String(dbEvt.impact || '').toUpperCase(),
       event_name: dbEvt.event_name,
-      actual: dbEvt.actual || 'Pendiente',
+      actual: actualVal,
       forecast: dbEvt.forecast || '—',
       previous: dbEvt.previous || '—',
     };
