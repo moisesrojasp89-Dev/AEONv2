@@ -247,6 +247,7 @@ export async function initChatWidget() {
 
   document.body.appendChild(root);
   bindChatEvents();
+  initHarnessSentinelListener();
   await refreshChatView();
 }
 
@@ -354,6 +355,10 @@ export function toggleChatPanel(forceState) {
   isChatOpen = typeof forceState === 'boolean' ? forceState : !isChatOpen;
 
   if (isChatOpen) {
+    const fab = document.getElementById('chat-fab-toggle');
+    if (fab) fab.classList.remove('has-alert');
+    dismissActiveCallout();
+
     panel.classList.add('active');
     panel.setAttribute('aria-hidden', 'false');
     const textarea = document.getElementById('chat-textarea-input');
@@ -777,3 +782,218 @@ function scrollToBottom() {
     bodyArea.scrollTop = bodyArea.scrollHeight;
   }
 }
+
+// ==============================================================================
+// ── Sentinel Tactical Realtime Harness (Paso 5) ──
+// ==============================================================================
+const seenAlertIds = new Set();
+let harnessRealtimeChannel = null;
+let activeCalloutTimer = null;
+
+/**
+ * Genera un sonido sutil de radar cyber con WebAudio nativo (<0.35s).
+ */
+function playTacticalChime() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+
+    // Tono base (880 Hz)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(880, now);
+    gain1.gain.setValueAtTime(0.08, now);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.18);
+
+    // Tono armónico superior (1760 Hz)
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1760, now + 0.08);
+    gain2.gain.setValueAtTime(0.06, now + 0.08);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.08);
+    osc2.stop(now + 0.32);
+  } catch (_) {
+    // Silencio si las políticas del navegador restringen audio sin interacción previa
+  }
+}
+
+/**
+ * Cierra y remueve cualquier Callout flotante activo.
+ */
+function dismissActiveCallout() {
+  if (activeCalloutTimer) {
+    clearTimeout(activeCalloutTimer);
+    activeCalloutTimer = null;
+  }
+  const callout = document.getElementById('chat-harness-callout');
+  if (callout) {
+    callout.classList.add('dismissing');
+    setTimeout(() => callout.remove(), 220);
+  }
+}
+
+/**
+ * Inserta una tarjeta de alerta táctica directamente dentro de la conversación del chat.
+ */
+function appendTacticalAlertCard(alertData) {
+  const bodyArea = document.getElementById('chat-body-area');
+  if (!bodyArea) return;
+
+  const isBuyside = alertData.trigger_type?.includes('BUY') || alertData.market_data?.poi?.type === 'BUYSIDE_POI';
+  const timeStr = new Date(alertData.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const card = document.createElement('div');
+  card.className = 'chat-tactical-alert-card';
+  card.innerHTML = `
+    <div class="chat-tactical-alert-header">
+      <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA CENTINELA</span>
+      <span class="callout-time">${escapeHTML(timeStr)}</span>
+    </div>
+    <div class="callout-title" style="margin-bottom: 0.35rem;">
+      <strong>${escapeHTML(alertData.display_name || alertData.symbol)}</strong>
+      <span class="callout-price">$${escapeHTML(String(alertData.current_price))}</span>
+    </div>
+    <p class="chat-bot-text" style="font-size: 0.82rem; margin: 0 0 0.6rem 0; line-height: 1.45;">
+      ${escapeHTML(alertData.llm_verdict || '')}
+    </p>
+    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+      <button type="button" class="chat-prompt-pill" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" data-prompt="¿Cuál es la invalidación y el ratio riesgo/beneficio para este setup en ${escapeHTML(alertData.symbol)}?">
+        Auditar Setup
+      </button>
+    </div>
+  `;
+
+  const btnAudit = card.querySelector('.chat-prompt-pill');
+  btnAudit?.addEventListener('click', () => {
+    const prompt = btnAudit.getAttribute('data-prompt');
+    if (prompt) openWithPrompt(prompt);
+  });
+
+  bodyArea.appendChild(card);
+  scrollToBottom();
+}
+
+/**
+ * Procesa la recepción de una alerta táctica en tiempo real.
+ */
+function handleTacticalAlert(alertData) {
+  if (!alertData || !alertData.event_id) return;
+  if (seenAlertIds.has(alertData.event_id)) return;
+  seenAlertIds.add(alertData.event_id);
+
+  // Verificar si las alertas están silenciadas temporalmente (15m snooze)
+  const snoozeUntil = parseInt(localStorage.getItem('aeon_snooze_alerts_until') || '0', 10);
+  if (Date.now() < snoozeUntil) return;
+
+  // Emitir sonido institucional
+  playTacticalChime();
+
+  const fab = document.getElementById('chat-fab-toggle');
+
+  if (isChatOpen) {
+    // Si el chat está abierto, agregar la tarjeta directamente al flujo
+    appendTacticalAlertCard(alertData);
+  } else {
+    // Si el chat está cerrado, activar pulso neón en FAB y mostrar Callout flotante
+    if (fab) fab.classList.add('has-alert');
+
+    dismissActiveCallout();
+
+    const isBuyside = alertData.trigger_type?.includes('BUY') || alertData.market_data?.poi?.type === 'BUYSIDE_POI';
+    const timeStr = new Date(alertData.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const callout = document.createElement('div');
+    callout.className = 'chat-harness-callout';
+    callout.id = 'chat-harness-callout';
+    callout.innerHTML = `
+      <div class="callout-header">
+        <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA CENTINELA</span>
+        <span class="callout-time">${escapeHTML(timeStr)}</span>
+        <button type="button" class="callout-btn-close" id="callout-btn-dismiss" title="Cerrar aviso">✕</button>
+      </div>
+      <div class="callout-body">
+        <div class="callout-title">
+          <span>${escapeHTML(alertData.display_name || alertData.symbol)}</span>
+          <span class="callout-price">$${escapeHTML(String(alertData.current_price))}</span>
+        </div>
+        <p class="callout-verdict">${escapeHTML(alertData.llm_verdict || '')}</p>
+      </div>
+      <div class="callout-actions">
+        <button type="button" class="callout-btn-action" id="callout-btn-open">Abrir Copilot Táctico</button>
+        <button type="button" class="callout-btn-snooze" id="callout-btn-snooze">Silenciar 15m</button>
+      </div>
+    `;
+
+    document.body.appendChild(callout);
+
+    // Conectar botones del Callout
+    callout.querySelector('#callout-btn-dismiss')?.addEventListener('click', () => {
+      dismissActiveCallout();
+    });
+
+    callout.querySelector('#callout-btn-snooze')?.addEventListener('click', () => {
+      localStorage.setItem('aeon_snooze_alerts_until', String(Date.now() + 15 * 60 * 1000));
+      dismissActiveCallout();
+      if (fab) fab.classList.remove('has-alert');
+    });
+
+    callout.querySelector('#callout-btn-open')?.addEventListener('click', () => {
+      dismissActiveCallout();
+      if (fab) fab.classList.remove('has-alert');
+      toggleChatPanel(true);
+      appendTacticalAlertCard(alertData);
+      const textarea = document.getElementById('chat-textarea-input');
+      if (textarea) {
+        textarea.value = `¿Cuál es el plan de invalidación y el ratio riesgo/beneficio para este setup en ${alertData.symbol}?`;
+        textarea.dispatchEvent(new Event('input'));
+        textarea.focus();
+      }
+    });
+
+    // Auto-cierre del toast a los 25 segundos
+    activeCalloutTimer = setTimeout(() => {
+      dismissActiveCallout();
+    }, 25000);
+  }
+}
+
+/**
+ * Inicia la suscripción a Supabase Realtime (Broadcast + Postgres Changes).
+ */
+function initHarnessSentinelListener() {
+  if (harnessRealtimeChannel) return;
+
+  harnessRealtimeChannel = supabase
+    .channel('aeon_harness_alerts')
+    .on('broadcast', { event: 'tactical_alert' }, (msg) => {
+      if (msg?.payload) {
+        handleTacticalAlert(msg.payload);
+      }
+    })
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'trading_signal_events' },
+      (payload) => {
+        if (payload?.new) {
+          handleTacticalAlert(payload.new);
+        }
+      }
+    )
+    .subscribe();
+}
+
