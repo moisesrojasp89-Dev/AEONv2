@@ -57,6 +57,16 @@ DB_HEADERS = {
     'Prefer': 'resolution=merge-duplicates'
 }
 
+# ==============================================================================
+# Módulo Centinela Cuantitativo (AEON Active Copilot Harness — Paso 1 y 2)
+# ==============================================================================
+try:
+    if ROOT_DIR not in sys.path:
+        sys.path.insert(0, ROOT_DIR)
+    from scripts.quant.harness_sentinel import evaluate_tactical_triggers
+except Exception as _sentinel_import_err:
+    evaluate_tactical_triggers = None
+
 VALID_MARKET_COLUMNS = {
     'symbol', 'category', 'display_name', 'session_origin', 'current_price',
     'change_24h_pct', 'bias', 'bias_score', 'support_1', 'support_2',
@@ -550,6 +560,15 @@ def sync_markets_loop():
             asset.update(metrics)
             state['prices_cache'][sym] = price
             state['quant_records'][sym] = metrics
+
+            # AEON Active Copilot Harness — Centinela Cuantitativo (Paso 1 y 2)
+            if evaluate_tactical_triggers and isinstance(metrics.get('cited_key_levels'), dict):
+                try:
+                    evt = evaluate_tactical_triggers(sym, price, metrics, SUPABASE_URL, SUPABASE_KEY)
+                    if evt:
+                        log("SENTINEL", "🎯", f"Gatillo táctico activado para {sym}: {evt['trigger_type']} @ {price:,.2f}")
+                except Exception:
+                    pass
 
         cleaned = {k: v for k, v in asset.items() if k in VALID_MARKET_COLUMNS}
         updated_records.append(cleaned)
