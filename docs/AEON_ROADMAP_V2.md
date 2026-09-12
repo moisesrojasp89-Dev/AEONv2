@@ -128,7 +128,8 @@ FASE 9: High Reliability & Global Scale ──────────► [⏳ P
 | **6.9** | **Macro Liquidez Fed HUD (US10Y, US02Y, Fed Funds, RRP, WALCL)** | ✅ **Completado** | `macroLiquidityHUD.js`, `macroLiquidityService.js`, `aeon_autonomous_engine.py`, tabla `macro_liquidity`, Playbook #5 |
 | **6.10**| **Expansión a 17 Activos, Carrusel Playbooks & UX In-Place** | ✅ **Completado** | Ingesta batch XAG/USOIL/ETH, `.education-grid` carrusel horizontal con flechas `←/→`, scroll vertical libre en móvil y reemplazo in-place en ticks |
 | **6.11**| **Active Copilot Harness & Centinela Cuántico** | ✅ **Completado** | `scripts/quant/harness_sentinel.py`, `00010_active_copilot_harness_events_and_journal.sql`, Edge Function `aeon-copilot-event`, `chatWidget.js` (WebAudio, snooze, persistencia, embudo Free vs PRO) |
-| **6.12**| **Pasarela FIAT Stripe Opcional (Tarjetas de Crédito)** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK, Customer Portal |
+| **6.12**| **Optimización Rendimiento & Zero-Waterfall Resiliente** | ✅ **Completado** | `navbar.js` (requestIdleCallback), `main.js` (despacho anticipado), `markets.js` (L1 TTL 60s), `calendar.js` (badges honestos Stale/Fresh) |
+| **6.13**| **Pasarela FIAT Stripe Opcional (Tarjetas de Crédito)** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK, Customer Portal |
 
 ---
 

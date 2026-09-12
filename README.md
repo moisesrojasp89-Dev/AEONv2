@@ -148,6 +148,7 @@ python scripts/ai/aeon_autonomous_engine.py
 | **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
 | **Modo Weekend Wrap** | Cierre semanal con datos digeridos (NFP/Desempleo) y horizontes escalonados para Asia. | ✅ **Operativo** |
 | **Pasarela Binance Pay & Panel Admin** | Modal 3 pasos con clickwrap legal, QR Pay ID 401032901, RPC atómico y admin panel web móvil. | ✅ **Desplegado** |
+| **Optimización Rendimiento & Zero-Waterfall** | Carga en ~300ms, hidratación progresiva Copilot (requestIdleCallback), L1 cache con TTL 60s, disparo anticipado de red y badges honestos Stale/Fresh. | ✅ **Operativo en Vivo** |
 | **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
 
 ---

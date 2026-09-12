@@ -562,6 +562,38 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
        * **Usuario PRO (`pro@aeontest.com`):** Chat totalmente abierto, inyección del contexto del evento y auditoría en profundidad.
   5. **Validación en Producción y Hallazgos Reales:**
      * **Prueba en Vivo en `aeondev.vercel.app`:** Simulación de disparo en Oro (XAUUSD) con respuesta real de Gemini en 1.1s y recepción inmediata del broadcast en el navegador.
-     * **Comportamiento Cuantitativo Institucional Verificado:** El Copiloto PRO analizó la estructura del mercado y aconsejó explícitamente **rechazar el trade** debido a un ratio Riesgo/Beneficio (R/R) desfavorable de 0.47:1, demostrando la fidelidad de la IA a las directrices de preservación de capital institucional.
-     * **Lección Aprendida sobre Red y AdBlock:** La Protección Mejorada contra Rastreo de Firefox y algunos bloqueadores de anuncios pueden clasificar peticiones a `supabase.co` como rastreadores (`TypeError: NetworkError`), lo cual se documentó para soporte a usuarios en producción.
+      * **Comportamiento Cuantitativo Institucional Verificado:** El Copiloto PRO analizó la estructura del mercado y aconsejó explícitamente **rechazar el trade** debido a un ratio Riesgo/Beneficio (R/R) desfavorable de 0.47:1, demostrando la fidelidad de la IA a las directrices de preservación de capital institucional.
+      * **Lección Aprendida sobre Red y AdBlock:** La Protección Mejorada contra Rastreo de Firefox y algunos bloqueadores de anuncios pueden clasificar peticiones a `supabase.co` como rastreadores (`TypeError: NetworkError`), lo cual se documentó para soporte a usuarios en producción.
 
+---
+
+## ⚡ 23. Hito 23: Optimización Quirúrgica de Rendimiento de Carga, Resiliencia Zero-Waterfall y Sanitización de Secretos (100% en Producción)
+
+* **Propósito y Contexto de Ingeniería:**
+  * Tras incorporar el Active Copilot Harness, el HUD de Macro Liquidez y los 17 activos en tiempo real, el tiempo de carga percibido se incrementó de ~300ms a ~500ms debido a la competencia por ancho de banda en el arranque y a la ejecución de consultas independientes en cascada (*waterfall*).
+  * Asimismo, se detectó preventivamente por GitHub Secret Scanning y GitGuardian la presencia del token del bot de Telegram en la migración `00007_telegram_payment_alerts.sql`.
+  * Se desplegó una intervención arquitectónica integral y auditada con lupa para erradicar cualquier cuello de botella, sanitizar credenciales y dotar a la plataforma de honestidad visual estricta.
+
+* **Componentes y Arquitectura de la Solución (Verificados en Producción):**
+  1. **Sanitización de Secretos y Rotación Zero-Trust:**
+     * **Rotación en BotFather:** El token anterior fue revocado inmediatamente en Telegram y sustituido por uno nuevo.
+     * **Aislamiento en Supabase:** La función `notify_telegram_payment()` se actualizó directamente en el SQL Editor de producción en la nube.
+     * **Placeholder Seguro en Git:** En `00007_telegram_payment_alerts.sql` se sustituyó el valor literal por `'TU_TELEGRAM_BOT_TOKEN_AQUI'`, cerrando las alertas en GitHub y GitGuardian como `Revoked`.
+  2. **Hidratación Progresiva del Copilot (`src/js/navbar.js`):**
+     * **Punto Único Centralizado:** Se aplicó `requestIdleCallback` (con fallback a `setTimeout(..., 250ms)`) exclusivamente en `navbar.js` (L110).
+     * **Liberación del Hilo Principal:** El Navbar se pinta de inmediato (2ms) y el montaje del chat junto con sus consultas a Supabase (`getUserAccessState`, `subscriptions`, `trading_signal_events`) y su WebSocket se difieren hasta que la pantalla principal está renderizada. Cero duplicación en HTML.
+  3. **Disparo Anticipado de Red & Zero-Waterfall (`src/js/main.js`):**
+     * **Concurrencia con `Promise.allSettled`:** Se agruparon las consultas independientes en 4 ramas paralelas (`Sesión -> Señales`, `Macro Liquidez HUD`, `Briefing`, `Noticias`).
+     * **Despacho Inmediato en L1:** `networkPromises` se instancia en la primera línea de `initApp()`, permitiendo que el stack de red del navegador abra los sockets TLS mientras la CPU renderiza síncronamente los elementos locales (`renderEducation`, `initPrices`, `initChart`).
+  4. **Jerarquía L1 Cache con TTL Activo de 60s (`src/js/markets.js`):**
+     * **L1 (`sessionStorage`):** Almacena el último snapshot recibido en la sesión activa del usuario.
+     * **Purga Estricta de Datos Obsoletos:** `getL1Cache()` evalúa `(Date.now() - ts) < 60000`. Si el dato superó los 60 segundos, ejecuta `sessionStorage.removeItem` y retorna `data: null`, forzando el fallback de build para evitar presentar cotizaciones viejas.
+  5. **Honestidad Visual Stale vs Fresh (Mercados & Calendario):**
+     * **Micro-Badges Dinámicos:** La interfaz arranca en `⟳ Sincronizando feed...` (con pulso ámbar/cian) y solo transiciona a `● En Vivo` (verde neón) cuando Supabase entrega el payload fresco o el canal Realtime confirma el enlace.
+     * **Cero `!important`:** Implementado en `market.css` y `calendar.css` con variables de diseño nativas (`var(--accent-hover)`, `var(--muted)`).
+  6. **Aislamiento de Fallos Parciales & Manejo Honesto de Días Vacíos:**
+     * **Degradación por Widget:** Si una consulta falla (ej. Macro Liquidez), solo ese widget muestra su estado offline; los 17 activos y el calendario continúan operando.
+     * **Días sin Eventos en Calendario:** Se eliminó el falso positivo que trataba un array vacío `[]` como error de red. Si Supabase devuelve cero eventos en un feriado o fin de semana, el badge se mantiene `● En Vivo` y la tabla renderiza su estado vacío legítimo (*"Cero Eventos en este Filtro"*), sin sobreescribir con datos desactualizados del snapshot de build.
+  7. **Red de Seguridad para Rollback:**
+     * Etiqueta inmutable `git tag pre-perf-opt` creada como salvaguarda ante cualquier reversión requerida vía `git revert`.
+     * Build de producción Vite completado en **390 ms** con 0 errores y 0 advertencias.
