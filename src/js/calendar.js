@@ -243,7 +243,36 @@ function renderEvents() {
     return;
   }
 
-  const mappedEvents = filtered.map((dbEvt) => {
+  // Deduplicación defensiva en capa de presentación:
+  // Previene que colisiones imprevistas en BD generen filas repetidas en la UI
+  const seenKeys = new Map();
+  const uniqueFiltered = [];
+
+  for (const dbEvt of filtered) {
+    const timeKey = dbEvt.event_time ? dbEvt.event_time.substring(0, 16) : '';
+    const currKey = (dbEvt.country || '').toUpperCase().trim();
+    const normName = (dbEvt.event_name || '')
+      .toLowerCase()
+      .replace(/\s*\([^)]*\)/g, '')
+      .replace(/[^a-z0-9]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const dedupeKey = `${timeKey}_${currKey}_${normName}`;
+
+    if (!seenKeys.has(dedupeKey)) {
+      seenKeys.set(dedupeKey, uniqueFiltered.length);
+      uniqueFiltered.push(dbEvt);
+    } else {
+      const existingIdx = seenKeys.get(dedupeKey);
+      const existing = uniqueFiltered[existingIdx];
+      const hasMoreData = (dbEvt.actual && !existing.actual) || (dbEvt.forecast && !existing.forecast);
+      if (hasMoreData) {
+        uniqueFiltered[existingIdx] = dbEvt;
+      }
+    }
+  }
+
+  const mappedEvents = uniqueFiltered.map((dbEvt) => {
     const timeInfo = formatLocalTime(dbEvt.event_time);
     const isPast = new Date(dbEvt.event_time) < new Date();
     let actualVal = dbEvt.actual;

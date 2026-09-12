@@ -1,41 +1,5 @@
 [
   {
-    "id": "47981805-ca24-44b1-bc93-094a360248dd",
-    "event_time": "2026-08-02T06:30:00+00:00",
-    "country": "CHF",
-    "event_name": "CPI m/m",
-    "impact": "Medium",
-    "actual": "-0.1%",
-    "forecast": "-0.1%",
-    "previous": "0.0%",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
-    "id": "527da501-5d58-44c6-89d5-ff3564bb6aa8",
-    "event_time": "2026-08-02T14:00:00+00:00",
-    "country": "USD",
-    "event_name": "ISM Manufacturing PMI",
-    "impact": "High",
-    "actual": "55.6",
-    "forecast": "54.0",
-    "previous": "53.3",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
-    "id": "8bc0da6d-f55a-41c7-a94f-67cddecf86a0",
-    "event_time": "2026-08-02T14:00:00+00:00",
-    "country": "USD",
-    "event_name": "ISM Manufacturing Prices",
-    "impact": "Medium",
-    "actual": "71.1",
-    "forecast": "70.0",
-    "previous": "73.0",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
     "id": "c4f9c8fd-0df9-4969-8539-ed11e7e7980c",
     "event_time": "2026-08-03T06:30:00+00:00",
     "country": "CHF",
@@ -838,54 +802,6 @@
     "previous": null,
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-28T15:34:48.173141+00:00"
-  },
-  {
-    "id": "2bc10b10-5f82-4d96-bde5-936917d7ecdd",
-    "event_time": "2026-08-16T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "CPI m/m",
-    "impact": "High",
-    "actual": "0.5%",
-    "forecast": "0.4%",
-    "previous": "-0.4%",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
-    "id": "8c1633d6-5e24-492c-bde5-ecca343fcc3e",
-    "event_time": "2026-08-16T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Median CPI y/y",
-    "impact": "High",
-    "actual": "2.0%",
-    "forecast": "2.0%",
-    "previous": "1.9%",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
-    "id": "e050d4bb-2f58-44e9-9b62-6c301cae32c3",
-    "event_time": "2026-08-16T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Trimmed CPI y/y",
-    "impact": "High",
-    "actual": "1.9%",
-    "forecast": "1.8%",
-    "previous": "1.9%",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
-  },
-  {
-    "id": "64fff152-d2c6-4432-9ccd-a9762f0becb2",
-    "event_time": "2026-08-16T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Common CPI y/y",
-    "impact": "Medium",
-    "actual": "2.7%",
-    "forecast": "2.5%",
-    "previous": "2.6%",
-    "created_at": "2026-08-30T23:09:35.932742+00:00",
-    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "ec70ae47-b492-4c96-9681-5029ce11b98d",
