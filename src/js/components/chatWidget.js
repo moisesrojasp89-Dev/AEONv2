@@ -495,6 +495,9 @@ function renderConversationHistory() {
         </div>
       </div>
     `;
+    if (latestActiveAlert) {
+      appendTacticalAlertCard(latestActiveAlert);
+    }
     return;
   }
 
@@ -789,6 +792,15 @@ function scrollToBottom() {
 const seenAlertIds = new Set();
 let harnessRealtimeChannel = null;
 let activeCalloutTimer = null;
+let latestActiveAlert = null;
+
+/**
+ * Formatea de forma segura sintaxis Markdown de negrita (**texto**) a <strong>texto</strong>.
+ */
+function formatMarkdownBold(str) {
+  if (!str) return '';
+  return escapeHTML(str).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
 
 /**
  * Genera un sonido sutil de radar cyber con WebAudio nativo (<0.35s).
@@ -854,11 +866,18 @@ function appendTacticalAlertCard(alertData) {
   const bodyArea = document.getElementById('chat-body-area');
   if (!bodyArea) return;
 
+  const eventId = alertData.event_id || '';
+  if (eventId && bodyArea.querySelector(`.chat-tactical-alert-card[data-event-id="${eventId}"]`)) {
+    return;
+  }
+
   const isBuyside = alertData.trigger_type?.includes('BUY') || alertData.market_data?.poi?.type === 'BUYSIDE_POI';
   const timeStr = new Date(alertData.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   const card = document.createElement('div');
   card.className = 'chat-tactical-alert-card';
+  if (eventId) card.setAttribute('data-event-id', eventId);
+
   card.innerHTML = `
     <div class="chat-tactical-alert-header">
       <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA CENTINELA</span>
@@ -869,7 +888,7 @@ function appendTacticalAlertCard(alertData) {
       <span class="callout-price">$${escapeHTML(String(alertData.current_price))}</span>
     </div>
     <p class="chat-bot-text" style="font-size: 0.82rem; margin: 0 0 0.6rem 0; line-height: 1.45;">
-      ${escapeHTML(alertData.llm_verdict || '')}
+      ${formatMarkdownBold(alertData.llm_verdict || '')}
     </p>
     <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
       <button type="button" class="chat-prompt-pill" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" data-prompt="¿Cuál es la invalidación y el ratio riesgo/beneficio para este setup en ${escapeHTML(alertData.symbol)}?">
@@ -889,12 +908,38 @@ function appendTacticalAlertCard(alertData) {
 }
 
 /**
+ * Carga la última alerta activa reciente (últimas 2 horas) de la base de datos al arrancar.
+ */
+async function loadLatestActiveAlert() {
+  try {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    const { data } = await supabase
+      .from('trading_signal_events')
+      .select('*')
+      .eq('status', 'active')
+      .gte('created_at', twoHoursAgo)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (data) {
+      latestActiveAlert = data;
+      const bodyArea = document.getElementById('chat-body-area');
+      if (bodyArea && isChatOpen) {
+        appendTacticalAlertCard(data);
+      }
+    }
+  } catch (_) {}
+}
+
+/**
  * Procesa la recepción de una alerta táctica en tiempo real.
  */
 function handleTacticalAlert(alertData) {
   if (!alertData || !alertData.event_id) return;
   if (seenAlertIds.has(alertData.event_id)) return;
   seenAlertIds.add(alertData.event_id);
+  latestActiveAlert = alertData;
 
   // Verificar si las alertas están silenciadas temporalmente (15m snooze)
   const snoozeUntil = parseInt(localStorage.getItem('aeon_snooze_alerts_until') || '0', 10);
@@ -931,7 +976,7 @@ function handleTacticalAlert(alertData) {
           <span>${escapeHTML(alertData.display_name || alertData.symbol)}</span>
           <span class="callout-price">$${escapeHTML(String(alertData.current_price))}</span>
         </div>
-        <p class="callout-verdict">${escapeHTML(alertData.llm_verdict || '')}</p>
+        <p class="callout-verdict">${formatMarkdownBold(alertData.llm_verdict || '')}</p>
       </div>
       <div class="callout-actions">
         <button type="button" class="callout-btn-action" id="callout-btn-open">Abrir Copilot Táctico</button>
@@ -977,6 +1022,9 @@ function handleTacticalAlert(alertData) {
  */
 function initHarnessSentinelListener() {
   if (harnessRealtimeChannel) return;
+
+  // Cargar alerta activa previa si la hay
+  loadLatestActiveAlert();
 
   harnessRealtimeChannel = supabase
     .channel('aeon_harness_alerts')
