@@ -146,40 +146,68 @@ function handleLiveUpdate(updatedAsset) {
   }
 }
 
+const L1_STORAGE_KEY = 'aeon_markets_l1';
+const L1_TS_KEY = 'aeon_markets_l1_ts';
+const L1_TTL_MS = 60 * 1000; // 60s TTL de frescura estricta
+
+function getL1Cache() {
+  try {
+    const raw = sessionStorage.getItem(L1_STORAGE_KEY);
+    const ts = parseInt(sessionStorage.getItem(L1_TS_KEY) || '0', 10);
+    if (raw && ts) {
+      const isFresh = (Date.now() - ts) < L1_TTL_MS;
+      if (isFresh) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return { data: parsed, isFresh: true };
+        }
+      } else {
+        // TTL expirado (>60s): invalidar explícitamente para evitar pintar precios obsoletos
+        sessionStorage.removeItem(L1_STORAGE_KEY);
+        sessionStorage.removeItem(L1_TS_KEY);
+      }
+    }
+  } catch (_) {}
+  return { data: null, isFresh: false };
+}
+
+function setL1Cache(data) {
+  try {
+    sessionStorage.setItem(L1_STORAGE_KEY, JSON.stringify(data));
+    sessionStorage.setItem(L1_TS_KEY, String(Date.now()));
+  } catch (_) {}
+}
+
+function setFeedStatus(status) {
+  const pill = document.querySelector('.markets-hero-pill');
+  if (!pill) return;
+  if (status === 'syncing') {
+    pill.innerHTML = '<span class="pulse-dot syncing"></span> Sincronizando feed...';
+  } else if (status === 'live') {
+    pill.innerHTML = '<span class="pulse-dot"></span> 17 Activos en Vivo';
+  } else if (status === 'offline') {
+    pill.innerHTML = '<span class="pulse-dot offline"></span> Modo Snapshot (Offline)';
+  }
+}
+
 /**
  * Inicialización de eventos y datos.
  */
 async function initMarketsPage() {
   const container = document.getElementById('markets-grid');
-  if (container) {
-    container.innerHTML = `
-      <div class="markets-loading-state font-mono">
-        <div class="spinner"></div>
-        <p>Cargando inteligencia de 17 mercados globales...</p>
-      </div>
-    `;
-  }
 
-  // 1. Inicializar navegación y sesión
+  // 1. Inicializar navegación global (con Copilot diferido de fondo)
   initNavbar();
-  try {
-    await checkSession();
-  } catch (err) {
-    console.error('[AEON Markets] Error al resolver sesión:', err);
-  }
 
-  // 2. Cargar datos iniciales
-  try {
-    allMarkets = await marketsService.getMarketIntelligence();
-  } catch (e) {
-    allMarkets = fallbackData;
-  }
-  if (!allMarkets || allMarkets.length === 0) {
-    allMarkets = fallbackData;
-  }
+  // 2. Render instantáneo con datos locales L1/L2 (0ms - FCP inmediato sin spinner)
+  const l1 = getL1Cache();
+  allMarkets = l1.data || fallbackData;
   renderMarkets({ resetScroll: true });
 
-  // 2. Configurar pestañas de categorías
+  // Señal visual honesta: notificar al trader que se está sincronizando con Supabase
+  setFeedStatus('syncing');
+
+  // 3. Configurar pestañas de categorías
   const filterPills = document.querySelectorAll('.market-filter-pill');
   filterPills.forEach(pill => {
     pill.addEventListener('click', (e) => {
@@ -191,7 +219,7 @@ async function initMarketsPage() {
     });
   });
 
-  // 3. Configurar buscador en vivo
+  // 4. Configurar buscador en vivo
   const searchInput = document.getElementById('market-search-input');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -200,7 +228,7 @@ async function initMarketsPage() {
     });
   }
 
-  // 4. Delegación de eventos para botón "Auditar con IA"
+  // 5. Delegación de eventos para botón "Auditar con IA"
   if (container) {
     container.addEventListener('click', (e) => {
       const btn = e.target.closest('.btn-market-copilot');
@@ -225,11 +253,33 @@ async function initMarketsPage() {
     });
   }
 
-  // 5. Suscribirse a Supabase Realtime
-  marketsService.subscribeToLiveUpdates(handleLiveUpdate);
+  // 6. Suscribirse a Supabase Realtime
+  marketsService.subscribeToLiveUpdates((updated) => {
+    handleLiveUpdate(updated);
+    setFeedStatus('live');
+  });
 
-  // 6. Inicializar Macro HUD de Liquidez Fed
-  await initMacroHUD();
+  // 7. Orquestación asíncrona paralela y resiliente (Zero-Waterfall)
+  await Promise.allSettled([
+    checkSession().catch(err => console.error('[AEON Markets] Error al resolver sesión:', err)),
+    (async () => {
+      try {
+        const remoteData = await marketsService.getMarketIntelligence();
+        if (remoteData && remoteData.length > 0) {
+          allMarkets = remoteData;
+          setL1Cache(remoteData);
+          renderMarkets({ resetScroll: false });
+          setFeedStatus('live');
+        } else {
+          setFeedStatus('offline');
+        }
+      } catch (e) {
+        console.warn('[AEON Markets] Fallback a snapshot local:', e);
+        setFeedStatus('offline');
+      }
+    })(),
+    initMacroHUD()
+  ]);
 }
 
 /**

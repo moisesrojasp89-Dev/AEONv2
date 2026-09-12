@@ -76,6 +76,19 @@
   margin: 0;
 }
 
+.calendar-feed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
 .eco-head-text p {
   font-family: var(--font-mono);
   font-size: 0.65rem;

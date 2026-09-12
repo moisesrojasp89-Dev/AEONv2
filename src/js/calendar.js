@@ -263,19 +263,31 @@ function renderEvents() {
   container.innerHTML = html;
 }
 
+function setCalendarFeedStatus(status) {
+  const pill = document.getElementById('calendar-status-pill');
+  if (!pill) return;
+  if (status === 'syncing') {
+    pill.innerHTML = '<span class="pulse-dot syncing"></span> Sincronizando feed...';
+  } else if (status === 'live') {
+    pill.innerHTML = '<span class="pulse-dot"></span> En Vivo';
+  } else if (status === 'offline') {
+    pill.innerHTML = '<span class="pulse-dot offline"></span> Modo Snapshot (Offline)';
+  }
+}
+
 async function fetchCalendar() {
   const container = document.getElementById('calendar-feed');
   if (!container) return;
 
   try {
-    globalEvents = await fetchCalendarEvents();
+    const events = await fetchCalendarEvents();
+    globalEvents = Array.isArray(events) ? events : [];
+    // Conexión exitosa a Supabase: permanece 'live' incluso si el día no tiene eventos programados
+    setCalendarFeedStatus('live');
   } catch (err) {
     console.warn('[AEON] Error al obtener calendario de Supabase, usando snapshot local:', err);
     globalEvents = fallbackCalendarData;
-  }
-
-  if (!globalEvents || globalEvents.length === 0) {
-    globalEvents = fallbackCalendarData;
+    setCalendarFeedStatus('offline');
   }
 
   renderEvents();
@@ -353,11 +365,26 @@ function subscribeCalendarRealtime() {
 }
 
 async function initApp() {
-  checkSession();
   initNavbar();
   initCalendarFilters();
-  await fetchCalendar();
-  initTradingViewWidget();
+  setCalendarFeedStatus('syncing');
+
+  // 1. Render inmediato con snapshot local (0ms - FCP inmediato)
+  globalEvents = fallbackCalendarData;
+  renderEvents();
+  updateNextCatalyst();
+  if (!liveCountdownStarted) {
+    startLiveCountdowns();
+    liveCountdownStarted = true;
+  }
+
+  // 2. Orquestación asíncrona paralela y resiliente (Zero-Waterfall)
+  await Promise.allSettled([
+    checkSession().catch(err => console.error('[AEON Calendar] Error al resolver sesión:', err)),
+    fetchCalendar(),
+    (async () => initTradingViewWidget())()
+  ]);
+
   subscribeCalendarRealtime();
 }
 

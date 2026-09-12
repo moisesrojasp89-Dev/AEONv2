@@ -107,8 +107,13 @@ export function initNavbar() {
   // 2. Bind all interactive events
   bindNavbarEvents();
 
-  // 3. Mount Institutional Chatbot & Risk Copilot
-  initChatWidget();
+  // 3. Mount Institutional Chatbot & Risk Copilot (Progressive Hydration)
+  // Defer initialization so Copilot queries and Realtime do not block critical FCP/LCP
+  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    window.requestIdleCallback(() => initChatWidget(), { timeout: 1000 });
+  } else {
+    setTimeout(() => initChatWidget(), 250);
+  }
 }
 
 // Auto-initialize on load or immediately if #navbar-root is already in DOM

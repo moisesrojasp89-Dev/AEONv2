@@ -55,6 +55,18 @@
   background: var(--green);
   border-radius: 50%;
   box-shadow: 0 0 8px var(--green);
+  flex-shrink: 0;
+}
+
+.pulse-dot.syncing {
+  background: var(--accent-hover);
+  box-shadow: 0 0 8px var(--accent-hover);
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+.pulse-dot.offline {
+  background: var(--muted);
+  box-shadow: none;
 }
 
 .markets-hero-subtitle {

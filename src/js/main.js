@@ -395,15 +395,52 @@ async function initRadarMacroHUD() {
 }
 
 async function initApp() {
-  // Render de elementos iniciales
+  // 1. Disparo inmediato de peticiones de red al stack HTTP (0ms lag)
+  const networkPromises = Promise.allSettled([
+    // Rama 1: Autenticación -> Carga de Señales según permisos -> Realtime
+    (async () => {
+      try {
+        const sessionInfo = await checkSession();
+        if (sessionInfo && sessionInfo.session) {
+          currentUser = sessionInfo.session.user;
+          isPro = sessionInfo.isPro;
+          
+          const userEmail = document.getElementById('nav-user-email');
+          if (userEmail) userEmail.textContent = currentUser.email;
+
+          const proSection = document.getElementById('pro');
+          if (proSection) proSection.style.display = isPro ? 'none' : '';
+
+          const drawerProCard = document.querySelector('.drawer-pro-card');
+          if (drawerProCard) drawerProCard.style.display = isPro ? 'none' : '';
+        } else {
+          const proSection = document.getElementById('pro');
+          if (proSection) proSection.style.display = '';
+        }
+      } catch (err) {
+        console.error('[AEON] Falla en resolución de sesión:', err);
+      } finally {
+        await loadSignals();
+        initRealtime();
+      }
+    })(),
+
+    // Rama 2: HUD de Macro Liquidez Fed
+    initRadarMacroHUD(),
+
+    // Rama 3: Daily Macro Briefing & Suscripción Realtime
+    loadDynamicBriefing(),
+
+    // Rama 4: Noticias en vivo
+    loadDynamicNews()
+  ]);
+
+  // 2. Render de elementos síncronos iniciales mientras viajan los paquetes (0ms - FCP inmediato)
   renderEducation(data.education);
   renderPremiumFeatures(data.premiumFeatures);
   renderTickerBar(data.ticker);
 
   initEducationInteractions();
-  initRadarMacroHUD();
-  loadDynamicBriefing();
-  loadDynamicNews();
   initNewsFilters();
   initSignalFilters();
   initViewSwitch();
@@ -411,35 +448,8 @@ async function initApp() {
   initPrices();
   initChart();
 
-  // Resolución de Sesión
-  try {
-    const sessionInfo = await checkSession();
-    if (sessionInfo && sessionInfo.session) {
-      currentUser = sessionInfo.session.user;
-      isPro = sessionInfo.isPro;
-      
-      const userEmail = document.getElementById('nav-user-email');
-      if (userEmail) userEmail.textContent = currentUser.email;
-
-      const proSection = document.getElementById('pro');
-      if (proSection) {
-        proSection.style.display = isPro ? 'none' : '';
-      }
-      const drawerProCard = document.querySelector('.drawer-pro-card');
-      if (drawerProCard) {
-        drawerProCard.style.display = isPro ? 'none' : '';
-      }
-    } else {
-      const proSection = document.getElementById('pro');
-      if (proSection) proSection.style.display = '';
-    }
-  } catch (err) {
-    console.error('[AEON] Falla en resolución de sesión:', err);
-  }
-
-  // Carga de Señales y suscripción Realtime
-  await loadSignals();
-  initRealtime();
+  // 3. Aguardar resolución asíncrona sin bloquear la pintura inicial
+  await networkPromises;
 }
 
 if (document.readyState === 'loading') {
