@@ -50,6 +50,19 @@ CREATE POLICY "Escritura exclusiva de eventos a service_role"
     USING (true)
     WITH CHECK (true);
 
+-- Habilitar Supabase Realtime (postgres_changes)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_publication_tables
+        WHERE pubname = 'supabase_realtime'
+        AND schemaname = 'public'
+        AND tablename = 'trading_signal_events'
+    ) THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.trading_signal_events;
+    END IF;
+END $$;
+
 -- ------------------------------------------------------------------------------
 -- 2. TABLA: public.user_trade_journal (Bitácora de Auditoría y Guardarraíl)
 -- ------------------------------------------------------------------------------
