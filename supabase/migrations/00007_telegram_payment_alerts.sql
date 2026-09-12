@@ -18,7 +18,8 @@ SET search_path = public
 AS $$
 DECLARE
     v_msg TEXT;
-    v_token TEXT := '8925327698:AAFGcCc18tMjwCn9DsOwdfDuH3yKr9QGgjs';
+    -- Reemplazar con el token del bot de Telegram en la consola de Supabase (no versionar en Git)
+    v_token TEXT := 'TU_TELEGRAM_BOT_TOKEN_AQUI';
     v_chat_id TEXT := '1323877692';
     v_email TEXT;
 BEGIN
