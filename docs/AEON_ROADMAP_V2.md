@@ -35,6 +35,7 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 │ • Fase 6E: Pasarela Binance Pay & Adm│                                      │
 │ • Fase 6F: Macro Liquidez Fed HUD    │                                      │
 │ • Fase 6G: Expansión 17 Activos & UX │                                      │
+│ • Fase 6I: Active Copilot Harness    │                                      │
 └──────────────────────────────────────┴──────────────────────────────────────┘
 ```
 
@@ -68,6 +69,8 @@ FASE 6E: Pasarela Cripto Binance Pay & Panel Admin ► [✅ COMPLETADO]
 FASE 6F: Macro Liquidez Fed HUD (5 Joyitas) ──────► [✅ COMPLETADO]
   │
 FASE 6G: Expansión 17 Activos & Refactorización UX ► [✅ COMPLETADO]
+  │
+FASE 6I: Active Copilot Harness (Sentinel & Bus) ─► [✅ COMPLETADO]
   │
 FASE 6H: Pasarela Stripe FIAT (Opcional Tarjetas) ─► [🎯 PRÓXIMO SPRINT]
   │
@@ -124,7 +127,8 @@ FASE 9: High Reliability & Global Scale ──────────► [⏳ P
 | **6.8** | **Pasarela Cripto Binance Pay & Panel Admin Móvil** | ✅ **Completado** | `perfil.html`, `admin-pagos.html`, `admin-pagos.js`, `00005_crypto_payments.sql`, `approve_crypto_payment` RPC |
 | **6.9** | **Macro Liquidez Fed HUD (US10Y, US02Y, Fed Funds, RRP, WALCL)** | ✅ **Completado** | `macroLiquidityHUD.js`, `macroLiquidityService.js`, `aeon_autonomous_engine.py`, tabla `macro_liquidity`, Playbook #5 |
 | **6.10**| **Expansión a 17 Activos, Carrusel Playbooks & UX In-Place** | ✅ **Completado** | Ingesta batch XAG/USOIL/ETH, `.education-grid` carrusel horizontal con flechas `←/→`, scroll vertical libre en móvil y reemplazo in-place en ticks |
-| **6.11**| **Pasarela FIAT Stripe Opcional (Tarjetas de Crédito)** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK, Customer Portal |
+| **6.11**| **Active Copilot Harness & Centinela Cuántico** | ✅ **Completado** | `scripts/quant/harness_sentinel.py`, `00010_active_copilot_harness_events_and_journal.sql`, Edge Function `aeon-copilot-event`, `chatWidget.js` (WebAudio, snooze, persistencia, embudo Free vs PRO) |
+| **6.12**| **Pasarela FIAT Stripe Opcional (Tarjetas de Crédito)** | 🎯 Próximo | Supabase Edge Functions (`stripe-webhook`), Stripe SDK, Customer Portal |
 
 ---
 

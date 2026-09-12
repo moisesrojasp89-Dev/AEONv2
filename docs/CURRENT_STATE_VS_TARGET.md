@@ -1,7 +1,7 @@
 # AEON — Estado Actual vs Arquitectura Objetivo (Master Plan v2.0)
 
 **Única Fuente de Verdad Técnica, Diagnóstico de Arquitectura y Estado Real del Repositorio**  
-**Última Actualización:** 26 de Agosto de 2026 (Fases 0 a 5 Completadas e Implementadas — AEON Real Intelligence v2.0 Activo)  
+**Última Actualización:** Septiembre de 2026 (Fases 0 a 6I Completadas e Implementadas en Producción — AEON Active Copilot Harness Operativo)  
 **Documentos de Consulta:**  
 - 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo  
 - 🛡️ [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) — Estándares Oficiales de Ingeniería e Infraestructura  
@@ -27,6 +27,7 @@
 | **Fase 6E** | **Pasarela Cripto Binance Pay & Panel Admin Móvil** | ✅ **100% COMPLETADO** | • Checkout modal en 3 pasos con clickwrap legal obligatorio (\$1.99, \$6.99, \$14.99 USDT).<br>• Integración de QR oficial y Pay ID `401032901` con validación estricta de TxID.<br>• `admin-pagos.html` & `admin-pagos.js`: Panel administrativo móvil protegido por RLS/role check con activación en 1 clic vía Stored Procedure `approve_crypto_payment`. |
 | **Fase 6F** | **Macro Liquidez Fed HUD (5 Joyitas del Banco Central)** | ✅ **100% COMPLETADO** | • Monitor en vivo de US10Y, US02Y, FEDFUNDS, RRPONTSYD y WALCL.<br>• Sincronización multi-cadencia autónoma en Python vía Yahoo Finance y St. Louis Fed FRED.<br>• Tabla relacional `public.macro_liquidity` con RLS y trigger de auditoría idempotente `trg_log_macro_liquidity_change`.<br>• Componente visual `macroLiquidityHUD.js`, modal formativo interactivo y Playbook Operativo #5 en `education.json`. |
 | **Fase 6G** | **Expansión a 17 Activos & Refactorización UX In-Place** | ✅ **100% COMPLETADO** | • Incorporación de Plata Spot (XAG), Petróleo WTI (USOIL) y Ethereum (ETH) con badges SVG vectoriales.<br>• `.education-grid` en carrusel horizontal con scroll-snap y controles tácticos de navegación (`←`/`→`) con scroll suave `±330px`.<br>• Desbloqueo de scroll vertical en `mercados.html` móvil para visualización completa de tarjetas sin perder swipe horizontal.<br>• Reemplazo atómico *in-place* de tarjetas actualizadas (`existingCard.replaceWith(newCard)`) con pulso cian (.card-live-pulse) y preservación de scroll en ticks realtime. |
+| **Fase 6I** | **AEON Active Copilot Harness & Trading Sentinel** | ✅ **100% COMPLETADO** | • `scripts/quant/harness_sentinel.py`: Centinela cuántico 24/7 con confluencia $Price \in ZAP \land BSL/SSL \land dist\_dpoc > 0$, cooldown de 15m y worker thread no bloqueante (timeout 3.0s).<br>• Migración 00010: `trading_signal_events` (bus de eventos con TTL 2h & Realtime), `user_trade_journal` (bitácora con flag de consolidación) y RPC `check_overtrading_guardrail` (ventana móvil 45m con blindaje anti-IDOR).<br>• `supabase/functions/aeon-copilot-event`: Fan-out en <1.2s con Gemini 2.5 Flash-Lite, idempotencia y broadcast Realtime.<br>• `src/js/components/chatWidget.js`: Radar chime nativo WebAudio, toast flotante con snooze 15m, renderizado Markdown y embudo Freemium vs PRO verificado en producción con rechazo R/R 0.47:1. |
 | **Fase 6H** | **Pasarela Stripe FIAT (Opcional Tarjetas)** | 🎯 **EN PROGRESO / PRÓXIMO SPRINT** | Pasarela opcional para cobros en divisa fiduciaria con tarjeta de crédito/débito y webhooks idempotentes. |
 | **Fases 7-8**| **Futures Intelligence (CME Order Flow)** | ⏳ *Planificado* | Feeds de futuros centralizados L2/L3 (Rithmic/CQG), Delta real, Footprint y Depth of Market (DOM). |
 | **Fase 9** | **High Reliability & Global Scale** | ⏳ *Planificado* | Clúster multi-región, APM en tiempo real y tolerancia a fallos. |
@@ -83,12 +84,14 @@
 │  └───────────────────────────┘         └─────────────▲──────────────┘  │
 │                                                      │                 │
 │  ┌───────────────────────────────────────────────────▼──────────────┐  │
-│  │ AEON UNIFIED DAEMONS (docker-compose.yml)                        │  │
-│  │  1. aeon-quant-daemon: trade_watcher_daemon.py (M5/M15 Async)    │  │
-│  │  2. aeon-macro-ai: briefing_agent.py (Grounding Gemini Flash)   │  │
-│  │  3. aeon-calendar-watcher: news_sync_agent.py (RSS + Live Ticks) │  │
-│  │  - Persistencia Atómica & Reconciliación tras reinicios          │  │
-│  │  - Logging Estructurado JSON & Heartbeats cada 30s               │  │
+│  │ AEON UNIFIED DAEMONS (Local VPS / Docker)                        │  │
+│  │  1. aeon_autonomous_engine: Ingesta 17 activos, Macro Fed HUD,   │  │
+│  │     Calendario Sniper y Noticias Grounded                        │  │
+│  │  2. harness_sentinel.py: Centinela Cuántico 24/7 (ZAP + BSL/SSL)  │  │
+│  │     con thread no bloqueante (timeout 3.0s) & fan-out HTTP        │  │
+│  │  3. trade_watcher_daemon.py: Seguimiento estocástico órdenes     │  │
+│  │  - Persistencia atómica de estados y cooldowns en JSON           │  │
+│  │  - Logging Estructurado JSON & Heartbeats cada 20s/30s           │  │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
 │                                                      │                 │
 └──────────────────────────────────────────────────────┼─────────────────┘
@@ -96,20 +99,25 @@
                                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ SUPABASE POSTGRESQL & EDGE FUNCTIONS                                   │
-│  - Seguridad RLS Zero-Trust en todas las tablas                        │
-│  - Agregación instantánea de Track Record vía RPC (0ms math lag)       │
-│  - Realtime seguro con REPLICA IDENTITY FULL                           │
-│  - Tablas: daily_briefings, news, economic_calendar, signals, profiles │
+│  - Seguridad RLS Zero-Trust en 100% de tablas                          │
+│  - Active Copilot Harness & Event Bus (00010):                         │
+│      • trading_signal_events (TTL 2h, Realtime broadcast)              │
+│      • user_trade_journal & RPC check_overtrading_guardrail (anti-IDOR)│
+│  - Edge Functions:                                                     │
+│      • aeon-chat: Copiloto Macro Zero-Trust con cuota atómica (50/día) │
+│      • aeon-copilot-event: Síntesis táctica Gemini 2.5 Flash-Lite      │
+│        en <1.2s e idempotencia por event_id                            │
+│  - Tablas: market_intelligence, macro_liquidity, daily_briefings, news │
 └──────────────────────────────────────┬─────────────────────────────────┘
                                        │
-                                       │ Feed Público & Niveles PRO
+                                       │ Realtime Broadcast & WebSockets
                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ AEON TERMINAL (Vite SPA / Vanilla JS / ES Modules)                     │
-│  - 0ms White-Screen Cache en sessionStorage / localStorage             │
-│  - Máquina de estados de sesión UTC en tiempo real                     │
-│  - Tira terminal de catalizadores y lecturas de Order Flow             │
-│  - Gráficos interactivos Lightweight Charts v5                         │
+│  - Active Copilot Harness: Radar chime WebAudio, toast neón y snooze   │
+│  - Manejo Freemium vs PRO verificado en vivo con rechazo de bajo R/R   │
+│  - Terminal de Análisis Estructural (/analisis.html) con gráficos LW v5│
+│  - Radar de Mercados (17 Activos) con actualización atómica in-place   │
 │  - Compilación verificada < 300ms y Cero Deuda Técnica                 │
 └────────────────────────────────────────────────────────────────────────┘
 ```

@@ -34,6 +34,10 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │  │     - Modo Weekend Wrap (Cierre Semanal / Cripto 24/7 en vivo)   │  │
 │  │  5. Generador de Noticias con Grounding Obligatorio:             │  │
 │  │     - 5 categorías vivas ancladas a datos reales verificados     │  │
+│  │  6. Centinela Cuántico de Confluencias & Active Harness:         │  │
+│  │     - Escaneo en cada tick: ZAP + BSL/SSL Sweep + dPOC + Cooldown│  │
+│  │     - Worker thread no bloqueante (timeout 3.0s) -> Edge Function│  │
+│  │     - Persistencia de cooldown en data/harness_sentinel_state.json│ │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
 │                                                      │                 │
 └──────────────────────────────────────────────────────┼─────────────────┘
@@ -46,8 +50,14 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │  - Realtime seguro con REPLICA IDENTITY FULL                           │
 │  - Stored Procedure atómico refund_ai_quota para cuotas IA             │
 │  - Tabla macro_liquidity con triggers atómicos de auditoría y cambio   │
-│  - Edge Function aeon-chat: Copiloto IA Macro con Zero-Trust auth,     │
-│    validación server-side de Pro tier, freshness check (<8m) y schema  │
+│  - Active Copilot Harness & Event Bus (Migración 00010):               │
+│      • trading_signal_events: Bus de eventos con TTL 2h & Realtime     │
+│      • user_trade_journal: Bitácora de órdenes y flags de consolidación│
+│      • check_overtrading_guardrail: RPC ventana móvil 45m & anti-IDOR  │
+│  - Edge Functions:                                                     │
+│      • aeon-chat: Copiloto Macro Zero-Trust y cuota atómica (50/día)   │
+│      • aeon-copilot-event: Síntesis táctica Gemini 2.5 Flash-Lite      │
+│        en <1.2s, idempotencia por event_id y broadcast a Realtime      │
 │  - Tablas: market_intelligence, macro_liquidity, daily_briefings, news │
 └──────────────────────────────────────┬─────────────────────────────────┘
                                        │
@@ -73,6 +83,14 @@ AEON es una plataforma profesional de inteligencia macroeconómica, análisis de
 │      • Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda) & EMA 50  │
 │      • Piscinas de Liquidez ($$$ BSL/SSL) & Escenarios "Si / Entonces" │
 │      • Cálculo cuántico Zero-DDL en cited_key_levels y Heartbeat 25s   │
+│  - Active Copilot Harness & Terminal Proactiva:                        │
+│      • Escucha en tiempo real vía WebSockets (canal aeon_harness_alerts│
+│        y tabla trading_signal_events)                                  │
+│      • Chime de radar cyber sintetizado con WebAudio API (880Hz-1760Hz)│
+│      • Toast flotante táctico sobre el FAB con pulso neón y snooze 15m │
+│      • Formateador de Markdown institucional (**negrita** renderizada) │
+│      • Persistencia reactiva del último evento al recargar la web      │
+│      • Embudo Freemium: Tarjeta paywall en Free / Análisis R/R en PRO  │
 │  - Playbooks Operativos: 5 manuales tácticos en carrusel horizontal    │
 │    con botones de desplazamiento suave (← / →) y soporte responsive   │
 │  - Command Center del Trader (/perfil.html): Rediseño Dark Luxury con  │
@@ -106,6 +124,7 @@ python scripts/ai/aeon_autonomous_engine.py
 * Sincroniza la **Macro Liquidez Fed** (US10Y, US02Y, FEDFUNDS, RRPONTSYD, WALCL) en cadencia multi-nivel.
 * Extrae catalizadores y noticias directamente de la base de datos de calendario oficial.
 * Detecta automáticamente las sesiones bursátiles (**Tokio**, **Londres**, **Nueva York** y **Weekend Wrap de fin de semana**).
+* Ejecuta en segundo plano el **Centinela Cuántico de Confluencias** con alerta proactiva y fan-out a la Terminal Web.
 
 ---
 
@@ -114,6 +133,7 @@ python scripts/ai/aeon_autonomous_engine.py
 | Componente | Descripción | Estado |
 |---|---|:---:|
 | **Motor Autónomo VPS (17 Activos)** | Ingesta batch OANDA + Binance/Coinbase, 0 TwelveData calls, Gemini 3.1 Flash-Lite y deduplicación MD5. | ✅ **Operativo** |
+| **AEON Active Copilot Harness** | Centinela de confluencias 24/7 en VPS, fan-out Edge Function, Realtime Broadcast, WebAudio Chime, bitácora y guardrail anti-overtrading. | ✅ **Operativo en Vivo** |
 | **Macro Liquidity & Fed Yields HUD** | Radar de liquidez Fed (US10Y, US02Y, FEDFUNDS, RRP, WALCL) con modal educativo y sync multi-cadencia. | ✅ **Operativo en Vivo** |
 | **Cerebro Cuántico 17 Activos** | Microestructura dPOC, VWAP, sesgos deterministas y fórmula ICE DXY (Oro, Plata, WTI, Cripto, Índices, FX). | ✅ **Operativo** |
 | **Terminal de Análisis (`/analisis.html`)** | Gráficos Canvas nativos, ZAPs dinámicas, piscinas BSL/SSL, Zero-DDL y Heartbeat 25s. | ✅ **Operativo en Vivo** |

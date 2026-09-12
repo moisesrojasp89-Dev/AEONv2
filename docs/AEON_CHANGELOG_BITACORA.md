@@ -523,3 +523,45 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   * **Solución:** Desbloqueo a `overflow-y: auto; min-height: 100dvh; height: auto` con padding inferior ergonómico de `4rem`. Se preserva el swipe táctil horizontal entre activos y se habilita un scroll vertical natural para leer la tarjeta completa.
 * **Problema 3 (Reseteo Brusco de Scroll en Tiempo Real):** En `mercados.html`, cada tick o actualización de precios invocaba `renderMarkets()`, el cual borraba el HTML del carrusel y ejecutaba `container.scrollTo({ left: 0 })`, regresando bruscamente al usuario al primer activo mientras leía.
   * **Solución:** Refactorización de `handleLiveUpdate` en `src/js/markets.js` para realizar una actualización atómica *in-place* (`existingCard.replaceWith(newCard)`). Se incorporó la animación `.card-live-pulse` con un destello cian suave y se preservó `scrollLeft` intacto. El scroll solo se resetea al inicio si el usuario hace clic deliberadamente en un filtro de categoría o escribe en el buscador.
+
+---
+
+## 🤖 22. Hito 22: AEON Active Copilot Harness — Terminal Proactiva con Centinela Cuántico, Fan-Out en Tiempo Real, Guardrail Anti-Overtrading y Bitácora de Trading (100% en Producción)
+
+* **Filosofía del Trader y Propósito Estratégico:**
+  * En el trading institucional, las ventanas de liquidez y las mejores entradas se evaporan en cuestión de segundos o pocos minutos. Un asistente de inteligencia artificial puramente reactivo (que espera a que el usuario escriba una pregunta en el chat) llega tarde a la acción del precio.
+  * Con el **AEON Active Copilot Harness**, la plataforma evoluciona a una terminal centinela proactiva: el motor cuantitativo patrulla el mercado las 24 horas y, en el milisegundo exacto en que se produce una alineación de alta probabilidad, genera una alerta táctica con síntesis de lenguaje natural ultrarrápida, emite un aviso sonoro de radar en el terminal del trader y prepara la conversación con un análisis completo de riesgo/beneficio.
+* **Componentes y Arquitectura de la Solución (5 Pasos Verificados en Producción):**
+  1. **Motor Cuántico VPS: Centinela de Confluencias (`scripts/quant/harness_sentinel.py` & `aeon_autonomous_engine.py`):**
+     * **Algoritmo de Detección:** Escaneo en cada ciclo de 20s para los 4 Reyes del Mercado y activos de alta volatilidad bajo la fórmula estricta de confluencia:
+       $$\text{Confluencia Activa} = (Price \in \text{ZAP}) \land (\text{BSL Swept} \lor \text{SSL Swept}) \land (dist\_dpoc > 0) \land (cooldown \ge 15\text{m})$$
+     * **Persistencia de Estado y Tolerancia a Fallos:** Registro atómico de marcas de tiempo en `data/harness_sentinel_state.json` para garantizar que los reinicios del proceso no generen spam ni dupliquen alertas.
+     * **Aislamiento de Hilo No Bloqueante:** Despacho de la alerta mediante un hilo de ejecución independiente (`threading.Thread`) con un timeout HTTP estricto de **3.0 segundos**, blindando el bucle principal de 20s del motor de agentes contra cualquier lentitud externa de red.
+  2. **Gobernanza de Base de Datos: Migración 00010 (`00010_active_copilot_harness_events_and_journal.sql`):**
+     * **Tabla `trading_signal_events`:** Bus de eventos con TTL de 2 horas (expiración temporal sin sobrecarga de almacenamiento), `event_id` determinista para deduplicación, políticas RLS Zero-Trust para consulta pública y publicación activa en `supabase_realtime`.
+     * **Tabla `user_trade_journal`:** Bitácora personal de órdenes y auditorías pre-trade (`checklist_audit`, `trade_opened`, `trade_closed`) con la bandera de advertencia `in_consolidation` para registrar si el trader intentó operar en zonas de bajo volumen o compresión.
+     * **Stored Procedure `check_overtrading_guardrail`:** Función de control de sobreoperativa emocional en ventana móvil de 45 minutos. Implementada con `SECURITY DEFINER`, `SET search_path = public` y blindaje anti-IDOR validado por arquitectura:
+       ```sql
+       IF auth.role() <> 'service_role' AND auth.uid() <> p_user_id THEN
+         RAISE EXCEPTION 'No autorizado para consultar la bitacora de otro usuario (IDOR Guard)';
+       END IF;
+       ```
+  3. **Edge Function `aeon-copilot-event` (Supabase Cloud — `ytccnxlfakjilxwauxic`):**
+     * **Inferencia Ultra-Rápida:** Integración directa con **Gemini 2.5 Flash-Lite**, alcanzando tiempos de respuesta de 1.1s a 1.2s.
+     * **Síntesis Quirúrgica:** Generación de diagnósticos ejecutivos de máximo 2 oraciones ($\le 45$ palabras) sin saludos ni preámbulos vacíos, destacando el activo, la zona ZAP de impacto, el barrido de liquidez y el sesgo cuantitativo inmediato.
+     * **Idempotencia y Fallback:** Verificación de existencia previa por `event_id` y generación inmediata de síntesis algorítmica determinista en caso de saturación transitoria de la API de IA.
+     * **Fan-Out Dual:** Inserción en la base de datos PostgreSQL y emisión instantánea vía WebSocket broadcast al canal Realtime `'aeon_harness_alerts'`.
+  4. **Frontend Copilot Client (`src/js/components/chatWidget.js` & `src/css/components/chat.css`):**
+     * **Escucha Proactiva Dual:** Suscripción combinada al canal de broadcast `'aeon_harness_alerts'` y al feed `postgres_changes` de `trading_signal_events`.
+     * **Radar Chime Sintetizado con WebAudio API:** Generador de audio nativo mediante oscilador sinusoidal (`880Hz` a `1760Hz` con decaimiento exponencial en `0.25s`), logrando un timbre cyber elegante sin descargar archivos de audio externos ni generar peticiones de red.
+     * **Toast Callout Flotante:** Globo de notificación táctica sobre el botón FAB con pulso cian (`.callout-pulse`) y control de snooze para pausar alertas por 15 minutos en momentos de alta concentración.
+     * **Renderizado Markdown Seguro:** Conversión de sintaxis `**negrita**` a `<strong>` para destacar niveles numéricos y recomendaciones operativas sin vulnerabilidades XSS.
+     * **Persistencia entre Sesiones y Recargas:** Consulta automática del último evento activo en `trading_signal_events` al inicializar el widget o cambiar de sesión, garantizando que el usuario nunca pierda una alerta tras refrescar la página.
+     * **Embudo de Conversión Freemium vs PRO:**
+       * **Usuario Free (`free@aeontest.com`):** Alerta proactiva visible acompañada de una tarjeta de paywall con CTA claro para desbloquear el análisis completo adquiriendo la membresía PRO.
+       * **Usuario PRO (`pro@aeontest.com`):** Chat totalmente abierto, inyección del contexto del evento y auditoría en profundidad.
+  5. **Validación en Producción y Hallazgos Reales:**
+     * **Prueba en Vivo en `aeondev.vercel.app`:** Simulación de disparo en Oro (XAUUSD) con respuesta real de Gemini en 1.1s y recepción inmediata del broadcast en el navegador.
+     * **Comportamiento Cuantitativo Institucional Verificado:** El Copiloto PRO analizó la estructura del mercado y aconsejó explícitamente **rechazar el trade** debido a un ratio Riesgo/Beneficio (R/R) desfavorable de 0.47:1, demostrando la fidelidad de la IA a las directrices de preservación de capital institucional.
+     * **Lección Aprendida sobre Red y AdBlock:** La Protección Mejorada contra Rastreo de Firefox y algunos bloqueadores de anuncios pueden clasificar peticiones a `supabase.co` como rastreadores (`TypeError: NetworkError`), lo cual se documentó para soporte a usuarios en producción.
+
