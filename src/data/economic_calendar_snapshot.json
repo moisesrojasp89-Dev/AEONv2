@@ -1,5 +1,41 @@
 [
   {
+    "id": "47981805-ca24-44b1-bc93-094a360248dd",
+    "event_time": "2026-08-02T06:30:00+00:00",
+    "country": "CHF",
+    "event_name": "CPI m/m",
+    "impact": "Medium",
+    "actual": "-0.1%",
+    "forecast": "-0.1%",
+    "previous": "0.0%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "527da501-5d58-44c6-89d5-ff3564bb6aa8",
+    "event_time": "2026-08-02T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "ISM Manufacturing PMI",
+    "impact": "High",
+    "actual": "55.6",
+    "forecast": "54.0",
+    "previous": "53.3",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "8bc0da6d-f55a-41c7-a94f-67cddecf86a0",
+    "event_time": "2026-08-02T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "ISM Manufacturing Prices",
+    "impact": "Medium",
+    "actual": "71.1",
+    "forecast": "70.0",
+    "previous": "73.0",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "c4f9c8fd-0df9-4969-8539-ed11e7e7980c",
     "event_time": "2026-08-03T06:30:00+00:00",
     "country": "CHF",
@@ -8,18 +44,6 @@
     "actual": "-0.1%",
     "forecast": "-0.1%",
     "previous": "0.0%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
-    "id": "8747c7f7-a166-4ee9-bdf0-369c4d76cd22",
-    "event_time": "2026-08-03T14:00:00+00:00",
-    "country": "USD",
-    "event_name": "ISM Manufacturing Prices",
-    "impact": "Medium",
-    "actual": "71.1",
-    "forecast": "70.0",
-    "previous": "73.0",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -36,6 +60,66 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
+    "id": "8747c7f7-a166-4ee9-bdf0-369c4d76cd22",
+    "event_time": "2026-08-03T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "ISM Manufacturing Prices",
+    "impact": "Medium",
+    "actual": "71.1",
+    "forecast": "70.0",
+    "previous": "73.0",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "d54abbd7-f429-4f44-8336-3b10caca3195",
+    "event_time": "2026-08-03T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "JOLTS Job Openings",
+    "impact": "Medium",
+    "actual": "7.36M",
+    "forecast": "7.44M",
+    "previous": "7.54M",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "071fe1f9-3c0a-40ce-9846-f48ce2a2fe4d",
+    "event_time": "2026-08-03T22:45:00+00:00",
+    "country": "NZD",
+    "event_name": "Employment Change q/q",
+    "impact": "High",
+    "actual": "0.5%",
+    "forecast": "0.1%",
+    "previous": "0.2%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "5d902f27-4182-4ae2-a414-67e49740b8e8",
+    "event_time": "2026-08-03T22:45:00+00:00",
+    "country": "NZD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "5.6%",
+    "forecast": "5.4%",
+    "previous": "5.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "ba263429-263f-4131-af16-95903fc91099",
+    "event_time": "2026-08-04T12:15:00+00:00",
+    "country": "USD",
+    "event_name": "ADP Non-Farm Employment Change",
+    "impact": "Medium",
+    "actual": "44K",
+    "forecast": "68K",
+    "previous": "95K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "b44480fa-041d-4b31-8b80-34ff4f6fe4dd",
     "event_time": "2026-08-04T14:00:00+00:00",
     "country": "USD",
@@ -44,6 +128,42 @@
     "actual": "7.36M",
     "forecast": "7.44M",
     "previous": "7.54M",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "ab9d1209-08f3-4ad5-b5f1-ce8d4c7e39f0",
+    "event_time": "2026-08-04T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "ISM Services PMI",
+    "impact": "Medium",
+    "actual": "54.1",
+    "forecast": "54.5",
+    "previous": "54.0",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "2588cc22-4186-4bd1-b3f6-bd08d9156c91",
+    "event_time": "2026-08-04T20:30:00+00:00",
+    "country": "USD",
+    "event_name": "President Trump Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "851a882e-e8e0-432b-aa79-ef6cf48e5735",
+    "event_time": "2026-08-04T22:45:00+00:00",
+    "country": "NZD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "5.6%",
+    "forecast": "5.4%",
+    "previous": "5.4%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -60,18 +180,6 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "851a882e-e8e0-432b-aa79-ef6cf48e5735",
-    "event_time": "2026-08-04T22:45:00+00:00",
-    "country": "NZD",
-    "event_name": "Unemployment Rate",
-    "impact": "High",
-    "actual": "5.6%",
-    "forecast": "5.4%",
-    "previous": "5.4%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
     "id": "96c970aa-332a-4636-9a97-81649a4228fd",
     "event_time": "2026-08-05T12:15:00+00:00",
     "country": "USD",
@@ -82,6 +190,18 @@
     "previous": "95K",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "bc1d6ecd-065a-498c-96d1-74c701f1e889",
+    "event_time": "2026-08-05T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": "199K",
+    "forecast": "203K",
+    "previous": "198K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "d729f7b8-563d-4020-b233-af44a4395ff6",
@@ -120,38 +240,86 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "647a71df-3fad-47e4-bad5-375705990fb7",
-    "event_time": "2026-08-07T12:30:00+00:00",
-    "country": "USD",
+    "id": "88c9a10b-3ec3-4af7-b7b0-7af3a1043073",
+    "event_time": "2026-08-06T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Employment Change",
+    "impact": "High",
+    "actual": "75.1K",
+    "forecast": "17.8K",
+    "previous": "18.2K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "a1157eb5-2fe8-40d8-8ab0-ea9c70eed337",
+    "event_time": "2026-08-06T12:30:00+00:00",
+    "country": "CAD",
     "event_name": "Unemployment Rate",
     "impact": "High",
-    "actual": "4.1%",
-    "forecast": "4.2%",
-    "previous": "4.2%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "actual": "6.4%",
+    "forecast": "6.5%",
+    "previous": "6.5%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
-    "id": "c3bf7cfd-6a84-4fe7-b6cd-704a0146e0d9",
-    "event_time": "2026-08-07T12:30:00+00:00",
-    "country": "USD",
-    "event_name": "Non-Farm Employment Change",
-    "impact": "High",
-    "actual": "-23K",
-    "forecast": "85K",
-    "previous": "20K",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
-    "id": "3e818a9c-55d9-4e73-82b2-9a17b1ab77f4",
-    "event_time": "2026-08-07T12:30:00+00:00",
+    "id": "c2dba81b-e782-4a3a-816c-27ff9563732f",
+    "event_time": "2026-08-06T12:30:00+00:00",
     "country": "USD",
     "event_name": "Average Hourly Earnings m/m",
     "impact": "High",
     "actual": "0.1%",
     "forecast": "0.3%",
     "previous": "0.3%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "d6019d9d-aa9d-46b5-8a93-bce70f0579ef",
+    "event_time": "2026-08-06T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Non-Farm Employment Change",
+    "impact": "High",
+    "actual": "-23K",
+    "forecast": "85K",
+    "previous": "20K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "7b7b16b4-7f54-48c7-a58e-4990b9fe5ca1",
+    "event_time": "2026-08-06T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "4.1%",
+    "forecast": "4.2%",
+    "previous": "4.2%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "e4609215-a223-440c-a58b-1c9b2a2ac15a",
+    "event_time": "2026-08-06T14:00:00+00:00",
+    "country": "CAD",
+    "event_name": "Ivey PMI",
+    "impact": "Medium",
+    "actual": "55.1",
+    "forecast": "55.4",
+    "previous": "56.2",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b2a986ea-5adc-42d5-882b-46d581174671",
+    "event_time": "2026-08-07T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Employment Change",
+    "impact": "High",
+    "actual": "75.1K",
+    "forecast": "17.8K",
+    "previous": "18.2K",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -168,14 +336,38 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "b2a986ea-5adc-42d5-882b-46d581174671",
+    "id": "3e818a9c-55d9-4e73-82b2-9a17b1ab77f4",
     "event_time": "2026-08-07T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Employment Change",
+    "country": "USD",
+    "event_name": "Average Hourly Earnings m/m",
     "impact": "High",
-    "actual": "75.1K",
-    "forecast": "17.8K",
-    "previous": "18.2K",
+    "actual": "0.1%",
+    "forecast": "0.3%",
+    "previous": "0.3%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "c3bf7cfd-6a84-4fe7-b6cd-704a0146e0d9",
+    "event_time": "2026-08-07T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Non-Farm Employment Change",
+    "impact": "High",
+    "actual": "-23K",
+    "forecast": "85K",
+    "previous": "20K",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "647a71df-3fad-47e4-bad5-375705990fb7",
+    "event_time": "2026-08-07T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "4.1%",
+    "forecast": "4.2%",
+    "previous": "4.2%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -192,16 +384,52 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "bb1a0bd0-45bb-4db9-9309-9cc772c50cb2",
-    "event_time": "2026-08-11T04:30:00+00:00",
+    "id": "6e81fdbe-3f30-4a81-9e42-3ec2a8226046",
+    "event_time": "2026-08-10T04:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Cash Rate",
+    "impact": "High",
+    "actual": "4.35%",
+    "forecast": "4.35%",
+    "previous": "4.35%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "e500d119-597e-46e6-8785-e85d286bf128",
+    "event_time": "2026-08-10T04:30:00+00:00",
     "country": "AUD",
     "event_name": "RBA Monetary Policy Statement",
     "impact": "High",
     "actual": "Publicado",
     "forecast": null,
     "previous": null,
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T15:34:45.007021+00:00"
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "a06d2def-89c9-46e4-b340-055ff2ffeaea",
+    "event_time": "2026-08-10T04:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Rate Statement",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "ca81fe83-591e-4b37-bcc9-10d737d88b9b",
+    "event_time": "2026-08-10T05:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Press Conference",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "294f5455-2192-4a3b-9e93-b0b2ce8f3fae",
@@ -216,6 +444,18 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
+    "id": "bb1a0bd0-45bb-4db9-9309-9cc772c50cb2",
+    "event_time": "2026-08-11T04:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Monetary Policy Statement",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-28T15:34:45.007021+00:00"
+  },
+  {
     "id": "d9790ba4-4c30-4e9f-ba2a-5fc19b7834c9",
     "event_time": "2026-08-11T04:30:00+00:00",
     "country": "AUD",
@@ -225,7 +465,7 @@
     "forecast": null,
     "previous": null,
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "updated_at": "2026-08-28T15:39:08.883763+00:00"
   },
   {
     "id": "f7d2d710-e159-4ae0-bdda-15c630d1c542",
@@ -240,16 +480,88 @@
     "updated_at": "2026-08-28T15:34:46.984915+00:00"
   },
   {
-    "id": "4d759394-72ad-4933-ad4d-1e16c42bddf7",
-    "event_time": "2026-08-12T12:30:00+00:00",
+    "id": "d28b3fc6-bb84-4c8e-a002-bc787abab1e5",
+    "event_time": "2026-08-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core CPI m/m",
+    "impact": "High",
+    "actual": "0.2%",
+    "forecast": "0.2%",
+    "previous": "0.0%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "e4052f1c-e2e1-4f6b-b914-e685f05cb082",
+    "event_time": "2026-08-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core CPI y/y",
+    "impact": "High",
+    "actual": "2.5%",
+    "forecast": "2.5%",
+    "previous": "2.6%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b334bf7a-9ca2-4d45-8371-3c353077dc04",
+    "event_time": "2026-08-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": "0.1%",
+    "forecast": "0.1%",
+    "previous": "-0.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "a3a1dd2d-3fe7-434d-9b00-9f9f1dcdb78b",
+    "event_time": "2026-08-11T12:30:00+00:00",
     "country": "USD",
     "event_name": "CPI y/y",
     "impact": "High",
     "actual": "3.4%",
     "forecast": "3.4%",
     "previous": "3.5%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "3b685c6a-129b-47f0-bc3d-7d6b8b75c989",
+    "event_time": "2026-08-12T03:00:00+00:00",
+    "country": "NZD",
+    "event_name": "Inflation Expectations q/q",
+    "impact": "Medium",
+    "actual": "2.34%",
+    "forecast": null,
+    "previous": "2.53%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "8ccb6c30-3579-4463-acbf-0ec521abe54c",
+    "event_time": "2026-08-12T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "GDP m/m",
+    "impact": "High",
+    "actual": "0.3%",
+    "forecast": "0.0%",
+    "previous": "0.0%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "7c78dc4c-634a-482d-b89e-8666510fdbd4",
+    "event_time": "2026-08-12T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Prelim GDP q/q",
+    "impact": "Medium",
+    "actual": "0.4%",
+    "forecast": "0.4%",
+    "previous": "0.6%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "0465a656-cfc5-46aa-bf35-499c00cffe7d",
@@ -288,6 +600,54 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
+    "id": "4d759394-72ad-4933-ad4d-1e16c42bddf7",
+    "event_time": "2026-08-12T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": "3.4%",
+    "forecast": "3.4%",
+    "previous": "3.5%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "4f23014c-68c6-485f-8ef1-4e0c3c6c5074",
+    "event_time": "2026-08-12T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core PPI m/m",
+    "impact": "High",
+    "actual": "0.2%",
+    "forecast": "0.3%",
+    "previous": "0.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b1a7f4c1-7530-4aae-b99e-1b0da24d9d56",
+    "event_time": "2026-08-12T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "PPI m/m",
+    "impact": "High",
+    "actual": "0.0%",
+    "forecast": "0.2%",
+    "previous": "-0.1%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "dd999eac-5762-4957-9cc9-a699ad963cd3",
+    "event_time": "2026-08-12T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": "209K",
+    "forecast": "202K",
+    "previous": "200K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "fd07b4ca-74c1-4c8b-bfb7-6699c197a71b",
     "event_time": "2026-08-13T03:00:00+00:00",
     "country": "NZD",
@@ -300,18 +660,6 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "2be66441-80d4-4353-b66c-0bc9ef90e569",
-    "event_time": "2026-08-13T06:00:00+00:00",
-    "country": "GBP",
-    "event_name": "Prelim GDP q/q",
-    "impact": "Medium",
-    "actual": "0.4%",
-    "forecast": "0.4%",
-    "previous": "0.6%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
     "id": "83f78998-b8d6-4a44-afc3-550fc6164775",
     "event_time": "2026-08-13T06:00:00+00:00",
     "country": "GBP",
@@ -320,6 +668,18 @@
     "actual": "0.3%",
     "forecast": "0.0%",
     "previous": "0.0%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "2be66441-80d4-4353-b66c-0bc9ef90e569",
+    "event_time": "2026-08-13T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Prelim GDP q/q",
+    "impact": "Medium",
+    "actual": "0.4%",
+    "forecast": "0.4%",
+    "previous": "0.6%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -360,16 +720,64 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "a2cb5d0c-0487-4106-b9b0-acbed4b94ab9",
-    "event_time": "2026-08-14T12:30:00+00:00",
+    "id": "e4b5c4bf-eb1d-40f4-8bc6-a5393a32a2b9",
+    "event_time": "2026-08-13T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core Retail Sales m/m",
+    "impact": "Medium",
+    "actual": "-0.3%",
+    "forecast": "0.2%",
+    "previous": "-0.2%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "25bc488b-2e83-44e4-b7fe-778898f4fd74",
+    "event_time": "2026-08-13T12:30:00+00:00",
     "country": "USD",
     "event_name": "Retail Sales m/m",
     "impact": "Medium",
     "actual": "-0.6%",
     "forecast": "0.1%",
     "previous": "0.2%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "c2494834-abd9-48be-8b10-4b17448d1e0f",
+    "event_time": "2026-08-13T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim UoM Consumer Sentiment",
+    "impact": "Medium",
+    "actual": "51.0",
+    "forecast": "54.7",
+    "previous": "55.2",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "ef43b18f-1e75-4d36-aad2-3e84260f5670",
+    "event_time": "2026-08-13T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim UoM Inflation Expectations",
+    "impact": "Medium",
+    "actual": "4.3%",
+    "forecast": null,
+    "previous": "4.2%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "c8f9876a-b84d-4ad8-bafa-a0a1dfc61de1",
+    "event_time": "2026-08-13T19:00:00+00:00",
+    "country": "USD",
+    "event_name": "President Trump Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "e01fa758-6e63-4828-9199-90eb6cbb7dcc",
@@ -380,6 +788,18 @@
     "actual": "-0.3%",
     "forecast": "0.2%",
     "previous": "-0.2%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "a2cb5d0c-0487-4106-b9b0-acbed4b94ab9",
+    "event_time": "2026-08-14T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Retail Sales m/m",
+    "impact": "Medium",
+    "actual": "-0.6%",
+    "forecast": "0.1%",
+    "previous": "0.2%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -420,6 +840,90 @@
     "updated_at": "2026-08-28T15:34:48.173141+00:00"
   },
   {
+    "id": "2bc10b10-5f82-4d96-bde5-936917d7ecdd",
+    "event_time": "2026-08-16T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": "0.5%",
+    "forecast": "0.4%",
+    "previous": "-0.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "8c1633d6-5e24-492c-bde5-ecca343fcc3e",
+    "event_time": "2026-08-16T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Median CPI y/y",
+    "impact": "High",
+    "actual": "2.0%",
+    "forecast": "2.0%",
+    "previous": "1.9%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "e050d4bb-2f58-44e9-9b62-6c301cae32c3",
+    "event_time": "2026-08-16T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Trimmed CPI y/y",
+    "impact": "High",
+    "actual": "1.9%",
+    "forecast": "1.8%",
+    "previous": "1.9%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "64fff152-d2c6-4432-9ccd-a9762f0becb2",
+    "event_time": "2026-08-16T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Common CPI y/y",
+    "impact": "Medium",
+    "actual": "2.7%",
+    "forecast": "2.5%",
+    "previous": "2.6%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "ec70ae47-b492-4c96-9681-5029ce11b98d",
+    "event_time": "2026-08-17T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Claimant Count Change",
+    "impact": "High",
+    "actual": "-11.0K",
+    "forecast": "16.5K",
+    "previous": "-6.4K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "fe560936-6c6d-4a24-b8e0-6f0120a9d4fd",
+    "event_time": "2026-08-17T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Average Earnings Index 3m/y",
+    "impact": "Medium",
+    "actual": "4.1%",
+    "forecast": "4.0%",
+    "previous": "4.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "3c6a3d1c-d6db-49a2-b06a-0e5d7d808663",
+    "event_time": "2026-08-17T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": "0.5%",
+    "forecast": "0.4%",
+    "previous": "-0.4%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
     "id": "48b0f45d-d92e-4e9b-879f-f17a7afb2e16",
     "event_time": "2026-08-17T12:30:00+00:00",
     "country": "CAD",
@@ -427,6 +931,18 @@
     "impact": "High",
     "actual": "2.0%",
     "forecast": "2.0%",
+    "previous": "1.9%",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "ff7c06de-95b1-4f3a-ac31-2c26bcd564c2",
+    "event_time": "2026-08-17T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Trimmed CPI y/y",
+    "impact": "High",
+    "actual": "1.9%",
+    "forecast": "1.8%",
     "previous": "1.9%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
@@ -444,28 +960,16 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "ff7c06de-95b1-4f3a-ac31-2c26bcd564c2",
-    "event_time": "2026-08-17T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Trimmed CPI y/y",
-    "impact": "High",
-    "actual": "1.9%",
-    "forecast": "1.8%",
-    "previous": "1.9%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
-    "id": "3c6a3d1c-d6db-49a2-b06a-0e5d7d808663",
-    "event_time": "2026-08-17T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "CPI m/m",
-    "impact": "High",
-    "actual": "0.5%",
-    "forecast": "0.4%",
-    "previous": "-0.4%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "id": "cc113ce1-d69f-428b-a7ca-30b903952d24",
+    "event_time": "2026-08-18T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Wage Price Index q/q",
+    "impact": "Medium",
+    "actual": "0.8%",
+    "forecast": "0.8%",
+    "previous": "0.8%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "9b9cb2ca-00fc-48fc-869a-c5629a2adde3",
@@ -492,6 +996,66 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
+    "id": "4d8cba4c-b0a2-4d5e-9fda-d6a7873223de",
+    "event_time": "2026-08-18T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": "2.9%",
+    "forecast": "2.9%",
+    "previous": "2.6%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "9bc89e4a-046f-43c6-96de-314986569389",
+    "event_time": "2026-08-18T07:10:00+00:00",
+    "country": "EUR",
+    "event_name": "ECB President Lagarde Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "8acce680-b1a6-41e2-bc7b-1298acea66cc",
+    "event_time": "2026-08-18T10:15:00+00:00",
+    "country": "EUR",
+    "event_name": "ECB President Lagarde Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "6d4f3675-8d14-43c1-b3d5-1f75de937629",
+    "event_time": "2026-08-18T18:00:00+00:00",
+    "country": "USD",
+    "event_name": "FOMC Meeting Minutes",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "4a0f743d-f033-4d63-babf-4effcb1b9325",
+    "event_time": "2026-08-18T18:30:00+00:00",
+    "country": "USD",
+    "event_name": "President Trump Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "e053a8df-6e7f-4401-84d8-8020d6d192df",
     "event_time": "2026-08-19T01:30:00+00:00",
     "country": "AUD",
@@ -502,6 +1066,30 @@
     "previous": "0.8%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "1fb6940a-cb10-4e70-b6b4-fbc93c03dff9",
+    "event_time": "2026-08-19T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Employment Change",
+    "impact": "High",
+    "actual": "-15.8K",
+    "forecast": "11.7K",
+    "previous": "80.2K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "01b40cf0-8f23-40cd-b024-bf898533c6b1",
+    "event_time": "2026-08-19T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "4.5%",
+    "forecast": "4.4%",
+    "previous": "4.4%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "2b686836-6e72-48d9-9e08-0b574b5bb7f1",
@@ -540,6 +1128,30 @@
     "updated_at": "2026-08-28T15:34:52.451799+00:00"
   },
   {
+    "id": "312420ae-f635-4fe1-a89d-e36fcf990251",
+    "event_time": "2026-08-19T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Philly Fed Manufacturing Index",
+    "impact": "Medium",
+    "actual": "47.4",
+    "forecast": "24.1",
+    "previous": "41.4",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "0f1ba4ab-15cf-4975-a1c1-0032706b8152",
+    "event_time": "2026-08-19T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": "206K",
+    "forecast": "210K",
+    "previous": "212K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "ebcffaed-8c0c-421a-9ae3-836db9d30a0a",
     "event_time": "2026-08-19T18:00:00+00:00",
     "country": "USD",
@@ -549,7 +1161,7 @@
     "forecast": null,
     "previous": null,
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "updated_at": "2026-08-28T15:39:09.241564+00:00"
   },
   {
     "id": "fdaf8b50-ee3c-4a74-be12-2c1df86dc382",
@@ -588,16 +1200,88 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "8fe4f2d2-99a7-4466-98e4-44cbe84e96e5",
-    "event_time": "2026-08-20T12:30:00+00:00",
-    "country": "USD",
-    "event_name": "Unemployment Claims",
+    "id": "2830aa1f-52db-4e35-a1cf-4cc0774f55fa",
+    "event_time": "2026-08-20T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Retail Sales m/m",
     "impact": "Medium",
-    "actual": "206K",
-    "forecast": "210K",
-    "previous": "212K",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+    "actual": "-0.5%",
+    "forecast": "-0.5%",
+    "previous": "0.7%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "3c14756e-2cb2-42ae-a30d-b24303879209",
+    "event_time": "2026-08-20T07:15:00+00:00",
+    "country": "EUR",
+    "event_name": "French Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": "51.5",
+    "forecast": "50.1",
+    "previous": "49.8",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b3a9d745-5516-46d3-a0a9-1f59ee226a97",
+    "event_time": "2026-08-20T07:15:00+00:00",
+    "country": "EUR",
+    "event_name": "French Flash Services PMI",
+    "impact": "Medium",
+    "actual": "48.4",
+    "forecast": "49.4",
+    "previous": "49.6",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "27f9fbe2-d243-4431-8483-623db18a0690",
+    "event_time": "2026-08-20T07:30:00+00:00",
+    "country": "EUR",
+    "event_name": "German Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": "54.1",
+    "forecast": "52.1",
+    "previous": "52.2",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "fea5f793-6fdf-43b9-bb83-0487b0c9ec09",
+    "event_time": "2026-08-20T07:30:00+00:00",
+    "country": "EUR",
+    "event_name": "German Flash Services PMI",
+    "impact": "Medium",
+    "actual": "48.5",
+    "forecast": "50.1",
+    "previous": "49.8",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "a78ab394-9555-4988-b4e7-cd67d3920a1b",
+    "event_time": "2026-08-20T08:30:00+00:00",
+    "country": "GBP",
+    "event_name": "Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": "51.5",
+    "forecast": "51.6",
+    "previous": "51.9",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "6f5c42e3-f52f-48da-beb3-5a26af6ddc04",
+    "event_time": "2026-08-20T08:30:00+00:00",
+    "country": "GBP",
+    "event_name": "Flash Services PMI",
+    "impact": "Medium",
+    "actual": "52.8",
+    "forecast": "51.8",
+    "previous": "52.1",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "55eb7e75-2a22-439e-9161-684cfdb727c5",
@@ -612,6 +1296,30 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
+    "id": "8fe4f2d2-99a7-4466-98e4-44cbe84e96e5",
+    "event_time": "2026-08-20T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": "206K",
+    "forecast": "210K",
+    "previous": "212K",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "9b22cc7e-ccb1-4577-87d7-df6dc0508cfa",
+    "event_time": "2026-08-20T23:00:00+00:00",
+    "country": "USD",
+    "event_name": "President Trump Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "cb714227-f237-4feb-82f5-7368fc5a03d4",
     "event_time": "2026-08-21T06:00:00+00:00",
     "country": "GBP",
@@ -620,18 +1328,6 @@
     "actual": "-0.5%",
     "forecast": "-0.5%",
     "previous": "0.7%",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-25T14:56:51.483164+00:00"
-  },
-  {
-    "id": "752a2bbe-86fd-4955-847d-5c6a65f9cfb5",
-    "event_time": "2026-08-21T07:15:00+00:00",
-    "country": "EUR",
-    "event_name": "French Flash Services PMI",
-    "impact": "Medium",
-    "actual": "48.4",
-    "forecast": "49.4",
-    "previous": "49.6",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -648,14 +1344,14 @@
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
   {
-    "id": "36c71edf-83d7-4fc5-9895-94e228cd3a1f",
-    "event_time": "2026-08-21T07:30:00+00:00",
+    "id": "752a2bbe-86fd-4955-847d-5c6a65f9cfb5",
+    "event_time": "2026-08-21T07:15:00+00:00",
     "country": "EUR",
-    "event_name": "German Flash Services PMI",
+    "event_name": "French Flash Services PMI",
     "impact": "Medium",
-    "actual": "48.5",
-    "forecast": "50.1",
-    "previous": "49.8",
+    "actual": "48.4",
+    "forecast": "49.4",
+    "previous": "49.6",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -668,6 +1364,18 @@
     "actual": "54.1",
     "forecast": "52.1",
     "previous": "52.2",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-25T14:56:51.483164+00:00"
+  },
+  {
+    "id": "36c71edf-83d7-4fc5-9895-94e228cd3a1f",
+    "event_time": "2026-08-21T07:30:00+00:00",
+    "country": "EUR",
+    "event_name": "German Flash Services PMI",
+    "impact": "Medium",
+    "actual": "48.5",
+    "forecast": "50.1",
+    "previous": "49.8",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-25T14:56:51.483164+00:00"
   },
@@ -708,6 +1416,30 @@
     "updated_at": "2026-08-28T15:34:58.495869+00:00"
   },
   {
+    "id": "ffdd4602-4d6d-4c47-b114-f3f32a6f96ee",
+    "event_time": "2026-08-23T17:00:00+00:00",
+    "country": "USD",
+    "event_name": "Treasury Sec Bessent Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "34ff8e57-5f28-4d00-a12d-b0b46872c53d",
+    "event_time": "2026-08-24T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "CB Consumer Confidence",
+    "impact": "Medium",
+    "actual": "89.4",
+    "forecast": "90.3",
+    "previous": "90.2",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "a225fca6-66e2-4298-8485-921eb1bfaec8",
     "event_time": "2026-08-24T17:00:00+00:00",
     "country": "USD",
@@ -718,6 +1450,78 @@
     "previous": null,
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-28T15:34:58.782548+00:00"
+  },
+  {
+    "id": "5d9a545f-ff4d-43ec-98b0-445791951b78",
+    "event_time": "2026-08-25T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": "1.0%",
+    "forecast": "0.9%",
+    "previous": "-0.1%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "29ea0627-6fad-4b77-b9c5-7aaf57aa93fb",
+    "event_time": "2026-08-25T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": "3.5%",
+    "forecast": "3.3%",
+    "previous": "3.8%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "7eb097b9-a5c5-49ef-bfe4-c165bcea27ca",
+    "event_time": "2026-08-25T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Trimmed Mean CPI m/m",
+    "impact": "High",
+    "actual": "0.5%",
+    "forecast": "0.4%",
+    "previous": "0.3%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "49ad1093-6bbe-45fc-b5df-581726502ff2",
+    "event_time": "2026-08-25T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core PCE Price Index m/m",
+    "impact": "High",
+    "actual": "0.2%",
+    "forecast": "0.2%",
+    "previous": "0.1%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "fa008586-aa59-4fe9-9d17-57fd58295799",
+    "event_time": "2026-08-25T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim GDP q/q",
+    "impact": "High",
+    "actual": "1.5%",
+    "forecast": "1.5%",
+    "previous": "1.5%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "5eb0ecd4-5c4d-4750-8678-f18105c10b69",
+    "event_time": "2026-08-25T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim GDP Price Index q/q",
+    "impact": "Medium",
+    "actual": "6.4%",
+    "forecast": "6.2%",
+    "previous": "6.2%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "160db887-90f5-4d83-b84d-a6ad0d5bff0e",
@@ -732,14 +1536,14 @@
     "updated_at": "2026-08-26T04:09:27.803885+00:00"
   },
   {
-    "id": "2f6d7eb5-8e19-49a1-bc5f-b1544e979fec",
+    "id": "8b9bc4e1-816c-42e7-adba-928ca2391de5",
     "event_time": "2026-08-26T01:30:00+00:00",
     "country": "AUD",
-    "event_name": "Trimmed Mean CPI m/m",
+    "event_name": "CPI m/m",
     "impact": "High",
-    "actual": "0.5%",
-    "forecast": "0.4%",
-    "previous": "0.3%",
+    "actual": "1.0%",
+    "forecast": "0.9%",
+    "previous": "-0.1%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-26T04:09:27.803885+00:00"
   },
@@ -756,14 +1560,14 @@
     "updated_at": "2026-08-26T04:09:27.803885+00:00"
   },
   {
-    "id": "8b9bc4e1-816c-42e7-adba-928ca2391de5",
+    "id": "2f6d7eb5-8e19-49a1-bc5f-b1544e979fec",
     "event_time": "2026-08-26T01:30:00+00:00",
     "country": "AUD",
-    "event_name": "CPI m/m",
+    "event_name": "Trimmed Mean CPI m/m",
     "impact": "High",
-    "actual": "1.0%",
-    "forecast": "0.9%",
-    "previous": "-0.1%",
+    "actual": "0.5%",
+    "forecast": "0.4%",
+    "previous": "0.3%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-26T04:09:27.803885+00:00"
   },
@@ -804,6 +1608,30 @@
     "updated_at": "2026-08-27T03:49:17.491691+00:00"
   },
   {
+    "id": "b6ffa569-cc16-4fc2-b407-d1839f95d0bd",
+    "event_time": "2026-08-26T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": "203K",
+    "forecast": "208K",
+    "previous": "207K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b6dfc9f6-f19e-411e-8c66-8d03e45f09e1",
+    "event_time": "2026-08-26T23:30:00+00:00",
+    "country": "JPY",
+    "event_name": "Tokyo Core CPI y/y",
+    "impact": "Medium",
+    "actual": "1.8%",
+    "forecast": "1.8%",
+    "previous": "1.7%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
     "id": "348771e1-307e-4325-93c0-b9f31d91a7b6",
     "event_time": "2026-08-27T12:30:00+00:00",
     "country": "USD",
@@ -814,6 +1642,66 @@
     "previous": "207K",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
     "updated_at": "2026-08-28T02:09:07.53806+00:00"
+  },
+  {
+    "id": "24e79fd7-f72c-4b45-9701-3f77ae78e79d",
+    "event_time": "2026-08-27T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "GDP m/m",
+    "impact": "High",
+    "actual": "0.3%",
+    "forecast": "0.2%",
+    "previous": "0.3%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "0a83fd7b-4bcd-4431-870e-287a98099ead",
+    "event_time": "2026-08-27T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Fed Chairman Warsh Speaks",
+    "impact": "High",
+    "actual": "Neutral / Dovish",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "b1437c4f-47da-4e26-83dd-d735fe6707da",
+    "event_time": "2026-08-27T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim Benchmark Payrolls Revision",
+    "impact": "High",
+    "actual": "-79K",
+    "forecast": null,
+    "previous": "-911K",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "989409b3-227d-4fdb-b7e3-7fac49bfb4a0",
+    "event_time": "2026-08-27T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Revised UoM Consumer Sentiment",
+    "impact": "Medium",
+    "actual": "51.7",
+    "forecast": "51.0",
+    "previous": "51.0",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
+  },
+  {
+    "id": "a3972f3d-ee7d-4a46-81b4-72f0e9e3c41a",
+    "event_time": "2026-08-27T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Revised UoM Inflation Expectations",
+    "impact": "Medium",
+    "actual": "4.0%",
+    "forecast": null,
+    "previous": "4.3%",
+    "created_at": "2026-08-30T23:09:35.932742+00:00",
+    "updated_at": "2026-08-30T23:09:35.932742+00:00"
   },
   {
     "id": "7160ed0a-0394-4b7c-a75c-1be1b460dba4",
@@ -833,23 +1721,11 @@
     "country": "CAD",
     "event_name": "GDP m/m",
     "impact": "High",
-    "actual": "0.2%",
+    "actual": "0.3%",
     "forecast": "0.2%",
     "previous": "0.3%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T15:34:59.074118+00:00"
-  },
-  {
-    "id": "08e653b1-0a21-4067-b3c6-b3ca35e49826",
-    "event_time": "2026-08-28T14:00:00+00:00",
-    "country": "USD",
-    "event_name": "Revised UoM Consumer Sentiment",
-    "impact": "Medium",
-    "actual": "51.8",
-    "forecast": "51.0",
-    "previous": "51.0",
-    "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T11:36:17.51859+00:00"
+    "updated_at": "2026-08-29T02:43:09.991078+00:00"
   },
   {
     "id": "ab023109-e0f7-4fca-a909-7825cf9df85c",
@@ -857,11 +1733,11 @@
     "country": "USD",
     "event_name": "Fed Chairman Warsh Speaks",
     "impact": "High",
-    "actual": "Neutral / Dovish",
+    "actual": "Publicado",
     "forecast": null,
     "previous": null,
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T15:34:59.400189+00:00"
+    "updated_at": "2026-08-29T23:32:07.245152+00:00"
   },
   {
     "id": "5096f61d-1edf-4443-bd4b-380400bf2d9b",
@@ -869,11 +1745,23 @@
     "country": "USD",
     "event_name": "Prelim Benchmark Payrolls Revision",
     "impact": "High",
-    "actual": "-818K",
+    "actual": "-79K",
     "forecast": null,
     "previous": "-911K",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T15:34:59.699734+00:00"
+    "updated_at": "2026-08-29T02:43:09.991078+00:00"
+  },
+  {
+    "id": "08e653b1-0a21-4067-b3c6-b3ca35e49826",
+    "event_time": "2026-08-28T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Revised UoM Consumer Sentiment",
+    "impact": "Medium",
+    "actual": "51.7",
+    "forecast": "51.0",
+    "previous": "51.0",
+    "created_at": "2026-08-25T13:51:30.272664+00:00",
+    "updated_at": "2026-08-29T02:43:09.991078+00:00"
   },
   {
     "id": "7a31beb4-e31a-4e17-8e33-886df5985a4b",
@@ -881,11 +1769,11 @@
     "country": "USD",
     "event_name": "Revised UoM Inflation Expectations",
     "impact": "Medium",
-    "actual": "4.2%",
+    "actual": "4.0%",
     "forecast": null,
     "previous": "4.3%",
     "created_at": "2026-08-25T13:51:30.272664+00:00",
-    "updated_at": "2026-08-28T15:35:06.971907+00:00"
+    "updated_at": "2026-08-29T02:43:09.991078+00:00"
   },
   {
     "id": "248221c6-d29f-5bc1-b2af-c0f5b38e6b15",
@@ -897,7 +1785,7 @@
     "forecast": "1.2%",
     "previous": "1.5%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-08-31T01:40:32.394875+00:00"
   },
   {
     "id": "34f68399-e125-5663-9811-6d24229ec41d",
@@ -909,7 +1797,19 @@
     "forecast": "49.5",
     "previous": "49.4",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-08-31T01:30:00.105739+00:00"
+  },
+  {
+    "id": "ae9dbc0d-790d-4d92-9726-2692f1bc746b",
+    "event_time": "2026-08-31T05:00:00+00:00",
+    "country": "EUR",
+    "event_name": "German Prelim CPI m/m",
+    "impact": "Medium",
+    "actual": "0.2%",
+    "forecast": "0.3%",
+    "previous": "0.8%",
+    "created_at": "2026-08-31T05:52:20.261906+00:00",
+    "updated_at": "2026-08-31T20:40:05.588264+00:00"
   },
   {
     "id": "93bb8d53-c37b-5b11-841e-9f8c8494498f",
@@ -921,7 +1821,7 @@
     "forecast": "0.1%",
     "previous": "0.3%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-01T04:39:39.761341+00:00"
   },
   {
     "id": "9d79c7fe-1c20-5d45-8982-e9afc201b6ef",
@@ -933,7 +1833,7 @@
     "forecast": "45.2",
     "previous": "45.3",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-01T04:39:40.086373+00:00"
   },
   {
     "id": "ccc5d2db-f42a-5c0c-9235-f5b71cfc3f9b",
@@ -945,7 +1845,7 @@
     "forecast": "4.35%",
     "previous": "4.35%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-01T04:39:40.382316+00:00"
   },
   {
     "id": "2821d84d-d797-5080-a2af-661b971849a0",
@@ -957,7 +1857,7 @@
     "forecast": "45.8",
     "previous": "45.6",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-01T17:39:06.828738+00:00"
   },
   {
     "id": "1df94908-55bf-5f70-883f-bd4d157aaff8",
@@ -969,7 +1869,31 @@
     "forecast": "52.5",
     "previous": "52.1",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-01T17:39:07.124937+00:00"
+  },
+  {
+    "id": "6fc99a65-2370-419b-98ae-6907c82ddb62",
+    "event_time": "2026-09-01T09:00:00+00:00",
+    "country": "EUR",
+    "event_name": "Core CPI Flash Estimate y/y",
+    "impact": "Medium",
+    "actual": "2.4%",
+    "forecast": "2.5%",
+    "previous": "2.5%",
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "ae0e25ee-d8b8-40c3-98e4-ef9544993f93",
+    "event_time": "2026-09-01T09:00:00+00:00",
+    "country": "EUR",
+    "event_name": "CPI Flash Estimate y/y",
+    "impact": "Medium",
+    "actual": "3.3%",
+    "forecast": "3.3%",
+    "previous": "2.9%",
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "1d28b943-f837-553e-a16a-238e2651d841",
@@ -977,11 +1901,11 @@
     "country": "USD",
     "event_name": "ISM Manufacturing PMI",
     "impact": "High",
-    "actual": "47.8",
-    "forecast": "47.8",
-    "previous": "46.8",
+    "actual": "54.6",
+    "forecast": "55.2",
+    "previous": "55.6",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "59de2ea9-dbe0-5bb4-8129-7155d43c1c4a",
@@ -989,11 +1913,23 @@
     "country": "USD",
     "event_name": "ISM Manufacturing Prices",
     "impact": "Medium",
-    "actual": "52.5",
-    "forecast": "52.5",
-    "previous": "52.9",
+    "actual": "71.1",
+    "forecast": "70.5",
+    "previous": "71.1",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "bbc96546-66da-45e3-bd3b-d9c8eba1abf9",
+    "event_time": "2026-09-01T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "JOLTS Job Openings",
+    "impact": "Medium",
+    "actual": "7.27M",
+    "forecast": "7.33M",
+    "previous": "7.18M",
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "e95094a7-f5c1-59dd-9bff-feaba125aa08",
@@ -1001,23 +1937,95 @@
     "country": "AUD",
     "event_name": "GDP q/q",
     "impact": "High",
-    "actual": "0.3%",
+    "actual": "0.4%",
     "forecast": "0.3%",
-    "previous": "0.1%",
+    "previous": "0.3%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "30d8a041-2475-40a3-9ce4-b4e1ee40b933",
+    "event_time": "2026-09-02T02:00:00+00:00",
+    "country": "NZD",
+    "event_name": "Official Cash Rate",
+    "impact": "High",
+    "actual": "2.75%",
+    "forecast": "2.75%",
+    "previous": "2.50%",
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "8a153a2f-8912-42e0-8e50-ac0aba45ff63",
+    "event_time": "2026-09-02T02:00:00+00:00",
+    "country": "NZD",
+    "event_name": "RBNZ Monetary Policy Statement",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "1f35fa2e-9e60-4c2e-8e53-ad9b5a128db1",
+    "event_time": "2026-09-02T02:00:00+00:00",
+    "country": "NZD",
+    "event_name": "RBNZ Rate Statement",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "35f556cc-a924-4dda-a1c3-c24669cdee0a",
+    "event_time": "2026-09-02T03:00:00+00:00",
+    "country": "NZD",
+    "event_name": "RBNZ Press Conference",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-01T12:22:45.870956+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "c6e53ad0-5314-5866-adc9-76fcba549400",
     "event_time": "2026-09-02T12:15:00+00:00",
     "country": "USD",
     "event_name": "ADP Non-Farm Employment Change",
-    "impact": "High",
-    "actual": "145K",
-    "forecast": "145K",
-    "previous": "122K",
+    "impact": "Medium",
+    "actual": "38K",
+    "forecast": "47K",
+    "previous": "46K",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "a73811bd-1032-4d51-94cd-42e59e0747c3",
+    "event_time": "2026-09-02T13:45:00+00:00",
+    "country": "CAD",
+    "event_name": "BOC Rate Statement",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-02T04:52:00.762286+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "b0e21db6-bac4-4399-b179-976db576c9e4",
+    "event_time": "2026-09-02T13:45:00+00:00",
+    "country": "CAD",
+    "event_name": "Overnight Rate",
+    "impact": "High",
+    "actual": "2.25%",
+    "forecast": "2.25%",
+    "previous": "2.25%",
+    "created_at": "2026-09-02T04:52:00.762286+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "4ef6db01-eb9c-5bfc-8acf-efc6dcf42e44",
@@ -1029,7 +2037,7 @@
     "forecast": "7.95M",
     "previous": "8.18M",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-03T01:05:03.360927+00:00"
   },
   {
     "id": "0884aaea-0460-5ffb-8079-e2526e06f20b",
@@ -1041,7 +2049,31 @@
     "forecast": "4.8%",
     "previous": "-3.3%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-03T01:05:04.060348+00:00"
+  },
+  {
+    "id": "224166c7-168f-4c8f-8401-02de5e689ddc",
+    "event_time": "2026-09-02T14:30:00+00:00",
+    "country": "CAD",
+    "event_name": "BOC Press Conference",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-02T04:52:00.762286+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "3da2bc97-5377-49b2-87da-5d9dc90e5c49",
+    "event_time": "2026-09-02T20:10:00+00:00",
+    "country": "NZD",
+    "event_name": "RBNZ Gov Breman Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-02T04:52:00.762286+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "f138994c-dbf5-5e91-8c66-f5b5899e561c",
@@ -1053,7 +2085,19 @@
     "forecast": "52.1",
     "previous": "52.1",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-03T01:45:16.121642+00:00"
+  },
+  {
+    "id": "6c4898b1-0431-4242-b3e7-4aef907120bd",
+    "event_time": "2026-09-03T06:30:00+00:00",
+    "country": "CHF",
+    "event_name": "CPI m/m",
+    "impact": "Medium",
+    "actual": "0.4%",
+    "forecast": "0.0%",
+    "previous": "-0.1%",
+    "created_at": "2026-09-02T17:14:21.73077+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "55931abe-f47f-5fdb-8836-793f669d9b7a",
@@ -1065,31 +2109,43 @@
     "forecast": "0.3%",
     "previous": "0.5%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-03T13:56:14.433773+00:00"
   },
   {
     "id": "197de598-f9fa-5daf-bca0-cd0f04b8afe6",
     "event_time": "2026-09-03T12:30:00+00:00",
     "country": "USD",
     "event_name": "Unemployment Claims",
-    "impact": "High",
-    "actual": "231K",
-    "forecast": "232K",
-    "previous": "231K",
+    "impact": "Medium",
+    "actual": "206K",
+    "forecast": "205K",
+    "previous": "204K",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "71c3adf5-9fdb-52d1-9f14-9fc1dbd5a3d4",
     "event_time": "2026-09-03T14:00:00+00:00",
     "country": "USD",
     "event_name": "ISM Services PMI",
-    "impact": "High",
-    "actual": "51.4",
-    "forecast": "51.4",
-    "previous": "51.4",
+    "impact": "Medium",
+    "actual": "55.4",
+    "forecast": "54.2",
+    "previous": "54.1",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "f8ba2aee-3278-491d-be95-02a632f6fd55",
+    "event_time": "2026-09-04T08:50:00+00:00",
+    "country": "GBP",
+    "event_name": "BOE Gov Bailey Speaks",
+    "impact": "High",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-04T11:59:02.709935+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "d45df770-0201-58f8-a239-3d2ca6676625",
@@ -1101,7 +2157,31 @@
     "forecast": "0.3%",
     "previous": "0.3%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-04T14:18:17.791238+00:00"
+  },
+  {
+    "id": "a95a86f3-195a-508f-bde6-b744753e90d4",
+    "event_time": "2026-09-04T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Employment Change",
+    "impact": "High",
+    "actual": "-41.7K",
+    "forecast": "15.1K",
+    "previous": "75.1K",
+    "created_at": "2026-08-30T22:22:15.161802+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "18966103-b1e8-56f6-8231-7cabb84e8fcb",
+    "event_time": "2026-09-04T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": "6.4%",
+    "forecast": "6.4%",
+    "previous": "6.4%",
+    "created_at": "2026-08-30T22:22:15.161802+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "28915425-8313-5bba-9f06-1f6bb1263f39",
@@ -1109,11 +2189,11 @@
     "country": "USD",
     "event_name": "Non-Farm Employment Change",
     "impact": "High",
-    "actual": "164K",
-    "forecast": "164K",
-    "previous": "114K",
+    "actual": "162K",
+    "forecast": "55K",
+    "previous": "21K",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "f85c2089-02e9-5069-ba11-bed53ab07587",
@@ -1121,11 +2201,11 @@
     "country": "USD",
     "event_name": "Unemployment Rate",
     "impact": "High",
-    "actual": "4.2%",
-    "forecast": "4.2%",
-    "previous": "4.3%",
+    "actual": "4.1%",
+    "forecast": "4.1%",
+    "previous": "4.1%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "84972b82-bea0-53f4-947a-2d17dd944bde",
@@ -1137,31 +2217,19 @@
     "forecast": "0.3%",
     "previous": "0.2%",
     "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
-    "id": "a95a86f3-195a-508f-bde6-b744753e90d4",
-    "event_time": "2026-09-04T12:30:00+00:00",
+    "id": "3c85c2d2-67fa-4233-a3c3-7cb0fdf334aa",
+    "event_time": "2026-09-04T14:00:00+00:00",
     "country": "CAD",
-    "event_name": "Employment Change",
-    "impact": "High",
-    "actual": "25.0K",
-    "forecast": "25.0K",
-    "previous": "-2.8K",
-    "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
-  },
-  {
-    "id": "18966103-b1e8-56f6-8231-7cabb84e8fcb",
-    "event_time": "2026-09-04T12:30:00+00:00",
-    "country": "CAD",
-    "event_name": "Unemployment Rate",
-    "impact": "High",
-    "actual": "6.5%",
-    "forecast": "6.5%",
-    "previous": "6.4%",
-    "created_at": "2026-08-30T22:22:15.161802+00:00",
-    "updated_at": "2026-08-30T22:22:15.161802+00:00"
+    "event_name": "Ivey PMI",
+    "impact": "Medium",
+    "actual": "64.3",
+    "forecast": "56.2",
+    "previous": "55.1",
+    "created_at": "2026-09-04T11:59:02.709935+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "de29dbd5-749e-5d86-8ed8-0c6b815e1fe4",
@@ -1185,7 +2253,19 @@
     "forecast": "0.2%",
     "previous": "0.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:33.878961+00:00"
+  },
+  {
+    "id": "9a055514-b051-48f1-ba09-e349d90c99ad",
+    "event_time": "2026-09-08T13:15:00+00:00",
+    "country": "GBP",
+    "event_name": "Monetary Policy Report Hearings",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-08T04:57:41.093906+00:00",
+    "updated_at": "2026-09-09T04:57:22.366813+00:00"
   },
   {
     "id": "433a5b31-2833-52a7-b26d-b1c5df2566ee",
@@ -1197,7 +2277,19 @@
     "forecast": "-72.5B",
     "previous": "-73.1B",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:34.223472+00:00"
+  },
+  {
+    "id": "1cda889e-9d4c-4602-a46c-e25407e328d2",
+    "event_time": "2026-09-10T01:15:00+00:00",
+    "country": "USD",
+    "event_name": "President Trump Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-09T13:03:36.483691+00:00",
+    "updated_at": "2026-09-09T20:28:45.116057+00:00"
   },
   {
     "id": "8905aeba-ce03-5e9b-b8c0-4317baea4691",
@@ -1209,7 +2301,7 @@
     "forecast": "3.50%",
     "previous": "3.75%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:34.523435+00:00"
   },
   {
     "id": "cd340ea2-6508-541f-bd16-842ef243d0be",
@@ -1221,7 +2313,7 @@
     "forecast": "0.2%",
     "previous": "0.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:34.806288+00:00"
   },
   {
     "id": "124285b9-5a49-5e55-a2ef-e3aca70ed982",
@@ -1233,7 +2325,7 @@
     "forecast": "2.8%",
     "previous": "2.9%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:35.373577+00:00"
   },
   {
     "id": "dacc26b9-5072-56f0-9608-27c8267fdfb4",
@@ -1245,7 +2337,31 @@
     "forecast": "0.2%",
     "previous": "0.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:35.912991+00:00"
+  },
+  {
+    "id": "d4ba8b79-3f89-41ed-983c-69026de71282",
+    "event_time": "2026-09-10T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core PPI m/m",
+    "impact": "High",
+    "actual": "0.2%",
+    "forecast": "0.3%",
+    "previous": "0.3%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-10T20:27:49.318825+00:00"
+  },
+  {
+    "id": "85386cc9-e0df-46c8-9378-698e59e5ee14",
+    "event_time": "2026-09-10T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "PPI m/m",
+    "impact": "High",
+    "actual": "0.4%",
+    "forecast": "0.4%",
+    "previous": "0.1%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-10T20:27:49.318825+00:00"
   },
   {
     "id": "742661b3-d7e4-5d9a-b13e-ad8c8b0f8f80",
@@ -1253,11 +2369,11 @@
     "country": "USD",
     "event_name": "Unemployment Claims",
     "impact": "Medium",
-    "actual": "231K",
-    "forecast": "228K",
-    "previous": "232K",
+    "actual": "206K",
+    "forecast": "205K",
+    "previous": "207K",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T20:27:49.318825+00:00"
   },
   {
     "id": "94495d27-c77b-5a94-85a0-9ebc3cf61bfc",
@@ -1269,7 +2385,7 @@
     "forecast": null,
     "previous": null,
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-10T18:40:36.536233+00:00"
   },
   {
     "id": "7d08b64e-5f09-5f72-b200-9861a380b0ad",
@@ -1281,7 +2397,19 @@
     "forecast": "0.2%",
     "previous": "0.0%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-12T02:12:31.931085+00:00"
+  },
+  {
+    "id": "434d1e79-4264-41ce-bed9-5730175245cd",
+    "event_time": "2026-09-11T09:15:00+00:00",
+    "country": "CHF",
+    "event_name": "SNB Chairman Schlegel Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
   },
   {
     "id": "9dfd7da7-dc23-576d-8ab4-0146ffca77bb",
@@ -1293,19 +2421,163 @@
     "forecast": "0.2%",
     "previous": "0.1%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-12T02:12:32.511475+00:00"
+  },
+  {
+    "id": "4372e856-6599-4b19-a5b4-31696a4942ed",
+    "event_time": "2026-09-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core CPI m/m",
+    "impact": "High",
+    "actual": "0.3%",
+    "forecast": "0.2%",
+    "previous": "0.2%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
+  },
+  {
+    "id": "e31c8d11-e733-4bf9-9443-cda17a886e50",
+    "event_time": "2026-09-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core CPI y/y",
+    "impact": "High",
+    "actual": "2.4%",
+    "forecast": "2.4%",
+    "previous": "2.5%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
+  },
+  {
+    "id": "edecdc09-3c58-4cc3-ab76-6f15424b5851",
+    "event_time": "2026-09-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": "0.4%",
+    "forecast": "0.4%",
+    "previous": "0.1%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
+  },
+  {
+    "id": "f373c230-213d-4edc-9bd2-08488dcdd043",
+    "event_time": "2026-09-11T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": "3.4%",
+    "forecast": "3.4%",
+    "previous": "3.4%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
   },
   {
     "id": "e53988be-f377-5853-acec-eaaca3d72e81",
     "event_time": "2026-09-11T14:00:00+00:00",
     "country": "USD",
     "event_name": "Prelim UoM Consumer Sentiment",
-    "impact": "High",
+    "impact": "Medium",
     "actual": "68.5",
-    "forecast": "68.5",
-    "previous": "67.8",
+    "forecast": "51.0",
+    "previous": "51.7",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-12T02:12:33.861921+00:00"
+  },
+  {
+    "id": "9f8d6b12-3aed-47a1-8c74-d64318840a4a",
+    "event_time": "2026-09-11T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Prelim UoM Inflation Expectations",
+    "impact": "Medium",
+    "actual": "4.6%",
+    "forecast": null,
+    "previous": "4.0%",
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
+  },
+  {
+    "id": "eaacf7d7-7aae-4678-a2ec-50d28f727c74",
+    "event_time": "2026-09-11T14:00:00+00:00",
+    "country": "EUR",
+    "event_name": "ECB President Lagarde Speaks",
+    "impact": "Medium",
+    "actual": "Publicado",
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-11T04:57:12.816006+00:00",
+    "updated_at": "2026-09-11T20:30:45.879978+00:00"
+  },
+  {
+    "id": "60d60e8a-35e2-440e-9fc4-c326e8aa97bd",
+    "event_time": "2026-09-14T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "16b0910f-2362-46a4-be49-3673ea7ea007",
+    "event_time": "2026-09-14T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Median CPI y/y",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "413c3e15-758c-45a4-a41d-b75ac102cc08",
+    "event_time": "2026-09-14T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Trimmed CPI y/y",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "04b351e6-b04c-417c-b4eb-d83d585887d2",
+    "event_time": "2026-09-14T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Common CPI y/y",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "35a7606d-d659-4609-97a8-8dc2f57ac17d",
+    "event_time": "2026-09-15T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Claimant Count Change",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "afc283d6-6bc6-45e9-ac02-df5d83d1c10f",
+    "event_time": "2026-09-15T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Average Earnings Index 3m/y",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "0f741e1f-0705-59ea-8051-5f149cc745ed",
@@ -1356,6 +2628,18 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "71da007d-faef-4c32-b87f-e42b417732c1",
+    "event_time": "2026-09-16T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "717f9d2e-a178-551e-bc1b-75cafad5dd07",
     "event_time": "2026-09-16T09:00:00+00:00",
     "country": "EUR",
@@ -1366,6 +2650,30 @@
     "previous": "2.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "1fee42d1-3d88-48b8-91ee-03f06b6d9b67",
+    "event_time": "2026-09-16T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core Retail Sales m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "f29a1c0d-4716-4cf2-bb14-d6b1d5e704ec",
+    "event_time": "2026-09-16T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Retail Sales m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "66b99067-ab8d-570b-82d9-4c0310b6c919",
@@ -1392,6 +2700,42 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "64f425db-5f06-41fb-8c68-830db5b4672c",
+    "event_time": "2026-09-16T18:00:00+00:00",
+    "country": "USD",
+    "event_name": "Federal Funds Rate",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "c4e400b2-66c0-4c75-af48-4c28857d6d9d",
+    "event_time": "2026-09-16T18:00:00+00:00",
+    "country": "USD",
+    "event_name": "FOMC Economic Projections",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "f632fc97-973f-4c04-8e8e-caffa9d04777",
+    "event_time": "2026-09-16T18:00:00+00:00",
+    "country": "USD",
+    "event_name": "FOMC Statement",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "d8d5d0bc-0518-5661-8cc9-9fee2573eda2",
     "event_time": "2026-09-16T18:30:00+00:00",
     "country": "USD",
@@ -1402,6 +2746,30 @@
     "previous": null,
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "2e5af8a5-b9ac-4f99-8e17-bcfe342b81e0",
+    "event_time": "2026-09-16T18:30:00+00:00",
+    "country": "USD",
+    "event_name": "FOMC Press Conference",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "0d897886-2ada-43a8-95b9-c28aac3d5d7f",
+    "event_time": "2026-09-16T22:45:00+00:00",
+    "country": "NZD",
+    "event_name": "GDP q/q",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "08c3942f-c5a5-5112-82f4-491cb291f9ff",
@@ -1428,16 +2796,40 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
-    "id": "8a0b593f-4588-55e3-b7cb-2c1996e41d1f",
-    "event_time": "2026-09-17T12:30:00+00:00",
-    "country": "USD",
-    "event_name": "Unemployment Claims",
-    "impact": "Medium",
+    "id": "817a9eb2-d77f-4a07-a333-5e3d0f948e97",
+    "event_time": "2026-09-17T11:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Monetary Policy Summary",
+    "impact": "High",
     "actual": null,
-    "forecast": "229K",
-    "previous": "228K",
-    "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "2e365d0e-a967-4953-a45c-548ecd9bb6f0",
+    "event_time": "2026-09-17T11:00:00+00:00",
+    "country": "GBP",
+    "event_name": "MPC Official Bank Rate Votes",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "da8c4477-e946-4ae2-93d9-adb6084cb78f",
+    "event_time": "2026-09-17T11:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Official Bank Rate",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "4d10ad79-e05f-547b-982d-6d5d12ddad44",
@@ -1446,10 +2838,34 @@
     "event_name": "Philly Fed Manufacturing Index",
     "impact": "Medium",
     "actual": null,
-    "forecast": "1.2",
-    "previous": "-7.0",
+    "forecast": null,
+    "previous": null,
     "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "8a0b593f-4588-55e3-b7cb-2c1996e41d1f",
+    "event_time": "2026-09-17T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T22:27:08.556744+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "96657e77-911a-4a38-9581-a638c47c3eac",
+    "event_time": "2026-09-17T23:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Gov Bullock Speaks",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "c0efa93d-ed56-5046-bd42-79a874771cff",
@@ -1476,6 +2892,18 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "b06acb8d-08f1-4ec5-b42e-c8e607aa9ebb",
+    "event_time": "2026-09-18T06:00:00+00:00",
+    "country": "GBP",
+    "event_name": "Retail Sales m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "91ec239c-4e9d-5200-9c6e-73e53a682e96",
     "event_time": "2026-09-18T06:30:00+00:00",
     "country": "JPY",
@@ -1486,6 +2914,54 @@
     "previous": null,
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "a1713555-7f0d-4f9c-b106-b8262291d967",
+    "event_time": "2026-09-23T07:15:00+00:00",
+    "country": "EUR",
+    "event_name": "French Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "5ad81511-058e-444a-a316-e1c7c6f8eb05",
+    "event_time": "2026-09-23T07:15:00+00:00",
+    "country": "EUR",
+    "event_name": "French Flash Services PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "34e1aa04-48b0-4812-a6d0-94516575ba6b",
+    "event_time": "2026-09-23T07:30:00+00:00",
+    "country": "EUR",
+    "event_name": "German Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "0153eb35-3afb-40f5-ab11-5265717dbfa2",
+    "event_time": "2026-09-23T07:30:00+00:00",
+    "country": "EUR",
+    "event_name": "German Flash Services PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "4938cb65-b7d7-5ab6-9bf7-0cbbaa375c05",
@@ -1512,6 +2988,30 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "91db6dd8-ce2f-4930-89d5-64ad8de3210f",
+    "event_time": "2026-09-23T08:30:00+00:00",
+    "country": "GBP",
+    "event_name": "Flash Manufacturing PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "242fd317-a988-41e4-b811-a50b866ea7fc",
+    "event_time": "2026-09-23T08:30:00+00:00",
+    "country": "GBP",
+    "event_name": "Flash Services PMI",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "c4991096-7267-5231-ac07-69d077961cd0",
     "event_time": "2026-09-23T13:45:00+00:00",
     "country": "USD",
@@ -1522,6 +3022,66 @@
     "previous": "54.3",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "cdff6b89-ecd2-40b0-8cf5-9977d32178dd",
+    "event_time": "2026-09-24T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Employment Change",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "51aafa5a-c5c8-4bd1-8e70-a22506b08b4c",
+    "event_time": "2026-09-24T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Unemployment Rate",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "810b042a-aa9b-4332-a882-9123814d5276",
+    "event_time": "2026-09-24T07:30:00+00:00",
+    "country": "CHF",
+    "event_name": "SNB Monetary Policy Assessment",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "e921cb54-6960-4465-90fa-a984628260d6",
+    "event_time": "2026-09-24T07:30:00+00:00",
+    "country": "CHF",
+    "event_name": "SNB Policy Rate",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "90aa9a3b-d11b-495a-a090-1a6bea75e05a",
+    "event_time": "2026-09-24T08:00:00+00:00",
+    "country": "CHF",
+    "event_name": "SNB Press Conference",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "fad19d66-70b6-5aa1-9635-687d56bd3f24",
@@ -1536,18 +3096,6 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
-    "id": "27ba9f08-000a-55c1-9c70-cea20f492b24",
-    "event_time": "2026-09-24T12:30:00+00:00",
-    "country": "USD",
-    "event_name": "Unemployment Claims",
-    "impact": "Medium",
-    "actual": null,
-    "forecast": "225K",
-    "previous": "229K",
-    "created_at": "2026-08-30T22:27:08.556744+00:00",
-    "updated_at": "2026-08-30T22:27:08.556744+00:00"
-  },
-  {
     "id": "fd775a9a-31f4-5c28-bdce-ab7c96d8f32b",
     "event_time": "2026-09-24T12:30:00+00:00",
     "country": "USD",
@@ -1558,6 +3106,42 @@
     "previous": "-0.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "65fec1cc-24b5-41ee-bc95-74eaca8a4d4f",
+    "event_time": "2026-09-24T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Core Retail Sales m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "0cb7139d-8775-4525-88ac-48b5185dd041",
+    "event_time": "2026-09-24T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "Retail Sales m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "27ba9f08-000a-55c1-9c70-cea20f492b24",
+    "event_time": "2026-09-24T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Unemployment Claims",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-08-30T22:27:08.556744+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "eaa2ae44-751a-5d3e-9fae-4c1d78efdbd6",
@@ -1596,6 +3180,78 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "9ce70518-03d4-4305-88d3-719a42e532a2",
+    "event_time": "2026-09-25T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Revised UoM Consumer Sentiment",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "6232bf60-dcbb-4106-a904-3bb3a45577dd",
+    "event_time": "2026-09-25T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "Revised UoM Inflation Expectations",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "4b422270-ed42-41e1-bd25-b819bf05d963",
+    "event_time": "2026-09-29T04:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Cash Rate",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "2008eec7-dc3f-4fe6-81d7-c883eb39f665",
+    "event_time": "2026-09-29T04:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Rate Statement",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "c8318ebc-a946-470d-bbba-4eae07ff8a62",
+    "event_time": "2026-09-29T05:30:00+00:00",
+    "country": "AUD",
+    "event_name": "RBA Press Conference",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "c57ab642-74f2-4ce4-a677-b06c941b87c9",
+    "event_time": "2026-09-29T12:30:00+00:00",
+    "country": "CAD",
+    "event_name": "GDP m/m",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "cbf76f65-4506-5801-8f41-2caabd91e95a",
     "event_time": "2026-09-29T14:00:00+00:00",
     "country": "USD",
@@ -1620,6 +3276,30 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "47f1320f-757e-48b5-a23d-1a4e22a03752",
+    "event_time": "2026-09-29T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "CB Consumer Confidence",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "a4241d66-6b82-4c5d-b672-b2e5e632ec9b",
+    "event_time": "2026-09-29T14:00:00+00:00",
+    "country": "USD",
+    "event_name": "JOLTS Job Openings",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "fc564862-a0c0-5ec6-b210-94de552f93b2",
     "event_time": "2026-09-29T23:30:00+00:00",
     "country": "JPY",
@@ -1632,6 +3312,54 @@
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
   },
   {
+    "id": "499d94c1-76fe-425c-a2aa-a0d9421bbd8b",
+    "event_time": "2026-09-30T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "CPI m/m",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "8636b0a7-3c4b-4c0a-a554-f1804f72a7ac",
+    "event_time": "2026-09-30T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "CPI y/y",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "d5f4916d-08e0-44c5-8fca-6d1d7e7d889e",
+    "event_time": "2026-09-30T01:30:00+00:00",
+    "country": "AUD",
+    "event_name": "Trimmed Mean CPI m/m",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "c840d312-922d-487f-9900-f9029a219aff",
+    "event_time": "2026-09-30T12:15:00+00:00",
+    "country": "USD",
+    "event_name": "ADP Non-Farm Employment Change",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
     "id": "6b6269ce-a39e-5126-a93d-d807f004f9aa",
     "event_time": "2026-09-30T12:30:00+00:00",
     "country": "CAD",
@@ -1642,6 +3370,42 @@
     "previous": "0.2%",
     "created_at": "2026-08-30T22:27:08.556744+00:00",
     "updated_at": "2026-08-30T22:27:08.556744+00:00"
+  },
+  {
+    "id": "d639167d-19e4-4dd5-a3e5-d5b92ee92247",
+    "event_time": "2026-09-30T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Core PCE Price Index m/m",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "74f0bffb-f008-4a9d-992e-428106876fa6",
+    "event_time": "2026-09-30T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Final GDP q/q",
+    "impact": "High",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
+  },
+  {
+    "id": "93649186-f572-480a-83bd-bc45894870b7",
+    "event_time": "2026-09-30T12:30:00+00:00",
+    "country": "USD",
+    "event_name": "Final GDP Price Index q/q",
+    "impact": "Medium",
+    "actual": null,
+    "forecast": null,
+    "previous": null,
+    "created_at": "2026-09-06T22:41:09.283261+00:00",
+    "updated_at": "2026-09-06T22:41:09.283261+00:00"
   },
   {
     "id": "8dfea501-7544-59e1-893d-5a181abd5548",
