@@ -110,6 +110,7 @@ def build_event_payload(
         "display_name": quant_record.get('display_name', symbol),
         "timestamp": now_utc.isoformat(),
         "trigger_type": trigger_type,
+        "current_price": live_price,
         "market_data": {
             "current_price": live_price,
             "session_active": quant_record.get('session_origin', 'GLOBAL'),
@@ -117,6 +118,10 @@ def build_event_payload(
             "zap_price_range": [poi.get('range_low', live_price), poi.get('range_high', live_price)],
             "dpoc_price": dpoc,
             "distance_to_dpoc": pips_dist,
+            "volume_profile": {
+                "dpoc_price": dpoc,
+                "dist_dpoc": pips_dist
+            },
             "session_vwap": vwap,
             "ema_alignment": "BULLISH_4H_BEARISH_M15" if quant_record.get('bias') == 'BEARISH' else "BEARISH_4H_BULLISH_M15",
             "liquidity_state": {

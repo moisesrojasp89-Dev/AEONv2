@@ -1,6 +1,6 @@
 {
   "last_triggers": {
-    "XAUUSD": 1789175687.0039785
+    "XAUUSD": 1789177537.9605258
   },
   "dispatched_events": [
     {
@@ -9,6 +9,20 @@
       "price": 2385.5,
       "trigger_type": "ZAP_SUPPLY_SWEEP",
       "timestamp": "2026-09-12T01:14:47.003978+00:00"
+    },
+    {
+      "event_id": "evt_xauusd_20260912_014527",
+      "symbol": "XAUUSD",
+      "price": 2385.5,
+      "trigger_type": "ZAP_SUPPLY_SWEEP",
+      "timestamp": "2026-09-12T01:45:27.740692+00:00"
+    },
+    {
+      "event_id": "evt_xauusd_20260912_014537",
+      "symbol": "XAUUSD",
+      "price": 2385.5,
+      "trigger_type": "ZAP_SUPPLY_SWEEP",
+      "timestamp": "2026-09-12T01:45:37.960525+00:00"
     }
   ]
 }
