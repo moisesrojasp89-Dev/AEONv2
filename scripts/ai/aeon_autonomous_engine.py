@@ -64,8 +64,11 @@ try:
     if ROOT_DIR not in sys.path:
         sys.path.insert(0, ROOT_DIR)
     from scripts.quant.harness_sentinel import evaluate_tactical_triggers
+    from scripts.quant.post_mortem_engine import register_signal_for_post_mortem, evaluate_active_post_mortem_ratchet
 except Exception as _sentinel_import_err:
     evaluate_tactical_triggers = None
+    register_signal_for_post_mortem = None
+    evaluate_active_post_mortem_ratchet = None
 
 VALID_MARKET_COLUMNS = {
     'symbol', 'category', 'display_name', 'session_origin', 'current_price',
@@ -567,6 +570,25 @@ def sync_markets_loop():
                     evt = evaluate_tactical_triggers(sym, price, metrics, SUPABASE_URL, SUPABASE_KEY)
                     if evt:
                         log("SENTINEL", "🎯", f"Gatillo táctico activado para {sym}: {evt['trigger_type']} @ {price:,.2f}")
+                        if register_signal_for_post_mortem:
+                            try:
+                                det = evt.get('deterministic_inputs', {})
+                                bias_p = "venta" if "SUPPLY" in evt.get('trigger_type', '') else "compra"
+                                zap_r = det.get('zap_price_range', [price, price])
+                                inval_lvl = zap_r[1] if bias_p == "venta" else zap_r[0]
+                                register_signal_for_post_mortem(
+                                    event_id=evt['event_id'],
+                                    symbol=sym,
+                                    score_label='A+',
+                                    confluence_score=float(metrics.get('bias_score', 80)),
+                                    bias=bias_p,
+                                    entry_price=price,
+                                    structural_invalidation=float(inval_lvl),
+                                    supabase_url=SUPABASE_URL,
+                                    supabase_key=SUPABASE_KEY
+                                )
+                            except Exception:
+                                pass
                 except Exception:
                     pass
 
@@ -589,6 +611,13 @@ def sync_markets_loop():
             log("MERCADOS", "✅", f"Ciclo OK — {len(updated_records)} activos calculados en {elapsed_ms}ms (XAU: ${gold_p:,.2f} | SPX: {spx_p:,.2f} | BTC: ${btc_p:,.0f})")
     except Exception as e:
         log("MERCADOS", "❌", f"Error al sincronizar con Supabase: {e}")
+
+    # Agente 3: Evaluador Ratchet MFE/MAE a 20s (Fase 3 - Costo $0)
+    if evaluate_active_post_mortem_ratchet and state.get('prices_cache'):
+        try:
+            evaluate_active_post_mortem_ratchet(state['prices_cache'], SUPABASE_URL, SUPABASE_KEY)
+        except Exception:
+            pass
 
     # Snapshot histórico en market_intelligence_history y local (Protegido a 1 vez cada 15 min)
     now = time.time()
