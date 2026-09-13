@@ -1,16 +1,19 @@
 // ==============================================================================
-// AEON · Supabase Edge Function: aeon-copilot-event (MAS Orchestrator v1.0.0)
+// AEON · Supabase Edge Function: aeon-copilot-event (MAS Orchestrator v1.1.0)
 // ==============================================================================
-// Arquitectura Soberana Cuantitativa:
+// Arquitectura Cuantitativa & Contextual Soberana:
 // 1. Paso 0: Validación estricta de Contrato schema_version: "1.0.0".
 // 2. Paso 1: Circuit Breaker Macro Blackout (Pre-LLM, $0 tokens).
-// 3. Paso 2: Matriz Cuantitativa Determinista de 100 Puntos (Invertido - Math First).
-//    - Score < 60  -> VETO  -> Descarte silencioso ($0 tokens).
-//    - Score 60-79 -> B     -> Log silencioso ($0 tokens).
-//    - Score >= 80 -> A+    -> Invocación quirúrgica a Gemini 2.5 Flash-Lite con responseSchema.
-// 4. Paso 3: Disparo en Paralelo Real (Promise.allSettled) con Timeout de 3.5s.
-// 5. Paso 4: Fallbacks deterministas blindados para Agente 1 y Agente 2 con spread buffer.
-// 6. Paso 5: Persistencia en trading_signal_events y Broadcast condicional (shadow_mode guard).
+// 3. Paso 2: Desacoplamiento de Capas:
+//    - Capa Estructural (Gate de Emisión): Magnitud intrínseca del evento (ZAP, barrido BSL/SSL, dPOC).
+//    - Capa Macro & Sesión: Insumo narrativo para Agente 2, enriqueciendo el contexto sin censurar el evento.
+// 4. Paso 3: Guardrails Deterministas Anti-Oráculo:
+//    - Enum cerrado en responseSchema (event_type).
+//    - Nivel de invalidación técnica precalculado deterministamente con spread buffer real.
+//    - Inyección de calendar_status determinista ("past" / "upcoming").
+//    - Filtro regex denylist post-generación contra verbos imperativos ("compra/vende").
+// 5. Paso 4: Disparo en Paralelo Real (Promise.allSettled) con Timeout de 3.5s.
+// 6. Paso 5: Persistencia y Broadcast condicional como Alerta Estructural de Contexto.
 // ==============================================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -20,6 +23,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+// Regex Denylist Anti-Oráculo determinista post-generación
+const ORACLE_DENYLIST_REGEX = /\b(compra|compre|compren|comprar|comprando|compramos|vende|venda|venden|vender|vendiendo|vendemos|aprovecha|aprovechen|aprovechar|entra|entren|entrar|entrando|dispara|disparen|disparar|ejecuta|ejecuten|ejecutar|metele|haz long|haz short|tomar posicion|toma posicion)\b/i;
 
 // ------------------------------------------------------------------------------
 // Tipos de Contrato Versionado v1.0.0
@@ -58,6 +64,7 @@ interface MASContractV1 {
 }
 
 interface Agent1Output {
+  event_type?: string;
   bias: "compra" | "venta" | "neutral";
   hypothesis: string;
   structural_invalidation_price: number;
@@ -68,6 +75,7 @@ interface Agent2Output {
   macro_blackout: boolean;
   cross_asset_confirmation: "confirmado" | "contradicho" | "neutral";
   session_liquidity_bias: string;
+  macro_driver_context?: string;
   confluence_score: number;
   score_label: "A+" | "B" | "VETO";
   veto_reason: string | null;
@@ -75,12 +83,35 @@ interface Agent2Output {
 }
 
 // ------------------------------------------------------------------------------
-// Fallbacks Deterministas Blindados (Addendum Arquitectura)
+// Helpers Deterministas y Fallbacks Blindados ($0 tokens)
 // ------------------------------------------------------------------------------
 
 /**
- * Heurística determinista pura ($0 tokens) para Agente 1.
- * Calcula sesgo e invalidación estructural con buffer de spread real.
+ * Calcula de forma determinista el nivel de invalidación técnica estructural
+ * aplicando el buffer de spread institucional real según el activo.
+ */
+function calculateStructuralInvalidation(
+  poiRange: [number, number],
+  setupType: string,
+  currentPrice: number,
+  asset: string
+): number {
+  const isGold = asset.includes("XAU");
+  const isJpy = asset.includes("JPY");
+  const spreadBuffer = isGold ? 0.50 : (isJpy ? 0.03 : 0.00030);
+
+  if (setupType === "ZAP_SUPPLY_SWEEP") {
+    const high = (poiRange && poiRange[1]) ? poiRange[1] : currentPrice;
+    return Number((high + spreadBuffer).toFixed(isGold ? 2 : 5));
+  } else {
+    const low = (poiRange && poiRange[0]) ? poiRange[0] : currentPrice;
+    return Number((low - spreadBuffer).toFixed(isGold ? 2 : 5));
+  }
+}
+
+/**
+ * Heurística determinista pura ($0 tokens) para Agente 1 en caso de fallback o denylist.
+ * Describe objetivamente la microestructura sin verbos imperativos.
  */
 function deterministicBiasFallback(
   poiRange: [number, number],
@@ -88,40 +119,39 @@ function deterministicBiasFallback(
   liquidityState: { bsl_swept: boolean; ssl_status: string },
   currentPrice: number,
   asset: string
-): { bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number } {
+): { event_type: string; bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number } {
   try {
-    const isGold = asset.includes("XAU");
-    const isJpy = asset.includes("JPY");
-    const spreadBuffer = isGold ? 0.50 : (isJpy ? 0.03 : 0.00030);
-
     const bslSwept = Boolean(liquidityState?.bsl_swept);
     const sslSwept = liquidityState?.ssl_status === "swept";
+    const invalidation = calculateStructuralInvalidation(poiRange, setupType, currentPrice, asset);
 
     if (setupType === "ZAP_SUPPLY_SWEEP" && bslSwept) {
-      const high = (poiRange && poiRange[1]) ? poiRange[1] : currentPrice;
       return {
+        event_type: "BARRIDO_LIQUIDEZ_BSL",
         bias: "venta",
-        hypothesis: `Rechazo institucional en ZAP de Oferta tras absorción de liquidez compradora (BSL). Fallback determinista activo.`,
-        structuralInvalidation: Number((high + spreadBuffer).toFixed(isGold ? 2 : 5))
+        hypothesis: `Rechazo institucional en ZAP de Oferta tras absorción de liquidez compradora (BSL). Invalidación estructural en $${invalidation}.`,
+        structuralInvalidation: invalidation
       };
     } else if (setupType === "ZAP_DEMAND_SWEEP" && sslSwept) {
-      const low = (poiRange && poiRange[0]) ? poiRange[0] : currentPrice;
       return {
+        event_type: "BARRIDO_LIQUIDEZ_SSL",
         bias: "compra",
-        hypothesis: `Absorción institucional en ZAP de Demanda tras barrido de liquidez vendedora (SSL). Fallback determinista activo.`,
-        structuralInvalidation: Number((low - spreadBuffer).toFixed(isGold ? 2 : 5))
+        hypothesis: `Absorción institucional en ZAP de Demanda tras barrido de liquidez vendedora (SSL). Invalidación estructural en $${invalidation}.`,
+        structuralInvalidation: invalidation
       };
     } else {
       return {
+        event_type: "CONSOLIDACION_RANGO",
         bias: "neutral",
-        hypothesis: "Estructura no confluente en fallback determinista.",
-        structuralInvalidation: currentPrice
+        hypothesis: `Estructura en rango de consolidación sin barrido institucional confirmado. Cotización actual $${currentPrice}.`,
+        structuralInvalidation: invalidation
       };
     }
   } catch (_) {
     return {
+      event_type: "CONSOLIDACION_RANGO",
       bias: "neutral",
-      hypothesis: "Fallback degradado por datos inesperados.",
+      hypothesis: `Lectura de microestructura degradada por datos atípicos en $${currentPrice}.`,
       structuralInvalidation: currentPrice
     };
   }
@@ -152,7 +182,7 @@ function deterministicSessionBiasFallback(
 }
 
 // ------------------------------------------------------------------------------
-// Matriz de Confluencia Institucional (100 Puntos) — Cálculo Matemático Puro
+// Matriz Cuantitativa Desacoplada: Magnitud Estructural Intrínseca + Insumo Macro
 // ------------------------------------------------------------------------------
 function calculateDeterministicConfluence(
   inputs: DeterministicInputs,
@@ -164,6 +194,8 @@ function calculateDeterministicConfluence(
   scoreLabel: "A+" | "B" | "VETO";
   crossAssetStatus: "confirmado" | "contradicho" | "neutral";
   sessionBiasLabel: string;
+  isStructuralEventSignificant: boolean;
+  microScore: number;
 } {
   const price = inputs.current_price;
   const zapLow = inputs.zap_price_range?.[0] ?? price;
@@ -172,7 +204,7 @@ function calculateDeterministicConfluence(
   const isSell = setupType === "ZAP_SUPPLY_SWEEP";
   const isBuy = setupType === "ZAP_DEMAND_SWEEP";
 
-  // 1. Microestructura (40 pts)
+  // 1. Capa Estructural Intrínseca (40 pts)
   let microScore = 0;
   // Precio dentro de ZAP (+15)
   if (price >= zapLow && price <= zapHigh) {
@@ -189,7 +221,11 @@ function calculateDeterministicConfluence(
     microScore += 10;
   }
 
-  // 2. Confirmación Cruzada DXY/Yields (25 pts con -15 penalización)
+  // Gate de significancia estructural intrínseca:
+  // Al menos 25 pts en microestructura (barrido + ZAP o barrido + dPOC)
+  const isStructuralEventSignificant = microScore >= 25;
+
+  // 2. Insumo Narrativo & Confirmación Cruzada DXY/Yields (25 pts con -15 penalización)
   let crossScore = 0;
   let crossAssetStatus: "confirmado" | "contradicho" | "neutral" = "neutral";
   const dxy = (inputs.dxy_trend || "neutral").toLowerCase();
@@ -199,7 +235,7 @@ function calculateDeterministicConfluence(
       crossScore = 25;
       crossAssetStatus = "confirmado";
     } else if (dxy === "bullish") {
-      crossScore = -15; // Penalización estricta del addendum
+      crossScore = -15;
       crossAssetStatus = "contradicho";
     } else {
       crossScore = 10;
@@ -210,7 +246,7 @@ function calculateDeterministicConfluence(
       crossScore = 25;
       crossAssetStatus = "confirmado";
     } else if (dxy === "bearish") {
-      crossScore = -15; // Penalización estricta del addendum
+      crossScore = -15;
       crossAssetStatus = "contradicho";
     } else {
       crossScore = 10;
@@ -266,34 +302,42 @@ function calculateDeterministicConfluence(
     confluenceScore,
     scoreLabel,
     crossAssetStatus,
-    sessionBiasLabel
+    sessionBiasLabel,
+    isStructuralEventSignificant,
+    microScore
   };
 }
 
 // ------------------------------------------------------------------------------
-// Invocación a Gemini 2.5 Flash-Lite con responseSchema Estricto (Paso 3)
+// Invocación a Gemini 2.5 Flash-Lite con Guardrails Anti-Oráculo
 // ------------------------------------------------------------------------------
 async function callAgent1_TacticalHypothesis(
   payload: MASContractV1,
+  precalculatedInvalidation: number,
   apiKey: string
-): Promise<{ bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number }> {
+): Promise<{ event_type: string; bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number }> {
   const inputs = payload.deterministic_inputs;
   const setupType = payload.trigger_type || "ZAP_POI_CONFLUENCE";
   const name = payload.display_name || payload.asset;
 
-  const systemInstruction = `Eres AEON Tactical Agent (Agente 1), especialista de Order Flow cuantitativo.
-Tu tarea es redactar la hipótesis táctica en EXACTAMENTE 2 FRASES breves (máximo 45 palabras en total).
+  const systemInstruction = `Eres AEON Tactical Agent (Agente 1), analista cuantitativo institucional de Order Flow y microestructura de mercado.
+Tu única función es describir el evento estructural en EXACTAMENTE 2 FRASES breves (máximo 45 palabras en total).
 - Frase 1: Describe la acción del precio en ${name} ($${payload.current_price}), la zona ZAP testeada y el estado del barrido de liquidez.
-- Frase 2: Conecta con el dPOC diario ($${inputs.dpoc}) y el sesgo favorecido, indicando el nivel de confirmación técnica.
-Reglas:
-- Tono quirúrgico e institucional. Cero saludos, cero cortesías.
-- Usa negritas en niveles numéricos y activo.`;
+- Frase 2: Conecta con el dPOC diario ($${inputs.dpoc}) y referencia el nivel de invalidación técnica precalculado ($${precalculatedInvalidation}).
+
+REGLAS CARDINALES ANTI-ORÁCULO DETERMINISTAS:
+1. PROHIBIDO recomendar comprar, vender, entrar o sugerir operaciones de mercado. Eres un descriptor neutral de microestructura, no un asesor de trading.
+2. NUNCA uses verbos imperativos como: "compra", "vende", "aprovecha", "entra", "ejecuta", "dispara".
+3. CONTRAEJEMPLO PROHIBIDO: "Compra oro en 4300 aprovechando el rebote en ZAP hacia el target."
+4. CONTRAEJEMPLO PERMITIDO: "XAUUSD ($${payload.current_price}) barrió mínimos asiáticos reaccionando con absorción sobre el soporte ZAP. Cotiza bajo el dPOC ($${inputs.dpoc}); invalidación técnica óptima en $${precalculatedInvalidation}."
+5. Cero saludos o cortesías. Tono quirúrgico e institucional.`;
 
   const userPrompt = `DATOS CUANTITATIVOS:
 Activo: ${name} | Precio: ${payload.current_price} | Setup: ${setupType}
 ZAP Rango: [${inputs.zap_price_range?.[0]} - ${inputs.zap_price_range?.[1]}]
 dPOC: ${inputs.dpoc} | VWAP: ${inputs.vwap}
 Liquidez: BSL Swept = ${inputs.liquidity_state?.bsl_swept} | SSL = ${inputs.liquidity_state?.ssl_status}
+Invalidación Técnica Precalculada: ${precalculatedInvalidation}
 Catalizador: ${inputs.macro_driver}`;
 
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
@@ -308,11 +352,21 @@ Catalizador: ${inputs.macro_driver}`;
       responseSchema: {
         type: "OBJECT",
         properties: {
+          event_type: {
+            type: "STRING",
+            enum: [
+              "BARRIDO_LIQUIDEZ_SSL",
+              "BARRIDO_LIQUIDEZ_BSL",
+              "TEST_ZAP_DEMANDA",
+              "TEST_ZAP_OFERTA",
+              "ABSORCION_DPOC",
+              "CONSOLIDACION_RANGO"
+            ]
+          },
           bias: { type: "STRING", enum: ["compra", "venta", "neutral"] },
-          hypothesis: { type: "STRING" },
-          structural_invalidation_price: { type: "NUMBER" }
+          hypothesis: { type: "STRING" }
         },
-        required: ["bias", "hypothesis", "structural_invalidation_price"]
+        required: ["event_type", "bias", "hypothesis"]
       }
     }
   };
@@ -334,25 +388,34 @@ Catalizador: ${inputs.macro_driver}`;
 
   const parsed = JSON.parse(rawText);
   return {
+    event_type: parsed.event_type || (setupType === "ZAP_SUPPLY_SWEEP" ? "BARRIDO_LIQUIDEZ_BSL" : "BARRIDO_LIQUIDEZ_SSL"),
     bias: parsed.bias || "neutral",
     hypothesis: parsed.hypothesis || "",
-    structuralInvalidation: Number(parsed.structural_invalidation_price) || payload.current_price
+    structuralInvalidation: precalculatedInvalidation
   };
 }
 
 async function callAgent2_MacroRiskContext(
   payload: MASContractV1,
+  calendarStatus: string,
   apiKey: string
-): Promise<{ session_liquidity_bias: string }> {
+): Promise<{ session_liquidity_bias: string; macro_driver_context: string }> {
   const inputs = payload.deterministic_inputs;
   const name = payload.display_name || payload.asset;
 
-  const systemInstruction = `Eres AEON Macro Guardian (Agente 2), auditor de riesgo macro y régimen de liquidez.
-Genera una etiqueta descriptiva y concisa (máximo 8 palabras) sobre el régimen de liquidez de la sesión actual.`;
+  const systemInstruction = `Eres AEON Macro Guardian (Agente 2), auditor de riesgo macro y régimen de liquidez intermercado.
+Tu función es describir objetivamente el entorno macroeconómico en máximo 2 frases breves (30 palabras).
+- Frase 1: Régimen de sesión y alineación con DXY (${inputs.dxy_trend || "neutral"}) y US10Y (${inputs.us10y_trend || "neutral"}).
+- Frase 2: Contexto del catalizador de calendario económico (${calendarStatus}).
+
+REGLAS DE RIGOR TEMPORAL Y ANTI-ORÁCULO:
+1. Si calendar_status indica 'past', el dato YA ocurrió y fue asimilado por el mercado. PROHIBIDO tratarlo como evento futuro o sugerir 'esperar a la noticia'.
+2. PROHIBIDO aconsejar comprar, vender o entrar. Solo describe el contexto macroeconómico.`;
 
   const userPrompt = `Activo: ${name} | Sesión: ${payload.session || "GLOBAL"}
 DXY Trend: ${inputs.dxy_trend || "neutral"} | US10Y Trend: ${inputs.us10y_trend || "neutral"}
-EMA50 Slope: ${inputs.ema50_slope || "plano"} | Daily Bias: ${inputs.daily_briefing_bias || "neutral"}`;
+EMA50 Slope: ${inputs.ema50_slope || "plano"} | Daily Bias: ${inputs.daily_briefing_bias || "neutral"}
+Estado Calendario: ${calendarStatus} | Driver: ${inputs.macro_driver}`;
 
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
 
@@ -361,14 +424,15 @@ EMA50 Slope: ${inputs.ema50_slope || "plano"} | Daily Bias: ${inputs.daily_brief
     contents: [{ role: "user", parts: [{ text: userPrompt }] }],
     generationConfig: {
       temperature: 0.1,
-      maxOutputTokens: 80,
+      maxOutputTokens: 100,
       responseMimeType: "application/json",
       responseSchema: {
         type: "OBJECT",
         properties: {
-          session_liquidity_bias: { type: "STRING" }
+          session_liquidity_bias: { type: "STRING" },
+          macro_driver_context: { type: "STRING" }
         },
-        required: ["session_liquidity_bias"]
+        required: ["session_liquidity_bias", "macro_driver_context"]
       }
     }
   };
@@ -390,7 +454,8 @@ EMA50 Slope: ${inputs.ema50_slope || "plano"} | Daily Bias: ${inputs.daily_brief
 
   const parsed = JSON.parse(rawText);
   return {
-    session_liquidity_bias: parsed.session_liquidity_bias || "Régimen institucional estándar"
+    session_liquidity_bias: parsed.session_liquidity_bias || "Régimen institucional estándar",
+    macro_driver_context: parsed.macro_driver_context || "Contexto macroeconómico neutral."
   };
 }
 
@@ -611,7 +676,7 @@ Deno.serve(async (req: Request) => {
   }
 
   // ----------------------------------------------------------------------------
-  // Paso 2: Matriz Cuantitativa Determinista de 100 Puntos (Math First!)
+  // Paso 2: Matriz Cuantitativa Desacoplada (Math First!)
   // ----------------------------------------------------------------------------
   const mathResult = calculateDeterministicConfluence(
     payload.deterministic_inputs,
@@ -620,11 +685,10 @@ Deno.serve(async (req: Request) => {
     minsToNextTier1
   );
 
-  // Caso VETO o B: Descarte o Log Silencioso sin despertar a Gemini ($0 tokens)
-  if (mathResult.scoreLabel === "VETO" || mathResult.scoreLabel === "B") {
-    const decision = mathResult.scoreLabel === "B" ? "log_only" : "discard";
-    const status = mathResult.scoreLabel === "B" ? "active" : "invalidated";
-    const vReason = mathResult.scoreLabel === "VETO" ? "Score cuantitativo insuficiente (<60 pts)." : null;
+  // Si NO es un evento estructural significativo (microScore < 25), log silencioso a $0 costo
+  if (!mathResult.isStructuralEventSignificant) {
+    const decision = "log_only";
+    const status = "active";
 
     const agent2Math: Agent2Output = {
       macro_blackout: false,
@@ -632,7 +696,7 @@ Deno.serve(async (req: Request) => {
       session_liquidity_bias: mathResult.sessionBiasLabel,
       confluence_score: mathResult.confluenceScore,
       score_label: mathResult.scoreLabel,
-      veto_reason: vReason,
+      veto_reason: null,
       latency_ms: Date.now() - startTime
     };
 
@@ -643,7 +707,7 @@ Deno.serve(async (req: Request) => {
       trigger_type: setupType,
       current_price: payload.current_price,
       market_data: payload.market_data || {},
-      llm_verdict: `Evaluación Cuantitativa: Confluence Score ${mathResult.confluenceScore}/100 (${mathResult.scoreLabel}).`,
+      llm_verdict: `Evento Estructural Menor: MicroScore ${mathResult.microScore}/40 (Score ${mathResult.confluenceScore}/100).`,
       status: status,
       schema_version: "1.0.0",
       confluence_score: mathResult.confluenceScore,
@@ -670,14 +734,30 @@ Deno.serve(async (req: Request) => {
   }
 
   // ----------------------------------------------------------------------------
-  // Paso 3: Setup Grado A+ (Score >= 80) -> Invocación Quirúrgica a Gemini MAS
+  // Paso 3: Evento Estructural Significativo -> Invocación a Gemini MAS
   // ----------------------------------------------------------------------------
+  const precalculatedInvalidation = calculateStructuralInvalidation(
+    payload.deterministic_inputs.zap_price_range,
+    setupType,
+    payload.current_price,
+    asset
+  );
+
+  let calendarStatus = "none";
+  if (minsToNextTier1 !== null) {
+    if (minsToNextTier1 < 0) {
+      calendarStatus = `past (${Math.abs(minsToNextTier1)} min atrás - Digerido / Asimilado)`;
+    } else {
+      calendarStatus = `upcoming (en ${minsToNextTier1} min - Pendiente)`;
+    }
+  }
+
   let fallbackMode = false;
-  let agent1Result: { bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number };
+  let agent1Result: { event_type: string; bias: "compra" | "venta" | "neutral"; hypothesis: string; structuralInvalidation: number };
   let sessionNarrative = mathResult.sessionBiasLabel;
+  let macroDriverContext = "Contexto macroeconómico neutral.";
 
   if (!aiApiKey) {
-    // Sin API Key: Fallback determinista inmediato
     fallbackMode = true;
     agent1Result = deterministicBiasFallback(
       payload.deterministic_inputs.zap_price_range,
@@ -689,13 +769,26 @@ Deno.serve(async (req: Request) => {
   } else {
     // Disparo en Paralelo Real vía Promise.allSettled
     const [resAgent1, resAgent2] = await Promise.allSettled([
-      callAgent1_TacticalHypothesis(payload, aiApiKey),
-      callAgent2_MacroRiskContext(payload, aiApiKey)
+      callAgent1_TacticalHypothesis(payload, precalculatedInvalidation, aiApiKey),
+      callAgent2_MacroRiskContext(payload, calendarStatus, aiApiKey)
     ]);
 
     // Evaluación de Agente 1 (Táctico)
     if (resAgent1.status === "fulfilled") {
       agent1Result = resAgent1.value;
+
+      // CANDADO DETERMINISTA: Filtro Regex Denylist Anti-Oráculo post-generación
+      if (ORACLE_DENYLIST_REGEX.test(agent1Result.hypothesis)) {
+        console.warn(`[MAS Guardrail] ⚠️ Denylist activada en Agente 1: "${agent1Result.hypothesis}". Reemplazando con fallback determinista.`);
+        fallbackMode = true;
+        agent1Result = deterministicBiasFallback(
+          payload.deterministic_inputs.zap_price_range,
+          setupType,
+          payload.deterministic_inputs.liquidity_state,
+          payload.current_price,
+          asset
+        );
+      }
     } else {
       fallbackMode = true;
       agent1Result = deterministicBiasFallback(
@@ -710,8 +803,8 @@ Deno.serve(async (req: Request) => {
     // Evaluación de Agente 2 (Macro Context)
     if (resAgent2.status === "fulfilled") {
       sessionNarrative = resAgent2.value.session_liquidity_bias;
+      macroDriverContext = resAgent2.value.macro_driver_context;
     } else {
-      // Fallback de Agente 2 determinista
       const fbSession = deterministicSessionBiasFallback(
         payload.deterministic_inputs.ema50_slope,
         payload.deterministic_inputs.daily_briefing_bias
@@ -720,9 +813,13 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  // Asegurar que el número de invalidación sea exactamente el precalculado
+  agent1Result.structuralInvalidation = precalculatedInvalidation;
+
   const totalLatencyMs = Date.now() - startTime;
 
   const agent1Final: Agent1Output = {
+    event_type: agent1Result.event_type,
     bias: agent1Result.bias,
     hypothesis: agent1Result.hypothesis,
     structural_invalidation_price: agent1Result.structuralInvalidation,
@@ -733,14 +830,15 @@ Deno.serve(async (req: Request) => {
     macro_blackout: false,
     cross_asset_confirmation: mathResult.crossAssetStatus,
     session_liquidity_bias: sessionNarrative,
+    macro_driver_context: macroDriverContext,
     confluence_score: mathResult.confluenceScore,
-    score_label: "A+",
+    score_label: mathResult.scoreLabel,
     veto_reason: null,
     latency_ms: totalLatencyMs
   };
 
   // ----------------------------------------------------------------------------
-  // Paso 4: Política de Broadcast y Persistencia
+  // Paso 4: Política de Broadcast y Persistencia de Alerta Estructural
   // ----------------------------------------------------------------------------
   const isShadowMode = Boolean(payload.shadow_mode);
   const broadcastDecision = isShadowMode ? "log_only" : "emit";
@@ -759,7 +857,7 @@ Deno.serve(async (req: Request) => {
       status: "active",
       schema_version: "1.0.0",
       confluence_score: mathResult.confluenceScore,
-      score_label: "A+",
+      score_label: mathResult.scoreLabel,
       broadcast_decision: broadcastDecision,
       agent_1_output: agent1Final,
       agent_2_output: agent2Final,
@@ -775,18 +873,19 @@ Deno.serve(async (req: Request) => {
     throw new Error(`Error al persistir trading_signal_events: ${insertError.message}`);
   }
 
-  // Si no está en shadow_mode y califica A+: Fan-Out Realtime a clientes
+  // Fan-Out Realtime de Alerta Estructural Contextual
   if (broadcastDecision === "emit") {
     const alertBroadcastPayload = {
       id: insertedEvent.id,
       event_id: insertedEvent.event_id,
+      alert_type: "structural_context",
       symbol: insertedEvent.symbol,
       display_name: insertedEvent.display_name,
       trigger_type: insertedEvent.trigger_type,
       current_price: insertedEvent.current_price,
       llm_verdict: insertedEvent.llm_verdict,
       confluence_score: mathResult.confluenceScore,
-      score_label: "A+",
+      score_label: mathResult.scoreLabel,
       broadcast_decision: "emit",
       agent_1_output: agent1Final,
       agent_2_output: agent2Final,

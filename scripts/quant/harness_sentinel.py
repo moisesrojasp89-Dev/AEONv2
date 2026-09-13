@@ -290,7 +290,7 @@ def _dispatch_to_edge_worker(payload: Dict[str, Any], supabase_url: str, supabas
             with urllib.request.urlopen(req, timeout=4.0) as resp:
                 status = resp.getcode()
                 resp_body = resp.read().decode('utf-8')
-                print(f"[{t_str}] [SENTINEL MAS] 🚀 Evento {payload['event_id']} despachado (HTTP {status})", flush=True)
+                print(f"[{t_str}] [SENTINEL MAS] 🚀 Alerta Estructural {payload['event_id']} despachada (HTTP {status})", flush=True)
                 return
         except urllib.error.HTTPError as e:
             # Si es error 4xx (p.ej. 400 Bad Request o 401 Unauthorized), no reintentar

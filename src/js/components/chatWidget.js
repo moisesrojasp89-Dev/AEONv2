@@ -880,7 +880,7 @@ function appendTacticalAlertCard(alertData) {
 
   card.innerHTML = `
     <div class="chat-tactical-alert-header">
-      <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA CENTINELA</span>
+      <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA ESTRUCTURAL · ORDER FLOW</span>
       <span class="callout-time">${escapeHTML(timeStr)}</span>
     </div>
     <div class="callout-title" style="margin-bottom: 0.35rem;">
@@ -891,8 +891,8 @@ function appendTacticalAlertCard(alertData) {
       ${formatMarkdownBold(alertData.llm_verdict || '')}
     </p>
     <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-      <button type="button" class="chat-prompt-pill" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" data-prompt="¿Cuál es la invalidación y el ratio riesgo/beneficio para este setup en ${escapeHTML(alertData.symbol)}?">
-        Auditar Setup
+      <button type="button" class="chat-prompt-pill" style="font-size: 0.72rem; padding: 0.25rem 0.6rem;" data-prompt="¿Cuál es la invalidación técnica, objetivos y ratio riesgo/beneficio para este contexto en ${escapeHTML(alertData.symbol)}?">
+        Auditar Escenario
       </button>
     </div>
   `;
@@ -973,7 +973,7 @@ function handleTacticalAlert(alertData) {
     callout.id = 'chat-harness-callout';
     callout.innerHTML = `
       <div class="callout-header">
-        <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA CENTINELA</span>
+        <span class="callout-badge ${isBuyside ? 'buyside' : ''}">🚨 ALERTA ESTRUCTURAL · ORDER FLOW</span>
         <span class="callout-time">${escapeHTML(timeStr)}</span>
         <button type="button" class="callout-btn-close" id="callout-btn-dismiss" title="Cerrar aviso">✕</button>
       </div>
@@ -985,7 +985,7 @@ function handleTacticalAlert(alertData) {
         <p class="callout-verdict">${formatMarkdownBold(alertData.llm_verdict || '')}</p>
       </div>
       <div class="callout-actions">
-        <button type="button" class="callout-btn-action" id="callout-btn-open">Abrir Copilot Táctico</button>
+        <button type="button" class="callout-btn-action" id="callout-btn-open">Auditar Escenario</button>
         <button type="button" class="callout-btn-snooze" id="callout-btn-snooze">Silenciar 15m</button>
       </div>
     `;
