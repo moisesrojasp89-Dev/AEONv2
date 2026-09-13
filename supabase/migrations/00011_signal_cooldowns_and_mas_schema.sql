@@ -57,7 +57,7 @@ DECLARE
     -- Blindaje: Acotar cooldown entre 1 y 60 min para evitar DoS por valores abusivos
     v_clamped_cooldown INT := LEAST(GREATEST(COALESCE(p_cooldown_minutes, 15), 1), 60);
     v_expires TIMESTAMPTZ := v_now + (v_clamped_cooldown || ' minutes')::INTERVAL;
-    v_acquired BOOLEAN := FALSE;
+    v_row_count INT := 0;
 BEGIN
     -- Blindaje Anti-Spoofing: Exigir rol service_role (Cero acceso anónimo o usuarios autenticados)
     IF auth.role() <> 'service_role' THEN
@@ -73,8 +73,8 @@ BEGIN
         event_id = EXCLUDED.event_id
     WHERE public.signal_cooldowns.expires_at < v_now;
 
-    GET DIAGNOSTICS v_acquired = ROW_COUNT;
-    RETURN (v_acquired > 0);
+    GET DIAGNOSTICS v_row_count = ROW_COUNT;
+    RETURN (v_row_count > 0);
 END;
 $$;
 
