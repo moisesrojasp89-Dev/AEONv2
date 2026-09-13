@@ -1,6 +1,11 @@
-# AEON | Terminal de Inteligencia Macroeconómica, Mercados y Señales Cuantitativas
+# AEON | Terminal de Inteligencia Cuantitativa Institucional & Contexto Macroeconómico (MAS v1.1.0)
 
-AEON es una plataforma profesional de inteligencia macroeconómica, análisis de mercados en tiempo real y señales cuantitativas diseñada para traders institucionales e inversores. Construida con una arquitectura de alto rendimiento (Frontend SPA en Vanilla JS / Vite, backend server-side en Supabase PostgreSQL con RLS/RPC y un motor cuantitativo y de inteligencia 24/7 en Python con conector para OANDA v20, Binance, Coinbase, St. Louis Fed FRED y Yahoo Finance).
+AEON es una plataforma profesional de inteligencia macroeconómica, microestructura de Order Flow y contextualización cuantitativa en tiempo real diseñada para traders institucionales e inversores soberanos.
+
+> 🏛️ **Declaración de Soberanía Institucional:**  
+> **AEON no es un buscador ni proveedor de señales, ni un bot de ejecución ciega.** AEON es una **Terminal de Inteligencia Cuantitativa y Contexto Estructural**. Su misión es dotar al operador de datos cuantitativos crudos (ZAP, dPOC de volumen, session VWAP, piscinas de liquidez BSL/SSL, correlaciones macro) y análisis contextual multi-agente riguroso, neutral y desprovisto de juicios emocionales o promesas de retorno. El trader es el único general soberano que toma las decisiones de ejecución.
+
+Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS / Vite, backend server-side en Supabase PostgreSQL con RLS Zero-Trust, Edge Functions en Deno y un motor cuantitativo 24/7 en Python con ingesta batch de OANDA v20, Binance, Coinbase, St. Louis Fed FRED y Yahoo Finance.
 
 ---
 
@@ -132,6 +137,10 @@ python scripts/ai/aeon_autonomous_engine.py
 
 | Componente | Descripción | Estado |
 |---|---|:---:|
+| **Sistema Multi-Agente (MAS v1.0.0 - Fases 1, 2, 3)** | Cooldown atómico PostgreSQL, orquestador en Deno con Pre-LLM Blackout, Agente 1 (Táctico), Agente 2 (Macro) y Agente 3 (Post-Mortem Ratchet 20s en RAM + Anti-Peeking $N \ge 35$). | ✅ **Operativo en Producción** |
+| **Reorientación Institucional & Anti-Oráculo (MAS v1.1.0)** | Erradicación de "señales". Gate de emisión desacoplado por magnitud estructural intrínseca, 4 guardrails deterministas anti-oráculo (enum cerrado, invalidación precalculada, reloj macro y denylist regex). | ✅ **Desplegado y Verificado (18/18 Tests)** |
+| **Pasarela de Ejecución MT5 / Brokers (Fase 4 Previa)** | Conexión externa con terminales y brokers descartada formalmente tras auditoría para evitar riesgos operativos, deslizamientos y sanciones contractuales en prop-firms. Web propia blindada como único activo soberano. | 🚫 **Cancelado por Gobernanza** |
+| **Bitácora Cuantitativa & Trading Journal IA** | Registro conversacional de trades personales del operador (`trader_journal`), enriquecimiento automático con métricas de mercado de AEON y auditoría semanal post-mortem de desempeño (Win Rate, R-Múltiplos, trading leaks). | 🟡 **En Diseño (Próxima Fase)** |
 | **Motor Autónomo VPS (17 Activos)** | Ingesta batch OANDA + Binance/Coinbase, 0 TwelveData calls, Gemini 3.1 Flash-Lite y deduplicación MD5. | ✅ **Operativo** |
 | **AEON Active Copilot Harness** | Centinela de confluencias 24/7 en VPS, fan-out Edge Function, Realtime Broadcast, WebAudio Chime, bitácora y guardrail anti-overtrading. | ✅ **Operativo en Vivo** |
 | **Macro Liquidity & Fed Yields HUD** | Radar de liquidez Fed (US10Y, US02Y, FEDFUNDS, RRP, WALCL) con modal educativo y sync multi-cadencia. | ✅ **Operativo en Vivo** |

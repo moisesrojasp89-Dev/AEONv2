@@ -25,6 +25,29 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   * Frecuencia adaptativa: cada 3 min en Pre-Apertura/Apertura; cada 10 min en sesión regular.
   * Síntesis macroeconómica ejecutiva contextualizada con IA (Gemini 2.5 Flash) y fallback determinista.
 
+### B. Reorientación Institucional MAS v1.1.0: Terminal de Contexto Cuantitativo & Guardrails Anti-Oráculo (13 Septiembre 2026)
+* **Erradicación del Paradigma de "Señales":**
+  * Abandono definitivo del modelo de alertas de compra/venta y de la palabra "señal".
+  * Consolidación de AEON como una **Terminal de Inteligencia Cuantitativa y Contexto Estructural**. Cero "ideas de negocio", cero incitaciones a operar.
+* **Cancelación Estratégica de Fase 4 (MT5 / Brokers / TradingView Externo):**
+  * Tras auditoría externa con Claude, se descartó la conexión a MT5 y prop-firms para blindar el producto contra riesgos de deslizamiento, fallas de sockets IPC y restricciones contractuales de prop-firms.
+  * Se descartó la exportación de scripts independientes a TradingView para proteger el activo soberano (la web propia) y evitar canibalización y piratería.
+* **Desacoplamiento Estructural en Dos Capas (`aeon-copilot-event/index.ts`):**
+  * **Capa 1 (Gate de Emisión):** Disparo por magnitud intrínseca de microestructura (`microScore >= 25`: interacción ZAP, barrido de liquidez BSL/SSL y desequilibrio vs dPOC). Se eliminó la censura de eventos por falta de confirmación en DXY.
+  * **Capa 2 (Insumo Narrativo):** DXY, US10Y, sesgo de sesión y calendario económico pasan a ser insumo contextual para el Agente 2.
+* **4 Candados Deterministas Anti-Oráculo:**
+  * **Enum cerrado en `responseSchema`:** `event_type` restringido a valores predefinidos (`BARRIDO_LIQUIDEZ_SSL`, `TEST_ZAP_DEMANDA`, etc.).
+  * **Invalidación técnica precalculada:** Fórmula determinista con spread buffers reales (50¢ oro, 3 pips FX/JPY).
+  * **Reloj macro determinista:** Inyección en código de `calendar_status: "past" | "upcoming"` para evitar alucinaciones temporales del modelo.
+  * **Filtro denylist regex post-generación:** Bloqueo automático de cualquier consejo imperativo (`compra/vende/aprovecha/entra`), conmutando a fallback determinista neutral.
+* **Copilot Consultivo de Auditoría de Escenarios (`aeon-chat/index.ts`):**
+  * Formato exacto de auditoría con datos crudos: Entrada, SL óptimo fuera de zonas de barrido, TP de liquidez, ratio R:R crudo y advertencia de microestructura (RSI, short squeeze).
+  * Manejo determinista de caso borde: `Estructura ya invalidada en ese precio` si el precio propuesto cruzó el SL estructural.
+* **Validación & Batería de Regresión:**
+  * Nueva suite en `tests/test_mas_anti_oracle_and_context.py` (5/5 pruebas OK).
+  * Suite completa: 18/18 pruebas pasando en 0.009s.
+  * Build de producción Vite en 493ms con 0 errores.
+
 ---
 
 ## 🎨 2. Refactorizaciones de Frontend y Experiencia de Usuario (UI/UX)
