@@ -923,6 +923,8 @@ async function loadLatestActiveAlert() {
       .maybeSingle();
 
     if (data) {
+      if (data.broadcast_decision && data.broadcast_decision !== 'emit') return;
+      if (data.shadow_mode) return;
       latestActiveAlert = data;
       const bodyArea = document.getElementById('chat-body-area');
       if (bodyArea && isChatOpen) {
@@ -937,6 +939,10 @@ async function loadLatestActiveAlert() {
  */
 function handleTacticalAlert(alertData) {
   if (!alertData || !alertData.event_id) return;
+  // Gobernanza MAS: Si la señal es para log silencioso o descarte, o está en shadow_mode, ignorar en UI
+  if (alertData.broadcast_decision && alertData.broadcast_decision !== 'emit') return;
+  if (alertData.shadow_mode) return;
+
   if (seenAlertIds.has(alertData.event_id)) return;
   seenAlertIds.add(alertData.event_id);
   latestActiveAlert = alertData;
