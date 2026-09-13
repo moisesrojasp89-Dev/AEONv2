@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Coordenadas de Mercado No Encontradas | AEON</title>
+  <meta name="robots" content="noindex, follow" />
+  <meta name="description" content="La ruta solicitada no existe en la terminal AEON. Regresa al radar de mercados o análisis estructural." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta property="og:title" content="404 — Fuera de Rango | AEON Terminal" />
+  <meta property="og:description" content="Coordenadas de mercado no encontradas. Regresa a la terminal de inteligencia." />
+  <meta property="og:image" content="https://aeondev.vercel.app/aeon-intelligence.webp" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/src/css/variables.css" />
+  <link rel="stylesheet" href="/src/css/reset.css" />
+  <link rel="stylesheet" href="/src/css/layout.css" />
+  <link rel="stylesheet" href="/src/css/animations.css" />
+  <link rel="stylesheet" href="/src/css/components/buttons.css" />
+  <link rel="stylesheet" href="/src/css/components/navbar.css" />
+  <link rel="stylesheet" href="/src/css/components/footer.css" />
+  <link rel="stylesheet" href="/src/css/responsive.css" />
+
+  <style>
+    body {
+      background-color: #06090e;
+      color: #E4E4E7;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .error-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      position: relative;
+    }
+    .error-code {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(5rem, 15vw, 9rem);
+      font-weight: 800;
+      line-height: 1;
+      margin: 0 0 1rem 0;
+      background: linear-gradient(135deg, #00F5FF 0%, #3B82F6 50%, #8B5CF6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.04em;
+      filter: drop-shadow(0 0 45px rgba(0, 245, 255, 0.25));
+    }
+    .error-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #F87171;
+      margin-bottom: 1.5rem;
+    }
+    .error-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 8px #EF4444;
+    }
+    .error-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .error-desc {
+      max-width: 520px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #94A3B8;
+      margin-bottom: 2rem;
+    }
+    .error-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .btn-return {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #00F5FF 0%, #00B4D8 100%);
+      color: #04060A;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.3);
+    }
+    .btn-return:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(0, 245, 255, 0.45);
+    }
+    .btn-secondary-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #CBD5E1;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-secondary-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-root"></div>
+
+  <main class="error-container">
+    <div class="error-badge">Desconexión Estructural</div>
+    <div class="error-code">404</div>
+    <h1 class="error-title">Coordenadas de Mercado No Encontradas</h1>
+    <p class="error-desc">
+      El nivel de precio o recurso que intentas consultar no existe en este bloque o fue reubicado. Verifica la URL o regresa al centro de mando.
+    </p>
+    <div class="error-actions">
+      <a href="/" class="btn-return">
+        <span>← Regresar al Radar</span>
+      </a>
+      <a href="/analisis.html" class="btn-secondary-link">
+        <span>Terminal de Análisis</span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="text-align: center; padding: 1.5rem; color: #64748B; font-size: 0.75rem;">
+      © 2026 AEON Intelligence Terminal. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/navbar.js"></script>
+</body>
+</html>

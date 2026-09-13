@@ -1,0 +1,19 @@
+# AEON — Institutional Quantitative Intelligence & Macro Terminal
+
+> AEON is a specialized quantitative finance terminal and multi-agent intelligence system (MAS v1.1.0) built for sovereign traders, quantitative analysts, and financial operators.
+
+## Core Capabilities
+- **Market Microstructure:** Continuous calculation of Volume Point of Control (dPOC), Session Volume Weighted Average Price (VWAP), High-Probability Zones (ZAP Supply/Demand), and Liquidity Pools (BSL/SSL).
+- **Macro Intelligence:** Real-time Fed balance sheet tracking (WALCL), Reverse Repo (RRP), Treasury Yields (US10Y, US02Y), Effective Fed Funds Rate (FEDFUNDS), and ICE Dollar Index (DXY) formula calculation.
+- **Multi-Agent System (MAS v1.1.0):**
+  - *Agent 1 (Tactical Strategist):* Order flow, liquidity absorption, and structural invalidation levels.
+  - *Agent 2 (Macro Risk Guardian):* Cross-asset correlation, intermarket regimes, and macroeconomic calendar context.
+  - *Agent 3 (Post-Mortem & Calibration):* High-water mark MFE/MAE evaluation evaluated via in-memory ratchet and statistical anti-peeking gates (N >= 35).
+  - *Interactive Copilot:* Neutral, cold quantitative scenario auditor providing exact risk/reward ratios, structural invalidation (SL), and liquidity targets (TP). Zero financial advice, zero "signals".
+
+## Core Web Endpoints
+- Homepage & Macro HUD: https://aeondev.vercel.app/
+- Global Markets Terminal: https://aeondev.vercel.app/mercados.html
+- Structural Analysis & Order Flow: https://aeondev.vercel.app/analisis.html
+- Economic Calendar & Catalysts: https://aeondev.vercel.app/calendario.html
+- Legal & Risk Disclaimer: https://aeondev.vercel.app/aviso-legal.html

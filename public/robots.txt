@@ -1,0 +1,17 @@
+# robots.txt for AEON Intelligence Terminal
+User-agent: *
+Allow: /
+Allow: /mercados.html
+Allow: /analisis.html
+Allow: /calendario.html
+Allow: /terminos.html
+Allow: /privacidad.html
+Allow: /cookies.html
+Allow: /aviso-legal.html
+
+# Rutas privadas y operativas
+Disallow: /perfil.html
+Disallow: /actualizar-password.html
+Disallow: /admin-pagos.html
+
+Sitemap: https://aeondev.vercel.app/sitemap.xml

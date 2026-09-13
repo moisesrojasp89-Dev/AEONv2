@@ -34,6 +34,7 @@ export default defineConfig({
         privacidad: resolve(__dirname, 'privacidad.html'),
         cookies: resolve(__dirname, 'cookies.html'),
         adminPagos: resolve(__dirname, 'admin-pagos.html'),
+        notFound: resolve(__dirname, '404.html'),
       },
     },
   },
