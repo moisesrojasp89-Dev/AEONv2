@@ -451,13 +451,13 @@ Deno.serve(async (req: Request) => {
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const aiApiKey = Deno.env.get("GEMINI_API_KEY") ?? "";
 
-  // 1. Seguridad Zero-Trust
+  // 1. Seguridad Zero-Trust: Acceso EXCLUSIVO a service_role (Blindaje total anti-spoofing)
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace("Bearer ", "").trim();
-  const isAuthorized = token && (token === serviceRoleKey || token === anonKey);
+  const isAuthorized = Boolean(token && serviceRoleKey && token === serviceRoleKey);
   if (!isAuthorized) {
     return new Response(
-      JSON.stringify({ error: "unauthorized", message: "Clave de servicio requerida." }),
+      JSON.stringify({ error: "unauthorized", message: "Acceso denegado. Requiere service_role key del motor VPS." }),
       { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

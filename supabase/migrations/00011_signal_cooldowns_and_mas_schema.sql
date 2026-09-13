@@ -54,9 +54,16 @@ SET search_path = public
 AS $$
 DECLARE
     v_now TIMESTAMPTZ := clock_timestamp();
-    v_expires TIMESTAMPTZ := v_now + (p_cooldown_minutes || ' minutes')::INTERVAL;
+    -- Blindaje: Acotar cooldown entre 1 y 60 min para evitar DoS por valores abusivos
+    v_clamped_cooldown INT := LEAST(GREATEST(COALESCE(p_cooldown_minutes, 15), 1), 60);
+    v_expires TIMESTAMPTZ := v_now + (v_clamped_cooldown || ' minutes')::INTERVAL;
     v_acquired BOOLEAN := FALSE;
 BEGIN
+    -- Blindaje Anti-Spoofing: Exigir rol service_role (Cero acceso anónimo o usuarios autenticados)
+    IF auth.role() <> 'service_role' THEN
+        RAISE EXCEPTION 'Acceso denegado: acquire_signal_cooldown requiere privilegios de service_role.';
+    END IF;
+
     INSERT INTO public.signal_cooldowns (asset, setup_type, last_triggered_at, expires_at, event_id)
     VALUES (p_asset, p_setup_type, v_now, v_expires, p_event_id)
     ON CONFLICT (asset, setup_type) DO UPDATE
@@ -70,6 +77,10 @@ BEGIN
     RETURN (v_acquired > 0);
 END;
 $$;
+
+-- Blindaje Zero-Trust: Revocar permisos de ejecución a la web pública / anónimos
+REVOKE EXECUTE ON FUNCTION public.acquire_signal_cooldown FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.acquire_signal_cooldown TO service_role;
 
 -- 3. AMPLIACIÓN DE ESQUEMA: public.trading_signal_events (MAS v1.0.0)
 ALTER TABLE public.trading_signal_events 
