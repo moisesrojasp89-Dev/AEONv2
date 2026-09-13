@@ -7,6 +7,7 @@ import { supabase } from './supabaseClient.js';
 import { DB_TABLES } from './config/constants.js';
 import { initNavbar } from './navbar.js';
 import { fetchUserAiQuota } from './services/chatService.js';
+import { escapeHTML } from './utils/sanitize.js';
 
 function computeInitials(name = '') {
   if (!name) return 'TR';
@@ -666,6 +667,10 @@ async function initDashboard() {
     if (targetIndex === 0) {
       syncAiQuota(false);
     }
+    // Cargar métricas del diario cuántico si entra a la pestaña de Diario
+    if (targetIndex === 3) {
+      loadTraderJournalDashboard(user.id);
+    }
   }
 
   tabButtons.forEach((btn, index) => {
@@ -1117,7 +1122,124 @@ async function initDashboard() {
   }
 
   // ============================================================
-  // 8. Cierre de Sesión Seguro
+  // 8. Dashboard de Diario Cuántico & Disciplina (Harness)
+  // ============================================================
+  async function loadTraderJournalDashboard(userId) {
+    if (!userId) return;
+
+    const winrateEl = document.getElementById('journal-kpi-winrate');
+    const netREl = document.getElementById('journal-kpi-net-r');
+    const dpocEl = document.getElementById('journal-kpi-dpoc');
+    const maeEl = document.getElementById('journal-kpi-mae');
+    const evaluatorTextEl = document.getElementById('journal-evaluator-text');
+    const tradesContainer = document.getElementById('journal-trades-container');
+
+    try {
+      // 1. Cargar trades recientes del diario (RLS solo permite los del usuario)
+      const { data: trades, error: tradesErr } = await supabase
+        .from('trader_journal')
+        .select('*')
+        .eq('user_id', userId)
+        .order('entry_timestamp', { ascending: false })
+        .limit(10);
+
+      // 2. Cargar última auditoría semanal
+      const { data: audits, error: auditErr } = await supabase
+        .from('trader_weekly_audits')
+        .select('*')
+        .eq('user_id', userId)
+        .order('week_start_date', { ascending: false })
+        .limit(1);
+
+      if (audits && audits.length > 0) {
+        const a = audits[0];
+        if (winrateEl) winrateEl.textContent = `${a.win_rate_pct}%`;
+        if (netREl) {
+          netREl.textContent = `${a.net_pnl_r >= 0 ? '+' : ''}${a.net_pnl_r} R`;
+          netREl.style.color = a.net_pnl_r >= 0 ? '#34d399' : '#f87171';
+        }
+        if (dpocEl) dpocEl.textContent = `${a.dpoc_confluence_pct}%`;
+        if (maeEl) maeEl.textContent = `${a.average_mae_r} R`;
+        if (evaluatorTextEl && a.audit_findings) {
+          evaluatorTextEl.innerHTML = `
+            <strong>Veredicto:</strong> ${escapeHTML(a.audit_findings.verdict || '')}<br>
+            <strong>Factor Clave:</strong> ${escapeHTML(a.audit_findings.primary_success_factor || '')}<br>
+            <strong>Vulnerabilidad Drawdown:</strong> ${escapeHTML(a.audit_findings.drawdown_vulnerability || '')}
+          `;
+        }
+      }
+
+      if (tradesContainer) {
+        if (!trades || trades.length === 0) {
+          tradesContainer.innerHTML = `
+            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px; padding: 2rem; text-align: center;">
+              <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">No tienes operaciones registradas en tu diario aún.</p>
+              <p style="color: #64748b; font-size: 0.8rem; margin: 0;">Abre el Copiloto IA y escribe: <em>"Entré en compra en XAUUSD en 2650 con SL 2642 y TP 2668"</em> para documentar tu primer trade.</p>
+            </div>
+          `;
+        } else {
+          tradesContainer.innerHTML = trades.map(t => {
+            const isBuy = t.direction === 'BUY';
+            const dirColor = isBuy ? '#34d399' : '#f87171';
+            const dirBg = isBuy ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)';
+            const statusBadge = t.status === 'OPEN' 
+              ? '<span style="background: rgba(14,165,233,0.15); color: #38bdf8; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">ABIERTO</span>'
+              : (t.status === 'CANCELLED' 
+                  ? '<span style="background: rgba(100,116,139,0.15); color: #94a3b8; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">ANULADO</span>'
+                  : '<span style="background: rgba(16,185,129,0.15); color: #10b981; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">CERRADO</span>');
+
+            const realizedHtml = t.status === 'CLOSED'
+              ? `<div style="font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 700; color: ${(t.realized_rr || 0) >= 0 ? '#34d399' : '#f87171'};">
+                   ${(t.realized_rr || 0) >= 0 ? '+' : ''}${t.realized_rr} R
+                 </div>`
+              : `<div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #94a3b8;">
+                   MFE: +${t.mfe_r || 0}R | MAE: ${t.mae_r || 0}R
+                 </div>`;
+
+            const dateStr = t.entry_timestamp ? new Date(t.entry_timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+
+            return `
+              <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span style="background: ${dirBg}; color: ${dirColor}; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace;">
+                    ${t.direction}
+                  </span>
+                  <div>
+                    <div style="font-weight: 600; color: #f1f5f9; font-size: 0.9rem;">${escapeHTML(t.symbol)}</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">${dateStr}</div>
+                  </div>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #cbd5e1; display: flex; gap: 1rem;">
+                  <span>In: <strong>${t.entry_price}</strong></span>
+                  <span>SL: <span style="color:#f87171;">${t.stop_loss}</span></span>
+                  <span>TP: <span style="color:#34d399;">${t.take_profit}</span></span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  ${realizedHtml}
+                  ${statusBadge}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    } catch (err) {
+      console.warn('[AEON Journal] Error cargando dashboard:', err);
+      if (tradesContainer) {
+        tradesContainer.innerHTML = '<p style="color: #ef4444; font-size: 0.85rem; text-align: center;">Error al sincronizar con el diario.</p>';
+      }
+    }
+  }
+
+  const btnRefreshJournal = document.getElementById('btn-refresh-journal');
+  if (btnRefreshJournal) {
+    btnRefreshJournal.addEventListener('click', () => {
+      loadTraderJournalDashboard(user.id);
+    });
+  }
+
+  // ============================================================
+  // 9. Cierre de Sesión Seguro
   // ============================================================
   const handleLogout = async () => {
     await supabase.auth.signOut();

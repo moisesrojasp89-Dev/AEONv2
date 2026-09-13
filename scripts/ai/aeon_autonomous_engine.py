@@ -65,10 +65,12 @@ try:
         sys.path.insert(0, ROOT_DIR)
     from scripts.quant.harness_sentinel import evaluate_tactical_triggers
     from scripts.quant.post_mortem_engine import register_signal_for_post_mortem, evaluate_active_post_mortem_ratchet
+    from scripts.ai.trader_journal_harness import evaluate_trader_journal_ratchet
 except Exception as _sentinel_import_err:
     evaluate_tactical_triggers = None
     register_signal_for_post_mortem = None
     evaluate_active_post_mortem_ratchet = None
+    evaluate_trader_journal_ratchet = None
 
 VALID_MARKET_COLUMNS = {
     'symbol', 'category', 'display_name', 'session_origin', 'current_price',
@@ -616,6 +618,13 @@ def sync_markets_loop():
     if evaluate_active_post_mortem_ratchet and state.get('prices_cache'):
         try:
             evaluate_active_post_mortem_ratchet(state['prices_cache'], SUPABASE_URL, SUPABASE_KEY)
+        except Exception:
+            pass
+
+    # Agente 4: Evaluador Ratchet MFE/MAE para Trader Journal (20s VPS - Costo Marginal $0)
+    if evaluate_trader_journal_ratchet and state.get('prices_cache'):
+        try:
+            evaluate_trader_journal_ratchet(state['prices_cache'], SUPABASE_URL, SUPABASE_KEY)
         except Exception:
             pass
 

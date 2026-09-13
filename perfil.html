@@ -98,6 +98,20 @@
         <span class="tab-label-full">Seguridad & Acceso</span>
         <span class="tab-label-short">Seguridad</span>
       </button>
+
+      <button 
+        type="button" 
+        class="dash-tab-btn" 
+        id="tab-journal" 
+        role="tab" 
+        aria-selected="false" 
+        aria-controls="panel-journal" 
+        tabindex="-1"
+      >
+        <span class="tab-icon">📓</span>
+        <span class="tab-label-full">Diario Cuántico</span>
+        <span class="tab-label-short">Diario IA</span>
+      </button>
     </nav>
 
     <!-- Tab Panels Container -->
@@ -391,6 +405,70 @@
               <p class="logout-desc">Finaliza la sesión activa del terminal de forma segura.</p>
             </div>
             <button type="button" id="btn-logout" class="btn btn-logout">Cerrar Sesión</button>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ============================================================
+           PANEL 4: Diario Cuántico & Disciplina Institucional
+           ============================================================ -->
+      <section 
+        class="dash-tabpanel" 
+        id="panel-journal" 
+        role="tabpanel" 
+        aria-labelledby="tab-journal" 
+        tabindex="0"
+      >
+        <div class="dashboard-card journal-hero-card">
+          <div class="quota-header">
+            <div class="quota-header-text">
+              <h2 class="dashboard-card-title">
+                <span class="card-title-icon">📓</span>
+                Diario Cuántico & Memoria de Disciplina
+              </h2>
+              <p class="settings-subtitle">Bitácora auditada por el Agente Evaluador. Mide tu confluencia matemática con el dPOC y el control de riesgo en cada sesión.</p>
+            </div>
+            <button type="button" class="btn-refresh-quota" id="btn-refresh-journal" title="Actualizar métricas del diario">
+              <span class="refresh-icon">↻</span>
+            </button>
+          </div>
+
+          <!-- Métricas de Disciplina en Cards -->
+          <div class="journal-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+            <div class="journal-kpi-card" style="background: rgba(14,165,233,0.06); border: 1px solid rgba(14,165,233,0.2); border-radius: 10px; padding: 1rem; text-align: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Win Rate Semanal</span>
+              <span id="journal-kpi-winrate" style="font-size: 1.5rem; font-weight: 700; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">— %</span>
+            </div>
+            <div class="journal-kpi-card" style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; padding: 1rem; text-align: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">PnL Neto en R</span>
+              <span id="journal-kpi-net-r" style="font-size: 1.5rem; font-weight: 700; color: #34d399; font-family: 'JetBrains Mono', monospace;">— R</span>
+            </div>
+            <div class="journal-kpi-card" style="background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.2); border-radius: 10px; padding: 1rem; text-align: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Disciplina dPOC</span>
+              <span id="journal-kpi-dpoc" style="font-size: 1.5rem; font-weight: 700; color: #a78bfa; font-family: 'JetBrains Mono', monospace;">— %</span>
+            </div>
+            <div class="journal-kpi-card" style="background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 1rem; text-align: center;">
+              <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Drawdown Medio (MAE)</span>
+              <span id="journal-kpi-mae" style="font-size: 1.5rem; font-weight: 700; color: #fbbf24; font-family: 'JetBrains Mono', monospace;">— R</span>
+            </div>
+          </div>
+
+          <!-- Diagnóstico del Evaluador -->
+          <div id="journal-evaluator-box" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🔬</span> Diagnóstico del Agente Evaluador
+            </h3>
+            <p id="journal-evaluator-text" style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0;">
+              Aún no has generado una auditoría semanal. Puedes solicitarla al Copilot en cualquier momento diciendo: <em>"Hazme el análisis de mis trades de la semana"</em>.
+            </p>
+          </div>
+
+          <!-- Historial Reciente de Operaciones -->
+          <h3 style="font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📋</span> Operaciones Registradas en el Diario
+          </h3>
+          <div id="journal-trades-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 2rem 0;">Cargando bitácora de trades...</p>
           </div>
         </div>
       </section>
