@@ -758,6 +758,7 @@ function handleClearChat() {
  */
 function getCategoryClass(cat) {
   switch (cat) {
+    case 'BITACORA_CUANTICA': return 'category-bitacora';
     case 'GESTION_RIESGO': return 'category-gestion-riesgo';
     case 'TECNICO_ORDERFLOW': return 'category-tecnico-orderflow';
     case 'MACRO': return 'category-macro';
@@ -771,6 +772,7 @@ function getCategoryClass(cat) {
  */
 function getCategoryLabel(cat) {
   switch (cat) {
+    case 'BITACORA_CUANTICA': return 'Diario Cuántico';
     case 'GESTION_RIESGO': return 'Gestión de Riesgo';
     case 'TECNICO_ORDERFLOW': return 'Order Flow & ZAP';
     case 'MACRO': return 'Contexto Macro';
