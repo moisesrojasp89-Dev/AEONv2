@@ -1,48 +1,76 @@
-# AEON | Terminal de Inteligencia Cuantitativa Institucional & Contexto Macroeconómico (MAS v1.1.0)
+# AEON | Terminal de Inteligencia Cuantitativa Institucional & Contexto Macroeconómico (MAS v1.2.0)
 
 AEON es una plataforma profesional de inteligencia macroeconómica, microestructura de Order Flow y contextualización cuantitativa en tiempo real diseñada para traders institucionales e inversores soberanos.
 
 > 🏛️ **Declaración de Soberanía Institucional:**  
-> **AEON no es un buscador ni proveedor de señales, ni un bot de ejecución ciega.** AEON es una **Terminal de Inteligencia Cuantitativa y Contexto Estructural**. Su misión es dotar al operador de datos cuantitativos crudos (ZAP, dPOC de volumen, session VWAP, piscinas de liquidez BSL/SSL, correlaciones macro) y análisis contextual multi-agente riguroso, neutral y desprovisto de juicios emocionales o promesas de retorno. El trader es el único general soberano que toma las decisiones de ejecución.
+> **AEON no es un proveedor de señales ni un bot de ejecución ciega.** AEON es una **Terminal de Inteligencia Cuantitativa y Contexto Estructural**. Su misión es dotar al operador de datos cuantitativos crudos (ZAP, dPOC de volumen, session VWAP, piscinas de liquidez BSL/SSL, correlaciones macro) y análisis contextual multi-agente riguroso, neutral y desprovisto de juicios emocionales o promesas de retorno. El trader es el único general soberano que toma las decisiones de ejecución.
 
 Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS / Vite, backend server-side en Supabase PostgreSQL con RLS Zero-Trust, Edge Functions en Deno y un motor cuantitativo 24/7 en Python con ingesta batch de OANDA v20, Binance, Coinbase, St. Louis Fed FRED y Yahoo Finance.
 
 ---
 
-## 🏛️ Arquitectura del Sistema (AEON Real Intelligence v2.0)
+## 🏛️ Capacidades y Módulos de la Plataforma
+
+### 1. 🛰️ Terminal de Mercados & Microestructura Cuántica (17 Activos Globales)
+* **Ingesta Multi-Activo en Tiempo Real:** 14 activos vía OANDA v20 en 1 sola llamada batch (Oro Spot `XAUUSD`, Plata Spot `XAGUSD`, Petróleo Crudo WTI `USOIL`, Divisas Mayores y Menores, Índices `SPX500`, `NAS100`, `US30`, `JP225`), Criptoactivos directos de Binance y Coinbase (`BTCUSD`, `ETHUSD`) y cálculo geométrico oficial ICE del Índice Dólar (`DXY`).
+* **Microestructura Institucional:** Developing POC (dPOC) acumulativo barra a barra, Session VWAP en tiempo real, Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda), Zonas de Absorción (S1/S2/R1/R2) y piscinas de liquidez BSL/SSL sin Look-Ahead Bias.
+* **Terminal Gráfica (/analisis.html):** Curva continua en Canvas nativo (Lightweight Charts v5) para los 4 Reyes del Mercado (Oro, Bitcoin, Euro y Nasdaq) con actualización atómica in-place sin reseteo de scroll.
+
+### 2. 🏛️ Macro Liquidity & Fed Yields HUD
+* **Barómetros de la Reserva Federal:** Monitoreo continuo de los 5 pilares de liquidez institucional: Rendimiento del Bono a 10 Años (`US10Y`), Bono a 2 Años (`US02Y`), Tasa Efectiva de Fondos Federales (`FEDFUNDS`), Facilidad de Repo Inverso (`RRPONTSYD`) y Balance Total de Activos de la Fed (`WALCL`).
+* **Alertas de Expansión y Contracción:** Detección en código de dinámicas de Quantitative Easing (QE) y Quantitative Tightening (QT), con modal interactivo y playbooks formativos de correlación con divisas, bonos y metales.
+
+### 3. 🎯 Calendario Sniper & Detección de Fases de Mercado
+* **Sondeo Event-Driven T-5m:** Aceleración automática de sondeo a alta frecuencia (cada 15s) en la ventana previa a catalizadores de alto impacto económico para captura inmediata del dato real (`Actual`).
+* **Detección Automática de Sesiones Bursátiles:** Resolución de estados horarios UTC (`Asia-Pacífico / Tokio`, `Pre-Londres`, `Londres Activa`, `Pre-NY`, `Wall Street Activa`, `Cierre NY` y `Weekend Wrap de Fin de Semana` para criptoactivos).
+* **Briefings Diarios Grounded:** Síntesis ejecutivas de sentimiento y catalizadores económicos ancladas estrictamente a los registros oficiales en base de datos.
+
+### 4. 🤖 Copiloto Cuantitativo IA Multimodal (Edge Function `aeon-chat`)
+* **Grounding 100% en Base de Datos Viva:** Inyección de precios en tiempo real, dPOC, VWAP y catalizadores económicos digeridos antes de inferir. Prohibición estricta de alucinación fuera de datos vivos.
+* **Auditoría Cuantitativa de Escenarios:** Análisis desapasionado de hipótesis propuestas por el trader (Entrada, Invalidación SL, TP de liquidez y ratio R:R crudo).
+* **Algoritmo de Cálculo de Lotaje Institucional:** Fórmulas matemáticas de contrato para Oro Spot (100 oz/lote), Forex e Índices con redondeo prudencial al micro-lote (0.01).
+* **Auditoría Visual Multimodal:** Capacidad de recepción y análisis directo de capturas de pantalla de gráficos (TradingView / MT5 / MT6) vía Canvas cliente con compresión sub-50ms e `inlineData`.
+
+### 5. 📓 Diario Cuántico & Copilot Logging (Harness Architecture)
+* **Registro Conversacional de Trades:** El trader documenta sus entradas de forma natural en el chat (*"Entré en compra en XAUUSD en 2650 con SL 2642 y TP 2668"*).
+* **Validación de Coherencia Direccional Pre-INSERT:** Rechazo determinista antes de tocar la base de datos si una orden no cumple `SL < Entry < TP` (BUY) o `TP < Entry < SL` (SELL).
+* **Captura de Snapshot Cuántico Inmutable:** Al momento de la entrada, se sella en PostgreSQL el contexto exacto de mercado (dPOC, VWAP, sesgo institucional y catalizadores).
+* **Ratchet de 20s en VPS (Costo Marginal \$0):** Monitoreo tick a tick del drawdown adverso (MAE) y máxima excursión favorable (MFE) en múltiplos de $R$.
+* **Desambiguación Multi-Posición:** Cero adivinación silenciosa; si el trader opera múltiples posiciones en el mismo símbolo, el sistema solicita aclaración unívoca antes de cerrar o anular.
+* **Agente Evaluador Post-Mortem Semanal:** Auditoría objetiva conversacional (*"Hazme el análisis de mis trades de la semana"*) que calcula Win Rate, R Neto, Profit Factor y disciplina con el dPOC, archivando métricas en el Command Center de `/perfil.html`.
+
+### 6. 🛡️ Centinela Cuántico de Confluencias & Bus de Eventos en Tiempo Real
+* **Escaneo en Tiempo Real:** Evaluación continua de confluencias de alta probabilidad ($Precio \in ZAP \land Barrido\ BSL/SSL \land dPOC$).
+* **Fan-Out de Latencia Ultrabaja:** Worker no bloqueante que dispara síntesis táctica en Edge Function (`aeon-copilot-event`) en $<1.2\text{s}$.
+* **Transmisión Reactiva:** Difusión a clientes web vía WebSockets (Supabase Realtime) con sintetizador de audio cyber (WebAudio API 880Hz–1760Hz), toast flotante con snooze y tarjetas tácticas desplegables.
+
+### 7. 💳 Command Center del Trader & Pasarela Cripto
+* **Dashboard Dark Luxury (`perfil.html`):** Pestañas accesibles WAI-ARIA (Membresía, Diario Cuántico, Seguridad y Preferencias).
+* **Pasarela Binance Pay:** Proceso de suscripción PRO en 3 pasos con clickwrap legal, QR en alta definición y validación estricta de transferencias.
+* **Panel de Administración Móvil (`admin-pagos.html`):** Gestión y activación de cuentas en un toque vía Stored Procedures atómicos.
+
+---
+
+## 🏛️ Arquitectura del Sistema
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
 │ MOTOR AUTÓNOMO DE ALTA FRECUENCIA (scripts/ai/aeon_autonomous_engine)  │
 │                                                                        │
 │  ┌───────────────────────────┐         ┌────────────────────────────┐  │
-│  │ OANDA v20 (Lote 14 Activos│ ◄──────►│ Cripto APIs Públicas       │  │
+│  │ OANDA v20 (Batch 14 Activos) ◄─────►│ Cripto APIs Públicas       │  │
 │  │  - Metales, Energía, Forex│         │  - Binance (BTC)           │  │
 │  │  - Índices Globales       │         │  - Coinbase (ETH)          │  │
 │  └─────────────┬─────────────┘         └─────────────┬──────────────┘  │
 │                │                                     │                 │
 │  ┌─────────────▼─────────────────────────────────────▼──────────────┐  │
 │  │ CEREBRO CUÁNTICO & AGENTES AUTÓNOMOS (17 Activos Globales)       │  │
-│  │  1. Motor Cuántico Multi-Activo (17 Activos simultáneos):        │  │
-│  │     - dPOC de Volumen, Session VWAP, S1/S2/R1/R2 deterministas   │  │
-│  │     - Sesgo cuantitativo institucional (BULLISH/BEARISH/NEUTRAL) │  │
-│  │     - Cálculo exacto DXY mediante fórmula oficial ICE            │  │
-│  │     - Ingesta de Plata Spot (XAG), Petróleo WTI, Bitcoin y ETH   │  │
-│  │  2. Sincronizador de Macro Liquidez Fed (5 Joyitas Institucionales):│
-│  │     - Rendimiento Bonos 10A (US10Y) y 2A (US02Y) vía Yahoo/FRED  │
-│  │     - Tasa Fondos Federales (FEDFUNDS), Reverse Repo (RRPONTSYD) │
-│  │     - Balance Total de la Fed (WALCL) con alertas de QE/QT       │
-│  │  3. Calendario Sniper (sync_calendar_sniper): T-5m sondeo rápido │  │
-│  │     - Auto-resolución de eventos pasados y captura de 'Actual'   │  │
-│  │  4. Daily Briefing Dinámico (get_session_dynamic_catalysts):     │  │
-│  │     - Grounding directo en DB de calendario (Cero mock data)     │  │
-│  │     - Modo Weekend Wrap (Cierre Semanal / Cripto 24/7 en vivo)   │  │
-│  │  5. Generador de Noticias con Grounding Obligatorio:             │  │
-│  │     - 5 categorías vivas ancladas a datos reales verificados     │  │
-│  │  6. Centinela Cuántico de Confluencias & Active Harness:         │  │
-│  │     - Escaneo en cada tick: ZAP + BSL/SSL Sweep + dPOC + Cooldown│  │
-│  │     - Worker thread no bloqueante (timeout 3.0s) -> Edge Function│  │
-│  │     - Persistencia de cooldown en data/harness_sentinel_state.json│ │
+│  │  1. Motor Cuántico Multi-Activo: dPOC, Session VWAP, ZAPs, DXY   │  │
+│  │  2. Sincronizador Macro Liquidez Fed (US10Y, US02Y, WALCL, RRP)  │  │
+│  │  3. Calendario Sniper: T-5m sondeo de alta frecuencia            │  │
+│  │  4. Daily Briefings & Noticias: Grounding directo en BD          │  │
+│  │  5. Centinela Cuántico de Confluencias: Fan-out en <1.2s         │  │
+│  │  6. Ratchet de 20s para Trader Journal: Tracking MFE/MAE en RAM  │  │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
 │                                                      │                 │
 └──────────────────────────────────────────────────────┼─────────────────┘
@@ -50,20 +78,14 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
                                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │ SUPABASE POSTGRESQL & EDGE FUNCTIONS (Nube)                            │
-│  - Seguridad RLS Zero-Trust en todas las tablas                        │
-│  - Agregación instantánea de Track Record vía RPC (0ms math lag)       │
-│  - Realtime seguro con REPLICA IDENTITY FULL                           │
-│  - Stored Procedure atómico refund_ai_quota para cuotas IA             │
-│  - Tabla macro_liquidity con triggers atómicos de auditoría y cambio   │
-│  - Active Copilot Harness & Event Bus (Migración 00010):               │
-│      • trading_signal_events: Bus de eventos con TTL 2h & Realtime     │
-│      • user_trade_journal: Bitácora de órdenes y flags de consolidación│
-│      • check_overtrading_guardrail: RPC ventana móvil 45m & anti-IDOR  │
-│  - Edge Functions:                                                     │
-│      • aeon-chat: Copiloto Macro Zero-Trust y cuota atómica (50/día)   │
-│      • aeon-copilot-event: Síntesis táctica Gemini 2.5 Flash-Lite      │
-│        en <1.2s, idempotencia por event_id y broadcast a Realtime      │
-│  - Tablas: market_intelligence, macro_liquidity, daily_briefings, news │
+│  - Seguridad Zero-Trust RLS en todas las tablas                        │
+│  - Tablas: trader_journal, trader_weekly_audits, market_intelligence,  │
+│    macro_liquidity, daily_briefings, economic_calendar, news           │
+│  - Bus de Eventos en Tiempo Real con REPLICA IDENTITY FULL             │
+│  - Conteo atómico anti-spam y procedimientos RPC de cuotas             │
+│  - Edge Functions en Deno:                                             │
+│      • aeon-chat: Copiloto Cuantitativo & Trader Journal Harness       │
+│      • aeon-copilot-event: Síntesis táctica y broadcast Realtime       │
 └──────────────────────────────────────┬─────────────────────────────────┘
                                        │
                                        │ Transmisión en Tiempo Real & WebSockets
@@ -71,41 +93,12 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
 ┌────────────────────────────────────────────────────────────────────────┐
 │ AEON TERMINAL WEB (Vite SPA / Vanilla JS / ES Modules)                 │
 │  - Producción en Vercel: https://aeondev.vercel.app                    │
-│  - Entorno Local (Wi-Fi): http://192.168.0.105:5173                    │
-│  - Navbar Global Centralizada: Single source of truth (#navbar-root)   │
-│    con navegación reactiva limpia ('Perfil' y cajón móvil 'CUENTA')    │
-│  - Macro Liquidity HUD (index.html & mercados.html): Micro-panel neón  │
-│    con los 5 barómetros de liquidez Fed y modal formativo educativo   │
-│  - Radar de Mercados Globales (17 Activos): Carrusel táctil con swipe  │
-│    horizontal, scroll vertical libre en móvil y actualización atómica  │
-│    in-place con pulso cian (cero reseteos de scroll al recibir ticks)  │
-│  - Acciones Contextuales de Mercado:                                   │
-│      • [ Analizar ZAP → ] para los 4 reyes hacia /analisis.html        │
-│      • [ Auditar con IA ✦ ] para 13 activos enlazado al Copilot IA    │
-│  - Terminal de Análisis Estructural (/analisis.html):                   │
-│      • 4 Reyes del Mercado (Oro XAU, Bitcoin BTC, Euro EUR, Nasdaq NAS)│
-│      • Gráficos nativos Canvas Lightweight Charts v5 (Curva neón)      │
-│      • Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda) & EMA 50  │
-│      • Piscinas de Liquidez ($$$ BSL/SSL) & Escenarios "Si / Entonces" │
-│      • Cálculo cuántico Zero-DDL en cited_key_levels y Heartbeat 25s   │
-│  - Active Copilot Harness & Terminal Proactiva:                        │
-│      • Escucha en tiempo real vía WebSockets (canal aeon_harness_alerts│
-│        y tabla trading_signal_events)                                  │
-│      • Chime de radar cyber sintetizado con WebAudio API (880Hz-1760Hz)│
-│      • Toast flotante táctico sobre el FAB con pulso neón y snooze 15m │
-│      • Formateador de Markdown institucional (**negrita** renderizada) │
-│      • Persistencia reactiva del último evento al recargar la web      │
-│      • Embudo Freemium: Tarjeta paywall en Free / Análisis R/R en PRO  │
-│  - Playbooks Operativos: 5 manuales tácticos en carrusel horizontal    │
-│    con botones de desplazamiento suave (← / →) y soporte responsive   │
-│  - Command Center del Trader (/perfil.html): Rediseño Dark Luxury con  │
-│    pestañas WAI-ARIA y modal contractual de Términos y Condiciones PRO │
-│  - Pasarela Cripto Binance Pay: Checkout 3 pasos con blindaje legal    │
-│    clickwrap obligatorio, QR en alta definición y Pay ID 401032901    │
-│  - Panel de Pagos Admin (/admin-pagos.html): Interfaz móvil para       │
-│    aprobar/rechazar órdenes y activar PRO en 1 toque vía RPC segura   │
-│  - Calendario Modular (form-controls, sidebar-widget, calendar.css)    │
-│  - Feed de Noticias: Grid adaptativo de noticias destacadas y filtro   │
+│  - Radar de Mercados Globales: 17 Activos con actualización in-place   │
+│  - Terminal de Análisis Estructural (/analisis.html): Gráficos Canvas  │
+│  - Macro Liquidity HUD: Panel de 5 barómetros Fed y modal formativo    │
+│  - Widget de Chat Multimodal: Audio WebAudio, adjuntos de gráficos    │
+│  - Command Center (/perfil.html): Métricas y Diario Cuántico en vivo   │
+│  - Calendario Económico y Feed de Noticias Grounded                    │
 │  - Cero Deuda Técnica: 0 inline styles, 0 !important, tokens CSS puros │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -121,52 +114,35 @@ npx vite --host 0.0.0.0 --port 5173
 * **Acceso desde PC:** `http://localhost:5173`
 * **Acceso desde Móvil (Misma red Wi-Fi):** `http://192.168.0.105:5173`
 
-### 2. Iniciar el Motor Autónomo de Agentes
+### 2. Iniciar el Motor Autónomo de Agentes (Python 3.11)
 ```bash
 python scripts/ai/aeon_autonomous_engine.py
 ```
 * Sincroniza los **17 activos** cada 20s (Oro Spot, Plata Spot, Petróleo WTI, Bitcoin, Ethereum, Índices y Forex).
-* Sincroniza la **Macro Liquidez Fed** (US10Y, US02Y, FEDFUNDS, RRPONTSYD, WALCL) en cadencia multi-nivel.
-* Extrae catalizadores y noticias directamente de la base de datos de calendario oficial.
-* Detecta automáticamente las sesiones bursátiles (**Tokio**, **Londres**, **Nueva York** y **Weekend Wrap de fin de semana**).
-* Ejecuta en segundo plano el **Centinela Cuántico de Confluencias** con alerta proactiva y fan-out a la Terminal Web.
+* Sincroniza la **Macro Liquidez Fed** (US10Y, US02Y, FEDFUNDS, RRPONTSYD, WALCL).
+* Ejecuta el **Ratchet de 20s** para auditar MFE y MAE en trades abiertos del diario.
+* Ejecuta el **Centinela Cuántico de Confluencias** con alerta proactiva y fan-out a la Terminal Web.
+
+### 3. Ejecutar la Batería Completa de Pruebas Unitarias
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+* Ejecuta las 4 suites automatizadas de regresión (28/28 tests pasando).
+
+### 4. Compilar para Producción
+```bash
+npm run build
+```
 
 ---
 
-## 📊 Estado de Ejecución del Roadmap
+## 📚 Documentación Técnica de Referencia
 
-| Componente | Descripción | Estado |
-|---|---|:---:|
-| **Sistema Multi-Agente (MAS v1.0.0 - Fases 1, 2, 3)** | Cooldown atómico PostgreSQL, orquestador en Deno con Pre-LLM Blackout, Agente 1 (Táctico), Agente 2 (Macro) y Agente 3 (Post-Mortem Ratchet 20s en RAM + Anti-Peeking $N \ge 35$). | ✅ **Operativo en Producción** |
-| **Reorientación Institucional & Anti-Oráculo (MAS v1.1.0)** | Erradicación de "señales". Gate de emisión desacoplado por magnitud estructural intrínseca, 4 guardrails deterministas anti-oráculo (enum cerrado, invalidación precalculada, reloj macro y denylist regex). | ✅ **Desplegado y Verificado (18/18 Tests)** |
-| **Pasarela de Ejecución MT5 / Brokers (Fase 4 Previa)** | Conexión externa con terminales y brokers descartada formalmente tras auditoría para evitar riesgos operativos, deslizamientos y sanciones contractuales en prop-firms. Web propia blindada como único activo soberano. | 🚫 **Cancelado por Gobernanza** |
-| **Bitácora Cuantitativa & Trading Journal IA** | Registro conversacional de trades personales del operador (`trader_journal`), enriquecimiento automático con métricas de mercado de AEON y auditoría semanal post-mortem de desempeño (Win Rate, R-Múltiplos, trading leaks). | 🟡 **En Diseño (Próxima Fase)** |
-| **Motor Autónomo VPS (17 Activos)** | Ingesta batch OANDA + Binance/Coinbase, 0 TwelveData calls, Gemini 3.1 Flash-Lite y deduplicación MD5. | ✅ **Operativo** |
-| **AEON Active Copilot Harness** | Centinela de confluencias 24/7 en VPS, fan-out Edge Function, Realtime Broadcast, WebAudio Chime, bitácora y guardrail anti-overtrading. | ✅ **Operativo en Vivo** |
-| **Macro Liquidity & Fed Yields HUD** | Radar de liquidez Fed (US10Y, US02Y, FEDFUNDS, RRP, WALCL) con modal educativo y sync multi-cadencia. | ✅ **Operativo en Vivo** |
-| **Cerebro Cuántico 17 Activos** | Microestructura dPOC, VWAP, sesgos deterministas y fórmula ICE DXY (Oro, Plata, WTI, Cripto, Índices, FX). | ✅ **Operativo** |
-| **Terminal de Análisis (`/analisis.html`)** | Gráficos Canvas nativos, ZAPs dinámicas, piscinas BSL/SSL, Zero-DDL y Heartbeat 25s. | ✅ **Operativo en Vivo** |
-| **AEON Copilot (Chatbot IA)** | Copiloto macro institucional, Edge Function `aeon-chat` Zero-Trust, cuotas atómicas y widget multiestado. | ✅ **Operativo** |
-| **Hero Institucional Limpio** | Ilustración 3D cuántica despejada con micro-HUD superior minimalista. | ✅ **Desplegado** |
-| **Radar de Mercados & Conexión Dual** | Enlace `[ Analizar ZAP → ]` para los 4 reyes y `[ Auditar con IA ✦ ]` conectado a Copilot para 13 activos. | ✅ **Desplegado** |
-| **Paridad y Scroll In-Place en Mercados** | Desplazamiento vertical libre en móvil, swipe horizontal y actualización atómica in-place sin reseteo de carrusel. | ✅ **Desplegado** |
-| **Playbooks Operativos en Carrusel** | 5 protocolos tácticos en carrusel horizontal continuo con botones tácticos de desplazamiento suave (`←` / `→`). | ✅ **Desplegado** |
-| **Command Center del Trader (`perfil.html`)** | Interfaz Dark Luxury, navegación WAI-ARIA y modal contractual de Términos y Condiciones PRO. | ✅ **Desplegado** |
-| **Navbar Centralizada Unificada** | Cero duplicación HTML (11 páginas); inyección única `<div id="navbar-root"></div>`. | ✅ **Desplegado** |
-| **Erradicación de Deuda Técnica** | Cero estilos inline, cero `!important`, variables CSS 100% tokenizadas. | ✅ **Auditoría OK** |
-| **Grounding de Noticias & Briefing** | Cero plantillas estáticas; datos económicos extraídos de BD oficial en tiempo real. | ✅ **Operativo** |
-| **Modo Weekend Wrap** | Cierre semanal con datos digeridos (NFP/Desempleo) y horizontes escalonados para Asia. | ✅ **Operativo** |
-| **Pasarela Binance Pay & Panel Admin** | Modal 3 pasos con clickwrap legal, QR Pay ID 401032901, RPC atómico y admin panel web móvil. | ✅ **Desplegado** |
-| **Optimización Rendimiento & Zero-Waterfall** | Carga en ~300ms, hidratación progresiva Copilot (requestIdleCallback), L1 cache con TTL 60s, disparo anticipado de red y badges honestos Stale/Fresh. | ✅ **Operativo en Vivo** |
-| **Producción Vercel** | Despliegues automatizados y continuos desde `moisesrojasp89-Dev/AEONv2`. | ✅ **Verde (🟢 Ready)** |
-
----
-
-## 📚 Documentación Técnica Adicional
-
-* 📖 **[Bitácora de Desarrollo y Errores](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico detallado de bugs resueltos, refactorizaciones y lecciones aprendidas.
-* 🏛️ **[Estándares de Ingeniería](docs/ENGINEERING_STANDARDS.md):** Convenciones de código, seguridad RLS y gobernanza cuantitativa.
-* 🗺️ **[Roadmap v2.0](docs/AEON_ROADMAP_V2.md):** Fases y arquitectura a largo plazo.
-* 📐 **[Convenciones Técnicas](docs/CONVENTIONS.md):** Estándares de diseño, BEM, tokens y protocolos de señales.
-* 📋 **[Estado Actual vs Objetivo](docs/CURRENT_STATE_VS_TARGET.md):** Diagnóstico de arquitectura y cuadro de mando exhaustivo.
+* 📖 **[Bitácora de Desarrollo y Refactorizaciones](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico de hitos de arquitectura, optimizaciones y bugs resueltos.
+* 🛡️ **[Guía de Harness Engineering](docs/GUIA_HARNESS_ENGINEERING.md):** Principios de diseño para agentes autónomos con memoria persistente y guardrails.
+* 🏛️ **[Dossier del Trader Journal Harness](docs/DOSSIER_TRADER_JOURNAL_HARNESS.md):** Arquitectura detallada, modelo de datos relacional y dictamen técnico certificado.
+* 🏛️ **[Estándares de Ingeniería](docs/ENGINEERING_STANDARDS.md):** Convenciones de código, políticas Zero-Trust RLS y directrices cuantitativas.
+* 🗺️ **[Roadmap v2.0](docs/AEON_ROADMAP_V2.md):** Fases y directrices de desarrollo a largo plazo.
+* 📐 **[Convenciones Técnicas](docs/CONVENTIONS.md):** Estándares de diseño, BEM, tokens CSS y protocolos de datos.
+* 📋 **[Estado Actual vs Objetivo](docs/CURRENT_STATE_VS_TARGET.md):** Diagnóstico de arquitectura y cuadro de mando técnico del repositorio.
 

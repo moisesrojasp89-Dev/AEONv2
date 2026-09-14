@@ -48,6 +48,26 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   * Suite completa: 18/18 pruebas pasando en 0.009s.
   * Build de producción Vite en 493ms con 0 errores.
 
+### C. AI Trader Journal & Copilot Logging (Harness Architecture — MAS v1.2.0 — 14 Septiembre 2026)
+* **Memoria de Largo Plazo, Registro Conversacional y Auditoría Post-Mortem:**
+  * Integración de los principios de Harness Engineering para dotar al Copiloto de memoria persistente sobre la operativa personal del trader.
+  * Conversación natural en el chat para registrar entradas, cerrar posiciones, anular órdenes y solicitar auditorías semanales de desempeño sin tocar formularios.
+* **6 Candados de Seguridad y Gobernanza Certificados por el Arquitecto Técnico (Claude):**
+  1. **Validación de Coherencia Direccional Pre-INSERT:** Rechazo determinista antes de tocar la base de datos si una orden no cumple `SL < Entry < TP` (BUY) o `TP < Entry < SL` (SELL).
+  2. **Desambiguación Multi-Posición:** Cero adivinación silenciosa; si el trader tiene múltiples operaciones abiertas en un mismo símbolo (ej. scaling), el sistema frena y pide aclaración indicando precios de entrada o IDs cortos.
+  3. **Bifurcación Direccional de MFE/MAE:** Matemática independiente para BUY y SELL garantizando que en operaciones en corto el descenso de precio bonifique el MFE (+R) y el ascenso penalice el MAE (-R / Drawdown).
+  4. **Prevención Atómica de Condición de Carrera:** El cierre conversacional actualiza exclusivamente columnas de salida (`status='CLOSED'`, `exit_price`, `exit_reason`, `realized_rr`), mientras que el Ratchet de 20s en VPS escribe condicionado con `WHERE id = :id AND status = 'OPEN'`, garantizando que escrituras tardías afecten 0 filas.
+  5. **Seguridad Zero-Trust RLS:** Las tablas `public.trader_journal` y `public.trader_weekly_audits` restringen los clientes `authenticated` a solo lectura (`SELECT`). Todas las escrituras (`INSERT`/`UPDATE`) se ejecutan exclusivamente con `service_role` desde el backend.
+  6. **Exclusión Estricta de Órdenes Anuladas:** Los trades marcados como `CANCELLED` y los que permanezcan `OPEN` son estrictamente excluidos del cómputo de Win Rate, R Neto y Profit Factor en las auditorías semanales.
+* **Ratchet de 20s en RAM en VPS (Costo Marginal \$0):**
+  * Sincronización dinámica de órdenes `OPEN` en el bucle principal de `scripts/ai/aeon_autonomous_engine.py` / `scripts/ai/trader_journal_harness.py`.
+  * Monitoreo tick a tick del drawdown adverso (MAE) y máxima excursión favorable (MFE) normalizados en múltiplos de $R$.
+* **Despliegue y Pruebas:**
+  * Nueva suite automatizada en `tests/test_trader_journal_harness.py` (10/10 pruebas OK).
+  * Suite total del ecosistema AEON: 28/28 pruebas pasando (100% de cobertura de regresión).
+  * Edge Function `aeon-chat` actualizada y desplegada en Supabase Cloud (`ytccnxlfakjilxwauxic`).
+  * Dashboard de Diario Cuántico integrado en `perfil.html` con 4 KPI Cards y panel de diagnóstico del Evaluator Agent.
+
 ---
 
 ## 🎨 2. Refactorizaciones de Frontend y Experiencia de Usuario (UI/UX)

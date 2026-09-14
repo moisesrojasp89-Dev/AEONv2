@@ -36,6 +36,7 @@ El Roadmap v2.0 rige la evolución de **AEON** como plataforma cuantitativa e in
 │ • Fase 6F: Macro Liquidez Fed HUD    │                                      │
 │ • Fase 6G: Expansión 17 Activos & UX │                                      │
 │ • Fase 6I: Active Copilot Harness    │                                      │
+│ • Fase 6J: AI Trader Journal Harness │                                      │
 └──────────────────────────────────────┴──────────────────────────────────────┘
 ```
 
@@ -71,6 +72,8 @@ FASE 6F: Macro Liquidez Fed HUD (5 Joyitas) ──────► [✅ COMPLETAD
 FASE 6G: Expansión 17 Activos & Refactorización UX ► [✅ COMPLETADO]
   │
 FASE 6I: Active Copilot Harness (Sentinel & Bus) ─► [✅ COMPLETADO]
+  │
+FASE 6J: AI Trader Journal & Copilot Logging ────► [✅ COMPLETADO]
   │
 FASE 6H: Pasarela Stripe FIAT (Opcional Tarjetas) ─► [🎯 PRÓXIMO SPRINT]
   │
