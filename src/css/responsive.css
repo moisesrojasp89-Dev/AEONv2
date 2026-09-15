@@ -10,10 +10,6 @@
   align-items: flex-start;
 }
 
-.signal-levels {
-  grid-template-columns: 1fr;
-}
-
 /* Global overflow management */
 html, body { overflow-x: hidden; }
 
@@ -23,8 +19,6 @@ html, body { overflow-x: hidden; }
 
   .market-grid,
   .news-list { grid-template-columns: repeat(2, 1fr); }
-
-  .signal-levels { grid-template-columns: repeat(3, 1fr); }
 
   .section-header {
     flex-direction: row;

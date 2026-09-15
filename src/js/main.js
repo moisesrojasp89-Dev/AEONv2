@@ -3,22 +3,12 @@ import { initNavbar } from './navbar.js';
 import { initPrices } from './prices.js';
 import { initChart }  from './chart.js';
 import { checkSession } from './auth.js';
-import {
-  fetchActiveSignals,
-  fetchSignalHistory,
-  fetchTrackRecordMetrics,
-  calculateTrackRecordMetrics,
-  subscribeSignalEvents,
-} from './services/signalService.js';
 import { fetchNews } from './services/newsService.js';
 import { fetchLatestBriefing, subscribeToBriefings } from './services/briefingService.js';
 import {
   renderBriefing,
   renderNews,
   renderMarketCards,
-  renderSignals,
-  renderSignalHistory,
-  renderKPIBar,
   renderEducation,
   renderPremiumFeatures,
   renderTickerBar,
@@ -46,144 +36,7 @@ supabase.auth.onAuthStateChange((event) => {
 
 let currentUser = null;
 let isPro = false;
-let activeSignals = [];
-let historySignalsCache = [];
 let allNewsCache = [];
-
-let currentViewMode = 'live'; // 'live' | 'history'
-let currentSignalFilter = 'all';
-
-function getFilteredLiveSignals() {
-  if (currentSignalFilter === 'all') return activeSignals;
-  return activeSignals.filter(s => String(s.asset || '').toUpperCase().includes(currentSignalFilter.toUpperCase()));
-}
-
-function getFilteredHistorySignals() {
-  if (currentSignalFilter === 'all') return historySignalsCache;
-  return historySignalsCache.filter(s => String(s.asset || '').toUpperCase().includes(currentSignalFilter.toUpperCase()));
-}
-
-async function updateSignalsDisplay() {
-  if (currentViewMode === 'live') {
-    renderKPIBar('live');
-    renderSignals(getFilteredLiveSignals(), currentUser, isPro);
-  } else {
-    const filteredHistory = getFilteredHistorySignals();
-    const localMetrics = calculateTrackRecordMetrics(filteredHistory);
-    renderKPIBar('history', localMetrics);
-    renderSignalHistory(filteredHistory);
-
-    // Si el filtro es 'all', consultar métricas globales agregadas en PostgreSQL vía RPC (0ms lag, muestra total)
-    if (currentSignalFilter === 'all') {
-      try {
-        const serverMetrics = await fetchTrackRecordMetrics(filteredHistory);
-        if (serverMetrics && currentViewMode === 'history' && currentSignalFilter === 'all') {
-          renderKPIBar('history', serverMetrics);
-        }
-      } catch (_) {}
-    }
-  }
-}
-
-function initViewSwitch() {
-  const container = document.getElementById('signals-view-switch');
-  if (!container) return;
-
-  container.addEventListener('click', async e => {
-    const btn = e.target.closest('.view-switch-btn');
-    if (!btn) return;
-
-    container.querySelectorAll('.view-switch-btn').forEach(b => {
-      b.classList.remove('active');
-      b.setAttribute('aria-selected', 'false');
-    });
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
-
-    currentViewMode = btn.dataset.view || 'live';
-
-    if (currentViewMode === 'history' && historySignalsCache.length === 0) {
-      try {
-        historySignalsCache = await fetchSignalHistory(50);
-      } catch (err) {
-        console.error('[AEON] Error cargando historial de señales:', err);
-      }
-    }
-
-    updateSignalsDisplay();
-  });
-}
-
-function initSignalFilters() {
-  const container = document.getElementById('signals-filter-tabs');
-  if (!container) return;
-
-  container.addEventListener('click', e => {
-    const btn = e.target.closest('.filter-tab-btn');
-    if (!btn) return;
-
-    container.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    currentSignalFilter = btn.dataset.filter || 'all';
-    updateSignalsDisplay();
-  });
-}
-
-async function loadSignals() {
-  try {
-    activeSignals = await fetchActiveSignals(isPro);
-    updateSignalsDisplay();
-  } catch (err) {
-    console.error('[AEON] Error cargando signals:', err);
-    updateSignalsDisplay();
-  }
-}
-
-function initRealtime() {
-  subscribeSignalEvents({
-    isPro,
-    onPublicInsert: newSignal => {
-      if (['active', 'hit_tp1'].includes(newSignal.status)) {
-        activeSignals.unshift(newSignal);
-      } else {
-        historySignalsCache.unshift(newSignal);
-      }
-      updateSignalsDisplay();
-    },
-    onPublicUpdate: updatedSignal => {
-      if (['closed_tp', 'closed_be', 'closed_sl', 'won', 'lost'].includes(updatedSignal.status)) {
-        // Remover de activas y mover a historial
-        activeSignals = activeSignals.filter(s => s.id !== updatedSignal.id);
-        const hIdx = historySignalsCache.findIndex(s => s.id === updatedSignal.id);
-        if (hIdx > -1) {
-          Object.assign(historySignalsCache[hIdx], updatedSignal);
-        } else {
-          historySignalsCache.unshift(updatedSignal);
-        }
-      } else {
-        const index = activeSignals.findIndex(s => s.id === updatedSignal.id);
-        if (index > -1) {
-          Object.assign(activeSignals[index], updatedSignal);
-        } else {
-          activeSignals.unshift(updatedSignal);
-        }
-      }
-      updateSignalsDisplay();
-    },
-    onProInsert: proPayload => {
-      const target = activeSignals.find(s => s.id === proPayload.signal_id);
-      if (target) {
-        Object.assign(target, proPayload);
-        updateSignalsDisplay();
-      }
-    },
-    onReconnect: () => {
-      console.debug('[AEON] Realtime reconectado. Resincronizando señales...');
-      loadSignals();
-    },
-  });
-}
 
 let currentNewsFilter = 'live';
 
@@ -397,7 +250,7 @@ async function initRadarMacroHUD() {
 async function initApp() {
   // 1. Disparo inmediato de peticiones de red al stack HTTP (0ms lag)
   const networkPromises = Promise.allSettled([
-    // Rama 1: Autenticación -> Carga de Señales según permisos -> Realtime
+    // Rama 1: Autenticación & Resolución de Permisos
     (async () => {
       try {
         const sessionInfo = await checkSession();
@@ -419,9 +272,6 @@ async function initApp() {
         }
       } catch (err) {
         console.error('[AEON] Falla en resolución de sesión:', err);
-      } finally {
-        await loadSignals();
-        initRealtime();
       }
     })(),
 
@@ -442,8 +292,6 @@ async function initApp() {
 
   initEducationInteractions();
   initNewsFilters();
-  initSignalFilters();
-  initViewSwitch();
   initNavbar();
   initPrices();
   initChart();
