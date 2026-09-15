@@ -7,9 +7,6 @@
  */
 export const DB_TABLES = {
   ECONOMIC_CALENDAR: 'economic_calendar',
-  // @deprecated - Tablas legadas de señales en desuso (pendientes de depuración en Fase 2 de BD)
-  SIGNALS: 'signals',
-  SIGNALS_PRO_DATA: 'signals_pro_data',
   SUBSCRIPTIONS: 'subscriptions',
   PROFILES: 'profiles',
   NEWS: 'news',

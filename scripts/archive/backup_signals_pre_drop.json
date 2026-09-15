@@ -1,0 +1,14 @@
+{
+  "timestamp_utc": "2026-09-15T23:08:53.737607+00:00",
+  "supabase_url": "https://ytccnxlfakjilxwauxic.supabase.co",
+  "tables": {
+    "signals": {
+      "count": 0,
+      "data": []
+    },
+    "signals_pro_data": {
+      "count": 0,
+      "data": []
+    }
+  }
+}

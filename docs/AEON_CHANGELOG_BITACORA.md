@@ -102,7 +102,38 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 
 ---
 
-## 🐞 3. Registro de Errores Críticos (Bugs) y Malas Prácticas Resueltas
+## 🧠 3. Evolución del Cerebro Cuántico y Agentes Autónomos (AEON Engine)
+
+### A. Motor Cuántico Universal para los 14 Activos (`compute_institutional_quant_metrics`)
+* **Mandato Institucional:** Eliminar cualquier sesgo aislado o cálculo manual. Todo trader (de Forex, Metales, Cripto o Índices) debe ver datos matemáticamente exactos.
+* **Lógica Cuantitativa:** Cada 20 segundos se calcula el delta de sesión $\Delta_{\text{Sesión}} = \frac{P - P_{\text{Base}}}{P_{\text{Base}}} \times 100$ frente a benchmarks de apertura calibrados institucionalmente.
+* **Métricas Deterministas Generadas:**
+  * **Sesgo (`BULLISH` / `BEARISH` / `NEUTRAL`)** con puntuación de convicción ($50\% - 96\%$).
+  * **Niveles dPOC (Daily Point of Control)** según bandas de volatilidad interbancaria.
+  * **Session VWAP** y soportes/resistencias dinámicos ($S_1, S_2, R_1, R_2$).
+  * **Tesis institucional y tags de catalizadores** (`DPOC_EXPANSION`, `BEARISH_FLOW`, `VWAP_SUPPORT`).
+* **Sincronización:** Alimenta en tiempo real el radar del Daily Briefing (`asset_bias`), la terminal de `mercados.html` y las noticias.
+
+### B. Corrección de la Fórmula Oficial ICE del Dollar Index (DXY)
+* **Error Encontrado:** La fórmula geométrica del DXY calculaba `90.544` en lugar del valor real de mercado (`99.566`).
+* **Causa:** Faltaba el componente ponderado de la corona sueca $(USDSEK^{0.042})$.
+* **Solución:** Se incorporó `USD_SEK` al lote de OANDA y se aplicó la fórmula oficial de ICE:
+  $$DXY = 50.14348112 \times EURUSD^{-0.576} \times USDJPY^{0.136} \times GBPUSD^{-0.119} \times USDCAD^{0.091} \times USDSEK^{0.042} \times USDCHF^{0.036}$$
+  Resultado: Exactitud milimétrica de nivel interbancario.
+
+### C. Modo Institucional de Fin de Semana (`weekend_wrap`)
+* **Detección Temporal:** Reconoce automáticamente el cierre bursátil de Forex y Renta Variable (Viernes 21:00 UTC a Domingo 21:00 UTC).
+* **Comportamiento:**
+  * **Píldora:** `MERCADOS CERRADOS · CRIPTO 24/7`.
+  * **Portada:** Gráfica financiera institucional en tonos azul cian y neón dark fintech (`#0EA5E9` / `#070B12`).
+  * **Cotizaciones:** Congela precios de cierre del viernes en Forex/Índices/Metales y mantiene **Bitcoin cotizando en tiempo real 24/7** con websocket/API de Binance.
+  * **Tesis:** Balance semanal de absorción institucional y preparación de apertura de futuros para el domingo.
+
+---
+
+---
+
+## 🐞 4. Registro Unificado de Errores Críticos (Bugs) y Malas Prácticas Resueltas
 
 ### Error 1: Fallos Consecutivos de Compilación en Vercel CI (`Module not found` & `Error`)
 * **Síntoma:** Vercel cancelaba todos los despliegues con error rojo (`🔴 Error`) y seguía sirviendo una versión congelada de hacía 5 horas.
@@ -161,76 +192,24 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
 
 ---
 
-### D. Refactorización Modular de la Arquitectura CSS del Calendario Económico
-* **Problema:** El archivo `src/css/components/calendar.css` había crecido hasta superar las 700 líneas, mezclando estilos de controles de formulario, paneles laterales de TradingView y la tabla de alta densidad.
-* **Refactorización Modular Implementada:**
-  1. **`src/css/variables.css`:** Inclusión de tokens de comparación de datos (`--stat-better`, `--stat-worse`, `--stat-pending`, `--stat-better-bg/border/text`), token de impacto bajo (`--impact-low`) y superficies de inputs oscuros (`--glass-bg`, `--input-bg`, `--input-border`).
-  2. **`src/css/components/form-controls.css` (Nuevo Componente):** Extracción de `.calendar-search-input` y `.calendar-select` como utilidades reutilizables para cualquier formulario de la plataforma.
-  3. **`src/css/components/sidebar-widget.css` (Nuevo Componente):** Extracción del panel lateral independiente con el widget de TradingView en vivo (`.tv-container`) y la tarjeta del próximo catalizador / dato publicado con animación de pulso (`pulse-dot`).
-  4. **`src/css/components/calendar.css` (Limpio y Compacto):** Rediseño de la tabla de alta densidad con un layout responsivo estricto:
-     * **Desktop ($\ge 900\text{px}$):** Grid de 8 columnas (`--eco-cols: 80px 60px 40px 1fr 80px 80px 80px 30px`).
-     * **Móvil ($< 900\text{px}$):** Grid optimizado de 4 columnas (`68px 1fr 24px 28px`) con tarjeta de impacto macro colapsable (`.macro-impact-card`).
-
 ---
 
-## 🧠 3. Evolución del Cerebro Cuántico y Agentes Autónomos (AEON Engine)
-
-### A. Motor Cuántico Universal para los 14 Activos (`compute_institutional_quant_metrics`)
-* **Mandato Institucional:** Eliminar cualquier sesgo aislado o cálculo manual. Todo trader (de Forex, Metales, Cripto o Índices) debe ver datos matemáticamente exactos.
-* **Lógica Cuantitativa:** Cada 20 segundos se calcula el delta de sesión $\Delta_{\text{Sesión}} = \frac{P - P_{\text{Base}}}{P_{\text{Base}}} \times 100$ frente a benchmarks de apertura calibrados institucionalmente.
-* **Métricas Deterministas Generadas:**
-  * **Sesgo (`BULLISH` / `BEARISH` / `NEUTRAL`)** con puntuación de convicción ($50\% - 96\%$).
-  * **Niveles dPOC (Daily Point of Control)** según bandas de volatilidad interbancaria.
-  * **Session VWAP** y soportes/resistencias dinámicos ($S_1, S_2, R_1, R_2$).
-  * **Tesis institucional y tags de catalizadores** (`DPOC_EXPANSION`, `BEARISH_FLOW`, `VWAP_SUPPORT`).
-* **Sincronización:** Alimenta en tiempo real el radar del Daily Briefing (`asset_bias`), la terminal de `mercados.html` y las noticias.
-
-### B. Corrección de la Fórmula Oficial ICE del Dollar Index (DXY)
-* **Error Encontrado:** La fórmula geométrica del DXY calculaba `90.544` en lugar del valor real de mercado (`99.566`).
-* **Causa:** Faltaba el componente ponderado de la corona sueca $(USDSEK^{0.042})$.
-* **Solución:** Se incorporó `USD_SEK` al lote de OANDA y se aplicó la fórmula oficial de ICE:
-  $$DXY = 50.14348112 \times EURUSD^{-0.576} \times USDJPY^{0.136} \times GBPUSD^{-0.119} \times USDCAD^{0.091} \times USDSEK^{0.042} \times USDCHF^{0.036}$$
-  Resultado: Exactitud milimétrica de nivel interbancario.
-
-### C. Modo Institucional de Fin de Semana (`weekend_wrap`)
-* **Detección Temporal:** Reconoce automáticamente el cierre bursátil de Forex y Renta Variable (Viernes 21:00 UTC a Domingo 21:00 UTC).
-* **Comportamiento:**
-  * **Píldora:** `MERCADOS CERRADOS · CRIPTO 24/7`.
-  * **Portada:** Gráfica financiera institucional en tonos azul cian y neón dark fintech (`#0EA5E9` / `#070B12`).
-  * **Cotizaciones:** Congela precios de cierre del viernes en Forex/Índices/Metales y mantiene **Bitcoin cotizando en tiempo real 24/7** con websocket/API de Binance.
-  * **Tesis:** Balance semanal de absorción institucional y preparación de apertura de futuros para el domingo.
-
----
-
-## 🐞 4. Registro de Errores Críticos (Bugs) y Malas Prácticas Resueltas
-
-### Error 1: Fallos Consecutivos de Compilación en Vercel CI (`Module not found` & `Error`)
-* **Síntoma:** Vercel cancelaba todos los despliegues con error rojo (`🔴 Error`) y seguía sirviendo una versión congelada.
-* **Solución Implementada:** Corrección de `.gitignore` (`/data/`, `!src/data/`), `vercel.json` con globs estándar y sincronización de `package-lock.json`.
-
-### Error 2: Bucle de Auto-Recargas de la Página en el Servidor Local
-* **Síntoma:** En `http://192.168.1.8:5173/`, la página web parpadeaba y se recargaba sola cada 20 segundos.
-* **Solución Implementada:** Se ignoraron rutas de snapshots en `vite.config.js` (`server.watch.ignored`).
-
-### Error 3: Riesgo de Agotamiento de Rate Limits en TwelveData (Error 429)
-* **Solución Implementada:** Migración total a la API por lotes de OANDA v20 (1 sola petición para 12 activos) + Binance público para BTC. Consumo TwelveData reducido a 0.
-
-### Error 4: Discrepancia Horaria en Catalizadores del Daily Briefing (04:30 vs 08:30)
+### Error 7: Discrepancia Horaria en Catalizadores del Daily Briefing (04:30 vs 08:30)
 * **Síntoma:** Eventos de las 08:30 AM (hora Nueva York/Caracas) figuraban como 04:30 AM en la interfaz.
 * **Causa Raíz:** El backend guardaba `"08:30"` asumiendo hora local, pero la función `formatToUserLocalTime()` interpretaba la cadena como UTC y le restaba 4 horas (`08:30 UTC - 4 = 04:30`).
 * **Solución:** Estandarización de todos los catalizadores a **formato UTC estricto** en el backend (`12:30 UTC` para 08:30 ET, `14:00 UTC` para 10:00 ET, `23:30 UTC` para 19:30 Local / Tokio 08:30).
 
-### Error 5: Datos Estáticos Inventados en Noticias y Plantilla del IPC de Tokio (2.2% vs 1.8%)
+### Error 8: Datos Estáticos Inventados en Noticias y Plantilla del IPC de Tokio (2.2% vs 1.8%)
 * **Síntoma:** Las noticias debajo del briefing mostraban *"Japón: IPC Subyacente de Tokio repunta al 2.2%"* cuando en el calendario el dato oficial publicado era **1.8%**.
 * **Causa Raíz:** En `scripts/ai/aeon_autonomous_engine.py`, la rama de noticias asiáticas contenía un bloque con cadenas de texto estáticas *hardcodeadas* como mock inicial.
 * **Solución:** **Eliminación total y definitiva de plantillas estáticas.** El generador de noticias ahora implementa **Grounding Obligatorio**: extrae directamente los datos publicados de la tabla `economic_calendar` de Supabase y las cotizaciones en tiempo real del motor cuantitativo, garantizando 100% de coherencia en cada número publicado.
 
-### Error 6: Eventos Pasados de Discursos (Warsh) Mostrados como "PRÓXIMO" en Fin de Semana
+### Error 9: Eventos Pasados de Discursos (Warsh) Mostrados como "PRÓXIMO" en Fin de Semana
 * **Síntoma:** El evento *Fed Chairman Warsh Speaks* (ocurrido el viernes a las 10:00 AM) figuraba con el badge `PRÓXIMO` un sábado por la noche.
 * **Causa Raíz:** Las comparecencias no tienen previsión numérica (`actual: null`). La condición anterior `status = 'live' if ev.get('actual') else 'upcoming'` asignaba erróneamente `PRÓXIMO` porque `actual` era nulo, ignorando que la fecha `event_time` ya había transcurrido.
 * **Solución:** Se implementó la regla temporal estricta `is_past = (ev_time <= now_utc)`. Si la fecha ya transcurrió, el evento se marca como `live` (`PUBLICADO`) y se le asigna `"Publicado"` si el campo `actual` estaba vacío.
 
-### Error 7: Bloqueo de Actualización del Briefing por Conflicto HTTP 409 y Catalizadores Cruzados (Europeos en Sesión Americana)
+### Error 10: Bloqueo de Actualización del Briefing por Conflicto HTTP 409 y Catalizadores Cruzados (Europeos en Sesión Americana)
 * **Síntoma:** Estando en plena Sesión Americana (Wall Street & Fed), la tarjeta del Daily Briefing mostraba catalizadores de la sesión europea y asiática (AUD RBA Rate, EUR PMI, GBP PMI) y no los datos clave de EE.UU. publicados hoy (ISM PMI, JOLTS, Precios ISM).
 * **Causas Raíz:**
   1. **Fallo de Upsert (HTTP 409 Conflict):** La tabla `public.daily_briefings` tiene una restricción de unicidad estricta `unique_daily_session` sobre `(date, session_id)`. El script `aeon_autonomous_engine.py` realizaba peticiones con `?on_conflict=id` inyectando un UUID fijo (`fe02dfe6-...`). Como en la base de datos ya existía un registro para `(2026-09-01, ny_pre)` creado previamente con otro UUID, PostgreSQL rechazaba el insert con error `23505 duplicate key value violates unique constraint "unique_daily_session"`, dejando el motor en bucle arrojando silenciosamente `HTTP Error 409: Conflict` e impidiendo que el briefing se sobreescribiera con los datos frescos.
@@ -243,7 +222,7 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
      * Impacto: HIGH `+300`, MEDIUM `+150`.
      * Resultado: Durante la Sesión Americana, los eventos de EE.UU. de hoy (ISM Manufacturing PMI 54.6, JOLTS 7.27M, ISM Prices 71.1) tienen prioridad matemática total frente a cualquier dato de otra región.
 
-### Error 8: Desfase Temporal Trans-Medianoche UTC en Sesión Asiática y Saneamiento Integral del Generador de Noticias
+### Error 11: Desfase Temporal Trans-Medianoche UTC en Sesión Asiática y Saneamiento Integral del Generador de Noticias
 * **Síntomas:**
   1. Al abrir la Sesión Asia-Pacífico (21:00 UTC), el briefing mostraba una mezcla anacrónica de catalizadores pasados (AUD de hacía 17h, USD de hacía 7h y GBP de hacía 13h) en lugar de los catalizadores clave programados para la sesión asiática activa (PIB de Australia y Decisión de Tasas de Nueva Zelanda RBNZ).
   2. En la tesis de respaldo matemático, figuraba un soporte de Oro en \$4,480 mientras el precio cotizaba en \$4,328 (nivel incoherente superior al precio de mercado).
@@ -257,6 +236,22 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   2. **Cálculo Cuantitativo Dinámico de Soportes:** Se reemplazaron los valores rígidos por proyecciones matemáticas vivas basadas en la cotización real: `gold_supp = round(gold_price * 0.992, 2)` y `gold_res = round(gold_price * 1.008, 2)`.
   3. **Reescritura del Generador de Noticias:** Ingesta de eventos recién publicados con `event_time=lte.NOW`, redacción periodística institucional con comparativa real vs esperado, y control de día de semana para cripto (`is_weekend = weekday in (5, 6)`).
   4. **Paginación Defensiva en Frontend:** En `src/js/services/newsService.js` se añadió `.limit(20)` para prevenir descargas masivas de registros.
+
+---
+
+---
+
+### D. Refactorización Modular de la Arquitectura CSS del Calendario Económico
+* **Problema:** El archivo `src/css/components/calendar.css` había crecido hasta superar las 700 líneas, mezclando estilos de controles de formulario, paneles laterales de TradingView y la tabla de alta densidad.
+* **Refactorización Modular Implementada:**
+  1. **`src/css/variables.css`:** Inclusión de tokens de comparación de datos (`--stat-better`, `--stat-worse`, `--stat-pending`, `--stat-better-bg/border/text`), token de impacto bajo (`--impact-low`) y superficies de inputs oscuros (`--glass-bg`, `--input-bg`, `--input-border`).
+  2. **`src/css/components/form-controls.css` (Nuevo Componente):** Extracción de `.calendar-search-input` y `.calendar-select` como utilidades reutilizables para cualquier formulario de la plataforma.
+  3. **`src/css/components/sidebar-widget.css` (Nuevo Componente):** Extracción del panel lateral independiente con el widget de TradingView en vivo (`.tv-container`) y la tarjeta del próximo catalizador / dato publicado con animación de pulso (`pulse-dot`).
+  4. **`src/css/components/calendar.css` (Limpio y Compacto):** Rediseño de la tabla de alta densidad con un layout responsivo estricto:
+     * **Desktop ($\ge 900\text{px}$):** Grid de 8 columnas (`--eco-cols: 80px 60px 40px 1fr 80px 80px 80px 30px`).
+     * **Móvil ($< 900\text{px}$):** Grid optimizado de 4 columnas (`68px 1fr 24px 28px`) con tarjeta de impacto macro colapsable (`.macro-impact-card`).
+
+---
 
 ---
 
@@ -640,3 +635,39 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   7. **Red de Seguridad para Rollback:**
      * Etiqueta inmutable `git tag pre-perf-opt` creada como salvaguarda ante cualquier reversión requerida vía `git revert`.
      * Build de producción Vite completado en **390 ms** con 0 errores y 0 advertencias.
+
+---
+
+## 🏛️ 24. Hito 24: Purga Integral de Señales, Erradicación de Fuga de Red y Consolidación MAS v1.1.0 (Fases 1, 2 y 3)
+
+* **Contexto y Mandato Arquitectónico:**
+  * Tras el consenso con el Arquitecto Técnico (Claude), se ejecutó la erradicación definitiva de los remanentes del paradigma de "Señales" (alertas de compra/venta con SL/TP) para consolidar a AEON exclusivamente como una **Terminal de Inteligencia Cuantitativa y Contexto Estructural (MAS v1.1.0)**.
+  * La auditoría reveló que la sección `#senales` oculta en el DOM continuaba descargando niveles reales de entrada, SL y TP en la pestaña Network de DevTools, violando el principio "Anti-Oráculo" a nivel de protocolo de red.
+
+* **Fase 1: Limpieza de Frontend y Blindaje de Red (Certificada en Producción):**
+  1. **Eliminación de Código Muerto:**
+     * `index.html`: Eliminado el bloque HTML completo de la sección `#senales` y el enlace a `signals.css`.
+     * Eliminados físicamente: `src/css/components/signals.css` (-768 líneas), `src/js/templates/signal.js` (-281 líneas), `src/js/services/signalService.js` (-201 líneas).
+     * `src/js/render.js`: Removidas `renderSignals`, `renderSignalHistory` y `renderKPIBar`.
+     * `src/js/main.js`: Eliminado el estado `activeSignals`, `historySignalsCache`, `currentSignalFilter`, las funciones de filtrado y la llamada de arranque `loadSignals()`.
+     * `src/js/config/constants.js`: Marcadas como deprecadas las tablas de señales y eliminados los enums `SIGNAL_STATUS` y `SIGNAL_STATUS_CONFIG`.
+     * `aviso-legal.html` y `cookies.html`: Saneamiento de copys legales reemplazando "señales" por "alertas de contexto cuantitativo".
+  2. **Certificación Empírica en Producción (`aeondev.vercel.app`):**
+     * Commit `3fd1f46` desplegado en Vercel. Reducción de bundle inicial a **11.84 kB** (-21.6%).
+     * Auditoría automatizada con **Playwright Headless Edge** contra la URL pública: 53 peticiones HTTP inspeccionadas, **0 peticiones a `/rest/v1/signals*`**, **0 peticiones a `signals_pro_data`**, **0 conexiones WebSocket a `public:signals`**.
+     * Verificación de integridad DOM confirmada: Briefing, Radar Macro HUD, Noticias, Playbooks y Chat Copilot 100% operativos; sección `#senales` ausente.
+
+* **Fase 2: Archivado Seguro de MT5 y Saneamiento de VPS (Backend):**
+  1. **Archivado (Sin Borrado):**
+     * `scripts/quant/trade_watcher_daemon.py` trasladado a `scripts/archive/trade_watcher_daemon.py`.
+     * Creación de `scripts/archive/README.md` documentando el contexto histórico y advertencia de desuso.
+  2. **Aislamiento de Conectores:**
+     * `scripts/quant/data_provider.py`: Clase `MT5ExnessProvider` marcada con `@deprecated (MAS v1.1.0)`.
+  3. **Limpieza de Orquestación Docker:**
+     * `deploy/docker-compose.yml`: Eliminado el contenedor `aeon-quant-daemon` y las variables `MT5_SERVER_HOST` / `MT5_SERVER_PORT`. Mantenidos exclusivamente los 2 daemons productivos (`aeon-calendar-watcher` y `aeon-macro-ai`).
+
+* **Fase 3: Saneamiento Documental y Unificación:**
+  1. Corrección de colisión de numeración y eliminación de bugs duplicados en `docs/AEON_CHANGELOG_BITACORA.md`.
+  2. Actualización de `docs/CURRENT_STATE_VS_TARGET.md` (remoción de la máquina de estados de señales y del diagrama VPS con MT5/ZeroMQ).
+  3. Creación del catálogo maestro `docs/INDEX.md`.
+  4. Batería completa de regresión: **28/28 pruebas Python pasando** y **build Vite exitoso en 511ms**.

@@ -36,27 +36,31 @@
 
 ---
 
-## 2. Máquina de Estados Canónica del Trade Watcher (Producción)
+### 2. Máquina de Estados Cuántica del Centinela MAS (Producción v1.1.0)
 
 ```text
-                  [ 1. PENDING / CREATED ]
+                  [ 1. ESCANEO CONTINUO ]
+                  (17 Activos en Vivo / 20s)
                              │
-                             │ (Precio cruza nivel de entrada)
+                             │ (Precio entra en ZAP Compra/Venta)
                              ▼
-                        [ 2. ACTIVE ]
-                       (SL inicial a -1.0R)
+                  [ 2. CONFLUENCIA ZAP ]
+                 (dist_dpoc > 0.15% & microScore >= 25)
                              │
-             ┌───────────────┴───────────────┐
-             │ (Precio toca TP1 / +1.5R)     │ (Precio toca SL / -1.0R)
-             ▼                               ▼
-       [ 3. HIT_TP1 ]                  [ CLOSED_SL ]
-    (Stop ajustado a BE: 0.0R)          (Loss: -1.0R)
-             │
-     ┌───────┴───────┐
-     │ (Precio >= TP)│ (Precio retrocede a BE)
-     ▼               ▼
-[ CLOSED_TP ]   [ CLOSED_BE ]
- (+R target)     (0.0R neutral)
+              ┌───────────────┴───────────────┐
+              │ (Barrido BSL / Compra)        │ (Barrido SSL / Venta)
+              ▼                               ▼
+     [ 3. DISPARO BSL ]              [ 3. DISPARO SSL ]
+   (Fan-Out Event Bus)             (Fan-Out Event Bus)
+              │                               │
+              └───────────────┬───────────────┘
+                              ▼
+                  [ 4. COOLDOWN ATÓMICO ]
+                 (Bloqueo 15m anti-overtrading)
+                              │
+                              │ (Cooldown expira)
+                              ▼
+                  [ 1. ESCANEO CONTINUO ]
 ```
 
 ---
@@ -74,26 +78,26 @@
 
 ---
 
-## 4. Arquitectura de Producción Implementada
+## 4. Arquitectura de Producción Implementada (MAS v1.1.0)
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
 │ SERVIDOR DEDICADO VPS LINUX (Ubuntu 24.04 LTS / LD4 Londres)           │
 │                                                                        │
 │  ┌───────────────────────────┐         ┌────────────────────────────┐  │
-│  │ MetaTrader 5 (Exness ECN) │ ◄──────►│ ZeroMQ / IPC Socket Server │  │
-│  │  - Feed de Precios Live   │ (0.5ms) │  - Puerto Local 5555       │  │
-│  └───────────────────────────┘         └─────────────▲──────────────┘  │
-│                                                      │                 │
-│  ┌───────────────────────────────────────────────────▼──────────────┐  │
-│  │ AEON UNIFIED DAEMONS (Local VPS / Docker)                        │  │
+│  │ Ingesta Batch OANDA v20   │         │ Feeds Directos Cripto      │  │
+│  │ (14 Activos en 1 llamada) │         │ (Binance / Coinbase BTC/ETH)│ │
+│  └─────────────┬─────────────┘         └─────────────┬──────────────┘  │
+│                │                                     │                 │
+│  ┌─────────────▼─────────────────────────────────────▼──────────────┐  │
+│  │ AEON UNIFIED DAEMONS & HARNESS SENTINEL                          │  │
 │  │  1. aeon_autonomous_engine: Ingesta 17 activos, Macro Fed HUD,   │  │
 │  │     Calendario Sniper y Noticias Grounded                        │  │
 │  │  2. harness_sentinel.py: Centinela Cuántico 24/7 (ZAP + BSL/SSL)  │  │
-│  │     con thread no bloqueante (timeout 3.0s) & fan-out HTTP        │  │
-│  │  3. trade_watcher_daemon.py: Seguimiento estocástico órdenes     │  │
+│  │     con worker thread no bloqueante (timeout 3.0s) & fan-out HTTP │  │
+│  │  3. trader_journal_harness.py: Ratchet 20s en RAM (MFE/MAE)      │  │
 │  │  - Persistencia atómica de estados y cooldowns en JSON           │  │
-│  │  - Logging Estructurado JSON & Heartbeats cada 20s/30s           │  │
+│  │  - Logging Estructurado JSON & Heartbeats cada 20s               │  │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
 │                                                      │                 │
 └──────────────────────────────────────────────────────┼─────────────────┘

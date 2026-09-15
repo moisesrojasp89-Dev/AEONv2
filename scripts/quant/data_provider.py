@@ -77,8 +77,10 @@ class DataProvider(abc.ABC):
 
 class MT5ExnessProvider(DataProvider):
     """
-    Conector de alta velocidad para MetaTrader 5 (Exness) en VPS Linux / Windows.
-    Soporta mapeo de sufijos de broker ('XAUUSDm', 'EURUSD_i' -> 'XAU_USD') y reconexión automática.
+    @deprecated (MAS v1.1.0 — Transición a Terminal de Contexto Cuantitativo).
+    Conector legado para MetaTrader 5 (Exness) vía ZeroMQ / IPC.
+    Preservado exclusivamente con propósitos de referencia histórica.
+    No utilizar en nuevos desarrollos ni conectar a instancias de producción.
     """
 
     # Mapeo de símbolos canónicos a nombres de instrumentos de Exness
