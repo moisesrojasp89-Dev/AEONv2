@@ -5,7 +5,7 @@
 
 import { supabase } from '../supabaseClient.js';
 
-const SUPABASE_URL = (import.meta.env && import.meta.env.VITE_SUPABASE_URL) || 'https://ytccnxlfakjilxwauxic.supabase.co';
+const SUPABASE_URL = (import.meta.env && import.meta.env.VITE_SUPABASE_URL) || 'https://ueukfjowysadezsmtzto.supabase.co';
 const CHAT_ENDPOINT = `${SUPABASE_URL.replace(/\/$/, '')}/functions/v1/aeon-chat`;
 const STORAGE_KEY = 'aeon_chat_history_v1';
 const MAX_STORED_MESSAGES = 6;
