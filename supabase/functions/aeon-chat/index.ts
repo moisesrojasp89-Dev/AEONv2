@@ -20,6 +20,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // Configuración de CORS con Defensa en Profundidad
 // --------------------------------------------------------------------------
 const ALLOWED_ORIGINS = [
+  "https://aeon-intelligence.pages.dev",
   "https://aeondev.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
