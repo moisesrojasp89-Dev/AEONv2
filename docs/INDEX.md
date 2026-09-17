@@ -32,6 +32,7 @@ Este índice organiza los documentos vivos del repositorio por capas de responsa
 |---|---|:---:|
 | [`ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) | Estándares obligatorios de seguridad Zero-Trust, RLS, testing y despliegue VPS. | Normativo |
 | [`CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) | Guía de estilo, convenciones de nomenclatura en JavaScript, Python y CSS. | Normativo |
+| [`GUIA_ARQUITECTURA_Y_BUENAS_PRACTICAS_VIBE_CODING.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/GUIA_ARQUITECTURA_Y_BUENAS_PRACTICAS_VIBE_CODING.md) | Manifiesto y guía pedagógica de arquitectura web, seguridad y modularidad para Vibe Coders. | Divulgativo |
 
 ---
 
