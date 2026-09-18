@@ -1,8 +1,14 @@
 # 🧭 AEON — Índice Maestro y Mapa de Documentación Técnica
 
-Bienvenido al centro de documentación técnica y gobernanza del ecosistema **AEON** (Terminal de Inteligencia Cuantitativa y Contexto Estructural — MAS v1.1.0).
+Bienvenido al centro de documentación técnica y gobernanza del ecosistema **AEON** (Terminal de Inteligencia Cuantitativa y Contexto Estructural — MAS v1.3.0).
 
 Este índice organiza los documentos vivos del repositorio por capas de responsabilidad, facilitando la auditoría técnica, la incorporación de ingenieros y la trazabilidad arquitectónica.
+
+> 🌐 **Infraestructura Soberana de Producción:**
+> * **Repositorio Oficial:** [`aeon-core-team/AEON-INTELLIGENCE`](https://github.com/aeon-core-team/AEON-INTELLIGENCE)
+> * **Hosting Global:** [Cloudflare Pages](https://aeon-intelligence.pages.dev)
+> * **Base de Datos:** Supabase PostgreSQL US East (`ueukfjowysadezsmtzto.supabase.co`)
+> * **Motor Cuantitativo 24/7:** Daemon autónomo en Python (`scripts/ai/aeon_autonomous_engine.py`)
 
 ---
 
@@ -11,12 +17,12 @@ Este índice organiza los documentos vivos del repositorio por capas de responsa
 | Documento | Rol / Propósito | Estado |
 |---|---|:---:|
 | [`AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) | Roadmap maestro de ingeniería por fases (Fase 0 a Fase 9). | Activo |
-| [`CURRENT_STATE_VS_TARGET.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CURRENT_STATE_VS_TARGET.md) | Diagnóstico técnico en tiempo real: estado real del repo vs arquitectura objetivo. | Activo |
-| [`INFORME_VERIFICACION_Y_PLAN_FASE_2_3.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/INFORME_VERIFICACION_Y_PLAN_FASE_2_3.md) | Informe formal de certificación en producción (Vercel), auditoría de `Aeon_Bot` y plan de ingeniería. | Aprobado / En curso |
+| [`CURRENT_STATE_VS_TARGET.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CURRENT_STATE_VS_TARGET.md) | Diagnóstico técnico en tiempo real: estado real del repo vs arquitectura objetivo (Fases 6L y 6M). | Activo |
+| [`INFORME_VERIFICACION_Y_PLAN_FASE_2_3.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/INFORME_VERIFICACION_Y_PLAN_FASE_2_3.md) | Informe formal de certificación de purga de señales, auditoría de `Aeon_Bot` y plan de ingeniería. | Aprobado / Completado |
 
 ---
 
-## 🏛️ 2. Arquitectura Cuántica & Especificaciones MAS v1.1.0
+## 🏛️ 2. Arquitectura Cuántica & Especificaciones MAS v1.3.0
 
 | Documento | Rol / Propósito | Estado |
 |---|---|:---:|
@@ -40,7 +46,7 @@ Este índice organiza los documentos vivos del repositorio por capas de responsa
 
 | Documento | Rol / Propósito | Estado |
 |---|---|:---:|
-| [`AEON_CHANGELOG_BITACORA.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_CHANGELOG_BITACORA.md) | Registro cronológico de 24 hitos, refactorizaciones, errores críticos resueltos y lecciones aprendidas. | Actualizado (Hito 24) |
+| [`AEON_CHANGELOG_BITACORA.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_CHANGELOG_BITACORA.md) | Registro cronológico de 26 hitos, refactorizaciones, errores críticos resueltos y lecciones aprendidas. | Actualizado (Hito 26) |
 
 ---
 

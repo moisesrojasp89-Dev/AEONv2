@@ -1,29 +1,34 @@
-# AEON | Terminal de Inteligencia Cuantitativa Institucional & Contexto Macroeconómico (MAS v1.2.0)
+# AEON | Terminal de Inteligencia Cuantitativa Institucional & Contexto Macroeconómico (MAS v1.3.0)
 
 AEON es una plataforma profesional de inteligencia macroeconómica, microestructura de Order Flow y contextualización cuantitativa en tiempo real diseñada para traders institucionales e inversores soberanos.
 
 > 🏛️ **Declaración de Soberanía Institucional:**  
 > **AEON no es un proveedor de señales ni un bot de ejecución ciega.** AEON es una **Terminal de Inteligencia Cuantitativa y Contexto Estructural**. Su misión es dotar al operador de datos cuantitativos crudos (ZAP, dPOC de volumen, session VWAP, piscinas de liquidez BSL/SSL, correlaciones macro) y análisis contextual multi-agente riguroso, neutral y desprovisto de juicios emocionales o promesas de retorno. El trader es el único general soberano que toma las decisiones de ejecución.
 
-Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS / Vite, backend server-side en Supabase PostgreSQL con RLS Zero-Trust, Edge Functions en Deno y un motor cuantitativo 24/7 en Python con ingesta batch de OANDA v20, Binance, Coinbase, St. Louis Fed FRED y Yahoo Finance.
+Construida con una arquitectura de alto rendimiento:
+* **Frontend SPA:** Vanilla JavaScript modular con ES Modules, tokens de diseño CSS nativos y empaquetado ultra-rápido en Vite.
+* **Infraestructura Cloud:** Alojada globalmente en **Cloudflare Pages** (`aeon-intelligence.pages.dev`) conectada por CI/CD a GitHub (`aeon-core-team/AEON-INTELLIGENCE`).
+* **Base de Datos Soberana:** Instancia dedicada en **Supabase PostgreSQL US East** (`ueukfjowysadezsmtzto.supabase.co`) con seguridad Zero-Trust Row-Level Security (RLS), Edge Functions en Deno y WebSockets de baja latencia.
+* **Motor Cuantitativo & Agentes 24/7:** Daemon en Python 3.11 con ingesta batch de OANDA v20, Binance, Coinbase, St. Louis Fed FRED, Yahoo Finance y Gemini Flash-Lite.
 
 ---
 
 ## 🏛️ Capacidades y Módulos de la Plataforma
 
 ### 1. 🛰️ Terminal de Mercados & Microestructura Cuántica (17 Activos Globales)
-* **Ingesta Multi-Activo en Tiempo Real:** 14 activos vía OANDA v20 en 1 sola llamada batch (Oro Spot `XAUUSD`, Plata Spot `XAGUSD`, Petróleo Crudo WTI `USOIL`, Divisas Mayores y Menores, Índices `SPX500`, `NAS100`, `US30`, `JP225`), Criptoactivos directos de Binance y Coinbase (`BTCUSD`, `ETHUSD`) y cálculo geométrico oficial ICE del Índice Dólar (`DXY`).
+* **Ingesta Multi-Activo en Tiempo Real:** 14 activos vía OANDA v20 en 1 sola llamada batch (Oro Spot `XAUUSD`, Plata Spot `XAGUSD`, Petróleo Crudo WTI `USOIL`, Divisas Mayores y Menores, Índices `SPX500`, `NAS100`, `US30`, `JP225`), Criptoactivos directos de Binance y Coinbase (`BTCUSD`, `ETHUSD`) y cálculo geométrico oficial ICE del Índice Dólar (`DXY`). **0 peticiones a TwelveData consumidas (0 riesgo de error 429)**.
 * **Microestructura Institucional:** Developing POC (dPOC) acumulativo barra a barra, Session VWAP en tiempo real, Zonas de Alta Probabilidad (ZAP Oferta / ZAP Demanda), Zonas de Absorción (S1/S2/R1/R2) y piscinas de liquidez BSL/SSL sin Look-Ahead Bias.
-* **Terminal Gráfica (/analisis.html):** Curva continua en Canvas nativo (Lightweight Charts v5) para los 4 Reyes del Mercado (Oro, Bitcoin, Euro y Nasdaq) con actualización atómica in-place sin reseteo de scroll.
+* **Terminal Gráfica (/analisis):** Curva continua en Canvas nativo (Lightweight Charts v5) para los 4 Reyes del Mercado (Oro, Bitcoin, Euro y Nasdaq) con actualización atómica in-place sin reseteo de scroll.
 
 ### 2. 🏛️ Macro Liquidity & Fed Yields HUD
 * **Barómetros de la Reserva Federal:** Monitoreo continuo de los 5 pilares de liquidez institucional: Rendimiento del Bono a 10 Años (`US10Y`), Bono a 2 Años (`US02Y`), Tasa Efectiva de Fondos Federales (`FEDFUNDS`), Facilidad de Repo Inverso (`RRPONTSYD`) y Balance Total de Activos de la Fed (`WALCL`).
 * **Alertas de Expansión y Contracción:** Detección en código de dinámicas de Quantitative Easing (QE) y Quantitative Tightening (QT), con modal interactivo y playbooks formativos de correlación con divisas, bonos y metales.
 
-### 3. 🎯 Calendario Sniper & Detección de Fases de Mercado
+### 3. 🎯 Calendario Sniper, Sesión Completa (24h) & Catalizadores Semanales
 * **Sondeo Event-Driven T-5m:** Aceleración automática de sondeo a alta frecuencia (cada 15s) en la ventana previa a catalizadores de alto impacto económico para captura inmediata del dato real (`Actual`).
-* **Detección Automática de Sesiones Bursátiles:** Resolución de estados horarios UTC (`Asia-Pacífico / Tokio`, `Pre-Londres`, `Londres Activa`, `Pre-NY`, `Wall Street Activa`, `Cierre NY` y `Weekend Wrap de Fin de Semana` para criptoactivos).
-* **Briefings Diarios Grounded:** Síntesis ejecutivas de sentimiento y catalizadores económicos ancladas estrictamente a los registros oficiales en base de datos.
+* **Detección Automática de Sesiones Bursátiles:** Resolución de estados horarios UTC y Wall Street DST (`Asia-Pacífico / Tokio`, `Pre-Londres`, `Londres Activa`, `Pre-NY`, `Wall Street Activa`, `Cierre NY` y `Weekend Wrap de Fin de Semana` para criptoactivos).
+* **Motor Macroeconómico de 24h & Cierre Semanal:** Detección de catalizadores en ventana de jornada completa (24 horas) y balance de cierre semanal que rescata las decisiones de tipos de interés de la semana (Fed al 5.25%, BoJ al 0.25%, BoE al 5.00%) con su estado `DIGERIDO` y dato numérico publicado, impidiendo saltos temporales a semanas futuras.
+* **Briefings Diarios Grounded con Gemini:** Síntesis ejecutivas de sentimiento con `gemini-3.1-flash-lite` y `gemini-3.5-flash-lite`, distinguiendo entre catalizadores asimilados y próximos para explicar fielmente la divergencia monetaria y los flujos hacia el Dólar y el Oro.
 
 ### 4. 🤖 Copiloto Cuantitativo IA Multimodal (Edge Function `aeon-chat`)
 * **Grounding 100% en Base de Datos Viva:** Inyección de precios en tiempo real, dPOC, VWAP y catalizadores económicos digeridos antes de inferir. Prohibición estricta de alucinación fuera de datos vivos.
@@ -37,7 +42,7 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
 * **Captura de Snapshot Cuántico Inmutable:** Al momento de la entrada, se sella en PostgreSQL el contexto exacto de mercado (dPOC, VWAP, sesgo institucional y catalizadores).
 * **Ratchet de 20s en VPS (Costo Marginal \$0):** Monitoreo tick a tick del drawdown adverso (MAE) y máxima excursión favorable (MFE) en múltiplos de $R$.
 * **Desambiguación Multi-Posición:** Cero adivinación silenciosa; si el trader opera múltiples posiciones en el mismo símbolo, el sistema solicita aclaración unívoca antes de cerrar o anular.
-* **Agente Evaluador Post-Mortem Semanal:** Auditoría objetiva conversacional (*"Hazme el análisis de mis trades de la semana"*) que calcula Win Rate, R Neto, Profit Factor y disciplina con el dPOC, archivando métricas en el Command Center de `/perfil.html`.
+* **Agente Evaluador Post-Mortem Semanal:** Auditoría objetiva conversacional (*"Hazme el análisis de mis trades de la semana"*) que calcula Win Rate, R Neto, Profit Factor y disciplina con el dPOC, archivando métricas en el Command Center de `/perfil`.
 
 ### 6. 🛡️ Centinela Cuántico de Confluencias & Bus de Eventos en Tiempo Real
 * **Escaneo en Tiempo Real:** Evaluación continua de confluencias de alta probabilidad ($Precio \in ZAP \land Barrido\ BSL/SSL \land dPOC$).
@@ -45,9 +50,10 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
 * **Transmisión Reactiva:** Difusión a clientes web vía WebSockets (Supabase Realtime) con sintetizador de audio cyber (WebAudio API 880Hz–1760Hz), toast flotante con snooze y tarjetas tácticas desplegables.
 
 ### 7. 💳 Command Center del Trader & Pasarela Cripto
-* **Dashboard Dark Luxury (`perfil.html`):** Pestañas accesibles WAI-ARIA (Membresía, Diario Cuántico, Seguridad y Preferencias).
+* **Dashboard Dark Luxury (`/perfil`):** Pestañas accesibles WAI-ARIA (Membresía, Diario Cuántico, Seguridad y Preferencias).
 * **Pasarela Binance Pay:** Proceso de suscripción PRO en 3 pasos con clickwrap legal, QR en alta definición y validación estricta de transferencias.
-* **Panel de Administración Móvil (`admin-pagos.html`):** Gestión y activación de cuentas en un toque vía Stored Procedures atómicos.
+* **Panel de Administración Móvil (`/admin-pagos`):** Gestión y activación de cuentas en un toque vía Stored Procedures atómicos.
+* **Enrutamiento Limpio & Drawer Activo:** Navegación por rutas limpias (`/mercados`, `/analisis`, `/calendario`, `/perfil`) con sincronización bidireccional de estado en el menú lateral y selector móvil de noticias optimizado para temas oscuros.
 
 ---
 
@@ -68,7 +74,7 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
 │  │  1. Motor Cuántico Multi-Activo: dPOC, Session VWAP, ZAPs, DXY   │  │
 │  │  2. Sincronizador Macro Liquidez Fed (US10Y, US02Y, WALCL, RRP)  │  │
 │  │  3. Calendario Sniper: T-5m sondeo de alta frecuencia            │  │
-│  │  4. Daily Briefings & Noticias: Grounding directo en BD          │  │
+│  │  4. Daily Briefing 24h & Catalizadores Tier 1 Cierre Semanal     │  │
 │  │  5. Centinela Cuántico de Confluencias: Fan-out en <1.2s         │  │
 │  │  6. Ratchet de 20s para Trader Journal: Tracking MFE/MAE en RAM  │  │
 │  └───────────────────────────────────────────────────▲──────────────┘  │
@@ -77,8 +83,9 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
                                                        │ HTTPS / WebSockets
                                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ SUPABASE POSTGRESQL & EDGE FUNCTIONS (Nube)                            │
-│  - Seguridad Zero-Trust RLS en todas las tablas                        │
+│ SUPABASE POSTGRESQL US EAST & EDGE FUNCTIONS (Nube Soberana)           │
+│  - Seguridad Zero-Trust RLS en 100% de tablas                          │
+│  - Host: https://ueukfjowysadezsmtzto.supabase.co                     │
 │  - Tablas: trader_journal, trader_weekly_audits, market_intelligence,  │
 │    macro_liquidity, daily_briefings, economic_calendar, news           │
 │  - Bus de Eventos en Tiempo Real con REPLICA IDENTITY FULL             │
@@ -91,15 +98,16 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
                                        │ Transmisión en Tiempo Real & WebSockets
                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ AEON TERMINAL WEB (Vite SPA / Vanilla JS / ES Modules)                 │
-│  - Producción en Vercel: https://aeondev.vercel.app                    │
+│ CLOUDFLARE PAGES (Hosting Global de Producción)                        │
+│  - URL Producción: https://aeon-intelligence.pages.dev                 │
+│  - Repo GitHub: https://github.com/aeon-core-team/AEON-INTELLIGENCE    │
+│  - Vite SPA / Vanilla JS / ES Modules / CSS Tokens Nativos             │
+│  - Rutas Limpias (/mercados, /analisis, /calendario, /perfil)          │
 │  - Radar de Mercados Globales: 17 Activos con actualización in-place   │
-│  - Terminal de Análisis Estructural (/analisis.html): Gráficos Canvas  │
-│  - Macro Liquidity HUD: Panel de 5 barómetros Fed y modal formativo    │
-│  - Widget de Chat Multimodal: Audio WebAudio, adjuntos de gráficos    │
-│  - Command Center (/perfil.html): Métricas y Diario Cuántico en vivo   │
-│  - Calendario Económico y Feed de Noticias Grounded                    │
-│  - Cero Deuda Técnica: 0 inline styles, 0 !important, tokens CSS puros │
+│  - Terminal de Análisis Estructural: Gráficos Canvas Lightweight v5    │
+│  - Macro Liquidity HUD: Panel de 5 barómetros Fed y modal interactivo │
+│  - Selector móvil de noticias estilizado para tema Dark Luxury         │
+│  - Cero Deuda Técnica: 0 inline styles, 0 !important, 0 peticiones 429 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -112,7 +120,7 @@ Construida con una arquitectura de alto rendimiento: Frontend SPA en Vanilla JS 
 npx vite --host 0.0.0.0 --port 5173
 ```
 * **Acceso desde PC:** `http://localhost:5173`
-* **Acceso desde Móvil (Misma red Wi-Fi):** `http://192.168.0.105:5173`
+* **Acceso desde Móvil (Misma red Wi-Fi):** `http://[TU-IP-LOCAL]:5173`
 
 ### 2. Iniciar el Motor Autónomo de Agentes (Python 3.11)
 ```bash
@@ -120,6 +128,7 @@ python scripts/ai/aeon_autonomous_engine.py
 ```
 * Sincroniza los **17 activos** cada 20s (Oro Spot, Plata Spot, Petróleo WTI, Bitcoin, Ethereum, Índices y Forex).
 * Sincroniza la **Macro Liquidez Fed** (US10Y, US02Y, FEDFUNDS, RRPONTSYD, WALCL).
+* Sincroniza el **Daily Briefing & Noticias** con cobertura de 24h y decisiones Tier 1 de cierre semanal.
 * Ejecuta el **Ratchet de 20s** para auditar MFE y MAE en trades abiertos del diario.
 * Ejecuta el **Centinela Cuántico de Confluencias** con alerta proactiva y fan-out a la Terminal Web.
 
@@ -127,18 +136,20 @@ python scripts/ai/aeon_autonomous_engine.py
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-* Ejecuta las 4 suites automatizadas de regresión (28/28 tests pasando).
+* Ejecuta las suites automatizadas de regresión (28/28 tests pasando).
 
 ### 4. Compilar para Producción
 ```bash
 npm run build
 ```
+* Genera los bundles optimizados en `dist/` en sub-400ms listos para Cloudflare Pages.
 
 ---
 
 ## 📚 Documentación Técnica de Referencia
 
-* 📖 **[Bitácora de Desarrollo y Refactorizaciones](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico de hitos de arquitectura, optimizaciones y bugs resueltos.
+* 📖 **[Bitácora de Desarrollo y Refactorizaciones](docs/AEON_CHANGELOG_BITACORA.md):** Registro histórico de 26 hitos de arquitectura, optimizaciones y bugs resueltos.
+* 🧭 **[Índice Maestro y Mapa Técnico](docs/INDEX.md):** Mapa de navegación estructurado por capas de ingeniería.
 * 🛡️ **[Guía de Harness Engineering](docs/GUIA_HARNESS_ENGINEERING.md):** Principios de diseño para agentes autónomos con memoria persistente y guardrails.
 * 🏛️ **[Dossier del Trader Journal Harness](docs/DOSSIER_TRADER_JOURNAL_HARNESS.md):** Arquitectura detallada, modelo de datos relacional y dictamen técnico certificado.
 * 🏛️ **[Estándares de Ingeniería](docs/ENGINEERING_STANDARDS.md):** Convenciones de código, políticas Zero-Trust RLS y directrices cuantitativas.

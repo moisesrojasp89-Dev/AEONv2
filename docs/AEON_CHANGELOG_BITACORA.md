@@ -671,3 +671,44 @@ Este documento contiene el registro cronológico y técnico de todas las actuali
   2. Actualización de `docs/CURRENT_STATE_VS_TARGET.md` (remoción de la máquina de estados de señales y del diagrama VPS con MT5/ZeroMQ).
   3. Creación del catálogo maestro `docs/INDEX.md`.
   4. Batería completa de regresión: **28/28 pruebas Python pasando** y **build Vite exitoso en 511ms**.
+
+---
+
+## 🌐 25. Hito 25: Migración de Infraestructura Soberana (Nuevo Repositorio GitHub, Supabase US East, Cloudflare Pages y Motor Autónomo Local)
+
+* **Propósito y Contexto de Ingeniería:**
+  * Para asegurar la soberanía operativa, redundancia y desacoplamiento de plataformas legacy, se consolidó la infraestructura del ecosistema AEON en un nuevo repositorio organizacional dedicado (`aeon-core-team/AEON-INTELLIGENCE`), una nueva base de datos dedicada en Supabase US East (`https://ueukfjowysadezsmtzto.supabase.co`), y un pipeline global de hosting en Cloudflare Pages (`https://aeon-intelligence.pages.dev`).
+  * Asimismo, se consolidó la ejecución del motor maestro autónomo (`scripts/ai/aeon_autonomous_engine.py`) con ingesta batch de OANDA v20, cálculo de DXY geométrico ICE y sondeo multi-cadencia para Macro Liquidity HUD.
+
+* **Componentes y Arquitectura Implementada:**
+  1. **Nuevo Repositorio Git:** `aeon-core-team/AEON-INTELLIGENCE` en GitHub configurado como única fuente de verdad técnica con ramas protegidas y hooks de auditoría.
+  2. **Nueva Instancia Supabase PostgreSQL (US East):** Configuración de tablas con Row-Level Security (RLS) Zero-Trust: `market_intelligence`, `daily_briefings`, `macro_liquidity`, `economic_calendar`, `news`, `trader_journal`, `trader_weekly_audits`.
+  3. **Despliegue en Cloudflare Pages:** Conexión CI/CD a la rama `main` con compilación atómica en Vite (sub-400ms) y CDN perimetral global.
+  4. **Motor Autónomo de Alta Frecuencia (VPS Local / Linux Daemon):** Ingesta batch de 14 activos OANDA + cripto Binance (0 peticiones a TwelveData consumidas, eliminando el riesgo de errores 429).
+  5. **Resiliencia Offline:** Snapshots estáticos en `src/data/` como salvaguarda ante interrupciones de red.
+
+---
+
+## 🏛️ 26. Hito 26: Perfeccionamiento del Motor de Catalizadores Macroeconómicos (24h), Inclusión Marquee Tier 1 de Cierre Semanal, Enrutamiento Limpio de Navbar y Fixes UI Móvil
+
+* **Propósito y Contexto de Ingeniería:**
+  * Tras reporte de usuario durante el cierre de mercado del viernes 18 de septiembre de 2026, se detectó que el Daily Briefing mostraba los Flash PMIs del próximo miércoles 23 en lugar de los catalizadores clave del día (Decisión de Tipos del Banco de Japón al 0.25%, Conferencia de Kazuo Ueda y Ventas Minoristas del Reino Unido al +0.4%) y de la semana (Decisión de Tipos de la Fed al 5.25% y BoE al 5.00%).
+  * El diagnóstico identificó un filtro temporal excesivamente estrecho de 4 horas (`-4.0 <= diff_hours < 0`) que descartaba eventos de sesiones anteriores del mismo día, sumado a una falta de consideración de los eventos de política monetaria que definen la semana al acercarse el cierre semanal.
+  * Adicionalmente, se auditaron y corrigieron inconsistencias en el frontend: selector móvil de noticias con fondo oscuro ilegible, desincronización del estado activo en el drawer móvil al navegar por rutas limpias (`/mercados`, `/analisis`, etc.), y reconexión de datos en el gráfico de `/analisis`.
+
+* **Componentes y Arquitectura de la Solución:**
+  1. **Ventana Macroeconómica de Jornada Completa (24h):**
+     * Ampliación del rango de eventos asimilados de 4 horas a toda la jornada bursátil activa (`-24.0 <= diff_hours < 0` o fecha local de Wall Street `ev_ny.date() == ny_now.date()`), asegurando que las decisiones matutinas del BoJ o de Londres se reflejen en la tarde de Wall Street.
+  2. **Inclusión de Eventos Marquee Tier 1 de Cierre Semanal:**
+     * En viernes de cierre o fin de semana (`weekend_wrap`), los cupos se completan con los catalizadores Tier 1 de la semana (FOMC 5.25%, BoE 5.00%), impidiendo saltos temporales de 5 días hacia semanas futuras.
+  3. **Normalización Léxica & Priorización de Decisiones de Tipos:**
+     * Normalización con regex para limpiar puntuación en nombres como `(BoJ) Policy Rate Decision` y asignación de bonus (`rate_boost = 500`) a decisiones oficiales de tipos frente a ruedas de prensa, garantizando que el dato cuantitativo (`0.25%`, `5.25%`) se muestre en estado `DIGERIDO`.
+  4. **Contextualización Inteligente para Gemini:**
+     * Inyección diferenciada en el prompt distinguiendo entre catalizadores asimilados y eventos próximos, permitiendo que Gemini sintetice la divergencia monetaria real y los flujos hacia el DXY y el Oro.
+  5. **Correcciones de Navegación y UI Móvil:**
+     * `src/js/templates/navbar.js` y `src/js/navbar.js`: Detección de página activa adaptada a rutas limpias sin extensión `.html` y refresco dinámico al abrir el drawer.
+     * `src/css/components/news.css` & `src/js/main.js`: Selector móvil de categorías con estilos nativos `#0b0d11`, opciones contrastadas y selección case-insensitive.
+     * `src/js/analysis.js`: Gráficos interactivos de Lightweight Charts con series de velas reales y fallback continuo.
+  6. **Validación Integral:**
+     * Sincronización inmediata de `aeon_autonomous_engine.py` en Supabase US East con los 4 catalizadores reales y tesis macro ejecutiva validada.
+     * Build de producción Vite completado en **391 ms** con 0 errores y desplegado en Cloudflare Pages.

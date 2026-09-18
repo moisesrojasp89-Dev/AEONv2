@@ -1,7 +1,7 @@
 # AEON — Estado Actual vs Arquitectura Objetivo (Master Plan v2.0)
 
 **Única Fuente de Verdad Técnica, Diagnóstico de Arquitectura y Estado Real del Repositorio**  
-**Última Actualización:** Septiembre de 2026 (Fases 0 a 6I Completadas e Implementadas en Producción — AEON Active Copilot Harness Operativo)  
+**Última Actualización:** Septiembre de 2026 (Fases 0 a 6M Completadas e Implementadas en Producción — Infraestructura Soberana Cloudflare Pages & Supabase US East)  
 **Documentos de Consulta:**  
 - 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo  
 - 🛡️ [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) — Estándares Oficiales de Ingeniería e Infraestructura  
@@ -30,6 +30,8 @@
 | **Fase 6I** | **AEON Active Copilot Harness & Trading Sentinel** | ✅ **100% COMPLETADO** | • `scripts/quant/harness_sentinel.py`: Centinela cuántico 24/7 con confluencia $Price \in ZAP \land BSL/SSL \land dist\_dpoc > 0$, cooldown de 15m y worker thread no bloqueante (timeout 3.0s).<br>• Migración 00010: `trading_signal_events` (bus de eventos con TTL 2h & Realtime), `user_trade_journal` (bitácora con flag de consolidación) y RPC `check_overtrading_guardrail` (ventana móvil 45m con blindaje anti-IDOR).<br>• `supabase/functions/aeon-copilot-event`: Fan-out en <1.2s con Gemini 2.5 Flash-Lite, idempotencia y broadcast Realtime.<br>• `src/js/components/chatWidget.js`: Radar chime nativo WebAudio, toast flotante con snooze 15m, renderizado Markdown y embudo Freemium vs PRO verificado en producción con rechazo R/R 0.47:1. |
 | **Fase 6J** | **Optimización Rendimiento, L1 Cache & Zero-Waterfall** | ✅ **100% COMPLETADO** | • `src/js/navbar.js`: Hidratación diferida del Copilot con `requestIdleCallback` (fallback 250ms) en punto único centralizado.<br>• `src/js/main.js`: Disparo anticipado de peticiones de red al stack HTTP en L1 y paralelización con `Promise.allSettled`.<br>• `src/js/markets.js`: L1 Cache (`sessionStorage`) con TTL estricto de 60s y purga activa.<br>• Micro-badges honestos de sincronización Stale vs Fresh en Mercados y Calendario (`⟳ Sincronizando...` $\rightarrow$ `● En Vivo`).<br>• `src/js/calendar.js`: Resolución de días sin eventos legítimos manteniendo estado 'live'. Cero `!important` en CSS. |
 | **Fase 6K** | **AI Trader Journal & Copilot Logging (Harness Architecture)** | ✅ **100% COMPLETADO** | • `00013_trader_journal_harness_mas.sql`: Tablas `public.trader_journal` y `public.trader_weekly_audits` con RLS Zero-Trust (`SELECT` para `authenticated`, escrituras exclusivas con `service_role`).<br>• `scripts/ai/trader_journal_harness.py`: Validación de coherencia direccional pre-INSERT, desambiguación multi-posición sin adivinación, matemática bifurcada MFE/MAE por direction y Evaluator Agent para auditorías semanales.<br>• `scripts/ai/aeon_autonomous_engine.py`: Ratchet de 20s en RAM en VPS con escritura atómica `WHERE id = :id AND status = 'OPEN'` (costo marginal \$0).<br>• `supabase/functions/aeon-chat`: Intercepción determinista Pre-LLM (<100ms, \$0 tokens) para `LOG_TRADE`, `CLOSE_TRADE`, `CANCEL_TRADE` y `REQUEST_AUDIT` desplegada en Supabase Cloud.<br>• `perfil.html` & `src/js/perfil.js`: Pestaña Diario Cuántico con 4 KPI Cards y diagnóstico del Evaluator Agent.<br>• Batería de 28/28 pruebas unitarias pasando. |
+| **Fase 6L** | **Migración Soberana de Infraestructura (Cloudflare Pages, Supabase US East & GitHub)** | ✅ **100% COMPLETADO** | • Nuevo repositorio oficial: `aeon-core-team/AEON-INTELLIGENCE` en GitHub.<br>• Nueva base de datos soberana en Supabase US East (`ueukfjowysadezsmtzto.supabase.co`) con PostgreSQL 15, RLS Zero-Trust y Realtime WebSockets.<br>• Despliegue global continuo en Cloudflare Pages (`https://aeon-intelligence.pages.dev`) con compilación sub-400ms en Vite.<br>• Resiliencia offline con snapshots estáticos sincronizados. |
+| **Fase 6M** | **Motor Macroeconómico de 24h & Catalizadores Tier 1 de Cierre Semanal** | ✅ **100% COMPLETADO** | • Cobertura macroeconómica completa de 24 horas (`-24.0 <= diff_hours < 0`), evitando descartes prematuros de sesiones matutinas.<br>• Selección inteligente de catalizadores de cierre semanal: rescata decisiones de tipos de interés Tier 1 (Fed al 5.25%, BoJ al 0.25%, BoE al 5.00%) con estado `DIGERIDO`, impidiendo saltos temporales a semanas futuras.<br>• Prompt contextualizado para Gemini 3.1/3.5 Flash-Lite con diferenciación explícita de datos asimilados vs previstos.<br>• Rutas limpias en Navbar (`/mercados`, `/analisis`, `/calendario`, `/perfil`) y selector móvil Dark Luxury en noticias. |
 | **Fase 6H** | **Pasarela Stripe FIAT (Opcional Tarjetas)** | 🎯 **EN PROGRESO / PRÓXIMO SPRINT** | Pasarela opcional para cobros en divisa fiduciaria con tarjeta de crédito/débito y webhooks idempotentes. |
 | **Fases 7-8**| **Futures Intelligence (CME Order Flow)** | ⏳ *Planificado* | Feeds de futuros centralizados L2/L3 (Rithmic/CQG), Delta real, Footprint y Depth of Market (DOM). |
 | **Fase 9** | **High Reliability & Global Scale** | ⏳ *Planificado* | Clúster multi-región, APM en tiempo real y tolerancia a fallos. |
@@ -78,11 +80,11 @@
 
 ---
 
-## 4. Arquitectura de Producción Implementada (MAS v1.1.0)
+## 4. Arquitectura de Producción Implementada (MAS v1.3.0)
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│ SERVIDOR DEDICADO VPS LINUX (Ubuntu 24.04 LTS / LD4 Londres)           │
+│ SERVIDOR DEDICADO VPS LINUX (Ubuntu 24.04 LTS / LD4 Londres / Local)   │
 │                                                                        │
 │  ┌───────────────────────────┐         ┌────────────────────────────┐  │
 │  │ Ingesta Batch OANDA v20   │         │ Feeds Directos Cripto      │  │
@@ -92,7 +94,7 @@
 │  ┌─────────────▼─────────────────────────────────────▼──────────────┐  │
 │  │ AEON UNIFIED DAEMONS & HARNESS SENTINEL                          │  │
 │  │  1. aeon_autonomous_engine: Ingesta 17 activos, Macro Fed HUD,   │  │
-│  │     Calendario Sniper y Noticias Grounded                        │  │
+│  │     Calendario Sniper 24h/Semanal y Noticias Grounded           │  │
 │  │  2. harness_sentinel.py: Centinela Cuántico 24/7 (ZAP + BSL/SSL)  │  │
 │  │     con worker thread no bloqueante (timeout 3.0s) & fan-out HTTP │  │
 │  │  3. trader_journal_harness.py: Ratchet 20s en RAM (MFE/MAE)      │  │
@@ -104,11 +106,11 @@
                                                        │ HTTPS / WebSockets
                                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ SUPABASE POSTGRESQL & EDGE FUNCTIONS                                   │
+│ SUPABASE SOBERANO (PostgreSQL US East / ueukfjowysadezsmtzto)           │
 │  - Seguridad RLS Zero-Trust en 100% de tablas                          │
-│  - Active Copilot Harness & Event Bus (00010):                         │
+│  - Active Copilot Harness & Event Bus (00010 & 00013):                 │
 │      • trading_signal_events (TTL 2h, Realtime broadcast)              │
-│      • user_trade_journal & RPC check_overtrading_guardrail (anti-IDOR)│
+│      • user_trade_journal, trader_weekly_audits & check_overtrading    │
 │  - Edge Functions:                                                     │
 │      • aeon-chat: Copiloto Macro Zero-Trust con cuota atómica (50/día) │
 │      • aeon-copilot-event: Síntesis táctica Gemini 2.5 Flash-Lite      │
@@ -119,11 +121,14 @@
                                        │ Realtime Broadcast & WebSockets
                                        ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ AEON TERMINAL (Vite SPA / Vanilla JS / ES Modules)                     │
+│ AEON TERMINAL (Cloudflare Pages: aeon-intelligence.pages.dev / Vite)   │
 │  - Active Copilot Harness: Radar chime WebAudio, toast neón y snooze   │
+│  - Enrutamiento Limpio (/mercados, /analisis, /calendario, /perfil)    │
 │  - Manejo Freemium vs PRO verificado en vivo con rechazo de bajo R/R   │
-│  - Terminal de Análisis Estructural (/analisis.html) con gráficos LW v5│
+│  - Terminal de Análisis Estructural (/analisis) con gráficos LW v5     │
 │  - Radar de Mercados (17 Activos) con actualización atómica in-place   │
-│  - Compilación verificada < 300ms y Cero Deuda Técnica                 │
+│  - Motor de Catalizadores Tier 1 24h & Marquee de Cierre Semanal       │
+│  - Selector Móvil Dark Luxury en Noticias sin saltos de contraste      │
+│  - Compilación verificada < 400ms y Cero Deuda Técnica                 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
