@@ -44,6 +44,7 @@ function unpackStructuralRecord(normSymbol, dbRow, fallback) {
     structural_poi: structural.structural_poi || dbRow.structural_poi || fallback.structural_poi,
     structural_scenarios: structural.structural_scenarios || dbRow.structural_scenarios || fallback.structural_scenarios,
     diagnosis: structural.diagnosis || dbRow.technical_thesis || dbRow.macro_driver || fallback.diagnosis,
+    historical_series: Array.isArray(structural.historical_series) && structural.historical_series.length > 0 ? structural.historical_series : null,
   };
 }
 

@@ -191,8 +191,14 @@ async function renderHeroStyleChart(symbol = 'XAUUSD') {
     },
   });
 
-  // Cargar datos históricos con garantía de visualización continua (Zero-Downtime)
-  let historicalData = await fetchHistoricalChartData(symbol, 45);
+  // Cargar datos históricos con prioridad absoluta en velas reales institucionales
+  let historicalData = null;
+  if (currentData && Array.isArray(currentData.historical_series) && currentData.historical_series.length > 0) {
+    historicalData = [...currentData.historical_series];
+  } else {
+    historicalData = await fetchHistoricalChartData(symbol, 45);
+  }
+
   if (!historicalData || historicalData.length === 0) {
     historicalData = generateSyntheticSeries(symbol, 45, currentData?.current_price);
   }

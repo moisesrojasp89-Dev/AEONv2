@@ -211,6 +211,29 @@ export async function fetchHistoricalChartData(instrument = 'XAU_USD', count = 3
     }
   } catch (_) {}
 
+  // 3. Consulta a Supabase market_intelligence (serie histórica de velas reales de mercado)
+  try {
+    const dbSym = normSym.replace('_', '');
+    const { data: row } = await supabase
+      .from('market_intelligence')
+      .select('current_price, cited_key_levels')
+      .or(`symbol.eq.${dbSym},symbol.eq.${normSym}`)
+      .maybeSingle();
+
+    if (row && row.cited_key_levels && Array.isArray(row.cited_key_levels.historical_series) && row.cited_key_levels.historical_series.length > 0) {
+      const realSeries = [...row.cited_key_levels.historical_series.slice(-count)];
+      if (row.current_price) {
+        realSeries[realSeries.length - 1].value = Number(row.current_price);
+      }
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(realSeries));
+      } catch (_) {}
+      return realSeries;
+    }
+  } catch (err) {
+    console.warn('[AEON] Error leyendo serie real de DB:', err.message);
+  }
+
   // Fallback institucional: Serie histórica continua anclada al precio en vivo
   try {
     let anchorPrice = null;

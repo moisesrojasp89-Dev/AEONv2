@@ -538,12 +538,75 @@ def detect_hot_forex_pair(session_id: str, catalysts: list, quotes: dict) -> tup
 
     return curr_map.get(best_curr, ('EURUSD', 1.1614, 'EUR/USD (Euro / Dólar)'))
 
+def fetch_asset_daily_candles(sym: str, count: int = 45) -> list:
+    """Obtiene velas históricas diarias reales desde OANDA y Coinbase."""
+    oanda_map = {
+        'XAUUSD': 'XAU_USD', 'XAGUSD': 'XAG_USD', 'EURUSD': 'EUR_USD',
+        'GBPUSD': 'GBP_USD', 'USDJPY': 'USD_JPY', 'USDCAD': 'USD_CAD',
+        'AUDUSD': 'AUD_USD', 'USDCHF': 'USD_CHF', 'NZDUSD': 'NZD_USD',
+        'SPX500': 'SPX500_USD', 'NAS100': 'NAS100_USD', 'US30': 'US30_USD',
+        'JP225': 'JP225_USD', 'USOIL': 'WTICO_USD'
+    }
+
+    if sym in ('BTCUSD', 'ETHUSD'):
+        pair = 'ETH-USD' if sym == 'ETHUSD' else 'BTC-USD'
+        try:
+            url = f"https://api.exchange.coinbase.com/products/{pair}/candles?granularity=86400"
+            req = urllib.request.Request(url, headers={'User-Agent': 'AEON/1.0'})
+            with urllib.request.urlopen(req, timeout=6) as res:
+                raw = json.loads(res.read().decode('utf-8'))
+                if isinstance(raw, list) and raw:
+                    return [
+                        {
+                            'time': datetime.fromtimestamp(c[0], tz=timezone.utc).strftime('%Y-%m-%d'),
+                            'value': round(float(c[4]), 2)
+                        }
+                        for c in reversed(raw[:count])
+                    ]
+        except Exception as e:
+            log("CANDLES", "⚠️", f"Error Coinbase {sym}: {e}")
+            return []
+
+    oanda_inst = oanda_map.get(sym)
+    if not oanda_inst or not OANDA_TOKEN:
+        return []
+
+    try:
+        url = f"https://api-fxpractice.oanda.com/v3/instruments/{oanda_inst}/candles?count={count}&granularity=D&price=M"
+        req = urllib.request.Request(url, headers={'Authorization': f'Bearer {OANDA_TOKEN}'})
+        with urllib.request.urlopen(req, timeout=6) as res:
+            data = json.loads(res.read().decode('utf-8'))
+            candles = data.get('candles', [])
+            dec = 4 if ('EUR' in sym or 'GBP' in sym or 'AUD' in sym or 'NZD' in sym or 'CAD' in sym or 'CHF' in sym) else 2
+            return [
+                {
+                    'time': c['time'].split('T')[0],
+                    'value': round(float(c['mid']['c']), dec)
+                }
+                for c in candles if 'mid' in c and 'c' in c['mid']
+            ]
+    except Exception as e:
+        log("CANDLES", "⚠️", f"Error OANDA {sym}: {e}")
+        return []
+
 def sync_markets_loop():
     """Ejecuta la actualización continua de los 14 activos y su microestructura cuántica unificada."""
     t0 = time.time()
     quotes = fetch_live_quotes()
     if not quotes:
         return
+
+    # Sincronización periódica de velas reales de 45 días (cada 30 min o si la caché está vacía)
+    now_ts = time.time()
+    if 'candles_cache' not in state:
+        state['candles_cache'] = {}
+    if now_ts - state.get('last_candles_sync', 0) > 1800 or not state['candles_cache']:
+        for s in ['XAUUSD', 'BTCUSD', 'EURUSD', 'NAS100', 'SPX500', 'US30', 'USOIL', 'ETHUSD']:
+            c_series = fetch_asset_daily_candles(s, 45)
+            if c_series:
+                state['candles_cache'][s] = c_series
+        state['last_candles_sync'] = now_ts
+        log("CANDLES", "📊", f"Velas históricas reales cacheadas ({len(state['candles_cache'])} activos).")
 
     snapshot_path = os.path.join(ROOT_DIR, 'src', 'data', 'market_intelligence_snapshot.json')
     if not os.path.exists(snapshot_path):
@@ -562,6 +625,15 @@ def sync_markets_loop():
             price = q['price']
             # Cálculo cuántico institucional dinámico para CADA UNO de los 14 activos
             metrics = compute_institutional_quant_metrics(sym, price)
+
+            # Inyectar velas históricas reales de mercado en cited_key_levels
+            cached_candles = state.get('candles_cache', {}).get(sym)
+            if cached_candles and isinstance(metrics.get('cited_key_levels'), dict):
+                series_copy = [dict(p) for p in cached_candles]
+                if series_copy:
+                    series_copy[-1]['value'] = price
+                metrics['cited_key_levels']['historical_series'] = series_copy
+
             asset.update(metrics)
             state['prices_cache'][sym] = price
             state['quant_records'][sym] = metrics
