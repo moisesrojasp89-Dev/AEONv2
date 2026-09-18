@@ -1859,17 +1859,29 @@ def sync_macro_and_news():
             except Exception as e:
                 log("NOTICIAS", "⚠️", f"Error al limpiar noticias previas de {t}: {e}")
 
-        # Insertar lote autoritativo fresco
+        # Insertar lote autoritativo fresco adaptado al esquema de public.news
         try:
+            db_news_items = [
+                {
+                    'title': n.get('title', ''),
+                    'summary': n.get('desc') or n.get('summary', ''),
+                    'tag': n.get('tag', 'MACRO'),
+                    'tag_class': n.get('tag_class', ''),
+                    'source': n.get('source', 'AEON Intelligence'),
+                    'url': n.get('link') or n.get('url', '#'),
+                    'created_at': n.get('created_at') or datetime.now(timezone.utc).isoformat()
+                }
+                for n in news_items
+            ]
             req_ins = urllib.request.Request(
                 f"{SUPABASE_URL}/rest/v1/news",
-                data=json.dumps(news_items).encode('utf-8'),
+                data=json.dumps(db_news_items).encode('utf-8'),
                 headers=DB_HEADERS,
                 method='POST'
             )
             urllib.request.urlopen(req_ins, timeout=5)
             feat_count = sum(1 for n in news_items if '#featured' in n.get('link', ''))
-            log("NOTICIAS", "📰", f"{len(news_items)} Noticias institucionales insertadas ({session_name} | Destacadas: {feat_count}).")
+            log("NOTICIAS", "📰", f"{len(db_news_items)} Noticias institucionales insertadas ({session_name} | Destacadas: {feat_count}).")
         except Exception as e:
             log("NOTICIAS", "⚠️", f"Error al insertar noticias: {e}")
 
@@ -1897,7 +1909,7 @@ def upsert_macro_records(records: list):
         return
     try:
         req = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/macro_liquidity",
+            f"{SUPABASE_URL}/rest/v1/macro_liquidity?on_conflict=symbol",
             data=json.dumps(records).encode('utf-8'),
             headers=DB_HEADERS,
             method='POST'

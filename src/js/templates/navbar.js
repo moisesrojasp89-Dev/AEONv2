@@ -20,17 +20,17 @@ const NAV_LINKS = [
  * Detects which page is currently active based on URL pathname and hash.
  * @returns {string} The id of the active nav link
  */
-function detectActivePage() {
-  const path = window.location.pathname;
-  const hash = window.location.hash;
+export function detectActivePage() {
+  const path = (window.location.pathname || '').toLowerCase();
+  const hash = (window.location.hash || '').toLowerCase();
 
-  if (path.includes('mercados.html'))    return 'mercados';
-  if (path.includes('calendario.html'))  return 'calendario';
-  if (path.includes('analisis.html'))    return 'analisis';
-  if (path.includes('perfil.html'))      return 'perfil';
+  if (path.includes('mercados'))    return 'mercados';
+  if (path.includes('calendario'))  return 'calendario';
+  if (path.includes('analisis'))    return 'analisis';
+  if (path.includes('perfil'))      return 'perfil';
 
   // index.html or root — use hash to determine section
-  if (hash === '#playbooks' || hash === '#educacion') return 'playbooks';
+  if (hash.includes('playbooks') || hash.includes('educacion')) return 'playbooks';
   return 'briefing';
 }
 
@@ -96,7 +96,7 @@ export function renderNavbar() {
   if (!root) return;
 
   const activeId = detectActivePage();
-  const isPerfilPage = window.location.pathname.includes('perfil.html');
+  const isPerfilPage = window.location.pathname.toLowerCase().includes('perfil');
   const isLoggedIn = isUserLoggedInSync();
 
   // Logo href: "/" on index, "/index.html" on subpages

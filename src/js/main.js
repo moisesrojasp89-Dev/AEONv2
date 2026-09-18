@@ -41,7 +41,8 @@ let allNewsCache = [];
 let currentNewsFilter = 'live';
 
 function applyNewsFilter(filterValue) {
-  currentNewsFilter = (filterValue || 'live').toLowerCase();
+  const normVal = (filterValue || 'live').trim();
+  currentNewsFilter = normVal.toLowerCase();
   
   const filterBtns = document.querySelectorAll('#news-filters .filter-btn');
   filterBtns.forEach(btn => {
@@ -50,7 +51,17 @@ function applyNewsFilter(filterValue) {
 
   const mobileSelect = document.getElementById('mobile-news-select');
   if (mobileSelect) {
-    mobileSelect.value = currentNewsFilter;
+    let matched = false;
+    for (let i = 0; i < mobileSelect.options.length; i++) {
+      if (mobileSelect.options[i].value.toLowerCase() === currentNewsFilter) {
+        mobileSelect.selectedIndex = i;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      mobileSelect.value = filterValue;
+    }
   }
 
   if (currentNewsFilter === 'live' || currentNewsFilter === 'all') {

@@ -3,8 +3,40 @@
    Centralized Architecture • 100% Cross-Page Compatibility
    ============================================================ */
 
-import { renderNavbar } from './templates/navbar.js';
+import { renderNavbar, detectActivePage } from './templates/navbar.js';
 import { initChatWidget } from './components/chatWidget.js';
+
+export function updateActiveNavLinks() {
+  const activeId = detectActivePage();
+  const desktopLinks = document.querySelectorAll('.header .nav-link');
+  desktopLinks.forEach(link => {
+    const href = (link.getAttribute('href') || '').toLowerCase();
+    const isActive = (activeId === 'mercados' && href.includes('mercados')) ||
+                     (activeId === 'calendario' && href.includes('calendario')) ||
+                     (activeId === 'analisis' && href.includes('analisis')) ||
+                     (activeId === 'playbooks' && (href.includes('playbooks') || href.includes('educacion'))) ||
+                     (activeId === 'briefing' && (href.includes('briefing') || href === '/' || href === '/index.html'));
+    link.classList.toggle('active', isActive);
+    if (isActive) {
+      link.style.color = 'var(--accent)';
+      link.style.fontWeight = '700';
+    } else {
+      link.style.color = '';
+      link.style.fontWeight = '';
+    }
+  });
+
+  const mobileLinks = document.querySelectorAll('.mobile-drawer .mobile-link');
+  mobileLinks.forEach(link => {
+    const href = (link.getAttribute('href') || '').toLowerCase();
+    const isActive = (activeId === 'mercados' && href.includes('mercados')) ||
+                     (activeId === 'calendario' && href.includes('calendario')) ||
+                     (activeId === 'analisis' && href.includes('analisis')) ||
+                     (activeId === 'playbooks' && (href.includes('playbooks') || href.includes('educacion'))) ||
+                     (activeId === 'briefing' && (href.includes('briefing') || href === '/' || href === '/index.html'));
+    link.classList.toggle('active', isActive);
+  });
+}
 
 export function toggleMobileMenu(forceClose = false) {
   const overlay = document.querySelector('.mobile-overlay');
@@ -16,6 +48,7 @@ export function toggleMobileMenu(forceClose = false) {
   const shouldOpen = forceClose ? false : !drawer.classList.contains('active');
 
   if (shouldOpen) {
+    updateActiveNavLinks();
     overlay.classList.add('active');
     drawer.classList.add('active');
     document.body.classList.add('no-scroll');
@@ -79,6 +112,11 @@ function bindNavbarEvents() {
   // 5. Close with Escape key
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') toggleMobileMenu(true);
+  });
+
+  // 6. Update active link on hash change (e.g. #briefing -> #playbooks)
+  window.addEventListener('hashchange', () => {
+    updateActiveNavLinks();
   });
 
   // 6. Bind logout buttons immediately so they are functional without waiting for auth.js
