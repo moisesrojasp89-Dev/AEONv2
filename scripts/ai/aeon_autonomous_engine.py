@@ -22,6 +22,7 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any, Optional
+import re
 
 if sys.platform == 'win32':
     try:
@@ -993,9 +994,24 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
     
     cat_text = ""
     if catalysts:
-        cat_items = [f"{c.get('title')} ({c.get('currency')})" for c in catalysts[:2] if c.get('title')]
-        if cat_items:
-            cat_text = f" Próximos catalizadores clave: {', '.join(cat_items)}."
+        digested_items = []
+        upcoming_items = []
+        for c in catalysts:
+            title = c.get('title', '')
+            curr = c.get('currency', '')
+            act = c.get('actual')
+            if c.get('status') == 'digested' or act:
+                val_str = f" [Dato: {act}]" if act and act != 'Publicado' else ""
+                digested_items.append(f"{title} ({curr}){val_str}")
+            else:
+                upcoming_items.append(f"{title} ({curr})")
+        parts = []
+        if digested_items:
+            parts.append(f"Catalizadores asimilados recientemente: {', '.join(digested_items[:2])}.")
+        if upcoming_items:
+            parts.append(f"Próximos catalizadores clave: {', '.join(upcoming_items[:2])}.")
+        if parts:
+            cat_text = " " + " ".join(parts)
 
     if GEMINI_API_KEY:
         models_to_try = [
@@ -1008,7 +1024,7 @@ def synthesize_with_gemini(session_name: str, gold_price: float, btc_price: floa
             f"Datos en vivo: Oro Spot ${gold_price:,.2f} (Sesgo: {gold_bias}), Dólar Index DXY {dxy_price:.2f}, "
             f"S&P 500 {spx_price:,.0f}, Bitcoin ${btc_price:,.0f}.{cat_text} "
             f"Redacta un análisis macro ejecutivo de 2 oraciones completas de alto nivel institucional (máximo 45 palabras) "
-            f"explicando el flujo de liquidez, la absorción del dólar y los catalizadores activos. "
+            f"explicando el flujo de liquidez, la absorción del dólar y el impacto de los catalizadores macro asimilados o previstos. "
             f"OBLIGATORIO: Ambas oraciones deben ser completas, sin puntos suspensivos y terminar obligatoriamente con punto final."
         )
         payload = {
@@ -1058,7 +1074,8 @@ SESSION_CURRENCY_MATRIX = {
 TIER_1A_KEYWORDS = [
     'non-farm employment change', 'cpi', 'core cpi',
     'consumer price index', 'fomc statement', 'federal funds rate',
-    'interest rate decision', 'fomc press conference', 'fomc economic projections',
+    'interest rate decision', 'policy rate decision', 'rate decision',
+    'federal funds rate decision', 'fomc press conference', 'fomc economic projections',
     'fed chair powell speaks', 'powell speaks'
 ]
 
@@ -1067,8 +1084,8 @@ TIER_1B_KEYWORDS = [
     'ecb monetary policy statement', 'main refinancing rate', 'ecb press conference',
     'deposit facility rate', 'hicp flash estimate', 'german flash cpi',
     'official bank rate', 'monetary policy report', 'boe gov bailey speaks',
-    'boj policy rate', 'monetary policy statement', 'boj press conference',
-    'boc rate statement', 'overnight rate'
+    'boj policy rate', 'boj policy', 'policy rate', 'monetary policy statement', 'boj press conference',
+    'bank of japan', 'boc rate statement', 'overnight rate'
 ]
 
 TIER_2A_KEYWORDS = [
@@ -1086,19 +1103,20 @@ def score_catalyst_event(ev: dict, primary_currencies: list, secondary_currencie
     """Calcula el puntaje institucional jerárquico de un catalizador macroeconómico."""
     curr = ev.get('country', '')
     ev_name = ev.get('event_name', '').strip()
+    name_cleaned = re.sub(r'[^a-zA-Z0-9\s]', ' ', ev_name).lower()
     name_lower = ev_name.lower()
 
     # 1. SCORE DE TIER
     tier_score = 0
-    if 'unemployment rate' in name_lower:
+    if 'unemployment rate' in name_lower or 'unemployment rate' in name_cleaned:
         tier_score = 15000 if curr in primary_currencies else 3000
-    elif any(kw in name_lower for kw in TIER_1A_KEYWORDS):
+    elif any(kw in name_cleaned or kw in name_lower for kw in TIER_1A_KEYWORDS):
         tier_score = 15000
-    elif any(kw in name_lower for kw in TIER_1B_KEYWORDS):
+    elif any(kw in name_cleaned or kw in name_lower for kw in TIER_1B_KEYWORDS):
         tier_score = 10000
-    elif any(kw in name_lower for kw in TIER_2A_KEYWORDS):
+    elif any(kw in name_cleaned or kw in name_lower for kw in TIER_2A_KEYWORDS):
         tier_score = 5000
-    elif any(kw in name_lower for kw in TIER_2B_KEYWORDS):
+    elif any(kw in name_cleaned or kw in name_lower for kw in TIER_2B_KEYWORDS):
         tier_score = 3000
 
     # 2. SCORE DE DIVISA
@@ -1124,7 +1142,10 @@ def score_catalyst_event(ev: dict, primary_currencies: list, secondary_currencie
         impact_score = 50
         impact_prio = 0
 
-    total_score = tier_score + curr_score + impact_score
+    # 4. BONUS A DECISIONES DE TIPOS DE INTERÉS VS RUEDAS DE PRENSA
+    rate_boost = 500 if any(k in name_cleaned for k in ['federal funds rate', 'rate decision', 'policy rate decision', 'interest rate decision', 'overnight rate', 'official bank rate']) else 0
+
+    total_score = tier_score + curr_score + impact_score + rate_boost
     return total_score, impact_prio, curr_prio
 
 def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
@@ -1170,21 +1191,21 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
 
     # =========================================================================
     # CASO 1: FIN DE SEMANA (Viernes 17:00 NY -> Domingo 17:00 NY)
-    # Balance de la sesión de cierre semanal del viernes
+    # Balance de la sesión de cierre semanal del viernes y eventos Tier 1 de la semana
     # =========================================================================
     if is_weekend:
         days_since_friday = (ny_now.weekday() - 4) % 7
         friday_date = (ny_now - timedelta(days=days_since_friday)).date()
+        friday_session_start_ny = datetime(friday_date.year, friday_date.month, friday_date.day, 17, 0, tzinfo=ZoneInfo("America/New_York")) - timedelta(days=1)
+        friday_session_end_ny = datetime(friday_date.year, friday_date.month, friday_date.day, 17, 0, tzinfo=ZoneInfo("America/New_York"))
 
         scored_friday = []
+        week_marquee = []
         for ev in events:
             try:
                 ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
                 ev_ny = ev_time.astimezone(ZoneInfo("America/New_York"))
-
-                # Eventos correspondientes al viernes de cierre (hasta las 17:00 campana NY)
-                if ev_ny.date() != friday_date or ev_ny.hour >= 17:
-                    continue
+                diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
 
                 curr = ev.get('country', '')
                 if curr not in major_fallback_currencies:
@@ -1200,27 +1221,50 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
                     ev_time.timestamp(),
                     [-ord(c) for c in ev_name.lower()]
                 )
-                scored_friday.append((sort_key, ev))
+                
+                # Eventos correspondientes a la sesión de trading global del viernes (Jueves 17:00 NY a Viernes 17:00 NY)
+                if friday_session_start_ny <= ev_ny < friday_session_end_ny:
+                    scored_friday.append((sort_key, ev))
+                elif -144.0 <= diff_hours < 0 and (total_score >= 10000 or str(ev.get('impact', '')).upper() == 'HIGH'):
+                    week_marquee.append((sort_key, ev))
             except Exception:
                 continue
 
         scored_friday.sort(key=lambda x: x[0], reverse=True)
-        selected_events = [x[1] for x in scored_friday[:4]]
+        week_marquee.sort(key=lambda x: x[0], reverse=True)
+
+        # 1. Priorizar catalizadores de alto impacto del viernes de cierre (BoJ, Ueda, Ventas Minoristas)
+        for item in scored_friday:
+            if len(selected_events) < 4 and (item[0][0] >= 1000 or str(item[1].get('impact', '')).upper() == 'HIGH' or not week_marquee):
+                if item[1] not in selected_events:
+                    selected_events.append(item[1])
+
+        # 2. Incorporar catalizadores Tier 1 que definieron la semana (FOMC 5.25%, BoE 5.00%)
+        for item in week_marquee:
+            if len(selected_events) < 4 and item[1] not in selected_events:
+                selected_events.append(item[1])
+
+        # 3. Completar con cualquier otro evento del viernes si aún hay cupo
+        for item in scored_friday:
+            if len(selected_events) < 4 and item[1] not in selected_events:
+                selected_events.append(item[1])
 
     # =========================================================================
     # CASO 2: SESIONES ACTIVAS (incluyendo reapertura dominical en Asia)
-    # Ventana por horizontes escalonados con inmediatez estricta
+    # Ventana por horizontes escalonados con inmediatez estricta y balance semanal
     # =========================================================================
     else:
-        live_or_recent = []
-        h1_events = [] # 0h a 36h (Inmediato: hoy y mañana)
-        h2_events = [] # 36h a 72h (Medio: días 2 y 3)
-        h3_events = [] # 72h a 120h (Extendido: días 4 y 5)
+        live_or_recent = [] # Eventos de hoy o últimas 24h
+        h1_events = []      # 0h a 36h (Inmediato: hoy y mañana)
+        week_marquee = []   # Últimos 5 días: decisiones monetarias y catalizadores Tier 1
+        h2_events = []      # 36h a 72h (Medio: días 2 y 3)
+        h3_events = []      # 72h a 120h (Extendido: días 4 y 5)
 
         for ev in events:
             try:
                 ev_time = datetime.fromisoformat(ev['event_time'].replace('Z', '+00:00'))
                 diff_hours = (ev_time - now_utc).total_seconds() / 3600.0
+                ev_ny = ev_time.astimezone(ZoneInfo("America/New_York"))
 
                 curr = ev.get('country', '')
                 if curr not in major_fallback_currencies:
@@ -1237,10 +1281,14 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
                     [-ord(c) for c in ev_name.lower()]
                 )
 
-                if -4.0 <= diff_hours < 0:
-                    live_or_recent.append((sort_key, ev))
-                elif 0 <= diff_hours <= 36.0:
+                is_today = (ev_ny.date() == ny_now.date()) or (-24.0 <= diff_hours < 0)
+
+                if 0 <= diff_hours <= 36.0:
                     h1_events.append((sort_key, ev))
+                elif is_today:
+                    live_or_recent.append((sort_key, ev))
+                elif -120.0 <= diff_hours < -24.0 and (total_score >= 10000 or str(ev.get('impact', '')).upper() == 'HIGH'):
+                    week_marquee.append((sort_key, ev))
                 elif 36.0 < diff_hours <= 72.0:
                     h2_events.append((sort_key, ev))
                 elif 72.0 < diff_hours <= 120.0:
@@ -1250,24 +1298,47 @@ def get_session_dynamic_catalysts(session_id: str, now_utc=None) -> list[dict]:
 
         live_or_recent.sort(key=lambda x: x[0], reverse=True)
         h1_events.sort(key=lambda x: x[0], reverse=True)
+        week_marquee.sort(key=lambda x: x[0], reverse=True)
         h2_events.sort(key=lambda x: x[0], reverse=True)
         h3_events.sort(key=lambda x: x[0], reverse=True)
 
-        # Llenado escalonado priorizando rigurosamente la inmediatez
-        for item in live_or_recent:
-            if len(selected_events) < 4:
-                selected_events.append(item[1])
-
+        # Llenado escalonado priorizando rigurosamente la inmediatez y relevancia macro:
+        # 1. Próximos eventos inmediatos (0h a 36h)
         for item in h1_events:
-            if len(selected_events) < 4:
+            if len(selected_events) < 4 and item[1] not in selected_events:
                 selected_events.append(item[1])
 
+        # 2. Eventos de hoy de alto impacto (BoJ, Ueda, Ventas Minoristas, etc.)
+        for item in live_or_recent:
+            if len(selected_events) < 4 and (item[0][0] >= 1000 or str(item[1].get('impact', '')).upper() == 'HIGH' or not week_marquee):
+                if item[1] not in selected_events:
+                    selected_events.append(item[1])
+
+        # 3. En cierre semanal (viernes) o si no hay eventos inmediatos futuros,
+        # incorporar los catalizadores Tier 1 que definieron la semana (FOMC 5.25%, BoE 5.00%)
+        is_weekly_closing = (ny_now.weekday() == 4 and ny_now.hour >= 10) or (ny_now.weekday() in (5, 6))
+        if is_weekly_closing or len(h1_events) == 0:
+            for item in week_marquee:
+                if len(selected_events) < 4 and item[1] not in selected_events:
+                    selected_events.append(item[1])
+
+        # 4. Cualquier evento restante de hoy si aún faltan cupos
+        for item in live_or_recent:
+            if len(selected_events) < 4 and item[1] not in selected_events:
+                selected_events.append(item[1])
+
+        # 5. Horizontes extendidos (h2, h3) solo si aún hay cupos vacíos
         for item in h2_events:
-            if len(selected_events) < 4:
+            if len(selected_events) < 4 and item[1] not in selected_events:
                 selected_events.append(item[1])
 
         for item in h3_events:
-            if len(selected_events) < 4:
+            if len(selected_events) < 4 and item[1] not in selected_events:
+                selected_events.append(item[1])
+
+        # 6. Fallback final con week_marquee si quedara algún espacio
+        for item in week_marquee:
+            if len(selected_events) < 4 and item[1] not in selected_events:
                 selected_events.append(item[1])
 
     # Orden cronológico final para presentación en la UI
