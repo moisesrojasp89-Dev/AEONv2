@@ -7,7 +7,7 @@ import { createChart, LineStyle, AreaSeries } from 'lightweight-charts';
 import { initNavbar } from './navbar.js';
 import { analysisService } from './services/analysisService.js';
 import { renderTerminalCard } from './templates/analysisCard.js';
-import { fetchHistoricalChartData } from './services/marketService.js';
+import { fetchHistoricalChartData, generateSyntheticSeries } from './services/marketService.js';
 
 let currentSymbol = 'XAUUSD';
 let currentData = null;
@@ -191,8 +191,12 @@ async function renderHeroStyleChart(symbol = 'XAUUSD') {
     },
   });
 
-  // Cargar datos históricos
-  const historicalData = await fetchHistoricalChartData(symbol, 45);
+  // Cargar datos históricos con garantía de visualización continua (Zero-Downtime)
+  let historicalData = await fetchHistoricalChartData(symbol, 45);
+  if (!historicalData || historicalData.length === 0) {
+    historicalData = generateSyntheticSeries(symbol, 45, currentData?.current_price);
+  }
+
   if (historicalData && historicalData.length > 0) {
     if (currentData && currentData.current_price) {
       const lastIndex = historicalData.length - 1;
