@@ -33,6 +33,7 @@ flowchart TD
     subgraph CAPA_1 ["CAPA 1: ESTÁNDARES DE INGENIERÍA & GOBERNANZA"]
         direction TB
         STANDARDS["docs/ENGINEERING_STANDARDS.md\n(Normativa Cuantitativa & Zero-Trust)"]
+        ESTRUCTURA["docs/ESTRUCTURA_DEL_PROYECTO.md\n(Topología Completa del Código)"]
         CONVENTIONS["docs/CONVENTIONS.md\n(Guía de Estilo & Nomenclatura)"]
         VIBE["docs/GUIA_ARQUITECTURA_Y_BUENAS_PRACTICAS_VIBE_CODING.md\n(Manual de Vibe Coding Riguroso)"]
     end
@@ -55,6 +56,7 @@ flowchart TD
     CURRENT --> INFORME
 
     CURRENT --> STANDARDS
+    STANDARDS --> ESTRUCTURA
     STANDARDS --> CONVENTIONS
     STANDARDS --> VIBE
 
@@ -85,6 +87,7 @@ flowchart TD
 | Documento | Rol / Propósito Primario | Nivel de Madurez | Certificación |
 |---|---|:---:|:---:|
 | [`ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) | Estándares cuantitativos obligatorios ($\KaTeX$), calidad de código, arquitectura Zero-Trust, RLS, testing automatizado, backups 3-2-1 y despliegue VPS. | `Estándar Militar` | **Normativo** |
+| [`ESTRUCTURA_DEL_PROYECTO.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ESTRUCTURA_DEL_PROYECTO.md) | Topología y mapa exhaustivo de todos los directorios y archivos (HTML, CSS, JS, Python, SQL y Deploy). | `Institucional` | **Normativo** |
 | [`CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) | Convenciones estrictas de nomenclatura, tipado, estructura modular en JavaScript, Python y CSS nativo sin dependencias pesadas. | `Institucional` | **Normativo** |
 | [`GUIA_ARQUITECTURA_Y_BUENAS_PRACTICAS_VIBE_CODING.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/GUIA_ARQUITECTURA_Y_BUENAS_PRACTICAS_VIBE_CODING.md) | Manifiesto de ingeniería para desarrollo asistido por IA: prevención de anti-patrones, modularidad y verificación determinista. | `Doctrina` | **Formativo** |
 
