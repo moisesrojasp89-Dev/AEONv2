@@ -1,16 +1,22 @@
-# AEON — Estado Actual vs Arquitectura Objetivo (Master Plan v2.0)
+# 🏛️ AEON — Estado Actual vs Arquitectura Objetivo (Master Plan v2.0)
 
 **Única Fuente de Verdad Técnica, Diagnóstico de Arquitectura y Estado Real del Repositorio**  
-**Última Actualización:** Septiembre de 2026 (Fases 0 a 6M Completadas e Implementadas en Producción — Infraestructura Soberana Cloudflare Pages & Supabase US East)  
-**Documentos de Consulta:**  
-- 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo  
-- 🛡️ [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) — Estándares Oficiales de Ingeniería e Infraestructura  
-- 📐 [`docs/CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) — Estándares y Convenciones del Código  
-- 🗄️ [`docs/archive/`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/archive/) — Histórico de Auditorías y Especificaciones  
+**Versión del Diagnóstico:** 2.2.0 (Certificación de Arquitectura Senior)  
+**Última Actualización:** Septiembre de 2026 (Fases 0 a 6M Implementadas en Producción)  
+**Infraestructura Soberana:** Cloudflare Pages & Supabase US East (`ueukfjowysadezsmtzto`)  
 
 ---
 
-## 1. Cuadro de Mando del Proyecto (Estado de Fases del Roadmap v2.0)
+> [!NOTE]
+> **Documentos de Referencia:**
+> - 🗺️ [`docs/AEON_ROADMAP_V2.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/AEON_ROADMAP_V2.md) — Master Roadmap v2.0 Activo
+> - 🛡️ [`docs/ENGINEERING_STANDARDS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/ENGINEERING_STANDARDS.md) — Estándares Oficiales de Ingeniería Cuantitativa
+> - 📐 [`docs/CONVENTIONS.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/CONVENTIONS.md) — Estándares y Convenciones de Código
+> - 🧠 [`docs/GUIA_HARNESS_ENGINEERING.md`](file:///c:/Users/indatech/Desktop/Proyectos/Fintech/AEON/docs/GUIA_HARNESS_ENGINEERING.md) — Arquitectura de Sistemas Agénticos Institucionales
+
+---
+
+## 📊 1. Cuadro de Mando del Proyecto (Estado de Fases del Roadmap v2.0)
 
 | Fase | Título / Objetivo | Estado Real | Resumen de Implementación Verificada |
 |---|---|:---:|---|
@@ -38,97 +44,201 @@
 
 ---
 
-### 2. Máquina de Estados Cuántica del Centinela MAS (Producción v1.1.0)
+## ⚡ 2. Máquina de Estados Cuántica del Centinela MAS (Producción v1.1.0)
 
-```text
-                  [ 1. ESCANEO CONTINUO ]
-                  (17 Activos en Vivo / 20s)
-                             │
-                             │ (Precio entra en ZAP Compra/Venta)
-                             ▼
-                  [ 2. CONFLUENCIA ZAP ]
-                 (dist_dpoc > 0.15% & microScore >= 25)
-                             │
-              ┌───────────────┴───────────────┐
-              │ (Barrido BSL / Compra)        │ (Barrido SSL / Venta)
-              ▼                               ▼
-     [ 3. DISPARO BSL ]              [ 3. DISPARO SSL ]
-   (Fan-Out Event Bus)             (Fan-Out Event Bus)
-              │                               │
-              └───────────────┬───────────────┘
-                              ▼
-                  [ 4. COOLDOWN ATÓMICO ]
-                 (Bloqueo 15m anti-overtrading)
-                              │
-                              │ (Cooldown expira)
-                              ▼
-                  [ 1. ESCANEO CONTINUO ]
+El Centinela de Trading opera como un proceso asíncrono no bloqueante que evalúa la microestructura de 17 activos cada 20 segundos:
+
+```mermaid
+stateDiagram-v2
+    [*] --> ESCANEO_CONTINUO : Inicialización Daemon (20s Loop)
+
+    state ESCANEO_CONTINUO {
+        [*] --> MuestreoPrecios : Tick OANDA / Binance
+        MuestreoPrecios --> EvaluacionMicroestructura : Cálculo dPOC, ZAP, ADX
+        EvaluacionMicroestructura --> [*]
+    }
+
+    ESCANEO_CONTINUO --> EVALUACION_CONFLUENCIA : Precio entra en Zona ZAP (Compra/Venta)
+    
+    state EVALUACION_CONFLUENCIA {
+        [*] --> TestDistancia : dist_dpoc > 0.15%
+        TestDistancia --> TestScore : microScore >= 25
+        TestScore --> [*] : Validación Exitosa
+    }
+
+    EVALUACION_CONFLUENCIA --> DISPARO_BSL : Barrido BSL & Confluencia Alcista
+    EVALUACION_CONFLUENCIA --> DISPARO_SSL : Barrido SSL & Confluencia Bajista
+    EVALUACION_CONFLUENCIA --> ESCANEO_CONTINUO : Filtros no cumplidos (Rechazo Silencioso)
+
+    state DISPARO_BSL {
+        [*] --> GenerarPayloadBSL : Empaquetar POI & Niveles
+        GenerarPayloadBSL --> PostBusBSL : Insert trading_signal_events
+        PostBusBSL --> [*]
+    }
+
+    state DISPARO_SSL {
+        [*] --> GenerarPayloadSSL : Empaquetar POI & Niveles
+        GenerarPayloadSSL --> PostBusSSL : Insert trading_signal_events
+        PostBusSSL --> [*]
+    }
+
+    DISPARO_BSL --> FAN_OUT_BROADCAST : Disparo HTTP al Edge Function
+    DISPARO_SSL --> FAN_OUT_BROADCAST : Disparo HTTP al Edge Function
+
+    state FAN_OUT_BROADCAST {
+        [*] --> GeminiInference : Síntesis Táctica (<1.2s)
+        GeminiInference --> SupabaseRealtime : Broadcast a Clientes Conectados
+        SupabaseRealtime --> [*]
+    }
+
+    FAN_OUT_BROADCAST --> COOLDOWN_ATOMICO : Activar cerrojo temporal por activo
+    
+    state COOLDOWN_ATOMICO {
+        [*] --> Timer15Min : Bloqueo Anti-Overtrading (15 min)
+        Timer15Min --> CooldownExpirado : Delta t >= 900s
+        CooldownExpirado --> [*]
+    }
+
+    COOLDOWN_ATOMICO --> ESCANEO_CONTINUO : Reactivación para nuevo ciclo
 ```
 
 ---
 
-## 3. Máquina de Estados Temporal de Sesiones de Mercado (AEON Intelligence v2.0)
+## 🕒 3. Máquina de Estados Temporal de Sesiones de Mercado (AEON Intelligence v2.0)
 
-```text
-  [ 06:00 - 08:00 UTC ] ──► 🟡 PRE-LONDRES (Preparación Killzone)
-  [ 08:00 - 12:30 UTC ] ──► 🟢 SESIÓN LONDRES ACTIVA (Flujo Europeo)
-  [ 12:30 - 13:30 UTC ] ──► 🟡 PRE-NUEVA YORK (Ajuste a Datos Macro)
-  [ 13:30 - 20:00 UTC ] ──► 🟢 SESIÓN WALL STREET (Apertura Americana & Liquidez)
-  [ 20:00 - 21:00 UTC ] ──► ⚪ CIERRE WALL STREET (Post-Mercado & Balance)
-  [ 21:00 - 06:00 UTC ] ──► 🔵 SESIÓN ASIA-PACÍFICO (Tokio, Sídney & Rangos)
+El motor contextual modula dinámicamente los regímenes de volatilidad y el enfoque de las alertas según el huso horario operativo:
+
+```mermaid
+flowchart LR
+    S1["🟡 PRE-LONDRES\n06:00 - 08:00 UTC\nPreparación Killzone Europe"] --> S2["🟢 LONDRES ACTIVA\n08:00 - 12:30 UTC\nFlujo Institucional & Expansión"]
+    S2 --> S3["🟡 PRE-NUEVA YORK\n12:30 - 13:30 UTC\nAjuste a Catalizadores Macro"]
+    S3 --> S4["🟢 SESIÓN WALL STREET\n13:30 - 20:00 UTC\nAlta Liquidez USA & Acciones"]
+    S4 --> S5["⚪ CIERRE WALL STREET\n20:00 - 21:00 UTC\nPost-Mercado & Balance"]
+    S5 --> S6["🔵 ASIA-PACÍFICO\n21:00 - 06:00 UTC\nTokio, Sídney & Rangos dPOC"]
+    S6 --> S1
 ```
 
 ---
 
-## 4. Arquitectura de Producción Implementada (MAS v1.3.0)
+## 🏛️ 4. Arquitectura de Producción Implementada (MAS v1.3.0)
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ SERVIDOR DEDICADO VPS LINUX (Ubuntu 24.04 LTS / LD4 Londres / Local)   │
-│                                                                        │
-│  ┌───────────────────────────┐         ┌────────────────────────────┐  │
-│  │ Ingesta Batch OANDA v20   │         │ Feeds Directos Cripto      │  │
-│  │ (14 Activos en 1 llamada) │         │ (Binance / Coinbase BTC/ETH)│ │
-│  └─────────────┬─────────────┘         └─────────────┬──────────────┘  │
-│                │                                     │                 │
-│  ┌─────────────▼─────────────────────────────────────▼──────────────┐  │
-│  │ AEON UNIFIED DAEMONS & HARNESS SENTINEL                          │  │
-│  │  1. aeon_autonomous_engine: Ingesta 17 activos, Macro Fed HUD,   │  │
-│  │     Calendario Sniper 24h/Semanal y Noticias Grounded           │  │
-│  │  2. harness_sentinel.py: Centinela Cuántico 24/7 (ZAP + BSL/SSL)  │  │
-│  │     con worker thread no bloqueante (timeout 3.0s) & fan-out HTTP │  │
-│  │  3. trader_journal_harness.py: Ratchet 20s en RAM (MFE/MAE)      │  │
-│  │  - Persistencia atómica de estados y cooldowns en JSON           │  │
-│  │  - Logging Estructurado JSON & Heartbeats cada 20s               │  │
-│  └───────────────────────────────────────────────────▲──────────────┘  │
-│                                                      │                 │
-└──────────────────────────────────────────────────────┼─────────────────┘
-                                                       │ HTTPS / WebSockets
-                                                       ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ SUPABASE SOBERANO (PostgreSQL US East / ueukfjowysadezsmtzto)           │
-│  - Seguridad RLS Zero-Trust en 100% de tablas                          │
-│  - Active Copilot Harness & Event Bus (00010 & 00013):                 │
-│      • trading_signal_events (TTL 2h, Realtime broadcast)              │
-│      • user_trade_journal, trader_weekly_audits & check_overtrading    │
-│  - Edge Functions:                                                     │
-│      • aeon-chat: Copiloto Macro Zero-Trust con cuota atómica (50/día) │
-│      • aeon-copilot-event: Síntesis táctica Gemini 2.5 Flash-Lite      │
-│        en <1.2s e idempotencia por event_id                            │
-│  - Tablas: market_intelligence, macro_liquidity, daily_briefings, news │
-└──────────────────────────────────────┬─────────────────────────────────┘
-                                       │
-                                       │ Realtime Broadcast & WebSockets
-                                       ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ AEON TERMINAL (Cloudflare Pages: aeon-intelligence.pages.dev / Vite)   │
-│  - Active Copilot Harness: Radar chime WebAudio, toast neón y snooze   │
-│  - Enrutamiento Limpio (/mercados, /analisis, /calendario, /perfil)    │
-│  - Manejo Freemium vs PRO verificado en vivo con rechazo de bajo R/R   │
-│  - Terminal de Análisis Estructural (/analisis) con gráficos LW v5     │
-│  - Radar de Mercados (17 Activos) con actualización atómica in-place   │
-│  - Motor de Catalizadores Tier 1 24h & Marquee de Cierre Semanal       │
-│  - Selector Móvil Dark Luxury en Noticias sin saltos de contraste      │
-│  - Compilación verificada < 400ms y Cero Deuda Técnica                 │
-└────────────────────────────────────────────────────────────────────────┘
+La siguiente topología C4 N2 representa la interacción entre proveedores externos, el nodo de cómputo en Linux VPS, la base de datos soberana y el frontend global:
+
+```mermaid
+flowchart TB
+    subgraph EXTERNAL ["Proveedores Externos de Liquidez & Macro"]
+        OANDA["OANDA v20 REST API\n(14 Activos FX/Metales en 1 batch)"]
+        BINANCE["Binance Direct API\n(Cripto: BTC, ETH)"]
+        COINBASE["Coinbase Spot Feed"]
+        FRED["St. Louis Fed FRED\n(WALCL, RRPONTSYD, FEDFUNDS)"]
+        YAHOO["Yahoo Finance\n(US10Y, US02Y)"]
+    end
+
+    subgraph VPS ["Servidor Dedicado VPS Linux (Ubuntu 24.04 LTS / LD4 Londres / Local)"]
+        direction TB
+
+        subgraph DAEMONS ["Motores Autónomos Python 24/7"]
+            ENGINE["aeon_autonomous_engine.py\n• Ingesta 17 activos (20s)\n• Macro Fed HUD\n• Calendario Sniper 24h\n• Noticias Grounded"]
+            SENTINEL["harness_sentinel.py\n• Centinela Cuántico 24/7\n• Confluencia ZAP + BSL/SSL\n• Worker no bloqueante (timeout 3.0s)"]
+            JOURNAL_ENGINE["trader_journal_harness.py\n• Ratchet en RAM (20s)\n• MFE/MAE dinámico en R\n• Evaluator Agent semanal"]
+        end
+
+        subgraph STATE_CACHE ["Persistencia Local Atómica"]
+            JSON_STATE[("Archivos de Estado JSON\n• data/trade_watcher_state.json\n• Cooldowns & Heartbeats")]
+        end
+
+        ENGINE <--> JSON_STATE
+        SENTINEL <--> JSON_STATE
+        JOURNAL_ENGINE <--> JSON_STATE
+    end
+
+    subgraph SUPABASE ["Supabase Soberano US East (ueukfjowysadezsmtzto.supabase.co)"]
+        direction TB
+
+        subgraph DB_TABLES ["PostgreSQL 15 (Zero-Trust RLS)"]
+            TABLE_EVENTS[("public.trading_signal_events\nTTL 2h | Realtime Broadcast")]
+            TABLE_JOURNAL[("public.trader_journal\nPosiciones & Ratchet MFE/MAE")]
+            TABLE_AUDITS[("public.trader_weekly_audits\nDiagnóstico Evaluator Agent")]
+            TABLE_MACRO[("public.macro_liquidity\nUS10Y, US02Y, Fed Assets")]
+            TABLE_INTELLIGENCE[("public.market_intelligence\nScoring 0-100 & POI Citados")]
+        end
+
+        subgraph EDGE_FUNCTIONS ["Supabase Edge Functions (Deno / TypeScript)"]
+            FN_CHAT["aeon-chat\n• Cuota atómica 50/día\n• Intercepción Pre-LLM (<100ms)\n• Escudo Anti-Jailbreak"]
+            FN_EVENT["aeon-copilot-event\n• Inferencia Gemini Flash-Lite\n• Fan-out táctico (<1.2s)\n• Idempotencia por event_id"]
+        end
+    end
+
+    subgraph CLOUDFLARE ["Cloudflare Pages (aeon-intelligence.pages.dev)"]
+        direction TB
+
+        subgraph FRONTEND ["AEON Web Terminal (HTML5 / Vanilla JS / Canvas v5 / CSS Dark Luxury)"]
+            UI_RADAR["Radar de Mercados (17 Activos)\n• Reemplazo in-place\n• Pulso cian reactivo"]
+            UI_ANALISIS["Terminal Estructural (/analisis)\n• Lightweight Charts v5 Canvas\n• Niveles ZAP & POI institucionales"]
+            UI_COPILOT["AEON Copilot Widget\n• Audio chime WebAudio\n• Toast táctico con snooze 15m\n• Control Freemium vs PRO"]
+            UI_JOURNAL["Command Center & Perfil (/perfil)\n• 4 KPI Cards cuantitativos\n• Auditorías semanales del agente"]
+        end
+    end
+
+    OANDA -->|1 batch cada 20s| ENGINE
+    BINANCE -->|Tick directo| ENGINE
+    COINBASE -->|Tick secundario| ENGINE
+    FRED -->|Horario regular| ENGINE
+    YAHOO -->|Horario regular| ENGINE
+
+    ENGINE -->|Escritura periódica| TABLE_MACRO
+    ENGINE -->|Escritura atómica| TABLE_INTELLIGENCE
+    SENTINEL -->|Disparo de evento| TABLE_EVENTS
+    SENTINEL -->|Trigger HTTP| FN_EVENT
+    JOURNAL_ENGINE -->|Ratchet UPDATE WHERE OPEN| TABLE_JOURNAL
+
+    TABLE_EVENTS -->|Supabase Realtime WebSockets| UI_COPILOT
+    TABLE_INTELLIGENCE -->|SELECT con L1 Cache| UI_RADAR
+    TABLE_INTELLIGENCE -->|Carga de POI| UI_ANALISIS
+    TABLE_JOURNAL -->|SELECT propio| UI_JOURNAL
+    TABLE_AUDITS -->|SELECT propio| UI_JOURNAL
+
+    UI_COPILOT -->|HTTPS POST JWT| FN_CHAT
+    FN_CHAT <--> TABLE_JOURNAL
+    FN_CHAT <--> TABLE_AUDITS
+    FN_EVENT -->|Broadcast Realtime| UI_COPILOT
+```
+
+---
+
+## 🔄 5. Diagrama de Secuencia: Ciclo de Ingesta Batch 20s & Mitigación de Rate Limits
+
+Para erradicar costos de API y evitar bloqueos por consumo excesivo en proveedores como TwelveData, AEON implementa un pipeline de ingesta batch altamente optimizado:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant VPS as VPS Daemon (aeon_autonomous_engine)
+    participant OANDA as OANDA v20 REST
+    participant BINANCE as Binance Direct API
+    participant SUPABASE as Supabase PostgreSQL
+    participant CLIENT as Terminal Web (Cloudflare Pages)
+
+    loop Cada 20 Segundos (Zero TwelveData Requests)
+        VPS->>OANDA: GET /v3/accounts/.../pricing?instruments=14_ASSETS
+        OANDA-->>VPS: Cotizaciones batch consolidadas (Forex, Metales, WTI)
+        
+        VPS->>BINANCE: GET /api/v3/ticker/price (BTCUSDT, ETHUSDT)
+        BINANCE-->>VPS: Ticks directos cripto
+        
+        Note over VPS: Computación Cuántica en Memoria:<br/>• dPOC & VWAP dinámico<br/>• ZAP (Order Blocks) & BSL/SSL<br/>• ADX & Score Institucional 0-100<br/>• Ratchet de 20s para Trades Abiertos
+        
+        VPS->>SUPABASE: UPSERT atómico en public.market_intelligence
+        SUPABASE-->>VPS: 200 OK (Postgres commit en < 25ms)
+        
+        opt Si un Trade Abierto actualiza su excursión
+            VPS->>SUPABASE: UPDATE public.trader_journal SET mfe_r = :mfe, mae_r = :mae WHERE status = 'OPEN'
+        end
+
+        opt Si el Centinela detecta confluencia ZAP + barrido de liquidez
+            VPS->>SUPABASE: INSERT INTO public.trading_signal_events (event_id, symbol, ...)
+            SUPABASE-->>CLIENT: Realtime Broadcast Event (postgres_changes)
+            CLIENT->>CLIENT: Disparar WebAudio Chime & Toast Táctico
+        end
+    end
 ```
